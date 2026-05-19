@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swap Strategy Builder — The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --light-coral: #fdf0ed;
+    --light-gold: #fdf8ec;
+    --mid-gray: #e8e4df;
+    --text-secondary: #555;
+    --green: #2d8a4e;
+    --light-green: #e8f5e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+  header { text-align: center; border-bottom: 3px solid var(--coral); padding-bottom: 20px; margin-bottom: 30px; }
+  header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-family: sans-serif; }
+  header h1 { font-size: 28px; color: var(--navy); margin: 8px 0 4px; }
+  header .sub { font-size: 14px; color: var(--text-secondary); font-style: italic; }
+  h2 { font-size: 20px; color: var(--coral); margin: 28px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--mid-gray); }
+  h3 { font-size: 17px; color: var(--navy); margin: 18px 0 10px; }
+  .card { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 20px; margin-bottom: 18px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+  .form-group select, .form-group input { width: 100%; padding: 8px 10px; border: 1px solid var(--mid-gray); border-radius: 6px; font-size: 15px; font-family: inherit; background: #fff; }
+  .form-group input[type="number"] { max-width: 200px; }
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+  .checkbox-group label { display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
+  .checkbox-group input { accent-color: var(--coral); width: 16px; height: 16px; }
+  .btn { display: inline-block; padding: 12px 28px; border: none; border-radius: 6px; font-size: 15px; font-family: sans-serif; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #d4624a; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+  .btn-secondary:hover { background: #2d2d4e; }
+  .btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--mid-gray); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-bar { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  #results { display: none; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+  .stat-box { background: var(--light-gold); border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-box .stat-num { font-size: 28px; font-weight: bold; color: var(--coral); font-family: sans-serif; }
+  .stat-box .stat-label { font-size: 12px; color: var(--text-secondary); font-family: sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rec-block { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 16px; margin: 10px 0; }
+  .rec-block h4 { color: var(--coral); font-size: 15px; margin-bottom: 6px; font-family: sans-serif; }
+  .rec-block p { font-size: 14px; margin-bottom: 4px; }
+  .profile-box { background: var(--light-coral); border: 2px solid var(--coral); border-radius: 8px; padding: 18px; margin: 14px 0; }
+  .profile-box h4 { color: var(--coral); margin-bottom: 8px; }
+  .profile-box ul { margin-left: 20px; font-size: 14px; }
+  .profile-box li { margin-bottom: 4px; }
+  .checklist { list-style: none; margin: 10px 0; }
+  .checklist li { padding: 8px 12px; margin: 4px 0; background: var(--light-green); border-radius: 6px; font-size: 14px; position: relative; padding-left: 32px; }
+  .checklist li::before { content: '☐'; position: absolute; left: 10px; font-size: 16px; color: var(--green); }
+  .growth-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .growth-table th { background: var(--navy); color: #fff; padding: 8px 12px; text-align: center; font-family: sans-serif; font-size: 12px; text-transform: uppercase; }
+  .growth-table td { padding: 8px 12px; text-align: center; border-bottom: 1px solid var(--mid-gray); font-size: 14px; }
+  .growth-table tr:nth-child(even) { background: var(--light-gold); }
+  .growth-highlight { font-weight: bold; color: var(--coral); }
+  .tracker-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .tracker-table th { background: var(--coral); color: #fff; padding: 8px 10px; text-align: left; font-family: sans-serif; font-size: 12px; text-transform: uppercase; }
+  .tracker-table td { padding: 10px; border-bottom: 1px solid var(--mid-gray); font-size: 13px; }
+  .tracker-table input { width: 100%; border: 1px solid var(--mid-gray); border-radius: 4px; padding: 4px 6px; font-size: 13px; font-family: inherit; }
+  .tracker-table input[type="date"] { width: 130px; }
+  .tracker-table input[type="number"] { width: 70px; text-align: center; }
+  .add-row-btn { background: var(--light-coral); border: 1px dashed var(--coral); color: var(--coral); padding: 8px; width: 100%; border-radius: 6px; cursor: pointer; font-family: sans-serif; font-size: 13px; font-weight: bold; margin-top: 6px; }
+  .add-row-btn:hover { background: var(--coral); color: #fff; }
+  .workflow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .workflow-day { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 14px; }
+  .workflow-day .day-label { font-family: sans-serif; font-weight: bold; font-size: 13px; color: var(--coral); text-transform: uppercase; margin-bottom: 6px; }
+  footer { text-align: center; margin-top: 40px; padding: 16px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--mid-gray); font-family: sans-serif; }
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .btn, .btn-bar, .add-row-btn { display: none !important; }
+    .container { max-width: 100%; padding: 0; }
+    .card, .rec-block { break-inside: avoid; border: 1px solid #ccc; }
+    #results { display: block !important; }
+    .stat-grid { grid-template-columns: repeat(3, 1fr); }
+    .tracker-table input { border: none; padding: 0; }
+  }
+  @media (max-width: 600px) {
+    .form-row, .stat-grid, .workflow-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">The Invisible Pen</div>
+    <h1>Swap Strategy Builder</h1>
+    <div class="sub">Beyond BookBub — Lesson 3 Worksheet</div>
+  </header>
+
+  <h2>Your Newsletter Details</h2>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="penName">Pen Name</label>
+        <input type="text" id="penName" placeholder="e.g., Sage Kennedy">
+      </div>
+      <div class="form-group">
+        <label for="genre">Genre / Subgenre</label>
+        <select id="genre">
+          <option value="">— Select —</option>
+          <option>Contemporary Romance</option>
+          <option>Historical Romance</option>
+          <option>Paranormal / Fantasy Romance</option>
+          <option>Dark Romance</option>
+          <option>Romantic Suspense</option>
+          <option>Rom-Com</option>
+          <option>Romantasy / Dark Fantasy</option>
+          <option>Thriller / Suspense</option>
+          <option>Sci-Fi / Fantasy</option>
+          <option>Mystery / Cozy Mystery</option>
+          <option>Horror</option>
+          <option>Non-Fiction</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="listSize">Current Newsletter List Size</label>
+        <input type="number" id="listSize" min="0" max="999999" placeholder="e.g., 350">
+      </div>
+      <div class="form-group">
+        <label for="frequency">Newsletter Send Frequency</label>
+        <select id="frequency">
+          <option value="weekly">Weekly</option>
+          <option value="biweekly" selected>Biweekly (every 2 weeks)</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Swap Platforms You Currently Use</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" value="BookClicker"> BookClicker</label>
+        <label><input type="checkbox" value="Bookswappy"> Bookswappy</label>
+        <label><input type="checkbox" value="BookFunnel"> BookFunnel</label>
+        <label><input type="checkbox" value="StoryOrigin"> StoryOrigin</label>
+        <label><input type="checkbox" value="none"> None yet</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-primary" onclick="buildStrategy()">Build My Swap Strategy</button>
+    <button class="btn btn-outline" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div id="results">
+    <h2 id="resultsTitle">Swap Strategy for <span id="penNameDisplay"></span></h2>
+
+    <div class="stat-grid" id="statsGrid"></div>
+
+    <h3>Platform Recommendations</h3>
+    <div id="platformRecs"></div>
+
+    <div class="profile-box" id="partnerProfile"></div>
+
+    <h3>Your Weekly Swap Workflow</h3>
+    <div class="workflow-grid" id="workflowGrid"></div>
+
+    <h3>Growth Projections</h3>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Based on your swap volume and average new subscribers per swap (industry average: 5-15 new subs per swap, depending on list size match and genre).</p>
+    <table class="growth-table" id="growthTable"></table>
+
+    <h3>Swap Tracking Log</h3>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Use this table to track each swap. Fill in details as you go.</p>
+    <div class="card" style="overflow-x:auto;">
+      <table class="tracker-table" id="trackerTable">
+        <thead>
+          <tr>
+            <th>Date</th><th>Partner</th><th>Platform</th><th>Their Genre</th>
+            <th>Their List Size</th><th>New Subs</th><th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="trackerBody"></tbody>
+      </table>
+      <button class="add-row-btn" onclick="addTrackerRow()">+ Add Row</button>
+    </div>
+
+    <div class="btn-bar">
+      <button class="btn btn-secondary" onclick="window.print()">Print My Strategy</button>
+    </div>
+  </div>
+
+  <footer>&copy; The Invisible Pen — Beyond BookBub Course</footer>
+</div>
+
+<script>
+function getCheckedPlatforms() {
+  const boxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+  const checked = [];
+  boxes.forEach(b => { if (b.checked && b.value !== 'none') checked.push(b.value); });
+  return checked;
+}
+
+function buildStrategy() {
+  const penName = document.getElementById('penName').value.trim() || 'Your Pen Name';
+  const genre = document.getElementById('genre').value;
+  const listSize = parseInt(document.getElementById('listSize').value) || 0;
+  const frequency = document.getElementById('frequency').value;
+  const platforms = getCheckedPlatforms();
+
+  if (!genre) { alert('Please select your genre.'); return; }
+  if (listSize === 0) { alert('Please enter your list size (even if it\'s small).'); return; }
+
+  document.getElementById('penNameDisplay').textContent = penName;
+
+  // Calculate swap capacity
+  const sendsPerMonth = frequency === 'weekly' ? 4 : frequency === 'biweekly' ? 2 : 1;
+  let swapsPerSend;
+  if (listSize < 200) swapsPerSend = 2;
+  else if (listSize < 500) swapsPerSend = 3;
+  else if (listSize < 1000) swapsPerSend = 4;
+  else if (listSize < 3000) swapsPerSend = 5;
+  else if (listSize < 5000) swapsPerSend = 6;
+  else swapsPerSend = 8;
+
+  const totalSwapsPerMonth = swapsPerSend * sendsPerMonth;
+
+  // Average subs per swap based on list size
+  let avgSubsPerSwap;
+  if (listSize < 200) avgSubsPerSwap = 3;
+  else if (listSize < 500) avgSubsPerSwap = 5;
+  else if (listSize < 1000) avgSubsPerSwap = 8;
+  else if (listSize < 3000) avgSubsPerSwap = 12;
+  else if (listSize < 5000) avgSubsPerSwap = 15;
+  else avgSubsPerSwap = 20;
+
+  const monthlyGrowth = totalSwapsPerMonth * avgSubsPerSwap;
+
+  // Stats grid
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${swapsPerSend}</div><div class="stat-label">Swaps per Send</div></div>
+    <div class="stat-box"><div class="stat-num">${totalSwapsPerMonth}</div><div class="stat-label">Swaps per Month</div></div>
+    <div class="stat-box"><div class="stat-num">~${monthlyGrowth}</div><div class="stat-label">Est. New Subs / Month</div></div>
+  `;
+
+  // Platform recommendations
+  let platHTML = '';
+  const isRomance = genre.toLowerCase().includes('romance') || genre.toLowerCase().includes('rom-com') || genre.toLowerCase().includes('romantasy');
+
+  if (!platforms.includes('BookClicker')) {
+    platHTML += `<div class="rec-block"><h4>Start with BookClicker</h4>
+      <p><strong>Why:</strong> BookClicker is the most active swap platform for ${isRomance ? 'romance authors' : 'indie authors'}. It handles scheduling, tracking, and confirmations in one place.</p>
+      <p><strong>How:</strong> Create a free account, set up your pen name profile with your newsletter link, and start browsing available swaps in your genre.</p>
+      <p><strong>Best for:</strong> Lists of all sizes. Most active community for finding swap partners.</p></div>`;
+  } else {
+    platHTML += `<div class="rec-block"><h4>BookClicker — Keep Going</h4>
+      <p>You're already on BookClicker. Make sure you're booking ${swapsPerSend} swaps for each newsletter send and confirming promptly after sending.</p></div>`;
+  }
+
+  if (!platforms.includes('Bookswappy') && listSize >= 300) {
+    platHTML += `<div class="rec-block"><h4>Add Bookswappy</h4>
+      <p><strong>Why:</strong> At ${listSize.toLocaleString()} subscribers, you qualify for Bookswappy's more curated swap matching. Different author pool than BookClicker = more partner options.</p>
+      <p><strong>Best for:</strong> Finding partners with larger lists. More selective matching.</p></div>`;
+  }
+
+  if (!platforms.includes('BookFunnel')) {
+    platHTML += `<div class="rec-block"><h4>${listSize < 500 ? 'Add BookFunnel for Group Promos' : 'Use BookFunnel Group Promos'}</h4>
+      <p><strong>Why:</strong> BookFunnel group promos let you cross-promote with 10-50 authors at once. Great for rapid list growth alongside 1:1 swaps.</p>
+      <p><strong>Best for:</strong> Supplementing swaps with larger-scale cross-promotions. Reader magnet delivery.</p></div>`;
+  }
+
+  if (!platforms.includes('StoryOrigin') && listSize < 1000) {
+    platHTML += `<div class="rec-block"><h4>Consider StoryOrigin</h4>
+      <p><strong>Why:</strong> StoryOrigin offers newsletter swaps plus group giveaways and universal book links. The free tier is generous for new authors.</p>
+      <p><strong>Best for:</strong> Authors still building their first 1,000 subscribers.</p></div>`;
+  }
+
+  document.getElementById('platformRecs').innerHTML = platHTML;
+
+  // Partner profile
+  const minPartnerSize = Math.max(Math.round(listSize * 0.5), 50);
+  const maxPartnerSize = Math.round(listSize * 2);
+  document.getElementById('partnerProfile').innerHTML = `
+    <h4>Your Ideal Swap Partner Profile</h4>
+    <ul>
+      <li><strong>Genre match:</strong> ${genre} or closely adjacent subgenres (readers who'd also enjoy your books)</li>
+      <li><strong>List size range:</strong> ${minPartnerSize.toLocaleString()} – ${maxPartnerSize.toLocaleString()} subscribers (50-200% of your list)</li>
+      <li><strong>Engagement benchmark:</strong> Look for partners with 20%+ open rates (ask before swapping)</li>
+      <li><strong>Send frequency:</strong> ${frequency} or more often (active senders = active lists)</li>
+      <li><strong>Red flags to avoid:</strong> No cover image, vague genre descriptions, lists over 10x your size (your link may get buried), partners who never confirm swaps</li>
+      <li><strong>Green flags:</strong> Professional covers, clear subgenre match, similar list size, responsive communication, consistent confirmation history</li>
+    </ul>
+  `;
+
+  // Workflow grid
+  const workflows = {
+    weekly: [
+      { day: 'Monday', tasks: ['Check BookClicker for new swap requests', 'Accept/decline pending swaps for this week\'s send', 'Confirm any swaps from last week\'s newsletter'] },
+      { day: 'Tuesday', tasks: ['Collect swap partner links and covers', 'Draft newsletter with swap mentions in place', 'Schedule or review newsletter'] },
+      { day: 'Wednesday', tasks: ['Send newsletter (or let scheduled send go)', 'Verify all swap links are live and correct'] },
+      { day: 'Thursday-Friday', tasks: ['Confirm completed swaps on BookClicker', 'Browse and book swaps for next week', 'Track new subscriber numbers in your log'] }
+    ],
+    biweekly: [
+      { day: 'Week 1: Mon-Tue', tasks: ['Book swaps for next week\'s newsletter send', 'Accept/decline swap requests', 'Confirm any swaps from last send'] },
+      { day: 'Week 1: Wed-Fri', tasks: ['Collect swap partner links and covers', 'Browse upcoming swap opportunities', 'Join a BookFunnel or StoryOrigin group promo'] },
+      { day: 'Week 2: Mon-Tue', tasks: ['Finalize swap partner details', 'Draft newsletter with swap mentions', 'Schedule send'] },
+      { day: 'Week 2: Wed-Fri', tasks: ['Send newsletter', 'Confirm all completed swaps', 'Track new subscribers and update log'] }
+    ],
+    monthly: [
+      { day: 'Week 1', tasks: ['Book swaps for this month\'s newsletter', 'Review and accept/decline requests', 'Confirm swaps from last month\'s send'] },
+      { day: 'Week 2', tasks: ['Collect all swap partner links and covers', 'Join a group promo to supplement swaps', 'Draft newsletter outline'] },
+      { day: 'Week 3', tasks: ['Finalize newsletter with all swap mentions', 'Schedule send date', 'Do a final check on all links'] },
+      { day: 'Week 4', tasks: ['Send newsletter', 'Confirm completed swaps immediately', 'Track results and plan next month\'s swaps'] }
+    ]
+  };
+
+  const wf = workflows[frequency];
+  let wfHTML = '';
+  wf.forEach(item => {
+    wfHTML += `<div class="workflow-day">
+      <div class="day-label">${item.day}</div>
+      <ul class="checklist">${item.tasks.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>`;
+  });
+  document.getElementById('workflowGrid').innerHTML = wfHTML;
+
+  // Growth projections
+  let growthHTML = `<tr><th>Timeframe</th><th>Total Swaps</th><th>New Subs (Est.)</th><th>Projected List Size</th></tr>`;
+  const projections = [
+    { label: '1 Month', months: 1 },
+    { label: '3 Months', months: 3 },
+    { label: '6 Months', months: 6 },
+    { label: '12 Months', months: 12 }
+  ];
+
+  projections.forEach(p => {
+    const swaps = totalSwapsPerMonth * p.months;
+    const newSubs = monthlyGrowth * p.months;
+    // Account for ~5% monthly churn
+    const churnFactor = Math.pow(0.95, p.months);
+    const projected = Math.round(listSize * churnFactor + newSubs * (1 - Math.pow(0.95, p.months)) / (1 - 0.95));
+    const simpleProjected = listSize + newSubs;
+    growthHTML += `<tr>
+      <td><strong>${p.label}</strong></td>
+      <td>${swaps}</td>
+      <td>~${newSubs.toLocaleString()}</td>
+      <td class="growth-highlight">${simpleProjected.toLocaleString()}</td>
+    </tr>`;
+  });
+
+  document.getElementById('growthTable').innerHTML = growthHTML;
+
+  // Tracker rows
+  const tbody = document.getElementById('trackerBody');
+  tbody.innerHTML = '';
+  for (let i = 0; i < 5; i++) addTrackerRow();
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function addTrackerRow() {
+  const tbody = document.getElementById('trackerBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="date"></td>
+    <td><input type="text" placeholder="Author name"></td>
+    <td><select style="width:100%;padding:4px;font-size:13px;border:1px solid var(--mid-gray);border-radius:4px;">
+      <option>BookClicker</option><option>Bookswappy</option><option>BookFunnel</option><option>StoryOrigin</option><option>Direct</option>
+    </select></td>
+    <td><input type="text" placeholder="e.g., Dark Romance"></td>
+    <td><input type="number" placeholder="e.g., 500" style="width:90px;"></td>
+    <td><input type="number" placeholder="0" style="width:60px;"></td>
+    <td><input type="text" placeholder="Notes..."></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function resetAll() {
+  document.getElementById('penName').value = '';
+  document.getElementById('genre').selectedIndex = 0;
+  document.getElementById('listSize').value = '';
+  document.getElementById('frequency').selectedIndex = 1;
+  document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Handle "none yet" checkbox logic
+document.querySelectorAll('.checkbox-group input').forEach(cb => {
+  cb.addEventListener('change', function() {
+    if (this.value === 'none' && this.checked) {
+      document.querySelectorAll('.checkbox-group input').forEach(other => {
+        if (other.value !== 'none') other.checked = false;
+      });
+    } else if (this.value !== 'none' && this.checked) {
+      document.querySelector('.checkbox-group input[value="none"]').checked = false;
+    }
+  });
+});
+</script>
+</body>
+</html>

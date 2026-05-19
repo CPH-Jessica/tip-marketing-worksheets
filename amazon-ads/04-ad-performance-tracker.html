@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad Performance Tracker — Amazon Ads for Authors | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a393;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d9a0;
+    --green: #4a9e6e;
+    --green-bg: rgba(74,158,110,0.08);
+    --yellow: #d4a017;
+    --yellow-bg: rgba(212,160,23,0.08);
+    --red: #c0392b;
+    --red-bg: rgba(192,57,43,0.08);
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia','Times New Roman',serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .header { background: var(--navy); color: var(--white); padding: 24px 32px; text-align: center; border-bottom: 4px solid var(--coral); }
+  .header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); margin-bottom: 4px; }
+  .header h1 { font-size: 28px; font-weight: 400; margin-bottom: 4px; }
+  .header .subtitle { font-size: 14px; color: var(--coral-light); }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  .section { margin-bottom: 36px; }
+  .section-header {
+    display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
+    padding: 14px 18px; background: var(--white); border: 1px solid var(--gray-light);
+    border-radius: 10px; margin-bottom: 2px; transition: border-color 0.2s;
+  }
+  .section-header:hover { border-color: var(--coral); }
+  .section-header h2 { font-size: 18px; flex: 1; }
+  .section-header .badge { font-size: 11px; background: var(--coral); color: var(--white); padding: 2px 8px; border-radius: 10px; }
+  .section-header .arrow { font-size: 18px; transition: transform 0.2s; }
+  .section-header.open .arrow { transform: rotate(90deg); }
+  .section-body { display: none; padding: 18px; background: var(--white); border: 1px solid var(--gray-light); border-top: none; border-radius: 0 0 10px 10px; }
+  .section-body.open { display: block; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .form-group .hint { font-size: 12px; color: var(--gray); margin-bottom: 4px; }
+  input[type="text"], input[type="number"], select {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--gray-light);
+    border-radius: 6px; font-size: 15px; font-family: inherit; background: var(--white); color: var(--navy);
+  }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .inline-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .inline-row .form-group { flex: 1; min-width: 140px; }
+  .calc-result {
+    background: var(--navy); color: var(--gold); padding: 12px 16px; border-radius: 8px;
+    font-size: 14px; margin-top: 8px;
+  }
+  .calc-result .big { font-size: 22px; font-weight: 700; }
+  .btn { padding: 10px 22px; border: none; border-radius: 6px; font-size: 14px; font-family: inherit; cursor: pointer; font-weight: 700; }
+  .btn-primary { background: var(--coral); color: var(--white); }
+  .btn-primary:hover { box-shadow: 0 2px 8px rgba(232,115,90,0.3); }
+  .btn-secondary { background: var(--gray-light); color: var(--navy); }
+  .btn-small { padding: 6px 14px; font-size: 12px; }
+  .btn-print { background: var(--navy); color: var(--white); }
+  /* Data table */
+  .data-table-wrap { overflow-x: auto; margin-top: 12px; }
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 820px; }
+  table.data-table th {
+    background: var(--navy); color: var(--white); padding: 8px 6px;
+    text-align: center; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    position: sticky; top: 0;
+  }
+  table.data-table th:first-child { border-radius: 6px 0 0 0; }
+  table.data-table th:last-child { border-radius: 0 6px 0 0; }
+  table.data-table td {
+    padding: 6px; text-align: center; border-bottom: 1px solid var(--gray-light);
+  }
+  table.data-table td input {
+    width: 80px; text-align: center; padding: 5px 4px; font-size: 13px;
+    border: 1px solid var(--gray-light); border-radius: 4px;
+  }
+  table.data-table td input:focus { border-color: var(--coral); outline: none; }
+  .calc-cell { font-weight: 700; font-size: 12px; }
+  .profit-pos { color: var(--green); }
+  .profit-warn { color: var(--yellow); }
+  .profit-neg { color: var(--red); }
+  .row-green { background: var(--green-bg); }
+  .row-yellow { background: var(--yellow-bg); }
+  .row-red { background: var(--red-bg); }
+  /* Dashboard */
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .dash-card {
+    background: var(--white); border: 1px solid var(--gray-light); border-radius: 10px;
+    padding: 16px; text-align: center;
+  }
+  .dash-card .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); }
+  .dash-card .metric-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+  .dash-card .metric-sub { font-size: 12px; color: var(--gray); }
+  .rec-box {
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; font-size: 14px;
+  }
+  .rec-box h4 { margin-bottom: 6px; font-size: 15px; }
+  .rec-box ul { padding-left: 18px; margin-top: 6px; line-height: 1.8; font-size: 13px; }
+  .rec-scale-up { background: var(--green-bg); border-left: 4px solid var(--green); }
+  .rec-optimize { background: var(--yellow-bg); border-left: 4px solid var(--yellow); }
+  .rec-pause { background: var(--red-bg); border-left: 4px solid var(--red); }
+  .rec-kill { background: #f8d7da; border-left: 4px solid #721c24; }
+  .trend-text { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
+  .interp-text { font-size: 13px; margin-bottom: 14px; padding: 10px 14px; background: rgba(201,168,76,0.1); border-radius: 6px; }
+  /* Breakeven calc */
+  .be-result { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; }
+  .be-card { flex: 1; min-width: 150px; background: var(--navy); color: var(--white); border-radius: 8px; padding: 14px; text-align: center; }
+  .be-card .big { font-size: 26px; font-weight: 700; color: var(--gold); }
+  .be-card .label { font-size: 11px; color: var(--coral-light); margin-top: 2px; }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); font-size: 14px; }
+  @media print {
+    .header { padding: 12px; }
+    .section-header .arrow, .btn, .no-print { display: none !important; }
+    .section-body { display: block !important; border: none; }
+    .section-header { border: none; margin-bottom: 0; }
+    body { background: white; font-size: 12px; }
+    .dash-card .metric-value { font-size: 20px; }
+  }
+  @media (max-width: 640px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .inline-row { flex-direction: column; gap: 0; }
+    .be-result { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen</div>
+  <h1>Ad Performance Tracker</h1>
+  <div class="subtitle">Amazon Ads for Authors — Lesson 4</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: Book Economics -->
+  <div class="section">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h2>Your Book Economics</h2>
+      <span class="badge">One-Time Setup</span>
+      <span class="arrow">▸</span>
+    </div>
+    <div class="section-body open" id="econBody">
+      <div class="inline-row">
+        <div class="form-group">
+          <label for="eBookPrice">Book Price ($)</label>
+          <input type="number" id="eBookPrice" value="4.99" step="0.01" min="0.99" onchange="calcEcon()">
+        </div>
+        <div class="form-group">
+          <label for="eRoyalty">Royalty Rate</label>
+          <select id="eRoyalty" onchange="calcEcon()">
+            <option value="0.70">70%</option>
+            <option value="0.35">35%</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-result" id="royaltyResult">
+        Royalty per sale: <span class="big">$3.49</span>
+      </div>
+
+      <hr style="margin:20px 0;border:none;border-top:1px solid var(--gray-light)">
+      <div class="form-group">
+        <label for="eSeries">Is this part of a series?</label>
+        <select id="eSeries" onchange="toggleSeriesFields(); calcEcon()">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div id="seriesFields" style="display:none">
+        <div class="inline-row">
+          <div class="form-group">
+            <label for="eSeriesCount">Books in series</label>
+            <input type="number" id="eSeriesCount" value="3" min="2" max="30" onchange="calcEcon()">
+          </div>
+          <div class="form-group">
+            <label for="eReadThrough">Estimated read-through rate</label>
+            <select id="eReadThrough" onchange="calcEcon()">
+              <option value="0.20">20%</option>
+              <option value="0.30">30%</option>
+              <option value="0.40" selected>40%</option>
+              <option value="0.50">50%</option>
+              <option value="0.60">60%</option>
+              <option value="0.70">70%</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="eOtherPrice">Avg price of other books ($)</label>
+            <input type="number" id="eOtherPrice" value="4.99" step="0.01" min="0.99" onchange="calcEcon()">
+          </div>
+        </div>
+        <div class="calc-result" id="ltvResult">Estimated lifetime value per reader: <span class="big">$0.00</span></div>
+      </div>
+
+      <hr style="margin:20px 0;border:none;border-top:1px solid var(--gray-light)">
+      <div class="inline-row">
+        <div class="form-group">
+          <label for="eKU">KU Enrolled?</label>
+          <select id="eKU" onchange="toggleKUFields(); calcEcon()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="form-group" id="kenpField" style="display:none">
+          <label for="eKENP">KENP per book</label>
+          <div class="hint">Find this in your KDP Bookshelf → KENP Read column</div>
+          <input type="number" id="eKENP" value="350" min="1" onchange="calcEcon()">
+        </div>
+      </div>
+      <div id="kuResult" style="display:none" class="calc-result">
+        KU full-read value: <span class="big" id="kuValue">$0.00</span>
+        <span style="font-size:12px;margin-left:8px">(at ~$0.0045/page)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Weekly Data Entry -->
+  <div class="section">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h2>Weekly Data Entry</h2>
+      <span class="badge">Track Weekly</span>
+      <span class="arrow">▸</span>
+    </div>
+    <div class="section-body open" id="dataBody">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;">Enter your numbers from the KDP Advertising dashboard each week. Calculated fields update automatically.</p>
+      <div class="data-table-wrap">
+        <table class="data-table" id="dataTable">
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Impressions</th>
+              <th>Clicks</th>
+              <th>Spend ($)</th>
+              <th>Sales</th>
+              <th>KENP</th>
+              <th>CTR</th>
+              <th>CPC</th>
+              <th>ACOS</th>
+              <th>Profit/Loss</th>
+            </tr>
+          </thead>
+          <tbody id="dataRows"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;" class="no-print">
+        <button class="btn btn-secondary btn-small" onclick="addWeekRow()">+ Add Week</button>
+        <button class="btn btn-secondary btn-small" onclick="clearAllData()">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Performance Dashboard -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Performance Dashboard</h2>
+      <span class="badge">Auto-Analysis</span>
+      <span class="arrow">▸</span>
+    </div>
+    <div class="section-body" id="dashBody">
+      <div id="dashContent">
+        <div class="empty-state">Enter at least one week of data above, then open this section to see your analysis.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Breakeven Calculator -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Breakeven Calculator</h2>
+      <span class="badge">Quick Calc</span>
+      <span class="arrow">▸</span>
+    </div>
+    <div class="section-body" id="beBody">
+      <div class="inline-row">
+        <div class="form-group">
+          <label for="bePrice">Book Price ($)</label>
+          <input type="number" id="bePrice" value="4.99" step="0.01" min="0.99" onchange="calcBreakeven()">
+        </div>
+        <div class="form-group">
+          <label for="beRoyalty">Royalty %</label>
+          <select id="beRoyalty" onchange="calcBreakeven()">
+            <option value="0.70">70%</option>
+            <option value="0.35">35%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="beDailySpend">Daily Ad Spend ($)</label>
+          <input type="number" id="beDailySpend" value="10" step="0.50" min="0" onchange="calcBreakeven()">
+        </div>
+      </div>
+      <div class="inline-row">
+        <div class="form-group">
+          <label for="beSeriesMult">Series multiplier</label>
+          <div class="hint">If standalone, use 1.0. If series with read-through, try 1.3-2.0</div>
+          <input type="number" id="beSeriesMult" value="1.0" step="0.1" min="1" max="5" onchange="calcBreakeven()">
+        </div>
+      </div>
+      <div class="be-result" id="beResult"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;" class="no-print">
+    <button class="btn btn-print" onclick="window.print()">Print This Tracker</button>
+  </div>
+</div>
+
+<script>
+  // --- Toggle Sections ---
+  function toggleSection(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+    // Recalc dashboard when opened
+    if (body.id === 'dashBody' && body.classList.contains('open')) buildDashboard();
+  }
+
+  // --- Economics Calculations ---
+  function getEcon() {
+    const price = parseFloat(document.getElementById('eBookPrice').value) || 0;
+    const royRate = parseFloat(document.getElementById('eRoyalty').value) || 0.70;
+    const royPerSale = price * royRate;
+    const isSeries = document.getElementById('eSeries').value === 'yes';
+    const isKU = document.getElementById('eKU').value === 'yes';
+    let ltv = royPerSale;
+    if (isSeries) {
+      const count = parseInt(document.getElementById('eSeriesCount').value) || 1;
+      const rt = parseFloat(document.getElementById('eReadThrough').value) || 0;
+      const otherPrice = parseFloat(document.getElementById('eOtherPrice').value) || price;
+      const otherRoy = otherPrice * royRate;
+      // Geometric series: book1 royalty + book2 * rt + book3 * rt^2 ...
+      let chain = royPerSale;
+      for (let i = 1; i < count; i++) { chain += otherRoy * Math.pow(rt, i); }
+      ltv = chain;
+    }
+    let kuValue = 0;
+    if (isKU) {
+      const kenp = parseInt(document.getElementById('eKENP').value) || 0;
+      kuValue = kenp * 0.0045;
+    }
+    return { price, royRate, royPerSale, isSeries, ltv, isKU, kuValue };
+  }
+
+  function calcEcon() {
+    const e = getEcon();
+    document.getElementById('royaltyResult').innerHTML = `Royalty per sale: <span class="big">$${e.royPerSale.toFixed(2)}</span>`;
+    if (e.isSeries) {
+      document.getElementById('ltvResult').innerHTML = `Estimated lifetime value per reader: <span class="big">$${e.ltv.toFixed(2)}</span>`;
+    }
+    if (e.isKU) {
+      document.getElementById('kuValue').textContent = `$${e.kuValue.toFixed(2)}`;
+    }
+    recalcAllRows();
+  }
+
+  function toggleSeriesFields() {
+    document.getElementById('seriesFields').style.display = document.getElementById('eSeries').value === 'yes' ? 'block' : 'none';
+  }
+  function toggleKUFields() {
+    const show = document.getElementById('eKU').value === 'yes';
+    document.getElementById('kenpField').style.display = show ? 'block' : 'none';
+    document.getElementById('kuResult').style.display = show ? 'block' : 'none';
+    // Also show/hide KENP column
+    document.querySelectorAll('.kenp-col').forEach(el => el.style.display = show ? '' : 'none');
+  }
+
+  // --- Data Table ---
+  let weekCount = 0;
+
+  function addWeekRow() {
+    weekCount++;
+    const tbody = document.getElementById('dataRows');
+    const tr = document.createElement('tr');
+    tr.id = 'week' + weekCount;
+    const showKenp = document.getElementById('eKU').value === 'yes';
+    tr.innerHTML = `
+      <td style="font-weight:700;color:var(--coral)">W${weekCount}</td>
+      <td><input type="number" class="w-imp" min="0" value="" placeholder="0" onchange="recalcRow(this)"></td>
+      <td><input type="number" class="w-clicks" min="0" value="" placeholder="0" onchange="recalcRow(this)"></td>
+      <td><input type="number" class="w-spend" min="0" step="0.01" value="" placeholder="0.00" onchange="recalcRow(this)"></td>
+      <td><input type="number" class="w-sales" min="0" value="" placeholder="0" onchange="recalcRow(this)"></td>
+      <td class="kenp-col" style="display:${showKenp ? '' : 'none'}"><input type="number" class="w-kenp" min="0" value="" placeholder="0" onchange="recalcRow(this)"></td>
+      <td class="calc-cell w-ctr">—</td>
+      <td class="calc-cell w-cpc">—</td>
+      <td class="calc-cell w-acos">—</td>
+      <td class="calc-cell w-profit">—</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  function recalcRow(input) {
+    const row = input.closest('tr');
+    calcRowMetrics(row);
+  }
+
+  function calcRowMetrics(row) {
+    const imp = parseInt(row.querySelector('.w-imp').value) || 0;
+    const clicks = parseInt(row.querySelector('.w-clicks').value) || 0;
+    const spend = parseFloat(row.querySelector('.w-spend').value) || 0;
+    const sales = parseInt(row.querySelector('.w-sales').value) || 0;
+    const kenpInput = row.querySelector('.w-kenp');
+    const kenp = kenpInput ? (parseInt(kenpInput.value) || 0) : 0;
+    const e = getEcon();
+
+    // CTR
+    const ctr = imp > 0 ? (clicks / imp * 100) : 0;
+    row.querySelector('.w-ctr').textContent = imp > 0 ? ctr.toFixed(2) + '%' : '—';
+
+    // CPC
+    const cpc = clicks > 0 ? spend / clicks : 0;
+    row.querySelector('.w-cpc').textContent = clicks > 0 ? '$' + cpc.toFixed(2) : '—';
+
+    // Revenue
+    const salesRev = sales * e.royPerSale;
+    const kenpRev = kenp * 0.0045;
+    const totalRev = salesRev + kenpRev;
+
+    // ACOS (based on sales revenue only, standard Amazon definition)
+    const grossSalesRev = sales * e.price;
+    const acos = grossSalesRev > 0 ? (spend / grossSalesRev * 100) : 0;
+    row.querySelector('.w-acos').textContent = grossSalesRev > 0 ? acos.toFixed(0) + '%' : '—';
+
+    // Profit/Loss
+    const profit = totalRev - spend;
+    const profitCell = row.querySelector('.w-profit');
+    if (spend > 0 || sales > 0) {
+      profitCell.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toFixed(2);
+      // Color code
+      row.className = '';
+      profitCell.className = 'calc-cell w-profit ';
+      if (profit > 0) { row.classList.add('row-green'); profitCell.classList.add('profit-pos'); }
+      else if (profit > -2 && profit <= 0) { row.classList.add('row-yellow'); profitCell.classList.add('profit-warn'); }
+      else { row.classList.add('row-red'); profitCell.classList.add('profit-neg'); }
+    } else {
+      profitCell.textContent = '—';
+      row.className = '';
+      profitCell.className = 'calc-cell w-profit';
+    }
+  }
+
+  function recalcAllRows() {
+    document.querySelectorAll('#dataRows tr').forEach(row => calcRowMetrics(row));
+  }
+
+  function clearAllData() {
+    if (!confirm('Clear all weekly data? This cannot be undone.')) return;
+    document.getElementById('dataRows').innerHTML = '';
+    weekCount = 0;
+    for (let i = 0; i < 4; i++) addWeekRow();
+  }
+
+  function getWeekData() {
+    const rows = [];
+    document.querySelectorAll('#dataRows tr').forEach(row => {
+      const imp = parseInt(row.querySelector('.w-imp').value) || 0;
+      const clicks = parseInt(row.querySelector('.w-clicks').value) || 0;
+      const spend = parseFloat(row.querySelector('.w-spend').value) || 0;
+      const sales = parseInt(row.querySelector('.w-sales').value) || 0;
+      const kenpInput = row.querySelector('.w-kenp');
+      const kenp = kenpInput ? (parseInt(kenpInput.value) || 0) : 0;
+      if (imp > 0 || clicks > 0 || spend > 0 || sales > 0) {
+        rows.push({ imp, clicks, spend, sales, kenp });
+      }
+    });
+    return rows;
+  }
+
+  // --- Dashboard ---
+  function buildDashboard() {
+    const data = getWeekData();
+    const container = document.getElementById('dashContent');
+    if (data.length === 0) {
+      container.innerHTML = '<div class="empty-state">Enter at least one week of data in the tracking table above to generate your dashboard.</div>';
+      return;
+    }
+    const e = getEcon();
+    // Totals
+    const totImp = data.reduce((s,d) => s + d.imp, 0);
+    const totClicks = data.reduce((s,d) => s + d.clicks, 0);
+    const totSpend = data.reduce((s,d) => s + d.spend, 0);
+    const totSales = data.reduce((s,d) => s + d.sales, 0);
+    const totKenp = data.reduce((s,d) => s + d.kenp, 0);
+    const totGrossRev = totSales * e.price;
+    const totRoyalty = totSales * e.royPerSale;
+    const totKenpRev = totKenp * 0.0045;
+    const totalRev = totRoyalty + totKenpRev;
+    const overallCTR = totImp > 0 ? (totClicks / totImp * 100) : 0;
+    const overallCPC = totClicks > 0 ? (totSpend / totClicks) : 0;
+    const overallACOS = totGrossRev > 0 ? (totSpend / totGrossRev * 100) : 0;
+    const overallProfit = totalRev - totSpend;
+
+    let html = '';
+    // Metric cards
+    html += `<div class="dash-grid">
+      <div class="dash-card"><div class="metric-label">Overall CTR</div>
+        <div class="metric-value" style="color:${overallCTR >= 0.3 ? 'var(--green)' : overallCTR >= 0.15 ? 'var(--yellow)' : 'var(--red)'}">${overallCTR.toFixed(2)}%</div>
+        <div class="metric-sub">${totClicks.toLocaleString()} clicks / ${totImp.toLocaleString()} impressions</div></div>
+      <div class="dash-card"><div class="metric-label">Avg CPC</div>
+        <div class="metric-value">$${overallCPC.toFixed(2)}</div>
+        <div class="metric-sub">$${totSpend.toFixed(2)} total spend</div></div>
+      <div class="dash-card"><div class="metric-label">Overall ACOS</div>
+        <div class="metric-value" style="color:${overallACOS <= 70 ? 'var(--green)' : overallACOS <= 100 ? 'var(--yellow)' : 'var(--red)'}">${totSales > 0 ? overallACOS.toFixed(0) + '%' : 'N/A'}</div>
+        <div class="metric-sub">${totSales} sales ($${totGrossRev.toFixed(2)} gross)</div></div>
+      <div class="dash-card"><div class="metric-label">Net Profit/Loss</div>
+        <div class="metric-value" style="color:${overallProfit >= 0 ? 'var(--green)' : 'var(--red)'}">${overallProfit >= 0 ? '+' : ''}$${overallProfit.toFixed(2)}</div>
+        <div class="metric-sub">${data.length} week${data.length > 1 ? 's' : ''} of data</div></div>
+    </div>`;
+
+    // ACOS interpretation
+    if (totSales > 0) {
+      const maxProfitableACOS = e.royRate * 100;
+      html += `<div class="interp-text"><strong>Your ACOS of ${overallACOS.toFixed(0)}%</strong> means for every $1.00 in book sales, you're spending $${(overallACOS/100).toFixed(2)} on ads. 
+      Your royalty rate is ${(e.royRate*100).toFixed(0)}%, so your breakeven ACOS is <strong>${maxProfitableACOS.toFixed(0)}%</strong>. 
+      ${overallACOS <= maxProfitableACOS ? 'You are currently profitable on ad spend alone.' : 'You are currently spending more on ads than you earn in royalties per sale.'}</div>`;
+    }
+
+    // Trend analysis (need 2+ weeks)
+    if (data.length >= 2) {
+      const firstHalf = data.slice(0, Math.floor(data.length / 2));
+      const secondHalf = data.slice(Math.floor(data.length / 2));
+      const avgCTR1 = firstHalf.reduce((s,d) => s + (d.imp > 0 ? d.clicks/d.imp : 0), 0) / firstHalf.length;
+      const avgCTR2 = secondHalf.reduce((s,d) => s + (d.imp > 0 ? d.clicks/d.imp : 0), 0) / secondHalf.length;
+      let trend = 'stable';
+      if (avgCTR2 > avgCTR1 * 1.15) trend = 'improving';
+      else if (avgCTR2 < avgCTR1 * 0.85) trend = 'declining';
+      const trendEmoji = trend === 'improving' ? '↑' : trend === 'declining' ? '↓' : '→';
+      html += `<p class="trend-text"><strong>CTR Trend:</strong> ${trendEmoji} Your click-through rate is <strong>${trend}</strong> over the tracking period.</p>`;
+    }
+
+    // Recommendations
+    html += '<h3 style="font-size:16px;margin:18px 0 10px;">Recommendations</h3>';
+    let recs = [];
+
+    if (overallCTR < 0.15 && totImp > 500) {
+      recs.push({type:'issue', text:'Low click-through rate (' + overallCTR.toFixed(2) + '%). Your cover or targeting may need work.', tips:[
+        'Review your book cover — does it match genre expectations?',
+        'Check that your keywords are tightly matched to your book\'s genre',
+        'Your title/subtitle may not be compelling enough in search results',
+        'Consider testing different ad copy if using Sponsored Brands'
+      ]});
+    } else if (overallCTR >= 0.15 && overallCTR < 0.3 && totImp > 500) {
+      recs.push({type:'info', text:'CTR is okay (' + overallCTR.toFixed(2) + '%) but could improve. Your cover and targeting are decent but not great.'});
+    }
+
+    if (overallCTR > 0.5 && totSales === 0 && totClicks > 20) {
+      recs.push({type:'issue', text:'People are clicking but not buying. Check your blurb and reviews.', tips:[
+        'Your book page (blurb, reviews, Look Inside) isn\'t converting',
+        'Make sure your blurb has a strong hook in the first two lines',
+        'If you have fewer than 10 reviews, focus on getting more before advertising heavily',
+        'Check your book\'s price — is it competitive for your genre?'
+      ]});
+    }
+
+    if (overallACOS > 100 && !e.isSeries && totSales > 0) {
+      recs.push({type:'issue', text:'You\'re losing money on every sale (ACOS ' + overallACOS.toFixed(0) + '%). Consider pausing and optimizing.', tips:[
+        'Lower your bids by 10-20%',
+        'Pause keywords/ASINs with high spend and zero sales',
+        'Negate search terms that are irrelevant',
+        'Consider if this book is a good candidate for ads at this price point'
+      ]});
+    }
+
+    if (overallACOS > 70 && e.isSeries && totSales > 0) {
+      recs.push({type:'info', text:'ACOS is ' + overallACOS.toFixed(0) + '% — looks high, but factor in your read-through. With an estimated LTV of $' + e.ltv.toFixed(2) + ' per reader, your real ROI may be profitable.'});
+    }
+
+    // Overall action recommendation
+    let action = '', actionClass = '', actionSteps = [];
+    if (totSales === 0 && totClicks < 10) {
+      action = 'GATHER MORE DATA';
+      actionClass = 'rec-optimize';
+      actionSteps = ['You need more data. Run for at least 7 more days.','If impressions are very low, raise your bids.','Make sure your campaigns are enabled and not paused.'];
+    } else if (overallACOS <= 50 && totSales >= 3) {
+      action = 'SCALE UP';
+      actionClass = 'rec-scale-up';
+      actionSteps = ['Increase daily budgets by 25-50%','Add more keywords from your Search Term Report','Consider launching ads for the next book in your series','Test Dynamic bids up and down for your best-performing campaign'];
+    } else if (overallACOS <= 100 && overallACOS > 50) {
+      action = 'OPTIMIZE';
+      actionClass = 'rec-optimize';
+      actionSteps = ['Download your Search Term Report and negate non-converting terms','Lower bids on high-ACOS keywords by $0.05-0.10','Move proven winners to Exact Match at slightly higher bids','Pause any targeting with 20+ clicks and zero sales'];
+    } else if (overallACOS > 100 && overallACOS <= 200 && totSales > 0) {
+      action = 'PAUSE AND FIX';
+      actionClass = 'rec-pause';
+      actionSteps = ['Pause all campaigns','Review your book page: cover, blurb, reviews, pricing','Rebuild campaigns with only your best keywords','Restart with lower bids and smaller budgets'];
+    } else if ((overallACOS > 200 && totSales > 0) || (totClicks > 100 && totSales === 0)) {
+      action = 'KILL';
+      actionClass = 'rec-kill';
+      actionSteps = ['Stop these campaigns — they are not working','Focus on your book page and organic discoverability','Consider whether this book has product-market fit','Relaunch ads only after significant changes to cover/blurb/reviews'];
+    } else {
+      action = 'KEEP MONITORING';
+      actionClass = 'rec-optimize';
+      actionSteps = ['Continue gathering data','Check back next week with fresh numbers'];
+    }
+
+    if (recs.length > 0) {
+      recs.forEach(r => {
+        html += `<div class="rec-box ${r.type === 'issue' ? 'rec-pause' : 'rec-optimize'}"><h4>${r.text}</h4>`;
+        if (r.tips) { html += '<ul>' + r.tips.map(t => `<li>${t}</li>`).join('') + '</ul>'; }
+        html += '</div>';
+      });
+    }
+
+    html += `<div class="rec-box ${actionClass}" style="margin-top:18px;">
+      <h4 style="font-size:18px;">Action: ${action}</h4>
+      <ul>${actionSteps.map(s => `<li>${s}</li>`).join('')}</ul>
+    </div>`;
+
+    container.innerHTML = html;
+  }
+
+  // --- Breakeven Calculator ---
+  function calcBreakeven() {
+    const price = parseFloat(document.getElementById('bePrice').value) || 0;
+    const royRate = parseFloat(document.getElementById('beRoyalty').value) || 0.70;
+    const daily = parseFloat(document.getElementById('beDailySpend').value) || 0;
+    const mult = parseFloat(document.getElementById('beSeriesMult').value) || 1;
+    const royPerSale = price * royRate;
+    const effectiveRoy = royPerSale * mult;
+    const salesPerDay = effectiveRoy > 0 ? daily / effectiveRoy : 0;
+    const salesPerMonth = salesPerDay * 30;
+    const maxACOS = royRate * 100 * mult;
+
+    document.getElementById('beResult').innerHTML = `
+      <div class="be-card"><div class="big">${salesPerDay.toFixed(1)}</div><div class="label">Sales/day to break even</div></div>
+      <div class="be-card"><div class="big">${Math.ceil(salesPerMonth)}</div><div class="label">Sales/month to break even</div></div>
+      <div class="be-card"><div class="big">${maxACOS.toFixed(0)}%</div><div class="label">Max profitable ACOS</div></div>
+      <div class="be-card"><div class="big">$${effectiveRoy.toFixed(2)}</div><div class="label">Effective royalty/sale${mult > 1 ? ' (with series)' : ''}</div></div>
+    `;
+  }
+
+  // --- Init ---
+  function init() {
+    calcEcon();
+    for (let i = 0; i < 4; i++) addWeekRow();
+    calcBreakeven();
+    toggleKUFields();
+    toggleSeriesFields();
+  }
+  init();
+</script>
+</body>
+</html>

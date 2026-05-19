@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Launch Planner — Beyond BookBub | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d9a0;
+    --green: #4a9e6e;
+    --red: #c0392b;
+    --orange: #e67e22;
+    --gray: #666;
+    --light-gray: #e8e4df;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 30px 0; text-align: center; border-bottom: 4px solid var(--coral); }
+  header h1 { font-size: 1.8em; letter-spacing: 1px; }
+  header .brand { color: var(--coral); font-size: 0.85em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; }
+  header .subtitle { color: var(--gold-light); font-size: 0.95em; margin-top: 6px; font-style: italic; }
+  .section { background: white; border-radius: 8px; padding: 28px; margin: 24px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section h2 { color: var(--coral); font-size: 1.35em; margin-bottom: 16px; border-bottom: 2px solid var(--gold-light); padding-bottom: 8px; }
+  .section h3 { color: var(--navy); font-size: 1.05em; margin: 14px 0 8px; }
+  label { display: block; font-weight: bold; margin: 12px 0 4px; font-size: 0.95em; }
+  input[type="text"], input[type="number"], input[type="date"], select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--light-gray); border-radius: 5px;
+    font-size: 1em; font-family: inherit; background: var(--cream);
+  }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .form-row > div { flex: 1; min-width: 200px; }
+  .radio-group { display: flex; gap: 18px; margin: 6px 0 10px; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; }
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: #d4604a; }
+  .btn-sm { padding: 6px 14px; font-size: 0.85em; }
+  .btn-gold { background: var(--gold); }
+  .btn-gold:hover { background: #b8973e; }
+  .btn-outline { background: transparent; color: var(--coral); border: 2px solid var(--coral); }
+  .btn-outline:hover { background: var(--coral); color: white; }
+
+  /* Timeline */
+  .timeline { position: relative; padding: 10px 0 10px 30px; margin: 20px 0; }
+  .timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 3px; background: var(--gold-light); }
+  .timeline-item { position: relative; margin-bottom: 22px; padding-left: 24px; }
+  .timeline-item::before { content: ''; position: absolute; left: -24px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--coral); border: 3px solid white; box-shadow: 0 0 0 2px var(--coral); }
+  .timeline-item.past::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+  .timeline-item.current::before { background: var(--gold); box-shadow: 0 0 0 2px var(--gold); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 2px var(--gold); } 50% { box-shadow: 0 0 0 6px rgba(201,168,76,0.3); } }
+  .timeline-date { font-weight: bold; color: var(--coral); font-size: 0.9em; }
+  .timeline-label { font-weight: bold; margin: 2px 0; }
+  .timeline-desc { color: var(--gray); font-size: 0.9em; }
+  .timeline-target { display: inline-block; background: var(--gold-light); color: var(--navy); padding: 2px 10px; border-radius: 12px; font-size: 0.8em; margin-top: 4px; }
+
+  /* Templates */
+  .template-card { background: var(--cream); border: 1px solid var(--light-gray); border-radius: 6px; padding: 16px; margin: 14px 0; }
+  .template-card h4 { color: var(--navy); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .template-body { font-size: 0.9em; color: var(--gray); white-space: pre-wrap; line-height: 1.7; }
+  .copy-toast { display: inline-block; color: var(--green); font-size: 0.85em; margin-left: 10px; opacity: 0; transition: opacity 0.3s; }
+  .copy-toast.show { opacity: 1; }
+
+  /* Tracker Table */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th { background: var(--navy); color: white; padding: 10px 12px; text-align: left; font-size: 0.9em; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--light-gray); }
+  td input, td select { width: 100%; border: 1px solid var(--light-gray); padding: 6px 8px; border-radius: 4px; font-size: 0.9em; background: white; }
+  .status-ahead { background: #d4edda; color: #155724; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .status-on-track { background: #fff3cd; color: #856404; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .status-behind { background: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+
+  .print-btn-wrap { text-align: center; margin: 30px 0; }
+  #timeline-output { display: none; }
+  .hidden { display: none; }
+
+  footer { text-align: center; padding: 20px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+
+  @media print {
+    body { background: white; font-size: 11pt; }
+    .btn, .print-btn-wrap, .no-print { display: none !important; }
+    .section { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    header { background: white; color: var(--navy); border-bottom: 3px solid var(--coral); }
+    header .brand { color: var(--coral); }
+    header .subtitle { color: var(--gray); }
+    #timeline-output { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <h1>Review Launch Planner</h1>
+  <div class="subtitle">Beyond BookBub &mdash; Lesson 4 Worksheet</div>
+</header>
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <h2>1. Your Book Details</h2>
+    <div class="form-row">
+      <div><label for="bookTitle">Book Title</label><input type="text" id="bookTitle" placeholder="Enter your book title"></div>
+      <div><label for="releaseDate">Release Date</label><input type="date" id="releaseDate"></div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="genre">Genre</label>
+        <select id="genre">
+          <option value="">Select genre...</option>
+          <option>Contemporary Romance</option><option>Dark Romance</option><option>Historical Romance</option>
+          <option>Paranormal Romance</option><option>Romantic Suspense</option><option>Romantasy</option>
+          <option>Romantic Comedy</option><option>Thriller/Suspense</option><option>Fantasy</option>
+          <option>Sci-Fi</option><option>Mystery</option><option>Horror</option><option>Literary Fiction</option>
+          <option>Nonfiction</option><option>Other</option>
+        </select>
+      </div>
+      <div><label for="currentReviews">Current Number of Reviews</label><input type="number" id="currentReviews" value="0" min="0"></div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>Do you have an ARC team?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="hasArc" value="yes" id="arcYes"> Yes</label>
+          <label><input type="radio" name="hasArc" value="no" id="arcNo" checked> No</label>
+        </div>
+      </div>
+      <div id="arcSizeWrap" class="hidden">
+        <label for="arcSize">ARC Team Size</label>
+        <input type="number" id="arcSize" value="0" min="0" placeholder="How many ARC readers?">
+      </div>
+    </div>
+    <div style="margin-top:18px; text-align:center;">
+      <button class="btn" onclick="generateTimeline()">Generate My Review Timeline</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="timeline-output">
+    <h2>2. Your Review Launch Timeline</h2>
+    <p id="timeline-summary" style="margin-bottom:14px; font-style:italic; color:var(--gray);"></p>
+    <div id="timeline-container" class="timeline"></div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <h2>3. Review Request Templates</h2>
+    <p style="color:var(--gray); margin-bottom:10px;">Click "Copy" to copy any template to your clipboard. Personalize before sending.</p>
+
+    <div class="template-card">
+      <h4>Beta Reader Recruitment Email <button class="btn btn-sm btn-gold no-print" onclick="copyTemplate(this, 'beta-recruit')">Copy</button><span class="copy-toast">Copied!</span></h4>
+      <div class="template-body" id="beta-recruit">Subject: Would you beta read my upcoming [GENRE] novel?
+
+Hi [NAME],
+
+I'm looking for a small group of thoughtful readers to beta read my upcoming novel, [BOOK TITLE]. It's a [GENRE] story about [one-sentence hook].
+
+What I need:
+- Read the full manuscript within 3 weeks
+- Answer a short feedback questionnaire (10 questions)
+- Be honest — I want real reactions, not just praise
+
+What you get:
+- A free early copy of the book
+- Your name in the acknowledgments (if you'd like)
+- My eternal gratitude
+
+The manuscript will be ready by [DATE]. Interested? Just reply and I'll add you to the list.
+
+Thanks so much,
+[YOUR NAME]</div>
+    </div>
+
+    <div class="template-card">
+      <h4>ARC Reader Invitation Email <button class="btn btn-sm btn-gold no-print" onclick="copyTemplate(this, 'arc-invite')">Copy</button><span class="copy-toast">Copied!</span></h4>
+      <div class="template-body" id="arc-invite">Subject: Get a FREE early copy of [BOOK TITLE] — ARC team invite!
+
+Hi [NAME],
+
+I'd love to invite you to my ARC (Advance Reader Copy) team for my new [GENRE] release, [BOOK TITLE], launching on [RELEASE DATE].
+
+Here's how it works:
+- You receive a free digital copy 3 weeks before release
+- You read and post an honest review on Amazon and/or Goodreads on or around release day
+- No pressure to leave a positive review — honest opinions only
+
+The book is about [one-sentence hook].
+
+If you're in, click the link below to sign up:
+[SIGNUP LINK]
+
+Thank you for supporting indie authors!
+[YOUR NAME]</div>
+    </div>
+
+    <div class="template-card">
+      <h4>Gentle Review Reminder (Post-Launch) <button class="btn btn-sm btn-gold no-print" onclick="copyTemplate(this, 'reminder')">Copy</button><span class="copy-toast">Copied!</span></h4>
+      <div class="template-body" id="reminder">Subject: Quick reminder about [BOOK TITLE] 💛
+
+Hi [NAME],
+
+I hope you've had a chance to read [BOOK TITLE]! If you enjoyed it (or even if it wasn't your cup of tea), I'd truly appreciate a short review on Amazon or Goodreads.
+
+Even 1-2 sentences makes a huge difference for indie authors. Here are the links:
+- Amazon: [LINK]
+- Goodreads: [LINK]
+
+Not sure what to say? Here are some prompts:
+- What did you enjoy most?
+- Who would you recommend this book to?
+- How did it make you feel?
+
+No worries if life got busy — I completely understand. Thank you either way!
+
+Warmly,
+[YOUR NAME]</div>
+    </div>
+
+    <div class="template-card">
+      <h4>Thank You Email for Reviewers <button class="btn btn-sm btn-gold no-print" onclick="copyTemplate(this, 'thankyou')">Copy</button><span class="copy-toast">Copied!</span></h4>
+      <div class="template-body" id="thankyou">Subject: THANK YOU for reviewing [BOOK TITLE]!
+
+Hi [NAME],
+
+I just saw your review of [BOOK TITLE] and wanted to say a heartfelt THANK YOU. Your support means the world to me as an indie author.
+
+Reviews are the single best thing readers can do to help a book succeed, and I'm so grateful you took the time.
+
+As a thank-you, I'd love to [offer something — e.g., send you my next ARC first, give you a bonus epilogue, etc.].
+
+Thank you again,
+[YOUR NAME]</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <h2>4. Review Goal Tracker</h2>
+    <p style="color:var(--gray); margin-bottom:10px;">Track your review progress across platforms. Status updates automatically based on your numbers.</p>
+    <table id="trackerTable">
+      <thead>
+        <tr><th>Platform</th><th>Current Reviews</th><th>Goal</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Amazon</td>
+          <td><input type="number" min="0" value="0" onchange="updateStatus(this)"></td>
+          <td><input type="number" min="0" value="15" onchange="updateStatus(this)"></td>
+          <td><span class="status-behind">Behind</span></td>
+        </tr>
+        <tr>
+          <td>Goodreads</td>
+          <td><input type="number" min="0" value="0" onchange="updateStatus(this)"></td>
+          <td><input type="number" min="0" value="10" onchange="updateStatus(this)"></td>
+          <td><span class="status-behind">Behind</span></td>
+        </tr>
+        <tr>
+          <td>BookBub</td>
+          <td><input type="number" min="0" value="0" onchange="updateStatus(this)"></td>
+          <td><input type="number" min="0" value="5" onchange="updateStatus(this)"></td>
+          <td><span class="status-behind">Behind</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-sm btn-outline no-print" onclick="addTrackerRow()">+ Add Platform</button>
+  </div>
+
+  <div class="print-btn-wrap no-print">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</div>
+
+<footer>
+  &copy; The Invisible Pen &mdash; Beyond BookBub Course &mdash; For personal student use only.
+</footer>
+
+<script>
+  // ARC team toggle
+  document.querySelectorAll('input[name="hasArc"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('arcSizeWrap').classList.toggle('hidden', document.getElementById('arcNo').checked);
+    });
+  });
+
+  function formatDate(d) {
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function addDays(date, days) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  function generateTimeline() {
+    const releaseDateVal = document.getElementById('releaseDate').value;
+    const bookTitle = document.getElementById('bookTitle').value || '[Your Book]';
+    const genre = document.getElementById('genre').value || 'your genre';
+    const hasArc = document.getElementById('arcYes').checked;
+    const arcSize = parseInt(document.getElementById('arcSize').value) || 0;
+
+    if (!releaseDateVal) {
+      alert('Please enter a release date to generate your timeline.');
+      return;
+    }
+
+    const release = new Date(releaseDateVal + 'T12:00:00');
+    const today = new Date();
+
+    const milestones = [
+      { offset: -56, label: 'Recruit Beta Readers', desc: 'Post in reader groups, reach out to past betas, ask in your newsletter. Look for readers who enjoy ' + genre + '.', target: 'Target: 5-10 beta readers' },
+      { offset: -42, label: 'Send Beta Copies & Start Building ARC Team', desc: 'Deliver manuscripts to betas via BookFunnel or email. Begin promoting your ARC signup form on social media and in your newsletter.', target: hasArc ? 'Current ARC team: ' + arcSize + ' readers' : 'Goal: Build a team of 15-25 readers' },
+      { offset: -28, label: 'Beta Feedback Due & Open ARC Signups', desc: 'Collect beta feedback. Make final edits. Open ARC signups via your preferred platform (BookFunnel, StoryOrigin, direct signup form).', target: 'Target: 20-30 ARC signups' },
+      { offset: -21, label: 'Send ARC Copies', desc: 'Distribute ARC copies to your team. Include clear instructions: review on release day, honest opinions welcome, where to post.', target: 'Send to all confirmed ARC readers' },
+      { offset: -7, label: 'Remind ARCs to Read', desc: 'Send a friendly reminder email. Share buy links and review links they\'ll need on launch day. Build excitement!', target: 'Reminder email to all ARCs' },
+      { offset: 0, label: 'RELEASE DAY — ARCs Post Reviews!', desc: 'Your ARC team posts reviews on Amazon and Goodreads. Share your launch on social media. Celebrate!', target: 'Target: 10-15 on Amazon, 5-10 on Goodreads' },
+      { offset: 7, label: 'Week 1 Post-Launch: First Follow-Up', desc: 'Send a gentle reminder to ARCs who haven\'t posted yet. Share any early reviews on social media to encourage more.', target: 'Follow up with non-responders' },
+      { offset: 14, label: 'Week 2 Post-Launch: Final Follow-Up', desc: 'Last reminder to remaining ARCs. Thank everyone who posted. Note which readers are your most reliable for future launches.', target: 'Send thank-you emails to all reviewers' },
+    ];
+
+    let html = '';
+    milestones.forEach(m => {
+      const d = addDays(release, m.offset);
+      const isPast = d < today;
+      const isCurrent = Math.abs(d - today) < 86400000 * 3;
+      const cls = isPast ? 'past' : (isCurrent ? 'current' : '');
+      html += `<div class="timeline-item ${cls}">
+        <div class="timeline-date">${formatDate(d)}</div>
+        <div class="timeline-label">${m.label}</div>
+        <div class="timeline-desc">${m.desc}</div>
+        <div class="timeline-target">${m.target}</div>
+      </div>`;
+    });
+
+    document.getElementById('timeline-container').innerHTML = html;
+
+    const weeksOut = Math.round((release - today) / (7 * 86400000));
+    let summaryText = `Timeline for "${bookTitle}" (${genre}) releasing ${formatDate(release)}.`;
+    if (weeksOut > 0) {
+      summaryText += ` That's about ${weeksOut} weeks from today.`;
+      if (weeksOut < 8) summaryText += ` You're behind the ideal 8-week schedule — prioritize the upcoming milestones!`;
+    } else {
+      summaryText += ` Your book has already launched — focus on post-launch follow-ups.`;
+    }
+    document.getElementById('timeline-summary').textContent = summaryText;
+    document.getElementById('timeline-output').style.display = 'block';
+    document.getElementById('timeline-output').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Copy template
+  function copyTemplate(btn, id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = btn.nextElementSibling;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      const toast = btn.nextElementSibling;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  // Tracker
+  function updateStatus(input) {
+    const row = input.closest('tr');
+    const inputs = row.querySelectorAll('input[type="number"]');
+    const current = parseInt(inputs[0].value) || 0;
+    const goal = parseInt(inputs[1].value) || 1;
+    const statusCell = row.querySelector('td:last-child');
+    const pct = current / goal;
+    if (pct >= 1) {
+      statusCell.innerHTML = '<span class="status-ahead">Ahead</span>';
+    } else if (pct >= 0.5) {
+      statusCell.innerHTML = '<span class="status-on-track">On Track</span>';
+    } else {
+      statusCell.innerHTML = '<span class="status-behind">Behind</span>';
+    }
+  }
+
+  function addTrackerRow() {
+    const tbody = document.querySelector('#trackerTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" placeholder="Platform name" style="font-weight:bold;"></td>
+      <td><input type="number" min="0" value="0" onchange="updateStatus(this)"></td>
+      <td><input type="number" min="0" value="10" onchange="updateStatus(this)"></td>
+      <td><span class="status-behind">Behind</span></td>`;
+    tbody.appendChild(row);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promo Site Planner — The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --light-coral: #fdf0ed;
+    --light-gold: #fdf8ec;
+    --mid-gray: #e8e4df;
+    --text-secondary: #555;
+    --green: #2d8a4e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+  header { text-align: center; border-bottom: 3px solid var(--coral); padding-bottom: 20px; margin-bottom: 30px; }
+  header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-family: sans-serif; }
+  header h1 { font-size: 28px; color: var(--navy); margin: 8px 0 4px; }
+  header .sub { font-size: 14px; color: var(--text-secondary); font-style: italic; }
+  h2 { font-size: 20px; color: var(--coral); margin: 28px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--mid-gray); }
+  h3 { font-size: 17px; color: var(--navy); margin: 18px 0 10px; }
+  .card { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 20px; margin-bottom: 18px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+  .form-group select, .form-group input { width: 100%; padding: 8px 10px; border: 1px solid var(--mid-gray); border-radius: 6px; font-size: 15px; font-family: inherit; background: #fff; }
+  .btn { display: inline-block; padding: 12px 28px; border: none; border-radius: 6px; font-size: 15px; font-family: sans-serif; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #d4624a; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+  .btn-secondary:hover { background: #2d2d4e; }
+  .btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--mid-gray); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-bar { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  #results { display: none; }
+  .promo-card { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 16px; margin: 10px 0; border-left: 4px solid var(--coral); }
+  .promo-card .promo-name { font-size: 17px; font-weight: bold; color: var(--navy); }
+  .promo-card .promo-meta { font-size: 13px; color: var(--text-secondary); font-family: sans-serif; margin: 4px 0; }
+  .promo-card .promo-detail { font-size: 14px; margin-top: 6px; }
+  .promo-card .cost-tag { display: inline-block; background: var(--light-gold); color: var(--gold); font-weight: bold; font-size: 13px; padding: 2px 10px; border-radius: 12px; font-family: sans-serif; }
+  .timeline { position: relative; padding-left: 28px; margin: 16px 0; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 3px; background: var(--coral); border-radius: 2px; }
+  .timeline-item { position: relative; margin-bottom: 14px; padding: 10px 14px; background: var(--light-coral); border-radius: 6px; }
+  .timeline-item::before { content: ''; position: absolute; left: -24px; top: 14px; width: 12px; height: 12px; background: var(--coral); border-radius: 50%; border: 2px solid #fff; }
+  .timeline-item .tl-when { font-weight: bold; font-size: 14px; color: var(--coral); font-family: sans-serif; }
+  .timeline-item .tl-what { font-size: 14px; }
+  .total-box { background: var(--navy); color: #fff; padding: 16px 20px; border-radius: 8px; margin: 16px 0; text-align: center; }
+  .total-box .total-num { font-size: 28px; font-weight: bold; color: var(--gold); }
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  .ref-table th { background: var(--navy); color: #fff; padding: 8px 10px; text-align: left; font-family: sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ref-table td { padding: 8px 10px; border-bottom: 1px solid var(--mid-gray); vertical-align: top; }
+  .ref-table tr:nth-child(even) { background: var(--light-coral); }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; font-family: sans-serif; margin: 1px 2px; }
+  .tag-free { background: #d4edda; color: #155724; }
+  .tag-paid { background: #fdf8ec; color: #856404; }
+  .tag-premium { background: #fdf0ed; color: #c0392b; }
+  footer { text-align: center; margin-top: 40px; padding: 16px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--mid-gray); font-family: sans-serif; }
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .btn, .btn-bar { display: none !important; }
+    .container { max-width: 100%; padding: 0; }
+    .card, .promo-card { break-inside: avoid; border: 1px solid #ccc; }
+    #results { display: block !important; }
+    .ref-table { font-size: 11px; }
+  }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">The Invisible Pen</div>
+    <h1>Promo Site Planner</h1>
+    <div class="sub">Beyond BookBub — Lesson 2 Worksheet</div>
+  </header>
+
+  <h2>Your Book &amp; Promo Details</h2>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="genre">Genre</label>
+        <select id="genre">
+          <option value="">— Select —</option>
+          <option>Contemporary Romance</option>
+          <option>Historical Romance</option>
+          <option>Paranormal / Fantasy Romance</option>
+          <option>Dark Romance</option>
+          <option>Romantic Suspense</option>
+          <option>Rom-Com</option>
+          <option>Thriller / Suspense</option>
+          <option>Sci-Fi / Fantasy</option>
+          <option>Mystery / Cozy Mystery</option>
+          <option>Horror</option>
+          <option>Non-Fiction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="price">Book Price During Promo</label>
+        <select id="price">
+          <option value="free">Free</option>
+          <option value="0.99">$0.99</option>
+          <option value="1.99">$1.99</option>
+          <option value="2.99">$2.99</option>
+          <option value="3.99">$3.99+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="launchDate">Promo / Launch Date</label>
+        <input type="date" id="launchDate">
+      </div>
+      <div class="form-group">
+        <label for="budget">Monthly Promo Budget</label>
+        <select id="budget">
+          <option value="25">$0 – $25</option>
+          <option value="50">$25 – $50</option>
+          <option value="100">$50 – $100</option>
+          <option value="200">$100 – $200</option>
+          <option value="300">$200+</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-primary" onclick="generateStack()">Generate My Promo Stack</button>
+    <button class="btn btn-outline" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div id="results">
+    <h2>Your Custom Promo Stack</h2>
+    <div id="stackCards"></div>
+
+    <h2>Booking Timeline</h2>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Work backwards from your promo date to book everything on time.</p>
+    <div class="timeline" id="timeline"></div>
+
+    <div class="total-box">
+      <div>Estimated Total Cost</div>
+      <div class="total-num" id="totalCost">$0</div>
+      <div style="font-size:13px;opacity:0.8;">Based on standard pricing — actual costs may vary</div>
+    </div>
+
+    <div class="btn-bar">
+      <button class="btn btn-secondary" onclick="window.print()">Print My Plan</button>
+    </div>
+
+    <h2>Complete Promo Site Reference</h2>
+    <div class="card" style="overflow-x:auto;">
+      <table class="ref-table" id="refTable"></table>
+    </div>
+  </div>
+
+  <footer>&copy; The Invisible Pen — Beyond BookBub Course</footer>
+</div>
+
+<script>
+const SITES = [
+  { name: "BookBub Featured Deal", cost_free: 0, cost_99: 340, cost_299: 560, lead: 42, downloads_free: "2,000–15,000", downloads_paid: "500–3,000", genres: ["all"], notes: "Hardest to get. Apply 6-8 weeks out. Lottery-style acceptance.", tier: "premium" },
+  { name: "BookBub Ads", cost_free: 50, cost_99: 50, cost_299: 50, lead: 3, downloads_free: "varies", downloads_paid: "varies", genres: ["all"], notes: "Self-serve CPC ads. Start $5-10/day. Target comp authors.", tier: "paid" },
+  { name: "Freebooksy", cost_free: 120, cost_99: 0, cost_299: 0, lead: 14, downloads_free: "1,000–5,000", downloads_paid: "N/A (free only)", genres: ["romance","mystery","thriller","sci-fi","fantasy"], notes: "Free books only. Very strong for romance. Book 2-3 weeks out.", tier: "paid", freeOnly: true },
+  { name: "Bargain Booksy", cost_free: 0, cost_99: 45, cost_299: 45, lead: 14, downloads_free: "N/A", downloads_paid: "200–800", genres: ["romance","mystery","thriller","sci-fi","fantasy"], notes: "$0.99-$4.99 books. Same company as Freebooksy. Solid results.", tier: "paid", paidOnly: true },
+  { name: "Robin Reads", cost_free: 30, cost_99: 30, cost_299: 35, lead: 7, downloads_free: "300–1,500", downloads_paid: "100–400", genres: ["romance","mystery","thriller","sci-fi","fantasy","horror"], notes: "Good value. Accepts most genres. Quick turnaround.", tier: "paid" },
+  { name: "BookSends", cost_free: 40, cost_99: 40, cost_299: 50, lead: 7, downloads_free: "200–1,000", downloads_paid: "100–500", genres: ["romance","mystery","thriller","sci-fi"], notes: "Reliable mid-tier site. Good for stacking.", tier: "paid" },
+  { name: "eReader News Today (ENT)", cost_free: 35, cost_99: 35, cost_299: 40, lead: 7, downloads_free: "300–1,200", downloads_paid: "100–500", genres: ["romance","mystery","thriller","sci-fi","fantasy"], notes: "Long-running site. Free submission + paid upgrades.", tier: "paid" },
+  { name: "Book Barbarian", cost_free: 20, cost_99: 20, cost_299: 25, lead: 5, downloads_free: "100–500", downloads_paid: "50–200", genres: ["sci-fi","fantasy","romance"], notes: "Strong for SFF. Smaller but engaged audience.", tier: "paid" },
+  { name: "Fussy Librarian", cost_free: 18, cost_99: 18, cost_299: 22, lead: 5, downloads_free: "100–600", downloads_paid: "50–250", genres: ["romance","mystery","thriller","sci-fi","fantasy","horror","non-fiction"], notes: "Very targeted categories. Readers pick specific subgenres.", tier: "paid" },
+  { name: "BookGorilla", cost_free: 25, cost_99: 25, cost_299: 30, lead: 5, downloads_free: "100–400", downloads_paid: "50–200", genres: ["all"], notes: "Also has a Kindle deals newsletter. Smaller volume.", tier: "paid" },
+  { name: "StoryOrigin", cost_free: 0, cost_99: 0, cost_299: 0, lead: 7, downloads_free: "50–300", downloads_paid: "20–100", genres: ["all"], notes: "Free tier available. Group promos, reader magnets, newsletter swaps. List-building focus.", tier: "free" },
+  { name: "BookFunnel", cost_free: 0, cost_99: 0, cost_299: 0, lead: 7, downloads_free: "50–500", downloads_paid: "20–100", genres: ["all"], notes: "Delivery platform + group promos. $20/yr starter plan. Essential for reader magnets.", tier: "free" },
+  { name: "BookSweeps", cost_free: 0, cost_99: 0, cost_299: 0, lead: 14, downloads_free: "100–1,000 entries", downloads_paid: "100–1,000 entries", genres: ["romance","mystery","thriller","sci-fi","fantasy"], notes: "Giveaway platform. Grows newsletter list. Free for authors to join group giveaways.", tier: "free" }
+];
+
+function getGenreKey(genre) {
+  const g = genre.toLowerCase();
+  if (g.includes('romance') || g.includes('rom-com')) return 'romance';
+  if (g.includes('thriller') || g.includes('suspense')) return 'thriller';
+  if (g.includes('mystery') || g.includes('cozy')) return 'mystery';
+  if (g.includes('sci-fi') || g.includes('fantasy')) return 'sci-fi';
+  if (g.includes('horror')) return 'horror';
+  if (g.includes('non-fiction')) return 'non-fiction';
+  return 'other';
+}
+
+function getSiteCost(site, pricePoint) {
+  if (pricePoint === 'free') return site.cost_free;
+  if (pricePoint === '0.99') return site.cost_99;
+  return site.cost_299;
+}
+
+function generateStack() {
+  const genre = document.getElementById('genre').value;
+  const price = document.getElementById('price').value;
+  const dateStr = document.getElementById('launchDate').value;
+  const budget = parseInt(document.getElementById('budget').value);
+
+  if (!genre) { alert('Please select your genre.'); return; }
+  if (!dateStr) { alert('Please choose a promo date.'); return; }
+
+  const genreKey = getGenreKey(genre);
+  const launchDate = new Date(dateStr + 'T12:00:00');
+
+  // Filter and score sites
+  let candidates = SITES.filter(s => {
+    if (price !== 'free' && s.freeOnly) return false;
+    if (price === 'free' && s.paidOnly) return false;
+    const cost = getSiteCost(s, price);
+    if (s.genres[0] !== 'all' && !s.genres.includes(genreKey) && !s.genres.includes('all')) return false;
+    return true;
+  });
+
+  // Sort: genre match strength, then cost efficiency
+  candidates.sort((a, b) => {
+    const aMatch = a.genres.includes(genreKey) ? 1 : 0;
+    const bMatch = b.genres.includes(genreKey) ? 1 : 0;
+    if (bMatch !== aMatch) return bMatch - aMatch;
+    return getSiteCost(a, price) - getSiteCost(b, price);
+  });
+
+  // Select within budget
+  let totalCost = 0;
+  const selected = [];
+  for (const site of candidates) {
+    const cost = getSiteCost(site, price);
+    if (totalCost + cost <= budget || cost === 0) {
+      selected.push({ ...site, actualCost: cost });
+      totalCost += cost;
+    }
+  }
+
+  // Build cards
+  let cardsHTML = '';
+  selected.forEach(s => {
+    const downloads = price === 'free' ? s.downloads_free : s.downloads_paid;
+    cardsHTML += `<div class="promo-card">
+      <div class="promo-name">${s.name} <span class="cost-tag">${s.actualCost === 0 ? 'FREE' : '$' + s.actualCost}</span></div>
+      <div class="promo-meta">Book ${s.lead}+ days in advance &nbsp;|&nbsp; Expected results: ${downloads}</div>
+      <div class="promo-detail">${s.notes}</div>
+    </div>`;
+  });
+  document.getElementById('stackCards').innerHTML = cardsHTML || '<p>No sites matched your criteria. Try adjusting your budget or price point.</p>';
+
+  // Build timeline
+  const paidSites = selected.filter(s => s.actualCost > 0).sort((a, b) => b.lead - a.lead);
+  const freeSites = selected.filter(s => s.actualCost === 0);
+  let timelineHTML = '';
+
+  if (paidSites.length > 0) {
+    const earliest = paidSites.reduce((max, s) => Math.max(max, s.lead), 0);
+    // Group by lead time
+    const groups = {};
+    paidSites.forEach(s => {
+      const week = Math.ceil(s.lead / 7);
+      if (!groups[week]) groups[week] = [];
+      groups[week].push(s.name);
+    });
+
+    const sortedWeeks = Object.keys(groups).map(Number).sort((a, b) => b - a);
+    sortedWeeks.forEach(week => {
+      const bookBy = new Date(launchDate);
+      bookBy.setDate(bookBy.getDate() - (week * 7));
+      const dateLabel = bookBy.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      timelineHTML += `<div class="timeline-item">
+        <div class="tl-when">${week} week${week > 1 ? 's' : ''} before (by ${dateLabel})</div>
+        <div class="tl-what">Book: ${groups[week].join(', ')}</div>
+      </div>`;
+    });
+  }
+
+  if (freeSites.length > 0) {
+    const bookBy = new Date(launchDate);
+    bookBy.setDate(bookBy.getDate() - 7);
+    const dateLabel = bookBy.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    timelineHTML += `<div class="timeline-item">
+      <div class="tl-when">1 week before (by ${dateLabel})</div>
+      <div class="tl-what">Set up: ${freeSites.map(s => s.name).join(', ')}</div>
+    </div>`;
+  }
+
+  timelineHTML += `<div class="timeline-item" style="background:var(--light-gold);">
+    <div class="tl-when">PROMO DAY — ${launchDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
+    <div class="tl-what">Monitor downloads, track rank, share on social media. Check KDP reports next morning.</div>
+  </div>`;
+
+  document.getElementById('timeline').innerHTML = timelineHTML;
+  document.getElementById('totalCost').textContent = '$' + totalCost;
+
+  // Build reference table
+  let refHTML = `<tr>
+    <th>Site</th><th>Free Book Cost</th><th>$0.99 Cost</th><th>$2.99+ Cost</th>
+    <th>Lead Time</th><th>Best For</th><th>Notes</th>
+  </tr>`;
+  SITES.forEach(s => {
+    const tierClass = s.tier === 'free' ? 'tag-free' : s.tier === 'premium' ? 'tag-premium' : 'tag-paid';
+    const tierLabel = s.tier === 'free' ? 'Free' : s.tier === 'premium' ? 'Premium' : 'Paid';
+    refHTML += `<tr>
+      <td><strong>${s.name}</strong> <span class="tag ${tierClass}">${tierLabel}</span></td>
+      <td>${s.cost_free === 0 ? 'Free' : '$' + s.cost_free}${s.paidOnly ? ' —' : ''}</td>
+      <td>${s.cost_99 === 0 ? 'Free' : '$' + s.cost_99}${s.freeOnly ? ' —' : ''}</td>
+      <td>${s.cost_299 === 0 ? 'Free' : '$' + s.cost_299}${s.freeOnly ? ' —' : ''}</td>
+      <td>${s.lead} days</td>
+      <td style="font-size:12px;">${s.genres[0] === 'all' ? 'All genres' : s.genres.join(', ')}</td>
+      <td style="font-size:12px;">${s.notes}</td>
+    </tr>`;
+  });
+  document.getElementById('refTable').innerHTML = refHTML;
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  document.getElementById('genre').selectedIndex = 0;
+  document.getElementById('price').selectedIndex = 0;
+  document.getElementById('launchDate').value = '';
+  document.getElementById('budget').selectedIndex = 0;
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Set default date to 30 days from now
+const d = new Date(); d.setDate(d.getDate() + 30);
+document.getElementById('launchDate').value = d.toISOString().split('T')[0];
+</script>
+</body>
+</html>

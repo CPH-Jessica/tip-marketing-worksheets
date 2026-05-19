@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Marketing Calendar — Beyond BookBub | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d9a0;
+    --green: #4a9e6e;
+    --gray: #666;
+    --light-gray: #e8e4df;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 30px 0; text-align: center; border-bottom: 4px solid var(--coral); }
+  header h1 { font-size: 1.8em; letter-spacing: 1px; }
+  header .brand { color: var(--coral); font-size: 0.85em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; }
+  header .subtitle { color: var(--gold-light); font-size: 0.95em; margin-top: 6px; font-style: italic; }
+  .section { background: white; border-radius: 8px; padding: 28px; margin: 24px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section h2 { color: var(--coral); font-size: 1.35em; margin-bottom: 16px; border-bottom: 2px solid var(--gold-light); padding-bottom: 8px; }
+  label { display: block; font-weight: bold; margin: 12px 0 4px; font-size: 0.95em; }
+  input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--light-gray); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .form-row > div { flex: 1; min-width: 200px; }
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: #d4604a; }
+  .btn-gold { background: var(--gold); }
+  .btn-gold:hover { background: #b8973e; }
+
+  /* Checkboxes */
+  .channel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin: 10px 0; }
+  .channel-option { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 2px solid var(--light-gray); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .channel-option:hover { border-color: var(--coral-light); }
+  .channel-option.selected { border-color: var(--coral); background: rgba(232,115,90,0.06); }
+  .channel-option.disabled { opacity: 0.4; cursor: not-allowed; }
+  .channel-option input { display: none; }
+  .channel-icon { font-size: 1.3em; width: 28px; text-align: center; }
+  .channel-label { font-size: 0.95em; }
+  .channel-count { color: var(--coral); font-weight: bold; font-size: 0.9em; margin: 6px 0 0; }
+
+  /* Calendar Grid */
+  .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 16px 0; }
+  .cal-header { background: var(--navy); color: white; padding: 8px 4px; text-align: center; font-size: 0.8em; font-weight: bold; }
+  .cal-day { background: white; border: 1px solid var(--light-gray); min-height: 90px; padding: 6px; font-size: 0.78em; position: relative; }
+  .cal-day .day-num { font-weight: bold; color: var(--gray); font-size: 0.85em; margin-bottom: 4px; }
+  .cal-day.has-content { border-left: 3px solid var(--coral); }
+  .cal-content { margin: 2px 0; }
+  .cal-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.75em; font-weight: bold; margin-bottom: 2px; }
+  .tag-ch1 { background: var(--coral-light); color: var(--navy); }
+  .tag-ch2 { background: var(--gold-light); color: var(--navy); }
+  .cal-tip { color: var(--gray); font-size: 0.72em; font-style: italic; margin-top: 2px; }
+  .cal-time { color: var(--green); font-size: 0.72em; font-weight: bold; }
+  .week-label { grid-column: 1 / -1; background: var(--cream); padding: 8px 12px; font-weight: bold; color: var(--coral); font-size: 0.95em; border-left: 4px solid var(--gold); margin-top: 10px; }
+
+  /* Ideas Bank */
+  .accordion { margin: 10px 0; }
+  .accordion-header { background: var(--cream); border: 1px solid var(--light-gray); padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-radius: 6px; margin: 4px 0; font-weight: bold; font-size: 0.95em; transition: background 0.2s; }
+  .accordion-header:hover { background: var(--gold-light); }
+  .accordion-header .arrow { transition: transform 0.3s; font-size: 0.8em; }
+  .accordion-header.open .arrow { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 12px 16px; border: 1px solid var(--light-gray); border-top: none; border-radius: 0 0 6px 6px; background: white; }
+  .accordion-body.open { display: block; }
+  .idea-item { padding: 6px 0; border-bottom: 1px solid var(--light-gray); font-size: 0.9em; }
+  .idea-item:last-child { border-bottom: none; }
+  .idea-item strong { color: var(--coral); }
+
+  .print-btn-wrap { text-align: center; margin: 30px 0; }
+  #calendar-output { display: none; }
+  footer { text-align: center; padding: 20px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+
+  @media print {
+    body { background: white; font-size: 10pt; }
+    .btn, .print-btn-wrap, .no-print { display: none !important; }
+    .section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    header { background: white; color: var(--navy); border-bottom: 3px solid var(--coral); }
+    header .brand { color: var(--coral); }
+    header .subtitle { color: var(--gray); }
+    #calendar-output { display: block !important; }
+    .cal-day { min-height: 70px; }
+    .accordion-body { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <h1>Content Marketing Calendar</h1>
+  <div class="subtitle">Beyond BookBub &mdash; Lesson 5 Worksheet</div>
+</header>
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <h2>1. Choose Your 2 Channels</h2>
+    <p style="color:var(--gray); margin-bottom:10px;">Select exactly 2 channels to focus on. Spreading yourself too thin is worse than doing 2 channels well.</p>
+    <div class="channel-grid" id="channelGrid">
+      <label class="channel-option" data-ch="newsletter"><input type="checkbox" value="newsletter"><span class="channel-icon">&#9993;</span><span class="channel-label">Substack / Newsletter</span></label>
+      <label class="channel-option" data-ch="youtube"><input type="checkbox" value="youtube"><span class="channel-icon">&#9654;</span><span class="channel-label">YouTube</span></label>
+      <label class="channel-option" data-ch="booktok"><input type="checkbox" value="booktok"><span class="channel-icon">&#9835;</span><span class="channel-label">BookTok / TikTok</span></label>
+      <label class="channel-option" data-ch="instagram"><input type="checkbox" value="instagram"><span class="channel-icon">&#9634;</span><span class="channel-label">Instagram / Reels</span></label>
+      <label class="channel-option" data-ch="reddit"><input type="checkbox" value="reddit"><span class="channel-icon">&#9673;</span><span class="channel-label">Reddit</span></label>
+      <label class="channel-option" data-ch="facebook"><input type="checkbox" value="facebook"><span class="channel-icon">&#9775;</span><span class="channel-label">Facebook Groups</span></label>
+      <label class="channel-option" data-ch="podcast"><input type="checkbox" value="podcast"><span class="channel-icon">&#127911;</span><span class="channel-label">Podcast</span></label>
+    </div>
+    <div class="channel-count" id="channelCount">0 of 2 selected</div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <h2>2. Your Content Details</h2>
+    <div class="form-row">
+      <div>
+        <label for="contentGenre">Genre</label>
+        <select id="contentGenre">
+          <option value="">Select genre...</option>
+          <option>Contemporary Romance</option><option>Dark Romance</option><option>Historical Romance</option>
+          <option>Paranormal Romance</option><option>Romantic Suspense</option><option>Romantasy</option>
+          <option>Romantic Comedy</option><option>Thriller/Suspense</option><option>Fantasy</option>
+          <option>Sci-Fi</option><option>Mystery</option><option>Horror</option><option>Nonfiction</option>
+        </select>
+      </div>
+      <div><label for="penName">Pen Name</label><input type="text" id="penName" placeholder="Your author name"></div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="promoGoal">What are you promoting?</label>
+        <select id="promoGoal">
+          <option value="new-release">New Release</option>
+          <option value="backlist">Backlist Title</option>
+          <option value="series">Series</option>
+          <option value="reader-magnet">Reader Magnet</option>
+          <option value="brand">Brand Building</option>
+        </select>
+      </div>
+      <div>
+        <label for="timeAvail">Time per week for content?</label>
+        <select id="timeAvail">
+          <option value="low">1-2 hours</option>
+          <option value="med">3-4 hours</option>
+          <option value="high">5+ hours</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <h2>3. Generate My 4-Week Calendar</h2>
+    <p style="color:var(--gray); margin-bottom:14px;">Based on your channels, genre, promotion goal, and available time, we'll build a personalized 4-week content plan.</p>
+    <div style="text-align:center;">
+      <button class="btn" onclick="generateCalendar()">Generate My 4-Week Calendar</button>
+    </div>
+  </div>
+
+  <!-- Calendar Output -->
+  <div class="section" id="calendar-output">
+    <h2 id="calendarTitle">Your 4-Week Content Calendar</h2>
+    <p id="calendarSummary" style="margin-bottom:10px; font-style:italic; color:var(--gray);"></p>
+    <div id="calendarGrid"></div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <h2>4. Content Ideas Bank</h2>
+    <p style="color:var(--gray); margin-bottom:10px;">Click any category to expand it. Use these ideas to fill gaps in your calendar.</p>
+    <div class="accordion" id="ideasBank"></div>
+  </div>
+
+  <div class="print-btn-wrap no-print">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</div>
+
+<footer>
+  &copy; The Invisible Pen &mdash; Beyond BookBub Course &mdash; For personal student use only.
+</footer>
+
+<script>
+  // Channel selection logic (max 2)
+  const channelOptions = document.querySelectorAll('.channel-option');
+  let selectedChannels = [];
+
+  channelOptions.forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cb = opt.querySelector('input');
+      const val = cb.value;
+      if (opt.classList.contains('disabled') && !cb.checked) return;
+
+      if (cb.checked) {
+        cb.checked = false;
+        opt.classList.remove('selected');
+        selectedChannels = selectedChannels.filter(c => c !== val);
+      } else {
+        if (selectedChannels.length >= 2) return;
+        cb.checked = true;
+        opt.classList.add('selected');
+        selectedChannels.push(val);
+      }
+      updateChannelState();
+    });
+  });
+
+  function updateChannelState() {
+    document.getElementById('channelCount').textContent = selectedChannels.length + ' of 2 selected';
+    channelOptions.forEach(opt => {
+      const cb = opt.querySelector('input');
+      if (selectedChannels.length >= 2 && !cb.checked) {
+        opt.classList.add('disabled');
+      } else {
+        opt.classList.remove('disabled');
+      }
+    });
+  }
+
+  // Content data by channel
+  const channelData = {
+    newsletter: {
+      name: 'Newsletter/Substack',
+      frequency: { low: [2], med: [1,4], high: [1,3,5] }, // days of week (0=Mon)
+      contentTypes: ['Personal essay', 'Behind the scenes', 'Book recommendation', 'Writing update', 'Reader Q&A', 'Exclusive excerpt', 'Curated list'],
+      tips: ['Subject lines under 50 chars get higher opens', 'Include one clear CTA per email', 'Personal stories get 2x engagement', 'Send on Tues/Thurs mornings'],
+      timePerPiece: '30-45 min'
+    },
+    youtube: {
+      name: 'YouTube',
+      frequency: { low: [3], med: [1,4], high: [1,3,5] },
+      contentTypes: ['Writing vlog', 'Book review', 'Author interview', 'Genre deep dive', 'Writing process', 'Book haul', 'Day in the life'],
+      tips: ['First 30 seconds determine retention', 'Use keyword-rich titles', 'Thumbnails with faces get more clicks', 'Pin a comment with your book link'],
+      timePerPiece: '2-3 hours'
+    },
+    booktok: {
+      name: 'BookTok/TikTok',
+      frequency: { low: [1,4], med: [0,2,4], high: [0,1,2,3,4] },
+      contentTypes: ['Book aesthetic', 'Trope reveal', 'POV skit', 'Reading reaction', 'Trending sound + book', 'Writing desk tour', 'Character casting'],
+      tips: ['Hook in first 2 seconds', 'Use trending sounds', 'Show your face for better reach', 'Post between 7-9 PM'],
+      timePerPiece: '15-30 min'
+    },
+    instagram: {
+      name: 'Instagram/Reels',
+      frequency: { low: [1,4], med: [0,2,4], high: [0,1,2,3,4,5] },
+      contentTypes: ['Carousel tip post', 'Reel', 'Story poll', 'Cover reveal', 'Quote graphic', 'Behind the scenes', 'Aesthetic flat lay'],
+      tips: ['Reels get 2x the reach of static posts', 'Use 3-5 relevant hashtags', 'Engage in comments for 15 min after posting', 'Stories drive DM conversations'],
+      timePerPiece: '20-40 min'
+    },
+    reddit: {
+      name: 'Reddit',
+      frequency: { low: [2], med: [1,3], high: [0,2,4] },
+      contentTypes: ['Discussion post', 'Writing advice', 'Genre discussion', 'AMA', 'Resource share', 'Book recommendation thread', 'Community engagement'],
+      tips: ['Never self-promote directly', 'Be a valuable community member first', 'Answer questions in your genre subs', 'Build karma before mentioning your books'],
+      timePerPiece: '20-30 min'
+    },
+    facebook: {
+      name: 'Facebook Groups',
+      frequency: { low: [1,4], med: [0,2,4], high: [0,1,2,3,4] },
+      contentTypes: ['Discussion starter', 'Poll', 'Live video', 'Photo post', 'Resource share', 'Member spotlight', 'Behind the scenes'],
+      tips: ['Questions get more comments than statements', 'Go Live for 3x reach', 'Post when your group is most active', 'Engage in other groups too'],
+      timePerPiece: '15-25 min'
+    },
+    podcast: {
+      name: 'Podcast',
+      frequency: { low: [3], med: [1,4], high: [0,2,4] },
+      contentTypes: ['Solo episode', 'Guest interview', 'Genre deep dive', 'Writing craft lesson', 'Industry news', 'Listener Q&A', 'Author spotlight'],
+      tips: ['Keep episodes 20-30 min for best retention', 'Mention your book naturally, not as an ad', 'Repurpose clips for social media', 'Consistent schedule matters more than frequency'],
+      timePerPiece: '1.5-2.5 hours'
+    }
+  };
+
+  // Goal-specific content modifiers
+  const goalContent = {
+    'new-release': { themes: ['countdown posts', 'cover reveal', 'excerpt teasers', 'preorder links', 'launch day celebration'], urgency: 'high' },
+    'backlist': { themes: ['throwback content', 'reader testimonials', 'why I wrote this book', 'sale announcements', 'series connections'], urgency: 'low' },
+    'series': { themes: ['character spotlights', 'reading order guide', 'series timeline', 'Easter eggs', 'binge-read challenge'], urgency: 'medium' },
+    'reader-magnet': { themes: ['freebie promotion', 'sign-up incentive', 'first chapter hook', 'what readers are saying', 'newsletter value pitch'], urgency: 'medium' },
+    'brand': { themes: ['personal stories', 'writing journey', 'day in the life', 'values and voice', 'reader community'], urgency: 'low' }
+  };
+
+  // Genre flavor
+  const genreFlavor = {
+    'Contemporary Romance': { aesthetic: 'cozy cafe', tropes: 'second chance, small town, grumpy/sunshine', mood: 'warm and relatable' },
+    'Dark Romance': { aesthetic: 'moody and atmospheric', tropes: 'morally gray heroes, captive, enemies to lovers', mood: 'intense and provocative' },
+    'Historical Romance': { aesthetic: 'period details and settings', tropes: 'arranged marriage, forbidden love, rake reformed', mood: 'elegant and swoony' },
+    'Paranormal Romance': { aesthetic: 'supernatural and mysterious', tropes: 'fated mates, forbidden species, hidden world', mood: 'magical and intense' },
+    'Romantic Suspense': { aesthetic: 'thriller meets romance', tropes: 'protector, danger, secrets revealed', mood: 'tension and heat' },
+    'Romantasy': { aesthetic: 'epic world-building', tropes: 'chosen one, forbidden magic, fated mates', mood: 'sweeping and immersive' },
+    'Romantic Comedy': { aesthetic: 'bright and fun', tropes: 'fake dating, rivals to lovers, meet-cute', mood: 'witty and heartwarming' },
+    'Thriller/Suspense': { aesthetic: 'dark and gripping', tropes: 'unreliable narrator, twists, psychological depth', mood: 'edge-of-seat tension' },
+    'Fantasy': { aesthetic: 'world-building and magic', tropes: 'quest, chosen one, magic systems', mood: 'immersive and epic' },
+    'Sci-Fi': { aesthetic: 'futuristic and speculative', tropes: 'space travel, AI, dystopia', mood: 'thought-provoking' },
+    'Mystery': { aesthetic: 'puzzles and clues', tropes: 'whodunit, amateur sleuth, cold case', mood: 'intriguing and clever' },
+    'Horror': { aesthetic: 'dark and unsettling', tropes: 'isolation, the unknown, psychological dread', mood: 'creepy and visceral' },
+    'Nonfiction': { aesthetic: 'authoritative and helpful', tropes: 'expertise, transformation, practical advice', mood: 'informative and engaging' }
+  };
+
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  function generateCalendar() {
+    if (selectedChannels.length !== 2) {
+      alert('Please select exactly 2 channels before generating your calendar.');
+      return;
+    }
+
+    const genre = document.getElementById('contentGenre').value || 'Contemporary Romance';
+    const penName = document.getElementById('penName').value || 'Author';
+    const promoGoal = document.getElementById('promoGoal').value;
+    const timeAvail = document.getElementById('timeAvail').value;
+
+    const ch1 = channelData[selectedChannels[0]];
+    const ch2 = channelData[selectedChannels[1]];
+    const goal = goalContent[promoGoal];
+    const gf = genreFlavor[genre] || genreFlavor['Contemporary Romance'];
+
+    const ch1Days = ch1.frequency[timeAvail];
+    const ch2Days = ch2.frequency[timeAvail];
+
+    let html = '';
+    const promoLabels = { 'new-release': 'New Release', 'backlist': 'Backlist', 'series': 'Series', 'reader-magnet': 'Reader Magnet', 'brand': 'Brand Building' };
+
+    document.getElementById('calendarSummary').textContent =
+      `${penName} | ${genre} | Promoting: ${promoLabels[promoGoal]} | Channels: ${ch1.name} + ${ch2.name} | Time: ${document.getElementById('timeAvail').selectedOptions[0].text}/week`;
+
+    for (let week = 1; week <= 4; week++) {
+      html += `<div class="week-label">Week ${week}${week === 1 ? ' — Build Momentum' : week === 2 ? ' — Engage & Connect' : week === 3 ? ' — Push & Promote' : ' — Reflect & Plan Ahead'}</div>`;
+      html += '<div class="calendar">';
+      dayNames.forEach(d => { html += `<div class="cal-header">${d}</div>`; });
+
+      for (let day = 0; day < 7; day++) {
+        const isCh1Day = ch1Days.includes(day);
+        const isCh2Day = ch2Days.includes(day);
+        const hasContent = isCh1Day || isCh2Day;
+
+        html += `<div class="cal-day ${hasContent ? 'has-content' : ''}">`;
+        html += `<div class="day-num">Day ${(week - 1) * 7 + day + 1}</div>`;
+
+        if (isCh1Day) {
+          const typeIdx = (week * 3 + day) % ch1.contentTypes.length;
+          const goalTheme = goal.themes[(week + day) % goal.themes.length];
+          const tipIdx = (week + day) % ch1.tips.length;
+          html += `<div class="cal-content">
+            <span class="cal-tag tag-ch1">${ch1.name.split('/')[0]}</span>
+            <div><strong>${ch1.contentTypes[typeIdx]}</strong></div>
+            <div style="font-size:0.78em;">Theme: ${goalTheme}</div>
+            <div class="cal-tip">Tip: ${ch1.tips[tipIdx]}</div>
+            <div class="cal-time">${ch1.timePerPiece}</div>
+          </div>`;
+        }
+
+        if (isCh2Day) {
+          const typeIdx = (week * 2 + day + 1) % ch2.contentTypes.length;
+          const goalTheme = goal.themes[(week + day + 2) % goal.themes.length];
+          const tipIdx = (week + day + 1) % ch2.tips.length;
+          html += `<div class="cal-content" style="margin-top:6px;">
+            <span class="cal-tag tag-ch2">${ch2.name.split('/')[0]}</span>
+            <div><strong>${ch2.contentTypes[typeIdx]}</strong></div>
+            <div style="font-size:0.78em;">Theme: ${goalTheme}</div>
+            <div class="cal-tip">Tip: ${ch2.tips[tipIdx]}</div>
+            <div class="cal-time">${ch2.timePerPiece}</div>
+          </div>`;
+        }
+
+        if (!hasContent) {
+          html += `<div style="color:#ccc; font-size:0.8em; margin-top:10px;">Rest day</div>`;
+        }
+
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    document.getElementById('calendarGrid').innerHTML = html;
+    document.getElementById('calendar-output').style.display = 'block';
+    document.getElementById('calendar-output').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Ideas Bank
+  const ideasByChannel = {
+    'Newsletter / Substack': [
+      '<strong>Behind-the-scenes writing update</strong> — share your word count, struggles, and wins this week',
+      '<strong>Reader Q&A</strong> — answer questions submitted by subscribers',
+      '<strong>Book recommendation roundup</strong> — 3-5 books in your genre you loved',
+      '<strong>Exclusive deleted scene</strong> — share a scene that didn\'t make the final cut',
+      '<strong>"Why I wrote this book"</strong> — the personal story behind your latest release',
+      '<strong>Trope deep dive</strong> — explain why a specific trope works and recommend books featuring it',
+      '<strong>Writing craft tip</strong> — share one technique you use in your own writing'
+    ],
+    'YouTube': [
+      '<strong>Writing vlog</strong> — film your writing process for a day, including struggles',
+      '<strong>Genre deep dive</strong> — analyze what makes your genre tick with examples',
+      '<strong>Book review + recommendations</strong> — review 3 books your readers would enjoy',
+      '<strong>"Write with me" session</strong> — real-time writing with a timer and ambient music',
+      '<strong>Author Q&A</strong> — answer subscriber questions on camera',
+      '<strong>Publishing journey update</strong> — share sales, lessons learned, what\'s next'
+    ],
+    'BookTok / TikTok': [
+      '<strong>POV: your character</strong> — act out a scene from your book',
+      '<strong>Trope check</strong> — "Tell me your favorite trope and I\'ll recommend a book"',
+      '<strong>Book aesthetic reveal</strong> — moody visuals with your cover and a trending sound',
+      '<strong>Unpopular opinion</strong> — share a hot take about your genre',
+      '<strong>Writing desk tour</strong> — show your creative space',
+      '<strong>Character casting</strong> — reveal your dream cast for your book'
+    ],
+    'Instagram / Reels': [
+      '<strong>Carousel: "X things readers of [genre] understand"</strong> — relatable content',
+      '<strong>Reel: Behind the scenes of writing</strong> — aesthetic desk setup, typing, coffee',
+      '<strong>Story poll: "Which cover do you prefer?"</strong> — engagement driver',
+      '<strong>Quote graphic</strong> — pull a powerful line from your book',
+      '<strong>Flat lay with book, props, and aesthetic items</strong> — brand building',
+      '<strong>"A day in my author life" Reel</strong> — relatable lifestyle content'
+    ],
+    'Reddit': [
+      '<strong>Genre discussion thread</strong> — start a conversation about trends in your genre',
+      '<strong>Writing advice post</strong> — share genuine craft knowledge in r/writing',
+      '<strong>Resource share</strong> — compile useful tools and share them in relevant subs',
+      '<strong>AMA</strong> — host an Ask Me Anything about your publishing journey'
+    ],
+    'Facebook Groups': [
+      '<strong>Discussion question</strong> — "What book changed your life?" or genre-specific prompts',
+      '<strong>Poll</strong> — "Do you read the epilogue first?" fun engagement posts',
+      '<strong>Facebook Live</strong> — casual chat about what you\'re reading or writing',
+      '<strong>Member spotlight</strong> — highlight an active reader in your group'
+    ],
+    'Podcast': [
+      '<strong>Solo episode: craft topic</strong> — deep dive into a writing technique',
+      '<strong>Author interview</strong> — bring on a fellow author in your genre',
+      '<strong>Reader Q&A episode</strong> — answer listener-submitted questions',
+      '<strong>Industry news breakdown</strong> — discuss what\'s happening in publishing'
+    ]
+  };
+
+  function buildIdeasBank() {
+    const container = document.getElementById('ideasBank');
+    let html = '';
+    for (const [channel, ideas] of Object.entries(ideasByChannel)) {
+      html += `<div>
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span>${channel} (${ideas.length} ideas)</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="accordion-body">`;
+      ideas.forEach(idea => {
+        html += `<div class="idea-item">${idea}</div>`;
+      });
+      html += '</div></div>';
+    }
+    container.innerHTML = html;
+  }
+
+  function toggleAccordion(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  // Initialize ideas bank on load
+  buildIdeasBank();
+</script>
+</body>
+</html>

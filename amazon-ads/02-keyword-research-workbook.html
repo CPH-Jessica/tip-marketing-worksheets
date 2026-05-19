@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Research Workbook | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --green: #4a9e6e;
+    --light-coral: #fdf0ed;
+    --light-gold: #fdf8ec;
+    --light-green: #edf7f0;
+    --light-blue: #eef3fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .header { background: var(--navy); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { color: #fff; font-size: 1.4rem; font-weight: 400; }
+  .header .brand { color: var(--coral); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; }
+  .container { max-width: 880px; margin: 0 auto; padding: 32px 24px 60px; }
+  .page-title { font-size: 1.8rem; color: var(--navy); margin-bottom: 6px; }
+  .page-subtitle { color: var(--coral); font-size: 1rem; margin-bottom: 32px; font-style: italic; }
+  .section { background: #fff; border-radius: 10px; padding: 28px 32px; margin-bottom: 28px; border: 1px solid #e8e4df; }
+  .section-title { font-size: 1.25rem; color: var(--navy); margin-bottom: 4px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; display: inline-block; }
+  .section-desc { font-size: 0.9rem; color: #666; margin: 10px 0 20px; }
+  label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 6px; font-family: 'Georgia', serif; }
+  select, input[type="text"], input[type="number"] { width: 100%; padding: 10px 12px; border: 2px solid #e8e4df; border-radius: 6px; font-size: 1rem; font-family: inherit; background: #fff; }
+  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--coral); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px; }
+  .form-group { margin-bottom: 16px; }
+  .trope-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 8px; }
+  .trope-check { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #f9f7f4; border-radius: 5px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-size: 0.88rem; }
+  .trope-check:hover { border-color: var(--coral); }
+  .trope-check.active { background: var(--light-coral); border-color: var(--coral); }
+  .trope-check input { accent-color: var(--coral); }
+  .heat-slider { margin-top: 8px; }
+  .heat-slider input[type="range"] { width: 100%; accent-color: var(--coral); }
+  .heat-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #999; margin-top: 4px; }
+  .keyword-section { border: 1px solid #e8e4df; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+  .keyword-header { padding: 14px 18px; background: #f9f7f4; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .keyword-header h4 { font-size: 1rem; color: var(--navy); }
+  .keyword-header .toggle { font-size: 1.2rem; color: var(--coral); transition: transform 0.2s; }
+  .keyword-header .toggle.open { transform: rotate(180deg); }
+  .keyword-body { padding: 18px; display: none; }
+  .keyword-body.open { display: block; }
+  .helper-text { font-size: 0.82rem; color: #888; margin-bottom: 10px; font-style: italic; }
+  textarea { width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e8e4df; border-radius: 6px; font-family: inherit; font-size: 0.92rem; resize: vertical; line-height: 1.5; }
+  .suggest-btn { display: inline-block; margin-top: 10px; padding: 8px 18px; background: var(--gold); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-family: inherit; transition: background 0.2s; }
+  .suggest-btn:hover { background: #b8943f; }
+  .suggestions-box { margin-top: 10px; padding: 12px; background: var(--light-gold); border-radius: 6px; font-size: 0.88rem; display: none; }
+  .suggestions-box .suggestion { display: inline-block; padding: 4px 10px; background: #fff; border: 1px solid var(--gold); border-radius: 4px; margin: 3px; cursor: pointer; font-size: 0.82rem; transition: all 0.2s; }
+  .suggestions-box .suggestion:hover { background: var(--gold); color: #fff; }
+  .match-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.88rem; }
+  .match-table th { background: var(--navy); color: #fff; padding: 10px 14px; text-align: left; font-weight: normal; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .match-table td { padding: 8px 14px; border-bottom: 1px solid #f0ece7; }
+  .match-exact { color: #c0392b; font-weight: bold; }
+  .match-phrase { color: var(--gold); font-weight: bold; }
+  .match-broad { color: var(--green); font-weight: bold; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-exact { background: #fce4ec; color: #c0392b; }
+  .badge-phrase { background: var(--light-gold); color: #8a6d1b; }
+  .badge-broad { background: var(--light-green); color: #2e7d32; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .summary-card { text-align: center; padding: 14px; border-radius: 8px; }
+  .summary-card .num { font-size: 2rem; font-weight: bold; }
+  .summary-card .lbl { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card-author { background: #fce4ec; }
+  .card-title { background: var(--light-gold); }
+  .card-genre { background: var(--light-green); }
+  .card-trope { background: var(--light-blue); }
+  .compiled-list { margin-top: 16px; }
+  .compiled-group { margin-bottom: 12px; }
+  .compiled-group h5 { font-size: 0.85rem; color: var(--coral); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .kw-tag { display: inline-block; padding: 4px 10px; margin: 2px; border-radius: 4px; font-size: 0.82rem; }
+  .kw-tag-exact { background: #fce4ec; border: 1px solid #e8a0a0; }
+  .kw-tag-phrase { background: var(--light-gold); border: 1px solid #dcc478; }
+  .kw-tag-broad { background: var(--light-green); border: 1px solid #a3d4b3; }
+  .neg-kw { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; margin: 3px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; font-size: 0.82rem; }
+  .neg-kw .remove { cursor: pointer; color: #c0392b; font-weight: bold; }
+  .action-bar { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn-primary { padding: 12px 28px; background: var(--coral); color: #fff; border: none; border-radius: 6px; font-size: 0.95rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn-primary:hover { background: #d4604a; }
+  .btn-secondary { padding: 12px 28px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 6px; font-size: 0.95rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-secondary:hover { background: var(--navy); color: #fff; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #fff; padding: 12px 24px; border-radius: 6px; font-size: 0.9rem; transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 100; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .add-neg-row { display: flex; gap: 8px; margin-top: 12px; }
+  .add-neg-row input { flex: 1; }
+  .add-neg-row button { padding: 8px 16px; white-space: nowrap; }
+  @media print {
+    .header { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .action-bar .btn-primary, .action-bar .btn-secondary { display: none; }
+    .suggest-btn { display: none; }
+    .section { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: #fff; }
+    .toast { display: none; }
+  }
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .header { padding: 16px 20px; flex-direction: column; gap: 6px; }
+    .container { padding: 20px 16px 40px; }
+    .trope-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen</div>
+  <h1>Amazon Ads for Authors: AMS Demystified</h1>
+</div>
+
+<div class="container">
+  <h2 class="page-title">Keyword Research Workbook</h2>
+  <p class="page-subtitle">Lesson 2 Worksheet &mdash; Build your keyword arsenal before you build your campaigns.</p>
+
+  <!-- Section 1: Book Profile -->
+  <div class="section">
+    <h3 class="section-title">Your Book Profile</h3>
+    <p class="section-desc">Tell us about your book so we can generate targeted keyword suggestions.</p>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="genre">Primary Genre</label>
+        <select id="genre" onchange="onGenreChange()">
+          <option value="">-- Select Genre --</option>
+          <option value="contemporary-romance">Contemporary Romance</option>
+          <option value="small-town-romance">Small Town Romance</option>
+          <option value="romantic-suspense">Romantic Suspense</option>
+          <option value="paranormal-romance">Paranormal Romance</option>
+          <option value="dark-romance">Dark Romance</option>
+          <option value="historical-romance">Historical Romance</option>
+          <option value="romantic-comedy">Romantic Comedy / Rom-Com</option>
+          <option value="sports-romance">Sports Romance</option>
+          <option value="mc-romance">MC / Motorcycle Club Romance</option>
+          <option value="mafia-romance">Mafia Romance</option>
+          <option value="western-romance">Western Romance</option>
+          <option value="fantasy-romance">Fantasy Romance / Romantasy</option>
+          <option value="sci-fi-romance">Sci-Fi Romance</option>
+          <option value="military-romance">Military Romance</option>
+          <option value="ya-romance">Young Adult Romance</option>
+          <option value="clean-romance">Clean / Sweet Romance</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="heatLevel">Heat Level</label>
+        <div class="heat-slider">
+          <input type="range" id="heatLevel" min="1" max="5" value="3" oninput="updateHeatLabel()">
+          <div class="heat-labels">
+            <span>1 - Sweet</span><span>2 - Warm</span><span>3 - Hot</span><span>4 - Steamy</span><span>5 - Scorching</span>
+          </div>
+          <div style="text-align:center;margin-top:6px;font-size:0.9rem;color:var(--coral);" id="heatDisplay">Level 3 - Hot</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Primary Tropes (select all that apply)</label>
+      <div class="trope-grid" id="tropeGrid"></div>
+    </div>
+  </div>
+
+  <!-- Section 2: Keyword Categories -->
+  <div class="section">
+    <h3 class="section-title">Keyword Categories</h3>
+    <p class="section-desc">Build your keyword list across four key categories. The more keywords, the better your targeting.</p>
+
+    <div class="keyword-section">
+      <div class="keyword-header" onclick="toggleSection('authors')">
+        <h4>Comp Author Keywords</h4>
+        <span class="toggle" id="toggle-authors">&#9660;</span>
+      </div>
+      <div class="keyword-body" id="body-authors">
+        <p class="helper-text">Enter author names that readers of your book would also read, one per line.</p>
+        <textarea id="kw-authors" placeholder="e.g.&#10;Colleen Hoover&#10;Emily Henry&#10;Ali Hazelwood" oninput="rebuildAll()"></textarea>
+        <button class="suggest-btn" onclick="suggestAuthors()">Suggested Authors</button>
+        <div class="suggestions-box" id="suggest-authors"></div>
+      </div>
+    </div>
+
+    <div class="keyword-section">
+      <div class="keyword-header" onclick="toggleSection('titles')">
+        <h4>Book Title Keywords</h4>
+        <span class="toggle" id="toggle-titles">&#9660;</span>
+      </div>
+      <div class="keyword-body" id="body-titles">
+        <p class="helper-text">Titles of books similar to yours. Readers searching for these might love your book too.</p>
+        <textarea id="kw-titles" placeholder="e.g.&#10;It Ends with Us&#10;Book Lovers&#10;The Love Hypothesis" oninput="rebuildAll()"></textarea>
+      </div>
+    </div>
+
+    <div class="keyword-section">
+      <div class="keyword-header" onclick="toggleSection('genre-kw')">
+        <h4>Genre/Category Keywords</h4>
+        <span class="toggle" id="toggle-genre-kw">&#9660;</span>
+      </div>
+      <div class="keyword-body" id="body-genre-kw">
+        <p class="helper-text">Genre and category search terms. We have pre-populated suggestions based on your genre selection.</p>
+        <textarea id="kw-genre" placeholder="Select a genre above to auto-populate, or type your own..." oninput="rebuildAll()"></textarea>
+      </div>
+    </div>
+
+    <div class="keyword-section">
+      <div class="keyword-header" onclick="toggleSection('tropes')">
+        <h4>Trope Keywords</h4>
+        <span class="toggle" id="toggle-tropes">&#9660;</span>
+      </div>
+      <div class="keyword-body" id="body-tropes">
+        <p class="helper-text">Auto-populated from your trope selections above. Add more if you like.</p>
+        <textarea id="kw-tropes" placeholder="Select tropes above to auto-populate..." oninput="rebuildAll()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Match Type Recommendations -->
+  <div class="section">
+    <h3 class="section-title">Match Type Recommendations</h3>
+    <p class="section-desc">Each keyword gets a recommended match type based on its category. Use this table when setting up your campaigns.</p>
+    <div id="matchTableContainer">
+      <p class="helper-text" style="text-align:center;">Enter keywords above to see match type recommendations.</p>
+    </div>
+  </div>
+
+  <!-- Section 4: Compiled Keyword List -->
+  <div class="section">
+    <h3 class="section-title">Your Keyword List</h3>
+    <p class="section-desc">All your keywords compiled, organized, and color-coded by match type.</p>
+    <div class="summary-grid">
+      <div class="summary-card card-author"><div class="num" id="count-authors">0</div><div class="lbl">Author</div></div>
+      <div class="summary-card card-title"><div class="num" id="count-titles">0</div><div class="lbl">Title</div></div>
+      <div class="summary-card card-genre"><div class="num" id="count-genre">0</div><div class="lbl">Genre</div></div>
+      <div class="summary-card card-trope"><div class="num" id="count-tropes">0</div><div class="lbl">Trope</div></div>
+    </div>
+    <div class="compiled-list" id="compiledList">
+      <p class="helper-text" style="text-align:center;">Your compiled keywords will appear here as you build your lists above.</p>
+    </div>
+    <div class="action-bar">
+      <button class="btn-primary" onclick="exportClipboard()">Copy All to Clipboard</button>
+      <button class="btn-secondary" onclick="window.print()">Print Workbook</button>
+    </div>
+  </div>
+
+  <!-- Section 5: Negative Keywords -->
+  <div class="section">
+    <h3 class="section-title">Negative Keywords Starter List</h3>
+    <p class="section-desc">These keywords tell Amazon NOT to show your ad. Pre-populated for your genre&mdash;remove or add as needed.</p>
+    <div id="negativeKeywords"></div>
+    <div class="add-neg-row">
+      <input type="text" id="newNegKw" placeholder="Add a negative keyword...">
+      <button class="suggest-btn" onclick="addNegative()">Add</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+const tropeList = [
+  'Enemies to Lovers','Forced Proximity','Second Chance','Friends to Lovers','Fake Dating',
+  'Grumpy/Sunshine','Billionaire','Small Town','Sports Romance','Paranormal','Dark Romance',
+  'Forbidden Love','Age Gap','Boss/Employee','Marriage of Convenience','Reverse Harem',
+  'Brother\'s Best Friend','Slow Burn','Love Triangle','One Bed','Bodyguard','Fated Mates',
+  'Childhood Sweethearts','Secret Baby','Opposites Attract','Royal Romance','Motorcycle Club',
+  'Mafia','Rockstar','Cowboy','Military','Vampire','Shifter','Alien','Bully'
+];
+
+const genreKeywords = {
+  'contemporary-romance': ['contemporary romance','contemporary romance books','new romance novels','modern romance','contemporary love story','romance books 2024','contemporary romance kindle'],
+  'small-town-romance': ['small town romance','small town love story','rural romance','small town romance books','hometown romance','heartwarming romance','feel good romance','small town series'],
+  'romantic-suspense': ['romantic suspense','romantic thriller','suspense romance','danger romance','romantic suspense books','dark suspense romance','mystery romance'],
+  'paranormal-romance': ['paranormal romance','vampire romance','shifter romance','supernatural romance','paranormal romance books','fantasy romance','urban fantasy romance'],
+  'dark-romance': ['dark romance','dark romance books','dark love story','taboo romance','morally gray hero','anti hero romance','possessive hero romance','dark and steamy romance'],
+  'historical-romance': ['historical romance','regency romance','victorian romance','historical romance books','duke romance','period romance','historical love story'],
+  'romantic-comedy': ['romantic comedy','rom com books','funny romance','lighthearted romance','rom com','romantic comedy books','humor romance','laugh out loud romance'],
+  'sports-romance': ['sports romance','hockey romance','football romance','baseball romance','athlete romance','sports romance books','sports love story'],
+  'mc-romance': ['motorcycle club romance','mc romance','biker romance','mc romance books','outlaw romance','biker love story','motorcycle romance'],
+  'mafia-romance': ['mafia romance','mafia romance books','organized crime romance','mob romance','dark mafia romance','italian mafia romance','mafia love story'],
+  'western-romance': ['western romance','cowboy romance','ranch romance','frontier romance','western love story','cowboy romance books','rancher romance'],
+  'fantasy-romance': ['fantasy romance','romantasy','romantasy books','fae romance','fantasy love story','epic fantasy romance','romantic fantasy','fantasy romance books'],
+  'sci-fi-romance': ['sci fi romance','space romance','alien romance','futuristic romance','science fiction romance','space opera romance'],
+  'military-romance': ['military romance','navy seal romance','soldier romance','military romance books','veteran romance','hero romance','armed forces romance'],
+  'ya-romance': ['young adult romance','ya romance','teen romance','ya love story','coming of age romance','first love story'],
+  'clean-romance': ['clean romance','sweet romance','clean and wholesome romance','inspirational romance','closed door romance','no spice romance','sweet love story']
+};
+
+const compAuthors = {
+  'contemporary-romance': ['Colleen Hoover','Emily Henry','Christina Lauren','Tessa Bailey','Helena Hunting','Meghan Quinn','Penelope Ward'],
+  'small-town-romance': ['Elsie Silver','Hannah Grace','Devney Perry','Aurora Rose Reynolds','Melanie Harlow','Karla Sorensen','Jessica Prince'],
+  'romantic-suspense': ['Sandra Brown','Nora Roberts','Lisa Gardner','Laura Griffin','Rebecca Zanetti','Katie Reus'],
+  'paranormal-romance': ['Kresley Cole','J.R. Ward','Nalini Singh','Ilona Andrews','Sarah J. Maas','K.F. Breene','Jaymin Eve'],
+  'dark-romance': ['Penelope Douglas','Ana Huang','L.J. Shen','Rina Kent','Penelope Sky','Tillie Cole','Danielle Lori'],
+  'historical-romance': ['Lisa Kleypas','Julia Quinn','Tessa Dare','Sarah MacLean','Eloisa James','Courtney Milan','Kerrigan Byrne'],
+  'romantic-comedy': ['Emily Henry','Sally Thorne','Jasmine Guillory','Talia Hibbert','Rachel Lynn Solomon','Lynn Painter'],
+  'sports-romance': ['Hannah Grace','Elle Kennedy','Meghan Quinn','Elsie Silver','Becka Mack','Stephanie Archer','Emily Rath'],
+  'mc-romance': ['Kristen Ashley','Madeline Sheehan','Tillie Cole','Lilly Atlas','Chantal Fernando','Autumn Jones Lake'],
+  'mafia-romance': ['Danielle Lori','Cora Reilly','Natasha Knight','Rina Kent','J.L. Beck','Nikita Slater'],
+  'western-romance': ['Elsie Silver','Diana Palmer','Maisey Yates','B.J. Daniels','Joanne Kennedy','Nicole Helm'],
+  'fantasy-romance': ['Sarah J. Maas','Jennifer L. Armentrout','Holly Black','Elise Kova','Carissa Broadbent','Rebecca Yarros'],
+  'sci-fi-romance': ['Ruby Dixon','Jessie Mihalik','Grace Goodwin','Anna Hackett','V. Vaughn'],
+  'military-romance': ['Susan Stoker','Catherine Mann','Suzanne Brockmann','Rachel Grant','Cristin Harber'],
+  'ya-romance': ['Jenny Han','Sarah Dessen','Colleen Hoover','Casey McQuiston','Becky Albertalli','Adam Silvera'],
+  'clean-romance': ['Denise Hunter','Becky Wade','Courtney Walsh','Jenny Hale','Debbie Macomber','Susan Mallery']
+};
+
+const defaultNegatives = {
+  'all': ['free','textbook','guide','how to write','course','workbook','creative writing','writing craft','coloring book','journal','planner','audiobook free','sample'],
+  'romance': ['erotica textbook','romance writing guide','how to write romance','romance for dummies'],
+  'dark-romance': ['abuse help','domestic violence resource','therapy guide'],
+  'clean-romance': ['erotica','steamy','explicit','spicy romance'],
+  'ya-romance': ['adult content','explicit','erotica','steamy']
+};
+
+let negativeKws = [];
+const tropeKeywordMap = {
+  'Enemies to Lovers': ['enemies to lovers romance','enemies to lovers books','hate to love romance','enemies to lovers kindle'],
+  'Forced Proximity': ['forced proximity romance','stuck together romance','forced proximity books','one location romance'],
+  'Second Chance': ['second chance romance','second chance love story','rekindled romance','ex lovers romance'],
+  'Friends to Lovers': ['friends to lovers romance','friends to lovers books','best friend romance','friendship to love'],
+  'Fake Dating': ['fake dating romance','fake relationship books','pretend girlfriend romance','fake dating books'],
+  'Grumpy/Sunshine': ['grumpy sunshine romance','grumpy hero romance','opposites attract romance','grumpy sunshine books'],
+  'Billionaire': ['billionaire romance','rich hero romance','billionaire books','wealthy hero romance','CEO romance'],
+  'Small Town': ['small town romance','small town love story','hometown romance','rural romance'],
+  'Sports Romance': ['sports romance','athlete romance','sports romance books','hockey romance','football romance'],
+  'Paranormal': ['paranormal romance','supernatural romance','paranormal romance books','fantasy romance'],
+  'Dark Romance': ['dark romance','dark romance books','possessive hero','anti hero romance','morally gray romance'],
+  'Forbidden Love': ['forbidden love','forbidden romance','taboo romance','secret romance'],
+  'Age Gap': ['age gap romance','older man younger woman','age gap books','may december romance'],
+  'Boss/Employee': ['boss romance','office romance','workplace romance','boss employee romance'],
+  'Marriage of Convenience': ['marriage of convenience romance','arranged marriage romance','fake marriage romance'],
+  'Reverse Harem': ['reverse harem romance','why choose romance','multiple love interests','rh romance'],
+  'Brother\'s Best Friend': ['brothers best friend romance','off limits romance','best friends brother'],
+  'Slow Burn': ['slow burn romance','slow burn love story','slow burn books','building tension romance'],
+  'Love Triangle': ['love triangle romance','love triangle books','torn between two'],
+  'One Bed': ['one bed romance','forced sharing','only one bed trope','one bed books'],
+  'Bodyguard': ['bodyguard romance','protector romance','bodyguard books','protection romance'],
+  'Fated Mates': ['fated mates romance','soulmate romance','fated mates books','destined love'],
+  'Childhood Sweethearts': ['childhood sweethearts romance','first love romance','reunited lovers'],
+  'Secret Baby': ['secret baby romance','surprise pregnancy romance','baby romance books'],
+  'Opposites Attract': ['opposites attract romance','opposites attract books','unlikely couple romance'],
+  'Royal Romance': ['royal romance','prince romance','princess romance','royalty romance books'],
+  'Motorcycle Club': ['motorcycle club romance','mc romance','biker romance','outlaw romance'],
+  'Mafia': ['mafia romance','mob romance','organized crime romance','mafia boss romance'],
+  'Rockstar': ['rockstar romance','musician romance','band romance','rockstar books'],
+  'Cowboy': ['cowboy romance','rancher romance','western romance','cowboy books'],
+  'Military': ['military romance','soldier romance','navy seal romance','veteran romance'],
+  'Vampire': ['vampire romance','vampire books','vampire love story','immortal romance'],
+  'Shifter': ['shifter romance','wolf shifter romance','bear shifter','shapeshifter romance'],
+  'Alien': ['alien romance','alien abduction romance','sci fi romance','space romance'],
+  'Bully': ['bully romance','bully romance books','dark bully romance','high school bully romance']
+};
+
+// Build trope checkboxes
+const tropeGrid = document.getElementById('tropeGrid');
+tropeList.forEach(t => {
+  const label = document.createElement('label');
+  label.className = 'trope-check';
+  label.innerHTML = `<input type="checkbox" value="${t}" onchange="onTropeChange(this)"> ${t}`;
+  tropeGrid.appendChild(label);
+});
+
+function updateHeatLabel() {
+  const v = document.getElementById('heatLevel').value;
+  const labels = ['','Sweet','Warm','Hot','Steamy','Scorching'];
+  document.getElementById('heatDisplay').textContent = `Level ${v} - ${labels[v]}`;
+}
+
+function toggleSection(id) {
+  const body = document.getElementById('body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+// Open all sections by default
+['authors','titles','genre-kw','tropes'].forEach(id => {
+  document.getElementById('body-' + id).classList.add('open');
+  document.getElementById('toggle-' + id).classList.add('open');
+});
+
+function onGenreChange() {
+  const genre = document.getElementById('genre').value;
+  if (!genre) return;
+  const kws = genreKeywords[genre] || [];
+  document.getElementById('kw-genre').value = kws.join('\n');
+  populateNegatives(genre);
+  rebuildAll();
+}
+
+function onTropeChange(cb) {
+  cb.parentElement.classList.toggle('active', cb.checked);
+  const selected = [...document.querySelectorAll('#tropeGrid input:checked')].map(c => c.value);
+  let tropeKws = [];
+  selected.forEach(t => { tropeKws = tropeKws.concat(tropeKeywordMap[t] || []); });
+  document.getElementById('kw-tropes').value = tropeKws.join('\n');
+  rebuildAll();
+}
+
+function suggestAuthors() {
+  const genre = document.getElementById('genre').value;
+  const box = document.getElementById('suggest-authors');
+  if (!genre) { box.style.display = 'block'; box.innerHTML = '<em>Select a genre first to get author suggestions.</em>'; return; }
+  const authors = compAuthors[genre] || [];
+  if (!authors.length) { box.style.display = 'block'; box.innerHTML = '<em>No suggestions available for this genre.</em>'; return; }
+  box.style.display = 'block';
+  box.innerHTML = '<strong style="display:block;margin-bottom:8px;">Click to add:</strong>' +
+    authors.map(a => `<span class="suggestion" onclick="addAuthor(this, '${a.replace(/'/g, "\\'")}')">${a}</span>`).join('');
+}
+
+function addAuthor(el, name) {
+  const ta = document.getElementById('kw-authors');
+  const current = ta.value.trim();
+  if (current.toLowerCase().includes(name.toLowerCase())) return;
+  ta.value = current ? current + '\n' + name : name;
+  el.style.opacity = '0.4';
+  el.style.pointerEvents = 'none';
+  rebuildAll();
+}
+
+function getKeywords(id) {
+  return document.getElementById(id).value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function rebuildAll() {
+  const authors = getKeywords('kw-authors');
+  const titles = getKeywords('kw-titles');
+  const genreKw = getKeywords('kw-genre');
+  const tropes = getKeywords('kw-tropes');
+
+  document.getElementById('count-authors').textContent = authors.length;
+  document.getElementById('count-titles').textContent = titles.length;
+  document.getElementById('count-genre').textContent = genreKw.length;
+  document.getElementById('count-tropes').textContent = tropes.length;
+
+  buildMatchTable(authors, titles, genreKw, tropes);
+  buildCompiledList(authors, titles, genreKw, tropes);
+}
+
+function buildMatchTable(authors, titles, genreKw, tropes) {
+  const container = document.getElementById('matchTableContainer');
+  const all = [
+    ...authors.map(k => ({ kw: k, cat: 'Author', match: 'Exact', cls: 'exact', note: 'Target the exact author name to reach their audience' })),
+    ...titles.map(k => ({ kw: k, cat: 'Title', match: 'Exact', cls: 'exact', note: 'Exact match prevents showing on unrelated titles' })),
+    ...genreKw.map(k => {
+      const words = k.split(' ').length;
+      return words >= 3
+        ? { kw: k, cat: 'Genre', match: 'Phrase', cls: 'phrase', note: 'Specific enough for phrase match' }
+        : { kw: k, cat: 'Genre', match: 'Broad', cls: 'broad', note: 'General term benefits from broad reach' };
+    }),
+    ...tropes.map(k => ({ kw: k, cat: 'Trope', match: 'Phrase', cls: 'phrase', note: 'Phrase match captures trope variations' }))
+  ];
+
+  if (!all.length) {
+    container.innerHTML = '<p class="helper-text" style="text-align:center;">Enter keywords above to see match type recommendations.</p>';
+    return;
+  }
+
+  let html = '<table class="match-table"><thead><tr><th>Keyword</th><th>Category</th><th>Match Type</th><th>Notes</th></tr></thead><tbody>';
+  all.forEach(r => {
+    html += `<tr><td>${r.kw}</td><td>${r.cat}</td><td><span class="badge badge-${r.cls}">${r.match}</span></td><td style="font-size:0.8rem;color:#666;">${r.note}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function buildCompiledList(authors, titles, genreKw, tropes) {
+  const el = document.getElementById('compiledList');
+  const total = authors.length + titles.length + genreKw.length + tropes.length;
+  if (!total) {
+    el.innerHTML = '<p class="helper-text" style="text-align:center;">Your compiled keywords will appear here.</p>';
+    return;
+  }
+
+  let html = '';
+  if (authors.length) {
+    html += '<div class="compiled-group"><h5>Comp Authors (Exact Match)</h5>' + authors.map(k => `<span class="kw-tag kw-tag-exact">${k}</span>`).join('') + '</div>';
+  }
+  if (titles.length) {
+    html += '<div class="compiled-group"><h5>Book Titles (Exact Match)</h5>' + titles.map(k => `<span class="kw-tag kw-tag-exact">${k}</span>`).join('') + '</div>';
+  }
+  if (genreKw.length) {
+    html += '<div class="compiled-group"><h5>Genre/Category (Phrase/Broad Match)</h5>' + genreKw.map(k => {
+      const cls = k.split(' ').length >= 3 ? 'kw-tag-phrase' : 'kw-tag-broad';
+      return `<span class="kw-tag ${cls}">${k}</span>`;
+    }).join('') + '</div>';
+  }
+  if (tropes.length) {
+    html += '<div class="compiled-group"><h5>Trope Keywords (Phrase Match)</h5>' + tropes.map(k => `<span class="kw-tag kw-tag-phrase">${k}</span>`).join('') + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function populateNegatives(genre) {
+  negativeKws = [...defaultNegatives['all']];
+  if (genre.includes('clean') || genre.includes('ya')) negativeKws = negativeKws.concat(defaultNegatives['clean-romance'] || []);
+  if (genre.includes('dark')) negativeKws = negativeKws.concat(defaultNegatives['dark-romance'] || []);
+  negativeKws = negativeKws.concat(defaultNegatives['romance'] || []);
+  negativeKws = [...new Set(negativeKws)];
+  renderNegatives();
+}
+
+function renderNegatives() {
+  const el = document.getElementById('negativeKeywords');
+  if (!negativeKws.length) {
+    el.innerHTML = '<p class="helper-text">Select a genre to see suggested negative keywords.</p>';
+    return;
+  }
+  el.innerHTML = negativeKws.map((k, i) => `<span class="neg-kw">${k} <span class="remove" onclick="removeNeg(${i})">&#215;</span></span>`).join('');
+}
+
+function removeNeg(i) { negativeKws.splice(i, 1); renderNegatives(); }
+
+function addNegative() {
+  const input = document.getElementById('newNegKw');
+  const val = input.value.trim();
+  if (!val) return;
+  negativeKws.push(val);
+  input.value = '';
+  renderNegatives();
+}
+
+function exportClipboard() {
+  const authors = getKeywords('kw-authors');
+  const titles = getKeywords('kw-titles');
+  const genreKw = getKeywords('kw-genre');
+  const tropes = getKeywords('kw-tropes');
+  let text = '=== AMAZON ADS KEYWORD LIST ===\n\n';
+  if (authors.length) text += '--- COMP AUTHORS (Exact Match) ---\n' + authors.join('\n') + '\n\n';
+  if (titles.length) text += '--- BOOK TITLES (Exact Match) ---\n' + titles.join('\n') + '\n\n';
+  if (genreKw.length) text += '--- GENRE/CATEGORY (Phrase/Broad Match) ---\n' + genreKw.join('\n') + '\n\n';
+  if (tropes.length) text += '--- TROPE KEYWORDS (Phrase Match) ---\n' + tropes.join('\n') + '\n\n';
+  if (negativeKws.length) text += '--- NEGATIVE KEYWORDS ---\n' + negativeKws.join('\n') + '\n';
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
+
+// Init negative keywords with defaults
+negativeKws = [...defaultNegatives['all'], ...defaultNegatives['romance']];
+negativeKws = [...new Set(negativeKws)];
+renderNegatives();
+</script>
+</body>
+</html>

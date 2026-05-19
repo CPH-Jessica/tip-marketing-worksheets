@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaign Builder Worksheet — Amazon Ads for Authors | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a393;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d9a0;
+    --green: #4a9e6e;
+    --red: #c0392b;
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  .header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 24px 32px;
+    text-align: center;
+    border-bottom: 4px solid var(--coral);
+  }
+  .header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); margin-bottom: 4px; }
+  .header h1 { font-size: 28px; font-weight: 400; margin-bottom: 4px; }
+  .header .subtitle { font-size: 14px; color: var(--coral-light); }
+  .container { max-width: 800px; margin: 0 auto; padding: 24px 20px 60px; }
+  .progress-bar { display: flex; gap: 4px; margin-bottom: 32px; }
+  .progress-bar .step-dot {
+    flex: 1; height: 6px; border-radius: 3px;
+    background: var(--gray-light); transition: background 0.3s;
+  }
+  .progress-bar .step-dot.active { background: var(--coral); }
+  .progress-bar .step-dot.done { background: var(--green); }
+  .step-section { display: none; }
+  .step-section.active { display: block; }
+  .step-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--coral); margin-bottom: 4px;
+  }
+  .step-section h2 { font-size: 22px; margin-bottom: 16px; color: var(--navy); }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block; font-size: 14px; font-weight: 700;
+    margin-bottom: 4px; color: var(--navy);
+  }
+  .form-group .hint { font-size: 12px; color: var(--gray); margin-bottom: 4px; }
+  input[type="text"], input[type="number"], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--gray-light);
+    border-radius: 6px; font-size: 15px; font-family: inherit;
+    background: var(--white); color: var(--navy);
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  textarea { resize: vertical; min-height: 100px; }
+  .radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .radio-option {
+    border: 1px solid var(--gray-light); border-radius: 8px;
+    padding: 12px 14px; cursor: pointer; transition: border-color 0.2s;
+  }
+  .radio-option:hover { border-color: var(--coral); }
+  .radio-option.selected { border-color: var(--coral); background: rgba(232,115,90,0.05); }
+  .radio-option input[type="radio"] { margin-right: 8px; accent-color: var(--coral); }
+  .radio-option .radio-label { font-weight: 700; font-size: 14px; }
+  .radio-option .radio-desc { font-size: 12px; color: var(--gray); margin-top: 2px; margin-left: 24px; }
+  .recommend-badge {
+    display: inline-block; background: var(--gold); color: var(--white);
+    font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 1px; margin-left: 6px; vertical-align: middle;
+  }
+  .campaign-name-preview {
+    background: var(--navy); color: var(--gold); padding: 10px 14px;
+    border-radius: 6px; font-family: monospace; font-size: 14px; margin-bottom: 18px;
+  }
+  .toggle-section { margin-bottom: 18px; }
+  .toggle-header {
+    cursor: pointer; font-size: 14px; color: var(--coral);
+    font-weight: 700; user-select: none;
+  }
+  .toggle-header:hover { text-decoration: underline; }
+  .toggle-body {
+    display: none; margin-top: 8px; padding: 12px 14px;
+    background: var(--white); border: 1px solid var(--gray-light);
+    border-radius: 6px; font-size: 13px; color: var(--gray);
+  }
+  .toggle-body.open { display: block; }
+  .info-box {
+    background: rgba(201,168,76,0.1); border-left: 3px solid var(--gold);
+    padding: 12px 14px; border-radius: 0 6px 6px 0; margin-bottom: 18px; font-size: 13px;
+  }
+  .nav-buttons { display: flex; justify-content: space-between; margin-top: 32px; }
+  .btn {
+    padding: 12px 28px; border: none; border-radius: 6px;
+    font-size: 15px; font-family: inherit; cursor: pointer; font-weight: 700;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--coral); color: var(--white); }
+  .btn-primary:hover { box-shadow: 0 2px 8px rgba(232,115,90,0.4); }
+  .btn-secondary { background: var(--gray-light); color: var(--navy); }
+  .btn-secondary:hover { background: #d1d5db; }
+  .inline-row { display: flex; gap: 16px; }
+  .inline-row .form-group { flex: 1; }
+  /* Summary styles */
+  .summary-card {
+    background: var(--white); border: 1px solid var(--gray-light);
+    border-radius: 10px; padding: 20px; margin-bottom: 18px;
+    page-break-inside: avoid;
+  }
+  .summary-card h3 {
+    font-size: 16px; color: var(--coral); margin-bottom: 10px;
+    border-bottom: 1px solid var(--gray-light); padding-bottom: 6px;
+  }
+  .summary-row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
+  .summary-row .label { color: var(--gray); }
+  .summary-row .value { font-weight: 700; }
+  .budget-highlight {
+    background: var(--navy); color: var(--white); border-radius: 10px;
+    padding: 20px; text-align: center; margin-bottom: 18px;
+  }
+  .budget-highlight .big-number { font-size: 36px; color: var(--gold); font-weight: 700; }
+  .budget-highlight .big-label { font-size: 13px; color: var(--coral-light); margin-top: 2px; }
+  .budget-row { display: flex; justify-content: center; gap: 40px; margin-top: 12px; }
+  .checklist { list-style: none; }
+  .checklist li { padding: 6px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 8px; }
+  .checklist li::before { content: '☐'; font-size: 16px; flex-shrink: 0; }
+  .reminder-box {
+    background: rgba(232,115,90,0.08); border: 1px dashed var(--coral);
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 18px;
+  }
+  .reminder-box h4 { color: var(--coral); font-size: 14px; margin-bottom: 6px; }
+  .reminder-box p, .reminder-box li { font-size: 13px; }
+  .btn-print {
+    background: var(--navy); color: var(--white);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  @media print {
+    .header { padding: 12px; border-bottom-width: 2px; }
+    .header h1 { font-size: 20px; }
+    .progress-bar, .nav-buttons, .btn-print, .no-print { display: none !important; }
+    .step-section { display: block !important; page-break-before: auto; }
+    .step-section:not(.summary-step) { display: none !important; }
+    .summary-step { display: block !important; }
+    body { background: white; }
+    .container { max-width: 100%; padding: 12px; }
+  }
+  @media (max-width: 600px) {
+    .inline-row { flex-direction: column; gap: 0; }
+    .budget-row { flex-direction: column; gap: 8px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen</div>
+  <h1>Campaign Builder Worksheet</h1>
+  <div class="subtitle">Amazon Ads for Authors — Lesson 3</div>
+</div>
+
+<div class="container">
+  <div class="progress-bar" id="progressBar">
+    <div class="step-dot active" data-step="1"></div>
+    <div class="step-dot" data-step="2"></div>
+    <div class="step-dot" data-step="3"></div>
+    <div class="step-dot" data-step="4"></div>
+    <div class="step-dot" data-step="5"></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-section active" id="step1">
+    <div class="step-label">Step 1 of 5</div>
+    <h2>Your Book</h2>
+    <p style="margin-bottom:18px;font-size:14px;color:var(--gray);">Enter the details for the book you'll be advertising. This info will carry through all three campaigns.</p>
+    <div class="form-group">
+      <label for="bookTitle">Book Title</label>
+      <input type="text" id="bookTitle" placeholder="e.g. Whispers of the Heart">
+    </div>
+    <div class="inline-row">
+      <div class="form-group">
+        <label for="bookAsin">ASIN</label>
+        <div class="hint">The 10-character code from your book's Amazon page</div>
+        <input type="text" id="bookAsin" placeholder="e.g. B0DXXXXXX" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label for="bookPrice">Book Price ($)</label>
+        <input type="number" id="bookPrice" step="0.01" min="0.99" placeholder="4.99">
+      </div>
+    </div>
+    <div class="inline-row">
+      <div class="form-group">
+        <label for="royaltyRate">Royalty Rate</label>
+        <select id="royaltyRate">
+          <option value="0.70">70%</option>
+          <option value="0.35">35%</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="kuEnrolled">KU Enrolled?</label>
+        <select id="kuEnrolled">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Why this matters:</strong> Your royalty per sale determines your breakeven point — the ACOS ceiling where ads are still profitable.
+    </div>
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn btn-primary" onclick="goToStep(2)">Next: Keyword Campaign →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-section" id="step2">
+    <div class="step-label">Step 2 of 5</div>
+    <h2>Campaign 1 — Keyword-Targeted</h2>
+    <div class="campaign-name-preview" id="camp1Name">Loading campaign name...</div>
+    <div class="inline-row">
+      <div class="form-group">
+        <label for="camp1Budget">Daily Budget ($)</label>
+        <input type="number" id="camp1Budget" value="5" step="0.50" min="1">
+      </div>
+      <div class="form-group">
+        <label for="camp1Bid">Default Bid ($)</label>
+        <input type="number" id="camp1Bid" value="0.35" step="0.01" min="0.02">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Bidding Strategy</label>
+      <div class="radio-group" id="biddingStrategy">
+        <label class="radio-option selected">
+          <input type="radio" name="bidStrategy" value="down" checked>
+          <span class="radio-label">Dynamic bids — down only <span class="recommend-badge">Recommended</span></span>
+          <div class="radio-desc">Amazon lowers your bid when a click is less likely to convert. Safest option for beginners. You'll never pay MORE than your bid.</div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="bidStrategy" value="updown">
+          <span class="radio-label">Dynamic bids — up and down</span>
+          <div class="radio-desc">Amazon raises bids (up to 100%) for high-conversion placements and lowers for low ones. More aggressive — use once you have conversion data.</div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="bidStrategy" value="fixed">
+          <span class="radio-label">Fixed bids</span>
+          <div class="radio-desc">Your bid stays exactly as set. Full control but no optimization. Good for data-gathering experiments.</div>
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="keywords">Keywords</label>
+      <div class="hint">Paste your keywords from the Keyword Research Workbook, one per line</div>
+      <textarea id="keywords" rows="6" placeholder="romance small town&#10;second chance romance&#10;enemies to lovers book&#10;cowboy romance"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Match Type (applied to all keywords above)</label>
+      <div class="radio-group" id="matchType">
+        <label class="radio-option selected">
+          <input type="radio" name="matchType" value="broad" checked>
+          <span class="radio-label">Broad Match <span class="recommend-badge">Start Here</span></span>
+          <div class="radio-desc">Casts the widest net. Your ad shows for related searches, synonyms, and variations. Best for discovery and building data.</div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="matchType" value="phrase">
+          <span class="radio-label">Phrase Match</span>
+          <div class="radio-desc">Your keywords must appear in order, but extra words can be before/after. Good middle ground once you know what converts.</div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="matchType" value="exact">
+          <span class="radio-label">Exact Match</span>
+          <div class="radio-desc">Only shows for that exact search term. Very precise but low volume. Best for proven winners.</div>
+        </label>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Next: ASIN Campaign →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-section" id="step3">
+    <div class="step-label">Step 3 of 5</div>
+    <h2>Campaign 2 — ASIN-Targeted (Product Targeting)</h2>
+    <div class="campaign-name-preview" id="camp2Name">Loading campaign name...</div>
+    <div class="inline-row">
+      <div class="form-group">
+        <label for="camp2Budget">Daily Budget ($)</label>
+        <input type="number" id="camp2Budget" value="5" step="0.50" min="1">
+      </div>
+      <div class="form-group">
+        <label for="camp2Bid">Default Bid ($)</label>
+        <input type="number" id="camp2Bid" value="0.40" step="0.01" min="0.02">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="asinTargets">ASIN Targets</label>
+      <div class="hint">Enter ASINs of competing or comparable books, one per line (the 10-digit code starting with B)</div>
+      <textarea id="asinTargets" rows="6" placeholder="B0D1234567&#10;B0D2345678&#10;B0D3456789"></textarea>
+    </div>
+    <div class="toggle-section">
+      <div class="toggle-header" onclick="this.nextElementSibling.classList.toggle('open')">▸ How to find ASINs on Amazon</div>
+      <div class="toggle-body">
+        <ol style="padding-left:18px;line-height:1.8;">
+          <li>Go to Amazon and search for books similar to yours (same genre, tropes, audience).</li>
+          <li>Click on a book's product page.</li>
+          <li>Scroll down to <strong>"Product details"</strong>.</li>
+          <li>Find <strong>"ASIN"</strong> — it's a 10-character code starting with <strong>B</strong> (e.g., B0DXXXXXX).</li>
+          <li>Alternatively, look at the URL — the ASIN is often in the path: <code>amazon.com/dp/<strong>B0DXXXXXX</strong></code></li>
+          <li><strong>Pro tip:</strong> Target books with 50-500 reviews. They have enough traffic to matter but aren't so massive you'll be outbid.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Strategy note:</strong> Product targeting puts your ad on competitors' book pages. This works best when your book has a strong cover and good reviews — you're asking readers to choose YOU instead.
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next: Auto Campaign →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-section" id="step4">
+    <div class="step-label">Step 4 of 5</div>
+    <h2>Campaign 3 — Auto Campaign</h2>
+    <div class="campaign-name-preview" id="camp3Name">Loading campaign name...</div>
+    <div class="inline-row">
+      <div class="form-group">
+        <label for="camp3Budget">Daily Budget ($)</label>
+        <input type="number" id="camp3Budget" value="3" step="0.50" min="1">
+      </div>
+      <div class="form-group">
+        <label for="camp3Bid">Default Bid ($)</label>
+        <input type="number" id="camp3Bid" value="0.25" step="0.01" min="0.02">
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>How Auto Campaigns Work:</strong> Amazon's algorithm chooses where to show your ad based on your book's metadata — title, subtitle, description, categories, and keywords. You don't pick any targets.
+    </div>
+    <div class="info-box" style="background:rgba(74,158,110,0.08);border-color:var(--green);">
+      <strong>Why run an Auto campaign?</strong>
+      <ul style="margin-top:6px;padding-left:18px;font-size:13px;line-height:1.7;">
+        <li><strong>Discovery:</strong> Amazon will find keywords and ASINs you never thought of.</li>
+        <li><strong>Data mining:</strong> After 2-4 weeks, check your Search Term Report. The converting terms become targets for your manual campaigns.</li>
+        <li><strong>Low risk:</strong> With a lower budget and bid, you're spending less while Amazon does the research for you.</li>
+        <li><strong>Always-on safety net:</strong> Many authors run auto campaigns indefinitely alongside manual ones.</li>
+      </ul>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(5)">Generate My Campaign Sheet →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-section summary-step" id="step5">
+    <div class="step-label">Step 5 of 5</div>
+    <h2>Your Campaign Setup Sheet</h2>
+    <div id="summaryContent"></div>
+    <div class="nav-buttons no-print" style="margin-top:24px;">
+      <button class="btn btn-secondary" onclick="goToStep(4)">← Back to Edit</button>
+      <button class="btn btn-print" onclick="window.print()">🖨 Print This Sheet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'});
+
+  // Radio group interactivity
+  document.querySelectorAll('.radio-group').forEach(group => {
+    group.querySelectorAll('.radio-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input[type="radio"]').checked = true;
+      });
+    });
+  });
+
+  function getTitle() { return document.getElementById('bookTitle').value.trim() || 'Untitled'; }
+
+  function updateCampaignNames() {
+    const t = getTitle();
+    document.getElementById('camp1Name').textContent = `${t} - Keywords - ${dateStr}`;
+    document.getElementById('camp2Name').textContent = `${t} - ASIN Targets - ${dateStr}`;
+    document.getElementById('camp3Name').textContent = `${t} - Auto - ${dateStr}`;
+  }
+  document.getElementById('bookTitle').addEventListener('input', updateCampaignNames);
+
+  function goToStep(n) {
+    document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('step'+n).classList.add('active');
+    document.querySelectorAll('.step-dot').forEach((d,i) => {
+      d.classList.remove('active','done');
+      if(i+1 < n) d.classList.add('done');
+      if(i+1 === n) d.classList.add('active');
+    });
+    updateCampaignNames();
+    if(n === 5) buildSummary();
+    window.scrollTo(0,0);
+  }
+
+  function val(id) { return document.getElementById(id).value; }
+  function num(id) { return parseFloat(val(id)) || 0; }
+
+  function buildSummary() {
+    const title = getTitle();
+    const asin = val('bookAsin') || '—';
+    const price = num('bookPrice');
+    const royaltyPct = num('royaltyRate');
+    const royaltyPerSale = price * royaltyPct;
+    const ku = val('kuEnrolled');
+    const strategyMap = {down:'Dynamic bids — down only', updown:'Dynamic bids — up and down', fixed:'Fixed bids'};
+    const strategy = strategyMap[document.querySelector('input[name="bidStrategy"]:checked').value];
+    const matchType = document.querySelector('input[name="matchType"]:checked').value;
+    const matchLabel = matchType.charAt(0).toUpperCase() + matchType.slice(1) + ' Match';
+    const kwCount = (val('keywords').trim() ? val('keywords').trim().split('\n').filter(k=>k.trim()).length : 0);
+    const asinCount = (val('asinTargets').trim() ? val('asinTargets').trim().split('\n').filter(a=>a.trim()).length : 0);
+    const b1 = num('camp1Budget'), b2 = num('camp2Budget'), b3 = num('camp3Budget');
+    const totalDaily = b1+b2+b3;
+    const total30 = totalDaily*30;
+    const salesPerDay = royaltyPerSale > 0 ? (totalDaily / royaltyPerSale) : 0;
+
+    let html = '';
+    // Book info
+    html += `<div class="summary-card"><h3>Book Details</h3>
+      <div class="summary-row"><span class="label">Title</span><span class="value">${title}</span></div>
+      <div class="summary-row"><span class="label">ASIN</span><span class="value">${asin}</span></div>
+      <div class="summary-row"><span class="label">Price</span><span class="value">$${price.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Royalty</span><span class="value">${(royaltyPct*100).toFixed(0)}% ($${royaltyPerSale.toFixed(2)}/sale)</span></div>
+      <div class="summary-row"><span class="label">KU Enrolled</span><span class="value">${ku === 'yes' ? 'Yes' : 'No'}</span></div>
+    </div>`;
+    // Campaign 1
+    html += `<div class="summary-card"><h3>Campaign 1 — Keyword-Targeted</h3>
+      <div class="summary-row"><span class="label">Name</span><span class="value" style="font-family:monospace;font-size:13px">${title} - Keywords - ${dateStr}</span></div>
+      <div class="summary-row"><span class="label">Daily Budget</span><span class="value">$${b1.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Default Bid</span><span class="value">$${num('camp1Bid').toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Bidding Strategy</span><span class="value">${strategy}</span></div>
+      <div class="summary-row"><span class="label">Keywords</span><span class="value">${kwCount} keyword${kwCount!==1?'s':''}</span></div>
+      <div class="summary-row"><span class="label">Match Type</span><span class="value">${matchLabel}</span></div>
+    </div>`;
+    // Campaign 2
+    html += `<div class="summary-card"><h3>Campaign 2 — ASIN-Targeted</h3>
+      <div class="summary-row"><span class="label">Name</span><span class="value" style="font-family:monospace;font-size:13px">${title} - ASIN Targets - ${dateStr}</span></div>
+      <div class="summary-row"><span class="label">Daily Budget</span><span class="value">$${b2.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Default Bid</span><span class="value">$${num('camp2Bid').toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">ASINs Targeted</span><span class="value">${asinCount} ASIN${asinCount!==1?'s':''}</span></div>
+    </div>`;
+    // Campaign 3
+    html += `<div class="summary-card"><h3>Campaign 3 — Auto</h3>
+      <div class="summary-row"><span class="label">Name</span><span class="value" style="font-family:monospace;font-size:13px">${title} - Auto - ${dateStr}</span></div>
+      <div class="summary-row"><span class="label">Daily Budget</span><span class="value">$${b3.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Default Bid</span><span class="value">$${num('camp3Bid').toFixed(2)}</span></div>
+    </div>`;
+    // Budget highlight
+    html += `<div class="budget-highlight">
+      <div class="big-number">$${totalDaily.toFixed(2)}/day</div>
+      <div class="big-label">Total Daily Ad Budget</div>
+      <div class="budget-row">
+        <div><div style="font-size:22px;font-weight:700;color:var(--gold)">$${total30.toFixed(2)}</div><div style="font-size:11px;color:var(--coral-light)">30-Day Test Budget</div></div>
+        <div><div style="font-size:22px;font-weight:700;color:var(--gold)">${salesPerDay.toFixed(1)}</div><div style="font-size:11px;color:var(--coral-light)">Sales/Day to Break Even</div></div>
+      </div>
+    </div>`;
+    // Breakeven explanation
+    html += `<div class="info-box">
+      <strong>Your breakeven math:</strong> At $${price.toFixed(2)} × ${(royaltyPct*100).toFixed(0)}% royalty = <strong>$${royaltyPerSale.toFixed(2)}</strong> per sale. 
+      With a $${totalDaily.toFixed(2)}/day total spend, you need <strong>${salesPerDay.toFixed(1)} sales per day</strong> just from ads to break even on ad spend alone.
+      ${ku === 'yes' ? ' <em>KU page reads are extra revenue on top of this — your real breakeven is likely lower.</em>' : ''}
+    </div>`;
+    // 7-day reminder
+    html += `<div class="reminder-box"><h4>7-Day Check-In Reminder</h4>
+      <p>After 7 days of running, log in and check these metrics:</p>
+      <ul style="padding-left:18px;margin-top:6px;line-height:1.8;">
+        <li><strong>Impressions:</strong> Are your ads being shown? If under 1,000, raise your bid by $0.05-0.10.</li>
+        <li><strong>CTR (Click-Through Rate):</strong> Above 0.3% is good. Below 0.15% means your cover/title needs work.</li>
+        <li><strong>Spend:</strong> Are you hitting your daily budget? If not, your bids may be too low.</li>
+        <li><strong>Orders:</strong> Even 1-2 sales in the first week is a positive signal.</li>
+        <li><strong>ACOS:</strong> Don't panic about high ACOS in week 1. Amazon is still learning.</li>
+      </ul>
+    </div>`;
+    // KDP checklist
+    html += `<div class="summary-card"><h3>KDP Advertising Dashboard Setup Checklist</h3>
+      <ul class="checklist">
+        <li>Log in to <strong>ads.amazon.com</strong></li>
+        <li>Click <strong>"Create campaign"</strong> → Sponsored Products</li>
+        <li>Set campaign name (copy from above)</li>
+        <li>Set daily budget</li>
+        <li>Set start date (no end date for ongoing campaigns)</li>
+        <li>Choose <strong>Manual targeting</strong> for Campaigns 1 & 2, <strong>Automatic targeting</strong> for Campaign 3</li>
+        <li>Set bidding strategy</li>
+        <li>Select your book</li>
+        <li>Add your keywords/ASINs with match types</li>
+        <li>Set your default bid</li>
+        <li>Review and <strong>Launch Campaign</strong></li>
+        <li>Repeat for all 3 campaigns</li>
+        <li>Set a calendar reminder to check results in 7 days</li>
+      </ul>
+    </div>`;
+
+    document.getElementById('summaryContent').innerHTML = html;
+  }
+
+  // Init campaign names
+  updateCampaignNames();
+</script>
+</body>
+</html>

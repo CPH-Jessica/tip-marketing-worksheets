@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Channel Audit — The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --navy: #1a1a2e;
+    --cream: #faf8f5;
+    --gold: #c9a84c;
+    --light-coral: #fdf0ed;
+    --light-gold: #fdf8ec;
+    --mid-gray: #e8e4df;
+    --text-secondary: #555;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.6; }
+  .container { max-width: 860px; margin: 0 auto; padding: 24px; }
+  header { text-align: center; border-bottom: 3px solid var(--coral); padding-bottom: 20px; margin-bottom: 30px; }
+  header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-family: sans-serif; }
+  header h1 { font-size: 28px; color: var(--navy); margin: 8px 0 4px; }
+  header .sub { font-size: 14px; color: var(--text-secondary); font-style: italic; }
+  h2 { font-size: 20px; color: var(--coral); margin: 28px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--mid-gray); }
+  h3 { font-size: 16px; color: var(--navy); margin: 18px 0 10px; }
+  .card { background: #fff; border: 1px solid var(--mid-gray); border-radius: 8px; padding: 20px; margin-bottom: 18px; }
+  .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .channel-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+  .channel-item input[type="checkbox"] { accent-color: var(--coral); width: 18px; height: 18px; cursor: pointer; }
+  .channel-item label { cursor: pointer; font-size: 15px; }
+  .rating-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; margin: 4px 0; background: var(--light-coral); border-radius: 6px; animation: fadeIn 0.3s ease; }
+  .rating-row label { min-width: 180px; font-size: 14px; font-weight: bold; }
+  .rating-row select { padding: 4px 8px; border: 1px solid var(--mid-gray); border-radius: 4px; font-size: 14px; }
+  .rating-row .stars { font-size: 14px; color: var(--gold); margin-left: 8px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+  .form-group select, .form-group input { width: 100%; max-width: 360px; padding: 8px 10px; border: 1px solid var(--mid-gray); border-radius: 6px; font-size: 15px; font-family: inherit; background: #fff; }
+  .form-group input[type="number"] { max-width: 160px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .btn { display: inline-block; padding: 12px 28px; border: none; border-radius: 6px; font-size: 15px; font-family: sans-serif; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #d4624a; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+  .btn-secondary:hover { background: #2d2d4e; }
+  .btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--mid-gray); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-bar { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  #results { display: none; }
+  .rec-item { padding: 14px; margin: 8px 0; background: var(--light-gold); border-left: 4px solid var(--gold); border-radius: 0 6px 6px 0; }
+  .rec-item .rec-rank { font-family: sans-serif; font-weight: bold; color: var(--coral); font-size: 13px; text-transform: uppercase; }
+  .rec-item .rec-title { font-weight: bold; font-size: 16px; margin: 2px 0; }
+  .rec-item .rec-reason { font-size: 14px; color: var(--text-secondary); }
+  .summary-box { background: var(--light-coral); border: 2px solid var(--coral); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .summary-box h3 { color: var(--coral); margin-top: 0; }
+  footer { text-align: center; margin-top: 40px; padding: 16px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--mid-gray); font-family: sans-serif; }
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .btn, .btn-bar { display: none !important; }
+    .container { max-width: 100%; padding: 0; }
+    .card { border: 1px solid #ccc; break-inside: avoid; }
+    header { border-bottom: 2px solid #333; }
+    #results { display: block !important; }
+    .rating-row { background: #f5f5f5; }
+  }
+  @media (max-width: 600px) {
+    .channel-grid, .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">The Invisible Pen</div>
+    <h1>Marketing Channel Audit</h1>
+    <div class="sub">Beyond BookBub — Lesson 1 Worksheet</div>
+  </header>
+
+  <h2>Section 1: Channels You're Currently Using</h2>
+  <p style="margin-bottom:14px;font-size:14px;color:var(--text-secondary);">Check every marketing channel you've used in the past 6 months. A rating slider will appear for each.</p>
+
+  <div class="card">
+    <div class="channel-grid" id="channelGrid"></div>
+  </div>
+
+  <div id="ratingsContainer"></div>
+
+  <h2>Section 2: About Your Author Business</h2>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="genre">Primary Genre</label>
+        <select id="genre">
+          <option value="">— Select —</option>
+          <option>Contemporary Romance</option>
+          <option>Historical Romance</option>
+          <option>Paranormal/Fantasy Romance</option>
+          <option>Dark Romance</option>
+          <option>Romantic Suspense</option>
+          <option>Rom-Com</option>
+          <option>Thriller/Suspense</option>
+          <option>Sci-Fi / Fantasy</option>
+          <option>Mystery / Cozy Mystery</option>
+          <option>Horror</option>
+          <option>Literary Fiction</option>
+          <option>Non-Fiction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="budget">Monthly Marketing Budget</label>
+        <select id="budget">
+          <option value="0">$0 (organic only)</option>
+          <option value="25">$1 – $50</option>
+          <option value="75">$51 – $100</option>
+          <option value="175">$101 – $250</option>
+          <option value="350">$250+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="bookCount">Books Published</label>
+        <input type="number" id="bookCount" min="0" max="500" value="1">
+      </div>
+      <div class="form-group">
+        <label for="hasList">Do you have a newsletter?</label>
+        <select id="hasList">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="subCountWrap" style="display:none;">
+      <label for="subCount">Newsletter Subscribers</label>
+      <input type="number" id="subCount" min="0" max="999999" value="0">
+    </div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-primary" onclick="generatePlan()">Generate My Action Plan</button>
+    <button class="btn btn-outline" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div id="results">
+    <h2>Section 3: Your Priority Action Plan</h2>
+    <div class="summary-box" id="summaryBox"></div>
+    <div id="recommendations"></div>
+    <div class="btn-bar">
+      <button class="btn btn-secondary" onclick="window.print()">Print My Audit</button>
+    </div>
+  </div>
+
+  <footer>&copy; The Invisible Pen — Beyond BookBub Course</footer>
+</div>
+
+<script>
+const CHANNELS = [
+  "Amazon Ads", "Facebook Ads", "BookBub Featured Deal", "BookBub Ads",
+  "Newsletter Swaps (BookClicker)", "Newsletter Swaps (Bookswappy)",
+  "BookFunnel", "StoryOrigin", "Paid Promo Sites (Freebooksy, etc.)",
+  "Substack / Newsletter", "YouTube", "BookTok (TikTok)", "Instagram",
+  "Reddit (r/romancebooks, etc.)", "Facebook Reader Groups", "Podcast / Guest Appearances",
+  "ARC / Review Sites (BookSirens, NetGalley)", "Goodreads"
+];
+
+const grid = document.getElementById('channelGrid');
+const ratingsContainer = document.getElementById('ratingsContainer');
+
+CHANNELS.forEach((ch, i) => {
+  const id = 'ch_' + i;
+  const div = document.createElement('div');
+  div.className = 'channel-item';
+  div.innerHTML = `<input type="checkbox" id="${id}" data-channel="${ch}" onchange="toggleRating('${id}','${ch.replace(/'/g,"\\'")}')"><label for="${id}">${ch}</label>`;
+  grid.appendChild(div);
+});
+
+function toggleRating(id, name) {
+  const cb = document.getElementById(id);
+  const existing = document.getElementById('rate_' + id);
+  if (cb.checked && !existing) {
+    const row = document.createElement('div');
+    row.className = 'rating-row';
+    row.id = 'rate_' + id;
+    row.innerHTML = `<label>${name}</label>
+      <select id="sel_${id}">
+        <option value="1">1 — Not working</option>
+        <option value="2">2 — Barely</option>
+        <option value="3" selected>3 — Okay</option>
+        <option value="4">4 — Good</option>
+        <option value="5">5 — Crushing it</option>
+      </select>
+      <span class="stars" id="stars_${id}">★★★☆☆</span>`;
+    ratingsContainer.appendChild(row);
+    document.getElementById('sel_' + id).addEventListener('change', function() {
+      const v = parseInt(this.value);
+      document.getElementById('stars_' + id).textContent = '★'.repeat(v) + '☆'.repeat(5 - v);
+    });
+  } else if (!cb.checked && existing) {
+    existing.remove();
+  }
+}
+
+document.getElementById('hasList').addEventListener('change', function() {
+  document.getElementById('subCountWrap').style.display = this.value === 'yes' ? 'block' : 'none';
+});
+
+function getCheckedChannels() {
+  const results = [];
+  CHANNELS.forEach((ch, i) => {
+    const cb = document.getElementById('ch_' + i);
+    if (cb.checked) {
+      const sel = document.getElementById('sel_ch_' + i);
+      results.push({ name: ch, rating: sel ? parseInt(sel.value) : 3 });
+    }
+  });
+  return results;
+}
+
+function generatePlan() {
+  const genre = document.getElementById('genre').value;
+  const budget = parseInt(document.getElementById('budget').value);
+  const books = parseInt(document.getElementById('bookCount').value) || 0;
+  const hasList = document.getElementById('hasList').value === 'yes';
+  const subs = parseInt(document.getElementById('subCount').value) || 0;
+  const current = getCheckedChannels();
+  const currentNames = current.map(c => c.name);
+
+  if (!genre) { alert('Please select your genre first.'); return; }
+
+  const recs = [];
+  const isRomance = genre.toLowerCase().includes('romance') || genre.toLowerCase().includes('rom-com');
+
+  // Newsletter first if none
+  if (!hasList) {
+    recs.push({ title: 'Start a Newsletter (Priority #1)', reason: 'A newsletter is the single most important marketing asset for an indie author. Every other channel works better when you have a list to drive readers to. Start with BookFunnel or StoryOrigin to offer a reader magnet and collect subscribers. Cost: free to start.' });
+  }
+
+  // Newsletter swaps if list is small
+  if (hasList && subs < 500 && !currentNames.some(n => n.includes('BookClicker'))) {
+    recs.push({ title: 'Start Newsletter Swaps via BookClicker', reason: `At ${subs} subscribers, newsletter swaps are the fastest free way to grow your list. BookClicker lets you find partners in your genre. Aim for 2-3 swaps per newsletter send. Free to use.` });
+  } else if (hasList && subs >= 500 && !currentNames.some(n => n.includes('BookClicker') || n.includes('Bookswappy'))) {
+    recs.push({ title: 'Scale Up Newsletter Swaps', reason: `With ${subs} subscribers, you're in a strong position for swaps. Add both BookClicker and Bookswappy to find more partners. At your list size, aim for 4-6 swaps per send.` });
+  }
+
+  // Promo sites
+  if (books >= 1 && budget >= 0 && !currentNames.some(n => n.includes('Paid Promo'))) {
+    if (budget === 0) {
+      recs.push({ title: 'Run a Free Book Promo via Free Sites', reason: 'Even on a $0 budget, you can list a free book on Robin Reads, many Facebook promo groups, and free listing sites. Pair with a permafree first-in-series strategy.' });
+    } else {
+      recs.push({ title: 'Add Paid Promo Sites to Your Stack', reason: `With a $${budget > 25 ? budget : '25'}+/month budget, sites like Freebooksy ($80-160), Bargain Booksy ($30-60), Robin Reads ($20-40), and ENT ($30-40) can move serious volume, especially in ${genre}.` });
+    }
+  }
+
+  // BookBub Ads (cheaper alternative to featured deal)
+  if (budget >= 75 && books >= 3 && !currentNames.some(n => n.includes('BookBub Ads'))) {
+    recs.push({ title: 'Test BookBub Ads', reason: `BookBub Ads are the overlooked sibling of Featured Deals. With ${books} books, you can run CPC ads starting at $10-20/day targeting readers of comp authors. Great for ${genre}.` });
+  }
+
+  // Amazon Ads
+  if (budget >= 75 && books >= 3 && !currentNames.some(n => n === 'Amazon Ads')) {
+    recs.push({ title: 'Launch Amazon Ads', reason: `With ${books} books and budget to invest, Amazon Ads let you target readers searching for your genre. Start with Sponsored Products, automatic targeting, $5-10/day.` });
+  }
+
+  // Social channels for romance
+  if (isRomance && !currentNames.some(n => n.includes('BookTok') || n.includes('Instagram'))) {
+    recs.push({ title: 'Build a BookTok or Instagram Presence', reason: 'Romance is the #1 genre on BookTok and Bookstagram. Short-form video and aesthetic posts can build readership organically. Focus on one platform first.' });
+  }
+
+  // Facebook groups
+  if (isRomance && !currentNames.some(n => n.includes('Facebook Reader'))) {
+    recs.push({ title: 'Join Facebook Reader Groups', reason: `Facebook reader groups for ${genre} are still one of the best free discovery channels. Find 3-5 active groups and participate authentically before promoting.` });
+  }
+
+  // ARC strategy
+  if (books >= 2 && !currentNames.some(n => n.includes('ARC'))) {
+    recs.push({ title: 'Build an ARC Team', reason: 'Reviews drive visibility. Use BookSirens or build a direct ARC team via BookFunnel to get 10-20 reviews within launch week.' });
+  }
+
+  // StoryOrigin / BookFunnel for list building
+  if (hasList && subs < 1000 && !currentNames.some(n => n.includes('StoryOrigin') || n.includes('BookFunnel'))) {
+    recs.push({ title: 'Add StoryOrigin or BookFunnel Group Promos', reason: 'Group promos and giveaways on these platforms are a low-cost way to gain 50-200 subscribers per event. Perfect for growing a smaller list.' });
+  }
+
+  // Limit to top 5
+  const topRecs = recs.slice(0, 5);
+
+  // Summary
+  const weakChannels = current.filter(c => c.rating <= 2);
+  const strongChannels = current.filter(c => c.rating >= 4);
+  let summaryHTML = `<h3>Your Audit Snapshot</h3>`;
+  summaryHTML += `<p><strong>Genre:</strong> ${genre} &nbsp;|&nbsp; <strong>Books:</strong> ${books} &nbsp;|&nbsp; <strong>Budget:</strong> $${budget}/mo &nbsp;|&nbsp; <strong>List:</strong> ${hasList ? subs.toLocaleString() + ' subs' : 'None yet'}</p>`;
+  summaryHTML += `<p><strong>Active channels:</strong> ${current.length} &nbsp;|&nbsp; `;
+  summaryHTML += `<strong style="color:green;">Working well:</strong> ${strongChannels.length} &nbsp;|&nbsp; `;
+  summaryHTML += `<strong style="color:#c0392b;">Underperforming:</strong> ${weakChannels.length}</p>`;
+  if (weakChannels.length > 0) {
+    summaryHTML += `<p style="font-size:14px;margin-top:6px;"><em>Consider optimizing or dropping:</em> ${weakChannels.map(c => c.name).join(', ')}</p>`;
+  }
+
+  document.getElementById('summaryBox').innerHTML = summaryHTML;
+
+  let recHTML = '';
+  if (topRecs.length === 0) {
+    recHTML = '<div class="rec-item"><div class="rec-title">You\'re covering your bases!</div><div class="rec-reason">Based on your inputs, you\'re already using the key channels. Focus on optimizing what you have — especially any channels rated 3 or below.</div></div>';
+  }
+  topRecs.forEach((r, i) => {
+    recHTML += `<div class="rec-item"><div class="rec-rank">Priority #${i + 1}</div><div class="rec-title">${r.title}</div><div class="rec-reason">${r.reason}</div></div>`;
+  });
+
+  document.getElementById('recommendations').innerHTML = recHTML;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  CHANNELS.forEach((_, i) => {
+    const cb = document.getElementById('ch_' + i);
+    cb.checked = false;
+    const r = document.getElementById('rate_ch_' + i);
+    if (r) r.remove();
+  });
+  document.getElementById('genre').selectedIndex = 0;
+  document.getElementById('budget').selectedIndex = 0;
+  document.getElementById('bookCount').value = 1;
+  document.getElementById('hasList').selectedIndex = 0;
+  document.getElementById('subCount').value = 0;
+  document.getElementById('subCountWrap').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
