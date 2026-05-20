@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 1 — Editing Readiness Checklist</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 0;
+}
+.header {
+  background: var(--navy);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+.header .subtitle {
+  color: var(--coral);
+  font-size: 1rem;
+  font-style: italic;
+}
+.header .brand {
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.intro-box {
+  background: white;
+  border-left: 4px solid var(--coral);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 0 8px 8px 0;
+}
+.intro-box p {
+  margin-bottom: 0.5rem;
+}
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section h2 {
+  color: var(--navy);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--coral);
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--light-gray);
+}
+.checklist-item:last-child {
+  border-bottom: none;
+}
+.checklist-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--coral);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checklist-item label {
+  cursor: pointer;
+  flex: 1;
+}
+.checklist-item label strong {
+  color: var(--navy);
+}
+.checklist-item.checked label {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.pass-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.pass-card {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid var(--coral);
+}
+.pass-card .pass-num {
+  font-size: 0.8rem;
+  color: var(--coral);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.pass-card .pass-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--navy);
+  margin: 0.25rem 0;
+}
+.pass-card .pass-desc {
+  font-size: 0.85rem;
+  color: #555;
+}
+.pass-card.structural { border-left-color: var(--coral); }
+.pass-card.prose { border-left-color: var(--gold); }
+.pass-card.architectural { border-left-color: var(--sage); }
+.notes-area {
+  width: 100%;
+  min-height: 120px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  resize: vertical;
+  background: var(--cream);
+  margin-top: 0.5rem;
+}
+.notes-area:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+.progress-bar {
+  background: var(--light-gray);
+  border-radius: 20px;
+  height: 24px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--coral), var(--gold));
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.btn {
+  background: var(--coral);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #D4634A;
+}
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+.phase-label {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.phase-structural { background: #FDEAE6; color: var(--coral); }
+.phase-prose { background: #FDF3E3; color: #B8892E; }
+.phase-arch { background: #E8F0E9; color: #4A7A4E; }
+@media (max-width: 600px) {
+  .pass-overview { grid-template-columns: 1fr; }
+  .container { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 1 — Why One Editing Pass Will Never Be Enough</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p><strong>This worksheet helps you confirm you are ready to start the 8-pass editing system.</strong></p>
+    <p>Work through each section. By the end, you will know exactly what you have, what you need, and what order to work in.</p>
+  </div>
+
+  <!-- READINESS CHECKLIST -->
+  <div class="section">
+    <h2>Pre-Editing Readiness Checklist</h2>
+    <p style="margin-bottom:1rem; color:#555;">Check each item when confirmed. All items should be checked before you start Lesson 2.</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+    </div>
+
+    <div id="checklist">
+      <div class="checklist-item">
+        <input type="checkbox" id="c1" onchange="updateProgress()">
+        <label for="c1"><strong>Completed first draft.</strong> The full manuscript (or section you are editing) is drafted. You are not still writing new chapters.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c2" onchange="updateProgress()">
+        <label for="c2"><strong>Codex or story bible exists.</strong> You have a document with character details, world rules, established facts, and your chapter outline.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c3" onchange="updateProgress()">
+        <label for="c3"><strong>Voice skill or writing style profile exists.</strong> You have a document that describes your pen name voice — word choices, sentence rhythms, heat level, tone markers.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c4" onchange="updateProgress()">
+        <label for="c4"><strong>Pen name identified for this project.</strong> You know which pen name (and heat level) this manuscript belongs to.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c5" onchange="updateProgress()">
+        <label for="c5"><strong>Heat level confirmed.</strong> You know the target heat level (1-5) for this project and can state it before starting.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c6" onchange="updateProgress()">
+        <label for="c6"><strong>Chapter outline available.</strong> You can provide the AI with context about where each chapter sits in the larger story arc.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c7" onchange="updateProgress()">
+        <label for="c7"><strong>Banned list reviewed.</strong> You have reviewed the banned words, phrases, names, and AI-isms list and customized it for your needs.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c8" onchange="updateProgress()">
+        <label for="c8"><strong>Backup created.</strong> Your original manuscript is backed up. Editing happens on a copy, never the original.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c9" onchange="updateProgress()">
+        <label for="c9"><strong>AI tool ready.</strong> You have access to your AI editing tool (Claude recommended) and know how to start a new session.</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="c10" onchange="updateProgress()">
+        <label for="c10"><strong>Time blocked.</strong> You have set aside editing time — each pass takes 15-45 minutes per chapter depending on length.</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8-PASS OVERVIEW -->
+  <div class="section">
+    <h2>The 8-Pass System — Quick Reference</h2>
+
+    <span class="phase-label phase-structural">Structural Passes (1-3)</span>
+    <div class="pass-overview">
+      <div class="pass-card structural">
+        <div class="pass-num">Pass 1</div>
+        <div class="pass-name">Quality Check</div>
+        <div class="pass-desc">Basic prose quality, tone match, outline adherence, arc consistency, heat level verification.</div>
+      </div>
+      <div class="pass-card structural">
+        <div class="pass-num">Pass 2</div>
+        <div class="pass-name">Plot Hole Checker</div>
+        <div class="pass-desc">Logic gaps, character knowledge, setup/payoff tracking, contradictions with prior chapters.</div>
+      </div>
+      <div class="pass-card structural">
+        <div class="pass-num">Pass 3</div>
+        <div class="pass-name">Timeline Consistency</div>
+        <div class="pass-desc">Days/weeks/seasons, travel time, character ages, concurrent events, season/weather match.</div>
+      </div>
+    </div>
+
+    <span class="phase-label phase-prose" style="margin-top:1rem;">Prose Passes (4-6)</span>
+    <div class="pass-overview">
+      <div class="pass-card prose">
+        <div class="pass-num">Pass 4</div>
+        <div class="pass-name">Line Edit</div>
+        <div class="pass-desc">Weak verbs, filter words, echoes, adverb crutches, AI-isms, sentence variety.</div>
+      </div>
+      <div class="pass-card prose">
+        <div class="pass-num">Pass 5</div>
+        <div class="pass-name">Dialogue Polish</div>
+        <div class="pass-desc">Character voice differentiation, subtext, banter rhythm, action beats, exposition dumps.</div>
+      </div>
+      <div class="pass-card prose">
+        <div class="pass-num">Pass 6</div>
+        <div class="pass-name">Heat Scene Edit</div>
+        <div class="pass-desc">Emotion over mechanics, sensory balance, pacing, voice consistency during intimacy.</div>
+      </div>
+    </div>
+
+    <span class="phase-label phase-arch" style="margin-top:1rem;">Architectural Passes (7-8)</span>
+    <div class="pass-overview">
+      <div class="pass-card architectural">
+        <div class="pass-num">Pass 7</div>
+        <div class="pass-name">Developmental Edit</div>
+        <div class="pass-desc">Scene justification, pacing drag, character arc consistency, the Slash Editor pass.</div>
+      </div>
+      <div class="pass-card architectural">
+        <div class="pass-num">Pass 8</div>
+        <div class="pass-name">Voice Audit</div>
+        <div class="pass-desc">Pen name calibration, AI drift detection, manuscript-wide voice consistency.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT NOTES -->
+  <div class="section">
+    <h2>My Project Setup</h2>
+    <p style="margin-bottom:0.75rem; color:#555;">Fill in the details for the project you are about to edit.</p>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name / Brand:</label>
+    <input type="text" style="width:100%; padding:0.5rem; border:2px solid var(--border); border-radius:6px; font-family:Georgia; font-size:0.95rem; margin-bottom:1rem; background:var(--cream);" placeholder="e.g., Sage Kennedy">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Book Title / Working Title:</label>
+    <input type="text" style="width:100%; padding:0.5rem; border:2px solid var(--border); border-radius:6px; font-family:Georgia; font-size:0.95rem; margin-bottom:1rem; background:var(--cream);" placeholder="e.g., Hockey Holidays Book 1">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Heat Level (1-5):</label>
+    <input type="number" min="1" max="5" style="width:80px; padding:0.5rem; border:2px solid var(--border); border-radius:6px; font-family:Georgia; font-size:0.95rem; margin-bottom:1rem; background:var(--cream);" placeholder="4">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Total Chapters to Edit:</label>
+    <input type="number" min="1" style="width:80px; padding:0.5rem; border:2px solid var(--border); border-radius:6px; font-family:Georgia; font-size:0.95rem; margin-bottom:1rem; background:var(--cream);" placeholder="24">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Notes / Anything the AI needs to know about this project:</label>
+    <textarea class="notes-area" placeholder="Any special considerations — dual timeline, unreliable narrator, ensemble cast, specific world rules the AI should watch for..."></textarea>
+  </div>
+
+  <!-- COMMITMENT -->
+  <div class="section" style="text-align:center; background:var(--navy); color:white;">
+    <h2 style="color:var(--coral); border-bottom-color:var(--coral);">Ready to Start?</h2>
+    <p style="margin:1rem 0;">When your checklist is complete and your project details are filled in, you are ready for Lesson 2.</p>
+    <button class="btn" onclick="checkReady()" style="background:var(--gold); font-size:1.1rem; padding:1rem 2rem;">Check My Readiness</button>
+    <p id="readyMsg" style="margin-top:1rem; font-weight:bold;"></p>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function updateProgress() {
+  const checks = document.querySelectorAll('#checklist input[type="checkbox"]');
+  const total = checks.length;
+  let checked = 0;
+  checks.forEach(cb => {
+    const item = cb.closest('.checklist-item');
+    if (cb.checked) {
+      checked++;
+      item.classList.add('checked');
+    } else {
+      item.classList.remove('checked');
+    }
+  });
+  const pct = Math.round((checked / total) * 100);
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  fill.textContent = pct + '%';
+}
+
+function checkReady() {
+  const checks = document.querySelectorAll('#checklist input[type="checkbox"]');
+  let unchecked = [];
+  checks.forEach(cb => {
+    if (!cb.checked) {
+      unchecked.push(cb.nextElementSibling.querySelector('strong').textContent);
+    }
+  });
+  const msg = document.getElementById('readyMsg');
+  if (unchecked.length === 0) {
+    msg.style.color = '#7FD47F';
+    msg.textContent = 'You are ready. Move to Lesson 2 — Quality Check.';
+  } else {
+    msg.style.color = var('--coral');
+    msg.style.color = '#E8735A';
+    msg.textContent = 'Not quite. Still need: ' + unchecked.join(', ');
+  }
+}
+</script>
+
+</body>
+</html>

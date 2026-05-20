@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 9 — Voice Audit Worksheet</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 0;
+}
+.header {
+  background: var(--navy);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+.header .subtitle {
+  color: var(--coral);
+  font-size: 1rem;
+  font-style: italic;
+}
+.header .brand {
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.intro-box {
+  background: white;
+  border-left: 4px solid var(--coral);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 0 8px 8px 0;
+}
+.intro-box p { margin-bottom: 0.5rem; }
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section h2 {
+  color: var(--navy);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--coral);
+}
+.section h3 {
+  color: var(--navy);
+  font-size: 1.1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+/* Pen name selector */
+.pen-name-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.pen-name-btn {
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--cream);
+  cursor: pointer;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.pen-name-btn:hover {
+  border-color: var(--coral);
+  background: white;
+}
+.pen-name-btn.selected {
+  border-color: var(--coral);
+  background: var(--coral);
+  color: white;
+}
+.pen-name-btn .genre {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* Prompt area */
+.prompt-box {
+  background: var(--navy);
+  color: #E0E0E0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  position: relative;
+  white-space: pre-wrap;
+  margin: 1rem 0;
+  max-height: 600px;
+  overflow-y: auto;
+}
+.prompt-box .placeholder {
+  color: var(--coral);
+  font-weight: bold;
+}
+.copy-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--coral);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.copy-btn:hover { background: #D4634A; }
+.copy-btn.copied { background: var(--sage); }
+
+/* Checklist */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--light-gray);
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--coral);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checklist-item label {
+  cursor: pointer;
+  flex: 1;
+}
+.checklist-item label strong { color: var(--navy); }
+
+/* Before/After */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.comparison-col {
+  border-radius: 8px;
+  padding: 1rem;
+}
+.comparison-col.before {
+  background: #FFF0EE;
+  border: 2px solid #E8735A40;
+}
+.comparison-col.after {
+  background: #F0F7F0;
+  border: 2px solid #7A9E7E40;
+}
+.comparison-col h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+.comparison-col.before h4 { color: var(--coral); }
+.comparison-col.after h4 { color: var(--sage); }
+.comparison-col p {
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Pen name specific checks */
+.pen-checks {
+  display: none;
+}
+.pen-checks.active {
+  display: block;
+}
+
+/* Tracker */
+.tracker-grid {
+  display: grid;
+  grid-template-columns: auto repeat(8, 1fr) auto;
+  gap: 2px;
+  margin: 1rem 0;
+  font-size: 0.8rem;
+}
+.tracker-header {
+  background: var(--navy);
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.7rem;
+}
+.tracker-cell {
+  background: var(--light-gray);
+  padding: 0.4rem;
+  text-align: center;
+}
+.tracker-cell.chapter-label {
+  background: var(--navy);
+  color: white;
+  font-weight: bold;
+}
+
+/* Results area */
+.result-section {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+.result-section h4 {
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.notes-area {
+  width: 100%;
+  min-height: 100px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  resize: vertical;
+  background: var(--cream);
+  margin-top: 0.5rem;
+}
+.notes-area:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+
+.btn {
+  background: var(--coral);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: background 0.2s;
+}
+.btn:hover { background: #D4634A; }
+
+.progress-bar {
+  background: var(--light-gray);
+  border-radius: 20px;
+  height: 24px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--coral), var(--gold));
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.status-badge.pass { background: #E8F5E9; color: #2E7D32; }
+.status-badge.flag { background: #FFF3E0; color: #E65100; }
+.status-badge.fail { background: #FFEBEE; color: #C62828; }
+
+.tip-box {
+  background: #FFF8E1;
+  border-left: 4px solid var(--gold);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+}
+.tip-box strong { color: var(--gold); }
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .pen-name-grid { grid-template-columns: repeat(2, 1fr); }
+  .comparison { grid-template-columns: 1fr; }
+  .container { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Pass 8: Voice Audit</h1>
+  <div class="subtitle">The final polish. Does chapter 20 sound like chapter 1?</div>
+  <div class="brand">Edit Like a Boss | The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- Intro -->
+  <div class="intro-box">
+    <p><strong>What this pass catches:</strong> Voice drift across the manuscript, AI-generic passages, inconsistency with your pen name brand, tone/heat/vocabulary mismatches, and the gradual smoothing that happens when AI overwrites your voice with its own default register.</p>
+    <p><strong>Why it is last:</strong> Everything else is fixed. Content is final. Now we calibrate the voice.</p>
+  </div>
+
+  <!-- Step 1: Select Pen Name -->
+  <div class="section">
+    <h2>Step 1: Select Your Pen Name</h2>
+    <p>Choose your pen name to load the specific voice audit checks for that brand. Or select "Custom" to enter your own voice profile.</p>
+    <div class="pen-name-grid">
+      <div class="pen-name-btn" onclick="selectPenName('sage')" id="btn-sage">
+        Sage Kennedy
+        <span class="genre">Steamy Rom-Com | Heat 4/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('constance')" id="btn-constance">
+        Constance Ruth Clark
+        <span class="genre">Small-Town Romance | Heat 4-5/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('ruthie')" id="btn-ruthie">
+        Ruthie Clark
+        <span class="genre">Dark Fantasy/Romantasy | Heat 4-5/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('marjorie')" id="btn-marjorie">
+        Marjorie Adams
+        <span class="genre">Regency Romance</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('kelsey')" id="btn-kelsey">
+        Kelsey Croft
+        <span class="genre">Vampire Rom-Com | Heat 4-5/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('moxie')" id="btn-moxie">
+        Moxie Savage
+        <span class="genre">Dark Romance | Heat 5/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('rosemary')" id="btn-rosemary">
+        Rosemary Irving
+        <span class="genre">Historical Western | Heat 1-2/5</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('garrett')" id="btn-garrett">
+        Garrett Stone
+        <span class="genre">Psychological Thriller</span>
+      </div>
+      <div class="pen-name-btn" onclick="selectPenName('custom')" id="btn-custom">
+        Custom / Other
+        <span class="genre">Enter your own voice profile</span>
+      </div>
+    </div>
+    <div id="selected-pen-info" style="display:none; margin-top:1rem;">
+      <div class="result-section">
+        <h4 id="pen-info-title"></h4>
+        <p id="pen-info-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Pen Name Specific Checks -->
+  <div class="section">
+    <h2>Step 2: Pen Name Voice Audit Checks</h2>
+    <p>These are the brand-specific items the voice audit will verify. Review them before running the prompt.</p>
+
+    <!-- Sage Kennedy -->
+    <div class="pen-checks" id="checks-sage">
+      <h3>Sage Kennedy Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="sk1"><label for="sk1"><strong>Humor check:</strong> At least one laugh-out-loud moment per chapter. Not trying-to-be-funny. Actually funny.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk2"><label for="sk2"><strong>Banter crackle:</strong> Dialogue sparks like a tennis match. Rapid-fire. Not polite conversation.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk3"><label for="sk3"><strong>Holiday vibes:</strong> If seasonal, atmosphere is woven in, not just mentioned. Sensory holiday details.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk4"><label for="sk4"><strong>Billionaire balance:</strong> Hero is grounded, not flashy. Real person with money, not a stereotype.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk5"><label for="sk5"><strong>Playful heat:</strong> Intimate scenes are fun and flirty, sometimes funny. NOT dark/intense.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk6"><label for="sk6"><strong>Pop culture inner monologue:</strong> Heroine references modern culture, media, relatable life observations.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="sk7"><label for="sk7"><strong>Fish-out-of-water energy:</strong> Comedy rooted in contrast and unexpected situations.</label></div>
+    </div>
+
+    <!-- Constance Ruth Clark -->
+    <div class="pen-checks" id="checks-constance">
+      <h3>Constance Ruth Clark Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="crc1"><label for="crc1"><strong>Genuine warmth:</strong> Not saccharine, not sentimental. Warm like a porch conversation.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="crc2"><label for="crc2"><strong>Relatable wit:</strong> Dry, observational humor. A knowing smile, not slapstick or snark.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="crc3"><label for="crc3"><strong>Small-town authenticity:</strong> Community feels real. The diner. The nosy neighbor. Specific, not generic.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="crc4"><label for="crc4"><strong>Grounded emotional tone:</strong> Feelings are real and relatable, not overwrought or dramatic.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="crc5"><label for="crc5"><strong>Community presence:</strong> Side characters feel like neighbors, not props.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="crc6"><label for="crc6"><strong>Billionaire grounding:</strong> If billionaire hero, wealth is background, not personality.</label></div>
+    </div>
+
+    <!-- Ruthie Clark -->
+    <div class="pen-checks" id="checks-ruthie">
+      <h3>Ruthie Clark Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="rc1"><label for="rc1"><strong>Atmospheric density:</strong> Sensory details thick enough to touch. Smell the forest. Feel the cold.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="rc2"><label for="rc2"><strong>Emotional intensity:</strong> Nothing casual. Longing is aching. Danger is visceral. Connection is cosmic.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="rc3"><label for="rc3"><strong>Supernatural integration:</strong> Magic woven into the prose, not bolted on. Part of the world.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="rc4"><label for="rc4"><strong>Lush sentence rhythms:</strong> Flowing, layered sentences. Not choppy. Not clinical.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="rc5"><label for="rc5"><strong>Fated intensity:</strong> The romantic connection feels destined, inevitable, larger than the characters.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="rc6"><label for="rc6"><strong>Dark fantasy vocabulary:</strong> Language matches the world. No modern casual phrasing in high fantasy settings.</label></div>
+    </div>
+
+    <!-- Marjorie Adams -->
+    <div class="pen-checks" id="checks-marjorie">
+      <h3>Marjorie Adams Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="ma1"><label for="ma1"><strong>Zero anachronisms:</strong> No modern phrasing, concepts, or behavior. No "processing feelings" or "setting boundaries."</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ma2"><label for="ma2"><strong>Period wit:</strong> Dry, understated, based in social observation and class dynamics. Not modern sarcasm.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ma3"><label for="ma3"><strong>Verbal sparring:</strong> Arguments belong in a drawing room. Regency rhythm, not contemporary rhythm.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ma4"><label for="ma4"><strong>Social awareness:</strong> Characters understand their world's rules. Class, propriety, reputation stakes.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ma5"><label for="ma5"><strong>Period-correct contractions:</strong> No contractions that did not exist. Watch for modern speech patterns.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ma6"><label for="ma6"><strong>Epistolary authenticity:</strong> Letters, invitations, and formal speech match the period.</label></div>
+    </div>
+
+    <!-- Kelsey Croft -->
+    <div class="pen-checks" id="checks-kelsey">
+      <h3>Kelsey Croft Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="kc1"><label for="kc1"><strong>Consistent snark:</strong> Sharp inner monologue throughout. Deadpan observations about the absurd.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="kc2"><label for="kc2"><strong>Culture-clash comedy:</strong> Humor rooted in ancient supernatural meets modern world.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="kc3"><label for="kc3"><strong>Real stakes:</strong> Comedy does not undercut danger. Both funny AND dangerous.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="kc4"><label for="kc4"><strong>Heroine stays sharp:</strong> She does not go earnest and swoony. Snark is her armor AND her personality.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="kc5"><label for="kc5"><strong>Vampire authenticity:</strong> The supernatural elements are played straight, even when the situations are funny.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="kc6"><label for="kc6"><strong>Modern voice:</strong> Contemporary references, casual tone, relatable heroine despite supernatural context.</label></div>
+    </div>
+
+    <!-- Moxie Savage -->
+    <div class="pen-checks" id="checks-moxie">
+      <h3>Moxie Savage Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="ms1"><label for="ms1"><strong>Raw intensity:</strong> Prose hits hard. Short sentences. Visceral descriptions. Nothing soft.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ms2"><label for="ms2"><strong>Possessive tension:</strong> Thrums through every scene, not just romantic ones. Looks, proximity, control.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ms3"><label for="ms3"><strong>Backbone heroine:</strong> She pushes back. She has power. Never passive, never a doormat.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ms4"><label for="ms4"><strong>Nothing hedged:</strong> No "she felt a mix of emotions." Commit. Choose the stronger word. Always.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ms5"><label for="ms5"><strong>Danger is real:</strong> The dark elements are not romanticized into safety. Stakes are visceral.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ms6"><label for="ms6"><strong>Heat at 5/5:</strong> Explicit, intense, unapologetic. No fade-to-black. No softening.</label></div>
+    </div>
+
+    <!-- Rosemary Irving -->
+    <div class="pen-checks" id="checks-rosemary">
+      <h3>Rosemary Irving Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="ri1"><label for="ri1"><strong>Clean heat level (1-2/5):</strong> Tension through longing and emotional intimacy. Closed-door.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ri2"><label for="ri2"><strong>Period authenticity:</strong> 1840s-1890s frontier. No modern concepts or phrasing.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ri3"><label for="ri3"><strong>Frontier atmosphere:</strong> Dust, horses, open sky, hard work, community building.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ri4"><label for="ri4"><strong>Sweet without saccharine:</strong> Genuine emotion, not Hallmark sentimentality.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="ri5"><label for="ri5"><strong>Strong quiet heroines:</strong> Resilient, capable, not helpless.</label></div>
+    </div>
+
+    <!-- Garrett Stone -->
+    <div class="pen-checks" id="checks-garrett">
+      <h3>Garrett Stone Voice Markers</h3>
+      <div class="checklist-item"><input type="checkbox" id="gs1"><label for="gs1"><strong>Psychological tension:</strong> Dread builds through observation and detail, not jump scares.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="gs2"><label for="gs2"><strong>Male POV consistency:</strong> Single male perspective. No romance arc required.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="gs3"><label for="gs3"><strong>Confined atmosphere:</strong> Claustrophobic, architectural, spaces that feel wrong.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="gs4"><label for="gs4"><strong>Surreal precision:</strong> Uncanny details described with clinical precision.</label></div>
+      <div class="checklist-item"><input type="checkbox" id="gs5"><label for="gs5"><strong>No comfort:</strong> No reassurance. No easy answers. Unease is the point.</label></div>
+    </div>
+
+    <!-- Custom -->
+    <div class="pen-checks" id="checks-custom">
+      <h3>Custom Voice Profile</h3>
+      <p>Enter your pen name's voice markers below. Include: vocabulary, sentence rhythms, humor level, heat calibration, tone markers, what MUST be present, what MUST NOT be present.</p>
+      <textarea class="notes-area" id="custom-voice-profile" placeholder="Example: My pen name writes cozy mystery with a dry humor voice. Short sentences during tension. Warm, slightly sarcastic narrator. Heat level 0. No profanity. Must have: quirky side characters, food descriptions, cat references. Must not have: graphic violence, dark themes, cynicism."></textarea>
+    </div>
+
+    <div id="no-pen-selected" style="padding: 1rem; text-align: center; color: #888; font-style: italic;">
+      Select a pen name above to see the specific voice audit checks.
+    </div>
+  </div>
+
+  <!-- Step 3: AI Drift Examples -->
+  <div class="section">
+    <h2>Step 3: Learn to Spot AI Drift</h2>
+    <p>Study these before/after examples. Train your eye to catch AI-generic prose.</p>
+
+    <h3>Example 1: Emotional Beat</h3>
+    <div class="comparison">
+      <div class="comparison-col before">
+        <h4>AI-Drifted</h4>
+        <p>"She felt a complex mix of emotions as she considered the implications of his words. Part of her wanted to trust him, while another part remained cautious. The tension between them was palpable, yet she found herself drawn to his quiet strength."</p>
+      </div>
+      <div class="comparison-col after">
+        <h4>Moxie Savage Voice</h4>
+        <p>"His words hit like a backhand. Trust him? She wanted to laugh. She wanted to bolt. Instead she held his stare and let the silence do the talking. He did not flinch. Neither did she."</p>
+      </div>
+    </div>
+
+    <h3>Example 2: Thoughtful Gesture</h3>
+    <div class="comparison">
+      <div class="comparison-col before">
+        <h4>AI-Drifted</h4>
+        <p>"She appreciated his thoughtful gesture, feeling warmth spread through her at his consideration. Their connection deepened with each interaction, and she realized she was beginning to trust him."</p>
+      </div>
+      <div class="comparison-col after">
+        <h4>Sage Kennedy Voice</h4>
+        <p>"'You got me a hot dog from the rink stand.' She stared at it. 'You remembered I hate the fancy ones.' 'Ketchup and mustard. No relish. I pay attention.' She bit into it before he could see her face do something embarrassing."</p>
+      </div>
+    </div>
+
+    <h3>Example 3: Setting Description</h3>
+    <div class="comparison">
+      <div class="comparison-col before">
+        <h4>AI-Drifted</h4>
+        <p>"The forest was dark and mysterious, creating an atmosphere of ancient power. She could feel the magic in the air around her, and it made her both afraid and fascinated."</p>
+      </div>
+      <div class="comparison-col after">
+        <h4>Ruthie Clark Voice</h4>
+        <p>"The canopy swallowed the last of the light three turns back. Now the dark had teeth. It pressed against her skin like something alive, tasting her pulse, deciding whether she belonged here. The magic was not in the air. It was the air. Every breath she drew carried it deeper into her lungs, into her blood, into the marrow of her."</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>The Formula:</strong> AI drift = abstract + balanced + hedged. Your voice = specific + committed + distinctive. When you see "complex mix of emotions" or "their connection deepened," that is the AI's default register overwriting your pen name.
+    </div>
+  </div>
+
+  <!-- Step 4: The Voice Audit Prompt -->
+  <div class="section">
+    <h2>Step 4: The Voice Audit Prompt</h2>
+    <p>Copy this prompt. Fill in the bracketed fields. Paste your voice profile and chapters. Run it on every chapter, starting with the ones from the middle of your manuscript (where drift is worst).</p>
+
+    <div class="prompt-box" id="voice-audit-prompt">
+      <button class="copy-btn" onclick="copyPrompt('voice-audit-prompt')">Copy</button>You are running a VOICE AUDIT on a chapter for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here is the pen name voice profile / writing style guide:
+<span class="placeholder">[PASTE VOICE PROFILE OR DESCRIBE: vocabulary, sentence rhythms, heat calibration, humor level, tone markers, what this pen name MUST have and MUST NOT have]</span>
+
+Here is Chapter 1 or an early chapter for voice baseline (optional but recommended):
+<span class="placeholder">[PASTE EARLY CHAPTER FOR COMPARISON, OR SKIP]</span>
+
+Here is the chapter to audit:
+<span class="placeholder">[PASTE CHAPTER HERE]</span>
+
+Run a VOICE AUDIT. Check these areas:
+
+1. VOICE CONSISTENCY — Does this chapter sound like the same author as Chapter 1? Flag any drift toward generic, literary, or AI-smoothed prose.
+2. TONE CALIBRATION — Is the humor/intensity/darkness ratio correct for this pen name? Not too light, not too dark, not too neutral.
+3. HEAT LEVEL MATCH — Does the heat level (language, explicitness, emotional intensity) match the pen name's calibration throughout?
+4. VOCABULARY CHECK — Is the word choice consistent with the pen name's register? No modern slang in Regency. No literary prose in rom-com. No sweetness in dark romance.
+5. SENTENCE RHYTHM — Does the prose rhythm match the pen name? Short brutal sentences for thriller. Lush flowing sentences for romantasy. Snappy for rom-com.
+6. INTERNAL MONOLOGUE FLAVOR — Does the POV character's inner voice match the pen name brand? Pop culture refs for Sage Kennedy. Raw intensity for Moxie Savage. Deadpan wit for Kelsey Croft.
+7. AI DRIFT DETECTION — Flag any passages that sound "AI-smooth" — too polished, too balanced, too generic. These are the spots where the AI overwrote the author's voice.
+8. GENRE PROMISE — Would a reader of this pen name feel satisfied? Would they buy the next book?
+
+PEN-NAME-SPECIFIC CHECKS (run the applicable set):
+<span class="placeholder">[Include whichever pen name applies — Sage Kennedy humor/banter/heat checks, Constance warmth/community checks, Ruthie lush/atmosphere checks, Marjorie period/wit checks, Kelsey snark/comedy checks, Moxie intensity/possessive checks, etc.]</span>
+
+Return:
+- Voice Audit Report with Target Voice, Current Voice assessment, Drift Detected (yes/no with specifics)
+- Specific passages flagged with explanations of what drifted and why
+- The revised chapter with voice corrections applied
+    </div>
+  </div>
+
+  <!-- Step 5: Chapter Tracker -->
+  <div class="section">
+    <h2>Step 5: Voice Audit Tracker</h2>
+    <p>Track your voice audit progress across your manuscript. Check off each chapter as you complete the audit.</p>
+
+    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+      <label>Total chapters: <input type="number" id="chapter-count" min="1" max="50" value="25" style="width: 60px; padding: 0.3rem; border: 2px solid var(--border); border-radius: 4px; font-family: Georgia, serif;"></label>
+      <button class="btn" onclick="buildTracker()" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Build Tracker</button>
+    </div>
+
+    <div id="tracker-container"></div>
+
+    <div style="margin-top: 1rem;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="audit-progress" style="width: 0%;">0%</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #888;">
+        <span id="chapters-audited">0 chapters audited</span>
+        <span id="chapters-remaining">0 remaining</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6: Results Log -->
+  <div class="section">
+    <h2>Step 6: Voice Audit Results Log</h2>
+    <p>Record your findings. Which chapters had the most drift? What patterns did you notice?</p>
+
+    <div class="result-section">
+      <h4>Chapters with Most Voice Drift</h4>
+      <textarea class="notes-area" placeholder="List the chapter numbers where you found the most drift. Example: Chapters 12, 15, 18 had significant drift — all written in the same week, all middle-of-book scenes."></textarea>
+    </div>
+
+    <div class="result-section">
+      <h4>Most Common Drift Patterns</h4>
+      <textarea class="notes-area" placeholder="What kept showing up? Example: AI kept replacing short punchy sentences with longer balanced ones. Internal monologue lost its snark after chapter 10."></textarea>
+    </div>
+
+    <div class="result-section">
+      <h4>Voice Corrections That Worked Best</h4>
+      <textarea class="notes-area" placeholder="What fixed the voice most effectively? Example: Adding the baseline chapter to the prompt made a huge difference. Specifying 'short sentences, no hedging' in the voice profile caught most drift."></textarea>
+    </div>
+
+    <div class="result-section">
+      <h4>Updates Needed for Voice Profile</h4>
+      <textarea class="notes-area" placeholder="Based on this audit, what should you add to your pen name voice profile for next time? Example: Need to add 'no balanced both/and constructions' to the MUST NOT list."></textarea>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="section">
+    <h2>Voice Audit Best Practices</h2>
+    <div class="checklist-item"><input type="checkbox" id="tip1"><label for="tip1"><strong>Audit every chapter,</strong> even ones that feel fine. Drift is subtle.</label></div>
+    <div class="checklist-item"><input type="checkbox" id="tip2"><label for="tip2"><strong>Start with middle chapters.</strong> Beginning and end usually have the strongest voice. The middle is where drift hides.</label></div>
+    <div class="checklist-item"><input type="checkbox" id="tip3"><label for="tip3"><strong>Always include a baseline chapter</strong> for comparison. "Match this voice" with an example beats describing the voice abstractly.</label></div>
+    <div class="checklist-item"><input type="checkbox" id="tip4"><label for="tip4"><strong>Read aloud after corrections.</strong> Your ear catches what your eyes miss.</label></div>
+    <div class="checklist-item"><input type="checkbox" id="tip5"><label for="tip5"><strong>Not every sentence needs personality.</strong> Action scenes and transitions can be clean and functional.</label></div>
+    <div class="checklist-item"><input type="checkbox" id="tip6"><label for="tip6"><strong>Update your voice profile</strong> after every book. Each audit teaches you something new about your pen name voice.</label></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss | The Invisible Pen | &copy; 2026 Jessica Waldron
+</div>
+
+<script>
+const penNameData = {
+  sage: {
+    title: 'Sage Kennedy — Steamy Rom-Com',
+    desc: 'Hockey romance, billionaire rom-com, royal romance, holiday stories. Heat 4/5. Voice is funny, flirty, grounded. Heroines have pop-culture-laced inner monologues. Banter crackles. Heat scenes are playful, not dark. Billionaire heroes are grounded, not flashy. Fish-out-of-water energy.'
+  },
+  constance: {
+    title: 'Constance Ruth Clark — Small-Town & Billionaire Romance',
+    desc: 'Small-town settings, returning home stories, grounded billionaires. Heat 4-5/5. Voice is warm, observational, relatable. Humor is dry and knowing, not slapstick. Community feels real. Emotional tone is grounded, not overwrought.'
+  },
+  ruthie: {
+    title: 'Ruthie Clark — Dark Fantasy & Romantasy',
+    desc: 'Fated mates, monster romance, morally gray heroes, dark fairytale retellings. Heat 4-5/5. Voice is lush, atmospheric, emotionally intense. Sentences flow. Magic is woven into the prose. Everything is heightened — longing aches, danger is visceral, connection is cosmic.'
+  },
+  marjorie: {
+    title: 'Marjorie Adams — Regency Romance',
+    desc: 'Period romance with wit and verbal sparring. Voice is period-appropriate. Dry, understated humor based in social observation. Zero anachronisms. Characters understand class, propriety, and reputation. Arguments belong in drawing rooms.'
+  },
+  kelsey: {
+    title: 'Kelsey Croft — Vampire Rom-Com',
+    desc: 'Vampire romance with comedy and real stakes. Heat 4-5/5. Voice is snarky, modern, deadpan. Humor rooted in culture-clash (ancient supernatural meets modern world). Heroine is sharp, not swoony. Comedy does not undercut danger.'
+  },
+  moxie: {
+    title: 'Moxie Savage — Dark Romance',
+    desc: 'Mafia romance, MC romance. Heat 5/5. Voice is raw, intense, unapologetic. Short brutal sentences. Possessive tension thrums through every scene. Heroine has backbone. Nothing is soft, hedged, or smoothed. Explicit and uncompromising.'
+  },
+  rosemary: {
+    title: 'Rosemary Irving — Clean Historical Western Romance',
+    desc: 'Frontier-era romance (1840s-1890s). Cowboys, ranchers, mail-order brides, pioneer settings. Heat 1-2/5. Sweet/clean with tension through longing and emotional intimacy. Strong quiet heroines. Period-accurate. Sweet without saccharine.'
+  },
+  garrett: {
+    title: 'Garrett Stone — Psychological Thriller',
+    desc: 'Confined-space thrillers, psychological horror, surreal/architectural horror. No romance. Single male POV. Voice is precise, clinical, building dread through observation. Claustrophobic atmosphere. Uncanny details. No comfort. No reassurance.'
+  },
+  custom: {
+    title: 'Custom Pen Name',
+    desc: 'Enter your own voice profile in the text area above. Include vocabulary, sentence rhythms, heat level, humor calibration, tone markers, and your MUST HAVE / MUST NOT HAVE lists.'
+  }
+};
+
+let selectedPenName = null;
+
+function selectPenName(name) {
+  selectedPenName = name;
+  document.querySelectorAll('.pen-name-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('btn-' + name).classList.add('selected');
+
+  document.querySelectorAll('.pen-checks').forEach(c => c.classList.remove('active'));
+  document.getElementById('checks-' + name).classList.add('active');
+  document.getElementById('no-pen-selected').style.display = 'none';
+
+  const info = penNameData[name];
+  document.getElementById('pen-info-title').textContent = info.title;
+  document.getElementById('pen-info-desc').textContent = info.desc;
+  document.getElementById('selected-pen-info').style.display = 'block';
+}
+
+function copyPrompt(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function buildTracker() {
+  const count = parseInt(document.getElementById('chapter-count').value) || 25;
+  const container = document.getElementById('tracker-container');
+
+  let html = '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">';
+  html += '<thead><tr>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: left; min-width: 60px;">Ch.</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: center;">Audited</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: center;">Drift?</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: center;">Corrected</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: center;">Read Aloud</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: center;">Status</th>';
+  html += '<th style="background: var(--navy); color: white; padding: 0.5rem; text-align: left; min-width: 120px;">Notes</th>';
+  html += '</tr></thead><tbody>';
+
+  for (let i = 1; i <= count; i++) {
+    const bg = i % 2 === 0 ? 'var(--light-gray)' : 'white';
+    html += `<tr style="background: ${bg};">`;
+    html += `<td style="padding: 0.4rem 0.5rem; font-weight: bold; color: var(--navy);">Ch ${i}</td>`;
+    html += `<td style="padding: 0.4rem; text-align: center;"><input type="checkbox" class="audit-cb" onchange="updateProgress()" style="accent-color: var(--coral);"></td>`;
+    html += `<td style="padding: 0.4rem; text-align: center;"><select style="font-size: 0.75rem; padding: 0.2rem; border-radius: 4px; border: 1px solid var(--border);"><option>--</option><option>None</option><option>Minor</option><option>Major</option></select></td>`;
+    html += `<td style="padding: 0.4rem; text-align: center;"><input type="checkbox" style="accent-color: var(--sage);"></td>`;
+    html += `<td style="padding: 0.4rem; text-align: center;"><input type="checkbox" style="accent-color: var(--gold);"></td>`;
+    html += `<td style="padding: 0.4rem; text-align: center;"><select style="font-size: 0.75rem; padding: 0.2rem; border-radius: 4px; border: 1px solid var(--border);"><option>Pending</option><option value="pass">Approved</option><option value="reedit">Re-edit</option></select></td>`;
+    html += `<td style="padding: 0.4rem;"><input type="text" style="width: 100%; font-size: 0.75rem; padding: 0.2rem; border: 1px solid var(--border); border-radius: 4px; font-family: Georgia, serif;" placeholder="Notes..."></td>`;
+    html += '</tr>';
+  }
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function updateProgress() {
+  const boxes = document.querySelectorAll('.audit-cb');
+  if (boxes.length === 0) return;
+  const checked = Array.from(boxes).filter(b => b.checked).length;
+  const total = boxes.length;
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('audit-progress').style.width = pct + '%';
+  document.getElementById('audit-progress').textContent = pct + '%';
+  document.getElementById('chapters-audited').textContent = checked + ' chapters audited';
+  document.getElementById('chapters-remaining').textContent = (total - checked) + ' remaining';
+}
+
+// Build initial tracker
+buildTracker();
+</script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4: Pass 3 — Timeline Consistency | ELAB Self-Paced</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --navy: #1B2A4A;
+    --navy-light: #2d4470;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --sage: #7A9E7E;
+    --sage-light: #a8c4ab;
+    --white: #ffffff;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-600: #6b7280;
+    --gray-800: #1f2937;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.7;
+  }
+
+  .header {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .header .brand {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .header h1 span { color: var(--coral); }
+
+  .header .subtitle {
+    font-family: Inter, sans-serif;
+    font-size: 0.95rem;
+    color: var(--coral-light);
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(27,42,74,0.07);
+    border: 1px solid var(--gray-200);
+  }
+
+  .card h2 {
+    font-size: 1.4rem;
+    color: var(--navy);
+    margin-bottom: 0.25rem;
+  }
+
+  .card h2 .num {
+    color: var(--coral);
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+  }
+
+  .card .card-desc {
+    font-family: Inter, sans-serif;
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Prompt Code Block */
+  .prompt-block {
+    background: var(--navy);
+    color: var(--cream);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .prompt-header span {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .copy-btn {
+    font-family: Inter, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--coral);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .copy-btn:hover { background: #d4614a; }
+  .copy-btn:active { transform: scale(0.97); }
+  .copy-btn.copied { background: var(--sage); }
+
+  .prompt-body {
+    padding: 1.25rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+
+  .prompt-body::-webkit-scrollbar { width: 6px; }
+  .prompt-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+  .prompt-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+  /* Before / After */
+  .example-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .example-pair { grid-template-columns: 1fr; }
+  }
+
+  .example-box {
+    border-radius: 10px;
+    padding: 1.25rem;
+    font-size: 0.92rem;
+  }
+
+  .example-box.before {
+    background: #fef2f0;
+    border-left: 4px solid var(--coral);
+  }
+
+  .example-box.after {
+    background: #f0f7f1;
+    border-left: 4px solid var(--sage);
+  }
+
+  .example-box .label {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.6rem;
+  }
+
+  .example-box.before .label { color: var(--coral); }
+  .example-box.after .label { color: var(--sage); }
+
+  .example-box .dialogue {
+    font-style: italic;
+    margin-bottom: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .example-box .flag {
+    font-family: Inter, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .example-box.before .flag { background: var(--coral); color: var(--white); }
+  .example-box.after .flag { background: var(--sage); color: var(--white); }
+
+  .example-box .note {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: 0.4rem;
+  }
+
+  /* Results Tracker */
+  .tracker-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .tracker-grid { grid-template-columns: 1fr; }
+  }
+
+  .tracker-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cream);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+  }
+
+  .tracker-item .check-label {
+    font-family: Inter, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--navy);
+  }
+
+  .tracker-item .check-num {
+    font-weight: 700;
+    color: var(--coral);
+    margin-right: 0.35rem;
+  }
+
+  .tracker-item select {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--navy);
+    cursor: pointer;
+    min-width: 100px;
+  }
+
+  .tracker-item select:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+  }
+
+  /* Notes textarea */
+  .notes-area {
+    width: 100%;
+    min-height: 140px;
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    padding: 1rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--cream);
+    color: var(--navy);
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .notes-area:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+    border-color: var(--coral);
+  }
+
+  .notes-area::placeholder { color: var(--gray-600); font-style: italic; }
+
+  /* Chapter Input */
+  .chapter-input-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .chapter-input-row label {
+    font-family: Inter, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .chapter-input-row input {
+    font-family: Inter, sans-serif;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: var(--white);
+  }
+
+  .chapter-input-row input:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+  }
+
+  /* Summary bar */
+  .summary-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .summary-stat {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    color: var(--white);
+  }
+
+  .summary-stat.pass { background: var(--sage); }
+  .summary-stat.fail { background: var(--coral); }
+  .summary-stat.pending { background: var(--gray-600); }
+
+  /* Tag Legend */
+  .tag-legend {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .tag-badge {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    color: var(--white);
+  }
+
+  .tag-badge.gap { background: var(--coral); }
+  .tag-badge.contradiction { background: var(--gold); }
+  .tag-badge.confirm { background: var(--navy); }
+
+  .tag-desc {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* Timeline Log Preview */
+  .log-preview {
+    background: var(--navy);
+    color: var(--cream);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .log-preview .log-heading {
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+
+  /* Tip Box */
+  .tip-box {
+    background: linear-gradient(135deg, #fef9f0, #fdf3e7);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tip-box .tip-label {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .tip-box p {
+    font-size: 0.92rem;
+    color: var(--navy);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: Inter, sans-serif;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 2rem;
+  }
+
+  .footer strong { color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen &middot; ELAB Self-Paced</div>
+  <h1>Lesson 4: <span>Pass 3 — Timeline Consistency</span></h1>
+  <div class="subtitle">Because nothing pulls a reader out faster than a Tuesday that happens twice</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: THE PROMPT -->
+  <div class="card">
+    <h2><span class="num">01</span> The Prompt</h2>
+    <p class="card-desc">Copy this prompt and paste it into your AI tool with your timeline log (if you have one) and chapter text.</p>
+
+    <div class="prompt-block">
+      <div class="prompt-header">
+        <span>Timeline Consistency Prompt</span>
+        <button class="copy-btn" id="copyPrompt" onclick="copyPromptText()">Copy Prompt</button>
+      </div>
+      <div class="prompt-body" id="promptText">You are editing a chapter for [PEN NAME], a [GENRE] author.
+
+Here is the story timeline log so far (if available):
+[PASTE TIMELINE LOG OR "No prior log — build from this chapter"]
+
+Here is the chapter to check:
+[PASTE FULL CHAPTER HERE]
+
+This is Chapter [NUMBER]. The previous chapter ended on [DAY/TIME/LOCATION if known].
+
+Run a TIMELINE CONSISTENCY CHECK on this chapter. Check all 8 points:
+
+1. SCENE DURATION — How long does this scene take in story time? Is that consistent with what characters accomplish?
+2. TIME ANCHORS — Does this chapter reference a day, date, time of day, or elapsed time? Log it. Does it match the previous chapter?
+3. TRAVEL & LOGISTICS — If characters move locations, does the travel time make sense?
+4. SEASON/WEATHER/LIGHT — Does the described light, temperature, or weather match the established season and time of day?
+5. CHARACTER FATIGUE — Do characters show appropriate fatigue, hunger, recovery based on elapsed story time?
+6. CONCURRENT EVENTS — If events are happening simultaneously in different locations, do they track?
+7. RECENCY OF REFERENCE — When characters reference past events ("last week," "two days ago"), does the math work?
+8. AGE & LIFE-STAGE — If ages or timeframes are referenced, do they track with earlier chapters?
+
+Output: Build or update a STORY TIMELINE LOG in this format:
+[Chapter X] Day N | Time of Day | Location | Key Events | Time Elapsed
+FLAGS: [TIMELINE GAP] / [POSSIBLE CONTRADICTION] / [CONFIRM WITH AUTHOR]</div>
+    </div>
+
+    <div class="tag-legend">
+      <span class="tag-badge gap">[TIMELINE GAP]</span>
+      <span class="tag-badge contradiction">[POSSIBLE CONTRADICTION]</span>
+      <span class="tag-badge confirm">[CONFIRM WITH AUTHOR]</span>
+    </div>
+    <p class="tag-desc">
+      <strong>TIMELINE GAP</strong> = missing time not accounted for. <strong>POSSIBLE CONTRADICTION</strong> = reference conflicts with established timeline. <strong>CONFIRM WITH AUTHOR</strong> = ambiguity that needs your decision.
+    </p>
+
+    <div class="log-preview">
+      <div class="log-heading">Example Timeline Log Output:</div>
+[Ch. 1] Day 1 | Morning | Maple Creek, Emma's bakery | Emma opens shop, meets Jack for first time | Story start
+[Ch. 2] Day 1 | Afternoon | Town square, then Emma's apartment | Festival setup, Emma sees Jack again | ~6 hours
+[Ch. 3] Day 2 | Morning | Emma's bakery, then Jack's ranch | Emma delivers order, sees ranch for first time | ~18 hours
+    </div>
+  </div>
+
+  <!-- SECTION 2: BEFORE / AFTER -->
+  <div class="card">
+    <h2><span class="num">02</span> Before &amp; After Example</h2>
+    <p class="card-desc">Timeline reference error: character uses "last Tuesday" but the established timeline shows it was Thursday (3 days ago, not 5).</p>
+
+    <div class="example-pair">
+      <div class="example-box before">
+        <div class="label">Before</div>
+        <span class="flag">[POSSIBLE CONTRADICTION] Ch. 9</span>
+        <div class="dialogue">"When I talked to him last Tuesday, he mentioned the property sale," Clara said, wrapping her hands around her mug.</div>
+        <div class="note">Timeline log shows the conversation with Ben occurred on Day 12 (Thursday). Current scene is Day 15 (Sunday). "Last Tuesday" would be Day 10, which is 2 days before the conversation actually happened. The math doesn't work.</div>
+      </div>
+      <div class="example-box after">
+        <div class="label">After</div>
+        <span class="flag">Fixed</span>
+        <div class="dialogue">"When I talked to him a few days ago, he mentioned the property sale," Clara said, wrapping her hands around her mug.</div>
+        <div class="note">Changed to a vague-but-accurate reference. "A few days ago" covers the 3-day gap without creating a verifiable math error. Alternative fix: change to "on Thursday" for precision.</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Pro Tip</div>
+      <p>When you find timeline reference errors, you have two fix strategies. Precise: use the correct day name or date. Vague: use relative language ("a few days ago," "earlier this week") that's accurate without being checkable. Both work. Choose based on whether the specific day matters to your story.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: RESULTS TRACKER -->
+  <div class="card">
+    <h2><span class="num">03</span> Results Tracker</h2>
+    <p class="card-desc">Track your results for each chapter. Set each check point to Pass, Flagged, or N/A.</p>
+
+    <div class="chapter-input-row">
+      <label for="chapterNum">Chapter:</label>
+      <input type="number" id="chapterNum" min="1" max="100" placeholder="#" style="width: 80px;" />
+      <label for="prevEnd">Previous chapter ended:</label>
+      <input type="text" id="prevEnd" placeholder="e.g., Day 5, Friday evening, bakery" style="width: 260px;" />
+    </div>
+
+    <div class="tracker-grid">
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">1.</span> Scene Duration</span>
+        <select id="check1" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">2.</span> Time Anchors</span>
+        <select id="check2" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">3.</span> Travel &amp; Logistics</span>
+        <select id="check3" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">4.</span> Season / Weather / Light</span>
+        <select id="check4" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">5.</span> Character Fatigue</span>
+        <select id="check5" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">6.</span> Concurrent Events</span>
+        <select id="check6" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">7.</span> Recency of Reference</span>
+        <select id="check7" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">8.</span> Age &amp; Life-Stage</span>
+        <select id="check8" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Flagged</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="summary-bar" id="summaryBar">
+      <span class="summary-stat pass" id="passCount">Pass: 0</span>
+      <span class="summary-stat fail" id="failCount">Flagged: 0</span>
+      <span class="summary-stat pending" id="pendingCount">Pending: 8</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4: TIMELINE LOG -->
+  <div class="card">
+    <h2><span class="num">04</span> Running Timeline Log</h2>
+    <p class="card-desc">Paste or build your running timeline log here. Carry this forward from chapter to chapter.</p>
+
+    <textarea class="notes-area" id="timelineLog" placeholder="Paste your AI's timeline log output here after each chapter. This becomes the input for the next chapter's check.
+
+Example format:
+[Ch. 1] Day 1 | Morning | Maple Creek, bakery | Emma opens shop, meets Jack | Story start
+[Ch. 2] Day 1 | Afternoon | Town square | Festival setup, second meeting | ~6 hours
+[Ch. 3] Day 2 | Morning | Bakery, then ranch | Emma delivers, sees ranch | ~18 hours" style="min-height: 180px;"></textarea>
+  </div>
+
+  <!-- SECTION 5: NOTES -->
+  <div class="card">
+    <h2><span class="num">05</span> Notes &amp; Decisions</h2>
+    <p class="card-desc">Record timeline flags, contradictions found, and decisions made about ambiguous references.</p>
+
+    <textarea class="notes-area" id="notesField" placeholder="What timeline issues did the checker find? What decisions have you made about each one? Note any CONFIRM WITH AUTHOR items and your resolution."></textarea>
+
+    <div class="tip-box" style="margin-top: 1.25rem;">
+      <div class="tip-label">Workflow Reminder</div>
+      <p>Carry your timeline log forward with every chapter. Start with Chapter 1 (no prior log). After each chapter, copy the updated log into the next chapter's prompt. By the end, you'll have a complete story timeline document. Keep it for continuity checks during future books in a series.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>The Invisible Pen</strong> &middot; Edit Like a Boss &middot; Lesson 4: Pass 3 &mdash; Timeline Consistency
+</div>
+
+<script>
+function copyPromptText() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyPrompt');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById('promptText'));
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    const btn = document.getElementById('copyPrompt');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function updateSummary() {
+  let pass = 0, fail = 0, pending = 0;
+  for (let i = 1; i <= 8; i++) {
+    const val = document.getElementById('check' + i).value;
+    if (val === 'pass' || val === 'na') pass++;
+    else if (val === 'fail') fail++;
+    else pending++;
+  }
+  document.getElementById('passCount').textContent = 'Pass: ' + pass;
+  document.getElementById('failCount').textContent = 'Flagged: ' + fail;
+  document.getElementById('pendingCount').textContent = 'Pending: ' + pending;
+}
+</script>
+
+</body>
+</html>

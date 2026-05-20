@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 6 — Dialogue Polish Worksheet</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:850px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.82rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+textarea{width:100%;min-height:120px;border:2px solid var(--border);border-radius:8px;padding:1rem;font-family:'Georgia',serif;font-size:0.95rem;resize:vertical;background:var(--cream);}
+textarea:focus{outline:none;border-color:var(--coral);}
+.example-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.example-box{padding:1rem;border-radius:8px;font-size:0.9rem;}
+.example-before{background:#FFEBEE;border-left:3px solid #E53935;}
+.example-after{background:#E8F5E9;border-left:3px solid #43A047;}
+.check-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);}
+.check-row:last-child{border-bottom:none;}
+.check-row .num{width:30px;font-weight:bold;color:var(--coral);flex-shrink:0;}
+.check-row .label{flex:1;}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;}
+.btn:hover{background:#D4634A;}
+.progress-bar{background:var(--light-gray);border-radius:20px;height:24px;overflow:hidden;margin:1rem 0;}
+.progress-fill{background:linear-gradient(90deg, var(--coral), var(--gold));height:100%;border-radius:20px;transition:width 0.5s ease;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:bold;}
+.voice-profile{background:var(--light-gray);border-radius:8px;padding:1.25rem;margin-bottom:1rem;border-left:3px solid var(--gold);}
+.voice-profile label{font-weight:bold;display:block;margin-bottom:0.25rem;color:var(--navy);}
+.voice-profile input,.voice-profile textarea{width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.9rem;background:white;margin-bottom:0.5rem;}
+.voice-profile textarea{min-height:60px;}
+.romcom-section{background:var(--navy);color:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;}
+.romcom-section h2{color:var(--gold);border-bottom-color:var(--gold);}
+.romcom-check{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.15);}
+.romcom-check:last-child{border-bottom:none;}
+.romcom-check .num{color:var(--gold);font-weight:bold;width:30px;flex-shrink:0;}
+.romcom-check .label{flex:1;color:#D0CCC4;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.example-compare{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 6 — Pass 5: Dialogue Polish</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- THE PROMPT -->
+  <div class="section">
+    <h2>The Dialogue Polish Prompt</h2>
+    <p style="margin-bottom:1rem;">Copy this prompt. Replace the placeholders in gold. Include your character voice profiles before the chapter.</p>
+
+    <div class="prompt-box" id="promptBox">
+      <button class="copy-btn" onclick="copyPrompt()">Copy</button>You are polishing dialogue for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here are the main characters in this chapter and their voice profiles:
+<span class="placeholder">[CHARACTER 1]</span>: <span class="placeholder">[Brief voice description — vocabulary, cadence, attitude]</span>
+<span class="placeholder">[CHARACTER 2]</span>: <span class="placeholder">[Brief voice description]</span>
+
+Here is the chapter:
+<span class="placeholder">[PASTE FULL CHAPTER HERE]</span>
+
+Run a DIALOGUE POLISH on this chapter. Check all 8 points:
+
+1. SUBTEXT — Are characters saying exactly what they mean? Add layers — what's unsaid matters more than what's said. Flag on-the-nose dialogue.
+2. DISTINCT VOICES — Cover the character names. Can you tell who's speaking by cadence, word choice, attitude alone? If not, differentiate them.
+3. BANTER RHYTHM — For rom-com: does the back-and-forth crackle? Trim dead air between zingers. For other genres: does the dialogue have appropriate tension/energy?
+4. EXPOSITION DUMP — Flag any dialogue that exists only to inform the reader. Characters don't narrate their own backstory to people who already know it. Reframe or cut.
+5. ACTION BEAT BALANCE — Too many "she said" tags? Too many action beats? Find the mix. Use said/asked for invisible tags. Use action beats for character moments.
+6. CONTRACTIONS — Characters should use contractions in contemporary. Period-appropriate formality for historical (no contractions for Regency).
+7. TRAILING OFF — Overuse of ellipses or em-dashes in dialogue? Tighten. One trailing-off per scene maximum.
+8. PET PHRASES — Does a character repeat a verbal tic too often? Once or twice = characterization. More = annoying.
+
+FOR ROM-COM PEN NAMES (Sage Kennedy, Kelsey Croft), also run:
+- COMEDIC BEAT CHECK: Flag dialogue that ends without POV reaction. Identify absurd moments lacking internal commentary. Ensure wit leaks through 3-4 times per chapter. Verify comedic rhythm: setup, reaction, optional witness response.
+
+Return the revised chapter with dialogue fixes applied, plus a change summary.</div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section">
+    <h2>Before & After Examples</h2>
+
+    <p style="font-weight:bold; margin-bottom:0.5rem;">Example 1 — On-the-Nose Dialogue Fixed with Subtext</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (on-the-nose):</strong><br>
+        "I'm really hurt that you didn't tell me about the job offer. It makes me feel like you don't trust me enough to share important decisions with me. I thought we were partners."
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (subtext):</strong><br>
+        "When were you going to mention it?" She lined the salt and pepper shakers up with the edge of the table. "Or was that one of those things I just find out about later?"
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Same emotion, completely different delivery. The character never says "trust" or "hurt." The table-straightening shows the need for control. "One of those things" implies a pattern. The reader fills in the rest.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 2 — Two Characters Made Distinct</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (same voice):</strong><br>
+        "I think we should talk about what happened," Mara said.<br>
+        "I agree. I've been thinking about it too, and I realize we need to address it," Ben replied.<br>
+        "I appreciate you being open to that. I want to make sure we handle this well."
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (distinct voices):</strong><br>
+        "We need to talk." Mara set her bag down. No preamble. No softening.<br>
+        Ben dragged a hand through his hair. "Yeah. Yeah, I know. I just... can we sit first? Are you hungry? I made that pasta you like."<br>
+        "Ben."<br>
+        "Sitting. Right."
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Mara is direct, short sentences, no wasted words. Ben deflects with care-taking and questions. Their personalities come through without any dialogue tags telling you how they feel.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 3 — Exposition Dump Eliminated</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (exposition dump):</strong><br>
+        "Remember when Mom left us when we were seven? Dad raised us alone on the ranch after that. He never talked about her, and we learned not to ask. That's probably why we both have trust issues."
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (natural):</strong><br>
+        "You sound just like Dad right now." She picked at the label on her bottle. "That same tone. Like if you just don't talk about it, it goes away."
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">The backstory is implied, not narrated. Siblings would never recite their childhood to each other. The reader infers the family history from the emotional shorthand.</p>
+  </div>
+
+  <!-- CHARACTER VOICE PROFILES -->
+  <div class="section">
+    <h2>Your Character Voice Profiles</h2>
+    <p style="margin-bottom:1rem;">Fill these in before running the prompt. Describe HOW each character talks, not who they are.</p>
+
+    <div class="voice-profile">
+      <label>Character 1 Name:</label>
+      <input type="text" placeholder="e.g., Mara Chen">
+      <label>Voice Description (vocabulary, cadence, attitude, verbal habits):</label>
+      <textarea placeholder="e.g., Short, precise sentences. Dry humor delivered deadpan. Uses medical metaphors when stressed. Rarely asks questions — makes statements. No filler words."></textarea>
+    </div>
+
+    <div class="voice-profile">
+      <label>Character 2 Name:</label>
+      <input type="text" placeholder="e.g., Ben Torres">
+      <label>Voice Description:</label>
+      <textarea placeholder="e.g., Warm, longer sentences. Deflects with humor and caretaking. Asks questions instead of making demands. Uses 'look' as a verbal opener. Trails off when he's avoiding something."></textarea>
+    </div>
+
+    <div class="voice-profile" id="char3" style="display:none;">
+      <label>Character 3 Name:</label>
+      <input type="text" placeholder="e.g., Secondary character">
+      <label>Voice Description:</label>
+      <textarea placeholder="How does this character sound different from the leads?"></textarea>
+    </div>
+
+    <button class="btn" onclick="document.getElementById('char3').style.display='block';this.style.display='none';" style="background:var(--navy);font-size:0.9rem;padding:0.5rem 1rem;">+ Add Character 3</button>
+  </div>
+
+  <!-- YOUR WORKSPACE -->
+  <div class="section">
+    <h2>Your Dialogue Polish Workspace</h2>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name:</label>
+    <input type="text" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Sage Kennedy">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Chapter Number / Title:</label>
+    <input type="text" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Chapter 5 — The Gala">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Is this a rom-com pen name?</label>
+    <select id="romcomToggle" onchange="toggleRomCom()" style="padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);">
+      <option value="no">No</option>
+      <option value="yes">Yes (Sage Kennedy, Kelsey Croft, etc.)</option>
+    </select>
+  </div>
+
+  <!-- RESULTS TRACKER -->
+  <div class="section">
+    <h2>Dialogue Polish Results Tracker</h2>
+    <p style="margin-bottom:0.5rem;">After running the prompt, mark each checkpoint based on the AI's findings and your review.</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%">0 / 8</div>
+    </div>
+
+    <div id="resultsGrid">
+      <div class="check-row">
+        <span class="num">1</span>
+        <span class="label">Subtext (no on-the-nose dialogue, layers added)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">2</span>
+        <span class="label">Distinct Voices (pass the cover-the-names test)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">3</span>
+        <span class="label">Banter Rhythm (energy in back-and-forth exchanges)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">4</span>
+        <span class="label">Exposition Dump (no "as you know, Bob" moments)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">5</span>
+        <span class="label">Action Beat Balance (mix of tags, beats, untagged)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">6</span>
+        <span class="label">Contractions (genre-appropriate formality level)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">7</span>
+        <span class="label">Trailing Off (max 1 per scene, no ellipsis overuse)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">8</span>
+        <span class="label">Pet Phrases (verbal tics at right frequency, not overused)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Notes on issues found / changes made:</label>
+      <textarea style="min-height:150px;" placeholder="What dialogue patterns did the AI fix? Which characters sounded too similar? Did you override any voice changes? What subtext was added?"></textarea>
+    </div>
+  </div>
+
+  <!-- ROM-COM BONUS -->
+  <div class="romcom-section" id="romcomSection" style="display:none;">
+    <h2>Comedic Beat Check (Rom-Com Bonus)</h2>
+    <p style="margin-bottom:1rem;color:#D0CCC4;">For Sage Kennedy, Kelsey Croft, and similar pen names. Mark each sub-check after review.</p>
+
+    <div class="romcom-check">
+      <span class="num">1</span>
+      <span class="label">Dialogue that lands a joke has a POV reaction after it</span>
+      <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+        <option value="">--</option>
+        <option value="pass">PASS</option>
+        <option value="fail">FIXED</option>
+      </select>
+    </div>
+    <div class="romcom-check">
+      <span class="num">2</span>
+      <span class="label">Absurd moments have internal commentary from POV character</span>
+      <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+        <option value="">--</option>
+        <option value="pass">PASS</option>
+        <option value="fail">FIXED</option>
+      </select>
+    </div>
+    <div class="romcom-check">
+      <span class="num">3</span>
+      <span class="label">Wit leaks through dialogue 3-4 times per chapter</span>
+      <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+        <option value="">--</option>
+        <option value="pass">PASS</option>
+        <option value="fail">FIXED</option>
+      </select>
+    </div>
+    <div class="romcom-check">
+      <span class="num">4</span>
+      <span class="label">Comedic rhythm verified: setup, reaction, optional witness</span>
+      <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+        <option value="">--</option>
+        <option value="pass">PASS</option>
+        <option value="fail">FIXED</option>
+      </select>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem; color:var(--gold);">Comedy Notes:</label>
+      <textarea style="min-height:100px;background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.2);" placeholder="Which jokes landed? Which fell flat? Where did the AI add comedy that worked? Where did you override?"></textarea>
+    </div>
+  </div>
+
+  <!-- THE COVER THE NAMES TEST -->
+  <div class="section" style="background:var(--navy);color:white;text-align:center;">
+    <h2 style="color:var(--coral);border-bottom-color:var(--coral);">The Cover the Names Test</h2>
+    <p style="margin:1rem 0;color:#D0CCC4;">After running the Dialogue Polish, do this final check on the revised chapter.</p>
+    <p style="font-size:1.1rem;margin:1.5rem 0;">Cover the character names. Read only the spoken words.<br>Can you tell who is speaking?</p>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;">
+      <button class="btn" onclick="coverResult('yes')" style="background:var(--sage);padding:1rem 2rem;">Yes — voices are distinct</button>
+      <button class="btn" onclick="coverResult('no')" style="background:var(--coral);padding:1rem 2rem;">No — need more differentiation</button>
+    </div>
+    <p id="coverMsg" style="margin-top:1rem;font-weight:bold;"></p>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyPrompt() {
+  const box = document.getElementById('promptBox');
+  const text = box.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function updateResults() {
+  const selects = document.querySelectorAll('.result-select');
+  let completed = 0;
+  let total = 0;
+  selects.forEach(sel => {
+    // Only count visible selects
+    if (sel.offsetParent !== null) {
+      total++;
+      const row = sel.closest('.check-row') || sel.closest('.romcom-check');
+      if (sel.value === 'pass') {
+        if (row) row.style.background = row.closest('.romcom-section') ? 'rgba(122,158,126,0.3)' : '#E8F5E9';
+        completed++;
+      } else if (sel.value === 'fail') {
+        if (row) row.style.background = row.closest('.romcom-section') ? 'rgba(255,152,0,0.2)' : '#FFF3E0';
+        completed++;
+      } else {
+        if (row) row.style.background = 'transparent';
+      }
+    }
+  });
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  fill.textContent = completed + ' / ' + total;
+}
+
+function toggleRomCom() {
+  const val = document.getElementById('romcomToggle').value;
+  document.getElementById('romcomSection').style.display = val === 'yes' ? 'block' : 'none';
+  updateResults();
+}
+
+function coverResult(answer) {
+  const msg = document.getElementById('coverMsg');
+  if (answer === 'yes') {
+    msg.style.color = '#7FD47F';
+    msg.textContent = 'Voices are distinct. This chapter passes the Dialogue Polish. Move to Pass 6.';
+  } else {
+    msg.style.color = '#E8735A';
+    msg.textContent = 'Run the prompt again with more specific voice profiles. Add verbal habits, sentence length preferences, and attitude markers.';
+  }
+}
+</script>
+</body>
+</html>

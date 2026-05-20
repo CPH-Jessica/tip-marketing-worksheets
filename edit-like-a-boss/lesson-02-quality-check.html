@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 2 — Quality Check Worksheet</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:850px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+textarea{width:100%;min-height:200px;border:2px solid var(--border);border-radius:8px;padding:1rem;font-family:'Georgia',serif;font-size:0.95rem;resize:vertical;background:var(--cream);}
+textarea:focus{outline:none;border-color:var(--coral);}
+.checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.check-item{display:flex;align-items:center;gap:0.5rem;padding:0.5rem;border-radius:4px;background:var(--light-gray);}
+.check-item input{accent-color:var(--coral);width:18px;height:18px;}
+.check-item.pass{background:#E8F5E9;}
+.check-item.fail{background:#FFEBEE;}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;}
+.btn:hover{background:#D4634A;}
+.btn-secondary{background:var(--navy);}
+.btn-secondary:hover{background:#2A3D5C;}
+.result-box{background:var(--light-gray);border-radius:8px;padding:1.5rem;margin-top:1rem;display:none;}
+.tag{display:inline-block;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.75rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;}
+.tag-pass{background:#C8E6C9;color:#2E7D32;}
+.tag-fail{background:#FFCDD2;color:#C62828;}
+.tag-warn{background:#FFF9C4;color:#F57F17;}
+.example-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.example-box{padding:1rem;border-radius:8px;font-size:0.9rem;}
+.example-before{background:#FFEBEE;border-left:3px solid #E53935;}
+.example-after{background:#E8F5E9;border-left:3px solid #43A047;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.checklist-grid,.example-compare{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 2 — Pass 1: Quality Check</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- THE PROMPT -->
+  <div class="section">
+    <h2>The Quality Check Prompt</h2>
+    <p style="margin-bottom:1rem;">Copy this prompt. Replace the placeholders in gold with your project details. Paste your chapter where indicated.</p>
+
+    <div class="prompt-box" id="promptBox">
+      <button class="copy-btn" onclick="copyPrompt()">Copy</button>You are editing a chapter for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here is the chapter outline / chapter prompt for this chapter:
+<span class="placeholder">[PASTE YOUR CHAPTER OUTLINE HERE]</span>
+
+Here is the chapter to edit:
+<span class="placeholder">[PASTE YOUR FULL CHAPTER HERE]</span>
+
+Run a QUALITY CHECK on this chapter. Check all 11 points:
+
+1. NATURAL PROSE — Does it read like a human wrote it? Flag AI-isms, overused adverbs, repeated words/phrases. Check against the banned list.
+2. TONE MATCH — Is the humor/intensity genre-appropriate for this pen name?
+3. OUTLINE ADHERENCE — Did this chapter stick to the chapter prompt ONLY? No veering into later plot points, no premature resolution, no speeding the book.
+4. ARC CONSISTENCY — Does it follow the character/story arc from the outline?
+5. ROMANTIC/EMOTIONAL PROGRESSION — Is the relationship or emotional tension advancing appropriately for this chapter's position?
+6. PACING & TRANSITIONS — Are scene shifts smooth and earned, not rushed or jarring?
+7. SHOW VS. TELL — Flag any moments that tell emotion instead of showing it through action, dialogue, or sensation.
+8. CHAPTER ENDING — Does it end on a hook with forward momentum? No foreshadowing. Ends ON the storybeat, not after it.
+9. POV CONFIRMATION — Single POV throughout? No head-hopping?
+10. HEAT LEVEL CHECK — Does the heat match the pen name's calibration?
+11. BANNED LIST CHECK — No banned names (Chen, Lucian, Marcus, Emma), no banned AI-isms ("electricity coursing," "a smile tugging," "couldn't help but," "found myself," "let out a breath I didn't know I was holding," "something shifted," etc.), no banned physical actions (arms crossed, eyes rolled, heart hammered, smirked).
+
+IMPORTANT: If ANY check fails, REVISE the chapter to fix the issue. Do not just flag problems — fix them. Then return:
+1. The revised chapter
+2. A short summary of what was changed and why</div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section">
+    <h2>Before & After Examples</h2>
+
+    <p style="font-weight:bold; margin-bottom:0.5rem;">Example 1 — AI-ism Sweep</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        She suddenly felt a wave of emotion crash over her. Something shifted in the air between them. She couldn't help but notice the way his eyes searched her face, and she let out a breath she didn't know she was holding.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        Her throat tightened. He was watching her — not her eyes, the hollow at the base of her throat where her pulse gave her away. She swallowed and looked at the menu.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">5 AI-isms eliminated. Same emotional beat preserved with specific, physical detail.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 2 — Show vs. Tell</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (TELL):</strong><br>
+        Jake felt angry about what she'd said. He realized he needed to leave before he said something he'd regret.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (SHOW):</strong><br>
+        Jake set his fork down. Carefully. Lined it up parallel to the knife. "I'm going to go check on the truck." He didn't look at her on the way out.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">No filter words (felt, realized). Action and restraint show the emotion.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 3 — Chapter Ending</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (resolves):</strong><br>
+        She closed her eyes and smiled. Everything was going to be okay. She could feel it. For the first time in weeks, she felt at peace.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (momentum):</strong><br>
+        She pulled into the driveway and killed the engine. His truck was there. The porch light was on. And the front door was open.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">No resolution. No foreshadowing. Ends ON the beat with forward momentum.</p>
+  </div>
+
+  <!-- YOUR CHAPTER WORKSPACE -->
+  <div class="section">
+    <h2>Your Quality Check Workspace</h2>
+    <p style="margin-bottom:0.5rem;">Use this space to track your results after running the prompt with your AI.</p>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name:</label>
+    <input type="text" id="penName" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Sage Kennedy">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Chapter Number / Title:</label>
+    <input type="text" id="chapterNum" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Chapter 3 — The Gala">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Paste Your Chapter Here (for reference):</label>
+    <textarea id="chapterText" style="min-height:250px;" placeholder="Paste the chapter you are running through the Quality Check..."></textarea>
+  </div>
+
+  <!-- RESULTS TRACKER -->
+  <div class="section">
+    <h2>Quality Check Results</h2>
+    <p style="margin-bottom:1rem;">After running the prompt, mark each item as PASS or FAIL based on the AI's findings.</p>
+
+    <div id="resultsGrid">
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">1</span>
+        <span style="flex:1;">Natural Prose (no AI-isms)</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">2</span>
+        <span style="flex:1;">Tone Match</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">3</span>
+        <span style="flex:1;">Outline Adherence</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">4</span>
+        <span style="flex:1;">Arc Consistency</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">5</span>
+        <span style="flex:1;">Romantic/Emotional Progression</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">6</span>
+        <span style="flex:1;">Pacing & Transitions</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">7</span>
+        <span style="flex:1;">Show vs. Tell</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">8</span>
+        <span style="flex:1;">Chapter Ending</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">9</span>
+        <span style="flex:1;">POV Confirmation</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">10</span>
+        <span style="flex:1;">Heat Level Check</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;">
+        <span style="width:30px;font-weight:bold;color:var(--coral);">11</span>
+        <span style="flex:1;">Banned List Check</span>
+        <select onchange="updateResult(this)" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Notes on issues found / changes made:</label>
+      <textarea style="min-height:120px;" placeholder="What did the AI change? What did you override? Any patterns to watch for in future chapters?"></textarea>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyPrompt() {
+  const box = document.getElementById('promptBox');
+  const text = box.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+function updateResult(sel) {
+  const row = sel.closest('.check-row');
+  row.style.background = sel.value === 'pass' ? '#E8F5E9' : sel.value === 'fail' ? '#FFEBEE' : 'transparent';
+}
+</script>
+</body>
+</html>

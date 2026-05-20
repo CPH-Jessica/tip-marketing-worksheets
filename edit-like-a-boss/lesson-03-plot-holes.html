@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: Pass 2 — Plot Hole Checker | ELAB Self-Paced</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --navy: #1B2A4A;
+    --navy-light: #2d4470;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --sage: #7A9E7E;
+    --sage-light: #a8c4ab;
+    --white: #ffffff;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-600: #6b7280;
+    --gray-800: #1f2937;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.7;
+  }
+
+  .header {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .header .brand {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .header h1 span { color: var(--coral); }
+
+  .header .subtitle {
+    font-family: Inter, sans-serif;
+    font-size: 0.95rem;
+    color: var(--coral-light);
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Section Cards */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(27,42,74,0.07);
+    border: 1px solid var(--gray-200);
+  }
+
+  .card h2 {
+    font-size: 1.4rem;
+    color: var(--navy);
+    margin-bottom: 0.25rem;
+  }
+
+  .card h2 .num {
+    color: var(--coral);
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+  }
+
+  .card .card-desc {
+    font-family: Inter, sans-serif;
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Prompt Code Block */
+  .prompt-block {
+    background: var(--navy);
+    color: var(--cream);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .prompt-header span {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .copy-btn {
+    font-family: Inter, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--coral);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .copy-btn:hover { background: #d4614a; }
+  .copy-btn:active { transform: scale(0.97); }
+  .copy-btn.copied { background: var(--sage); }
+
+  .prompt-body {
+    padding: 1.25rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+
+  .prompt-body::-webkit-scrollbar { width: 6px; }
+  .prompt-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+  .prompt-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+  /* Before / After */
+  .example-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .example-pair { grid-template-columns: 1fr; }
+  }
+
+  .example-box {
+    border-radius: 10px;
+    padding: 1.25rem;
+    font-size: 0.92rem;
+  }
+
+  .example-box.before {
+    background: #fef2f0;
+    border-left: 4px solid var(--coral);
+  }
+
+  .example-box.after {
+    background: #f0f7f1;
+    border-left: 4px solid var(--sage);
+  }
+
+  .example-box .label {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.6rem;
+  }
+
+  .example-box.before .label { color: var(--coral); }
+  .example-box.after .label { color: var(--sage); }
+
+  .example-box .dialogue {
+    font-style: italic;
+    margin-bottom: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .example-box .flag {
+    font-family: Inter, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .example-box.before .flag { background: var(--coral); color: var(--white); }
+  .example-box.after .flag { background: var(--sage); color: var(--white); }
+
+  .example-box .note {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: 0.4rem;
+  }
+
+  /* Results Tracker */
+  .tracker-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .tracker-grid { grid-template-columns: 1fr; }
+  }
+
+  .tracker-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cream);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+  }
+
+  .tracker-item .check-label {
+    font-family: Inter, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--navy);
+  }
+
+  .tracker-item .check-num {
+    font-weight: 700;
+    color: var(--coral);
+    margin-right: 0.35rem;
+  }
+
+  .tracker-item select {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--navy);
+    cursor: pointer;
+    min-width: 100px;
+  }
+
+  .tracker-item select:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+  }
+
+  /* Notes textarea */
+  .notes-area {
+    width: 100%;
+    min-height: 140px;
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    padding: 1rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--cream);
+    color: var(--navy);
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .notes-area:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+    border-color: var(--coral);
+  }
+
+  .notes-area::placeholder { color: var(--gray-600); font-style: italic; }
+
+  /* Chapter Input */
+  .chapter-input-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .chapter-input-row label {
+    font-family: Inter, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .chapter-input-row input {
+    font-family: Inter, sans-serif;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    width: 100px;
+    background: var(--white);
+  }
+
+  .chapter-input-row input:focus {
+    outline: 2px solid var(--coral);
+    outline-offset: 1px;
+  }
+
+  /* Summary bar */
+  .summary-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .summary-stat {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    color: var(--white);
+  }
+
+  .summary-stat.pass { background: var(--sage); }
+  .summary-stat.fail { background: var(--coral); }
+  .summary-stat.pending { background: var(--gray-600); }
+
+  /* Tag Legend */
+  .tag-legend {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .tag-badge {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    color: var(--white);
+  }
+
+  .tag-badge.plot-hole { background: var(--coral); }
+  .tag-badge.setup { background: var(--sage); }
+  .tag-badge.payoff { background: var(--gold); }
+  .tag-badge.watch { background: var(--navy); }
+
+  .tag-desc {
+    font-family: Inter, sans-serif;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* Tip Box */
+  .tip-box {
+    background: linear-gradient(135deg, #fef9f0, #fdf3e7);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tip-box .tip-label {
+    font-family: Inter, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .tip-box p {
+    font-size: 0.92rem;
+    color: var(--navy);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: Inter, sans-serif;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 2rem;
+  }
+
+  .footer strong { color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen &middot; ELAB Self-Paced</div>
+  <h1>Lesson 3: <span>Pass 2 — Plot Hole Checker</span></h1>
+  <div class="subtitle">Find the cracks before you paint the walls</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: THE PROMPT -->
+  <div class="card">
+    <h2><span class="num">01</span> The Prompt</h2>
+    <p class="card-desc">Copy this prompt and paste it into your AI tool along with your codex, outline, and chapter text.</p>
+
+    <div class="prompt-block">
+      <div class="prompt-header">
+        <span>Plot Hole Checker Prompt</span>
+        <button class="copy-btn" id="copyPrompt" onclick="copyPromptText()">Copy Prompt</button>
+      </div>
+      <div class="prompt-body" id="promptText">You are editing a chapter for [PEN NAME], a [GENRE] author. Heat level: [1-5]/5.
+
+Here is the codex/story bible for this project:
+[PASTE CODEX HERE]
+
+Here is the chapter outline showing where this chapter sits in the arc:
+[PASTE OUTLINE HERE]
+
+Here is the chapter to check:
+[PASTE FULL CHAPTER HERE]
+
+Run a PLOT HOLE CHECK on this chapter. Check all 8 points:
+
+1. CAUSE & EFFECT — Does everything in this chapter flow logically from what came before? Flag any action or reaction that lacks a clear cause.
+2. SETUP TRACKING — Does this chapter introduce a promise (a secret, an object, a character decision, a foreshadowed event) that will need to pay off? Log it.
+3. PAYOFF TRACKING — Does this chapter resolve a setup from an earlier chapter? Confirm the payoff matches the setup's weight.
+4. CHARACTER KNOWLEDGE — Is every character operating only on information they've actually received in-story? Flag any character who acts on knowledge they couldn't have.
+5. LOGICAL CHARACTER BEHAVIOR — Do characters make decisions consistent with their established personality, wounds, and goals? Flag any moment where someone acts "because the plot needs it."
+6. INTRODUCED-BUT-DROPPED — Does this chapter mention something the narrative then ignores?
+7. CONTRADICTIONS — Any fact that conflicts with an established fact from earlier chapters?
+8. OFF-PAGE LOGIC — Are there events implied to have happened off-page that strain believability?
+
+Output format: List flags as [PLOT HOLE], [SETUP LOGGED], [PAYOFF CHECK], or [WATCH]. Include chapter location. Then provide a summary of critical issues vs. watch items.</div>
+    </div>
+
+    <div class="tag-legend">
+      <span class="tag-badge plot-hole">[PLOT HOLE]</span>
+      <span class="tag-badge setup">[SETUP LOGGED]</span>
+      <span class="tag-badge payoff">[PAYOFF CHECK]</span>
+      <span class="tag-badge watch">[WATCH]</span>
+    </div>
+    <p class="tag-desc">
+      <strong>PLOT HOLE</strong> = broken, fix it. <strong>SETUP LOGGED</strong> = promise made, track it. <strong>PAYOFF CHECK</strong> = promise resolved, verify weight. <strong>WATCH</strong> = worth attention, use judgment.
+    </p>
+  </div>
+
+  <!-- SECTION 2: BEFORE / AFTER -->
+  <div class="card">
+    <h2><span class="num">02</span> Before &amp; After Example</h2>
+    <p class="card-desc">Character knowledge violation: a character acts on information they were never given on-page.</p>
+
+    <div class="example-pair">
+      <div class="example-box before">
+        <div class="label">Before</div>
+        <span class="flag">[PLOT HOLE] Ch. 8</span>
+        <div class="dialogue">"I know what happened in Denver," Lila said softly, setting down her coffee cup.</div>
+        <div class="note">Lila was not present in Ch. 6 when Jake told Marcus about Denver. No scene establishes how she learned this. Character is acting on information she doesn't have.</div>
+      </div>
+      <div class="example-box after">
+        <div class="label">After</div>
+        <span class="flag">Fixed</span>
+        <div class="dialogue">"Marcus called me last night." Lila set down her coffee cup, her fingers tightening around it. "He told me what happened in Denver."</div>
+        <div class="note">Information bridge established. Lila received the information through a plausible on-page channel (Marcus called her). Knowledge flow is now trackable.</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Pro Tip</div>
+      <p>You have three fix options for character knowledge violations: add a bridge scene where they learn the info, change the dialogue so they're guessing or bluffing, or plant an earlier scene where someone lets it slip. Pick the one that serves your story best.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: RESULTS TRACKER -->
+  <div class="card">
+    <h2><span class="num">03</span> Results Tracker</h2>
+    <p class="card-desc">Track your results for each chapter. Set each check point to Pass, Fail, or N/A.</p>
+
+    <div class="chapter-input-row">
+      <label for="chapterNum">Chapter:</label>
+      <input type="number" id="chapterNum" min="1" max="100" placeholder="#" />
+      <label for="chapterTitle">Title (optional):</label>
+      <input type="text" id="chapterTitle" placeholder="Chapter title" style="width: 200px;" />
+    </div>
+
+    <div class="tracker-grid">
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">1.</span> Cause &amp; Effect</span>
+        <select id="check1" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">2.</span> Setup Tracking</span>
+        <select id="check2" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">3.</span> Payoff Tracking</span>
+        <select id="check3" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">4.</span> Character Knowledge</span>
+        <select id="check4" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">5.</span> Logical Behavior</span>
+        <select id="check5" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">6.</span> Introduced-But-Dropped</span>
+        <select id="check6" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">7.</span> Contradictions</span>
+        <select id="check7" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+      <div class="tracker-item">
+        <span class="check-label"><span class="check-num">8.</span> Off-Page Logic</span>
+        <select id="check8" onchange="updateSummary()">
+          <option value="pending">-- Select --</option>
+          <option value="pass">Pass</option>
+          <option value="fail">Fail (flagged)</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="summary-bar" id="summaryBar">
+      <span class="summary-stat pass" id="passCount">Pass: 0</span>
+      <span class="summary-stat fail" id="failCount">Fail: 0</span>
+      <span class="summary-stat pending" id="pendingCount">Pending: 8</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4: NOTES -->
+  <div class="card">
+    <h2><span class="num">04</span> Notes &amp; Observations</h2>
+    <p class="card-desc">Record specific plot holes found, setups to track, and decisions made.</p>
+
+    <textarea class="notes-area" id="notesField" placeholder="Paste AI output here or write your own notes. What flags did the checker find? What decisions have you made about each one?"></textarea>
+
+    <div class="tip-box" style="margin-top: 1.25rem;">
+      <div class="tip-label">Workflow Reminder</div>
+      <p>Run this pass on every chapter before moving to Pass 3 (Timeline Consistency). Fix PLOT HOLE items. Log SETUP items in a tracking document. Verify PAYOFF items match their setup weight. Use judgment on WATCH items.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>The Invisible Pen</strong> &middot; Edit Like a Boss &middot; Lesson 3: Pass 2 &mdash; Plot Hole Checker
+</div>
+
+<script>
+function copyPromptText() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyPrompt');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById('promptText'));
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    const btn = document.getElementById('copyPrompt');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy Prompt';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function updateSummary() {
+  let pass = 0, fail = 0, pending = 0;
+  for (let i = 1; i <= 8; i++) {
+    const val = document.getElementById('check' + i).value;
+    if (val === 'pass' || val === 'na') pass++;
+    else if (val === 'fail') fail++;
+    else pending++;
+  }
+  document.getElementById('passCount').textContent = 'Pass: ' + pass;
+  document.getElementById('failCount').textContent = 'Fail: ' + fail;
+  document.getElementById('pendingCount').textContent = 'Pending: ' + pending;
+}
+</script>
+
+</body>
+</html>

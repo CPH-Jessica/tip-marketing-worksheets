@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 7 — Heat Scene Edit Worksheet</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:850px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+textarea{width:100%;min-height:200px;border:2px solid var(--border);border-radius:8px;padding:1rem;font-family:'Georgia',serif;font-size:0.95rem;resize:vertical;background:var(--cream);}
+textarea:focus{outline:none;border-color:var(--coral);}
+input[type="text"]{width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);}
+input[type="text"]:focus{outline:none;border-color:var(--coral);}
+.example-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.example-box{padding:1rem;border-radius:8px;font-size:0.9rem;}
+.example-before{background:#FFEBEE;border-left:3px solid #E53935;}
+.example-after{background:#E8F5E9;border-left:3px solid #43A047;}
+.heat-guide{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;margin:1rem 0;border:2px solid var(--border);border-radius:8px;overflow:hidden;}
+.heat-guide .hg-head{background:var(--navy);color:white;padding:0.5rem 0.75rem;font-weight:bold;font-size:0.85rem;}
+.heat-guide .hg-cell{padding:0.5rem 0.75rem;font-size:0.85rem;border-bottom:1px solid var(--light-gray);}
+.heat-guide .hg-cell:nth-child(odd){background:var(--light-gray);}
+.heat-guide .hg-level{background:var(--coral);color:white;padding:0.5rem 0.75rem;font-weight:bold;font-size:0.85rem;display:flex;align-items:center;}
+.check-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);}
+.check-row:last-child{border-bottom:none;}
+.check-num{width:30px;font-weight:bold;color:var(--coral);}
+.check-label{flex:1;}
+.check-select{padding:0.3rem;border-radius:4px;border:1px solid var(--border);font-family:Georgia;}
+.tab-container{margin-bottom:1rem;}
+.tab-buttons{display:flex;gap:0;}
+.tab-btn{padding:0.6rem 1.2rem;border:2px solid var(--border);border-bottom:none;background:var(--light-gray);cursor:pointer;font-family:Georgia;font-size:0.9rem;border-radius:6px 6px 0 0;color:#888;}
+.tab-btn.active{background:white;color:var(--navy);font-weight:bold;border-color:var(--coral);}
+.tab-content{display:none;border:2px solid var(--border);border-radius:0 8px 8px 8px;padding:1.5rem;background:white;}
+.tab-content.active{display:block;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.example-compare{grid-template-columns:1fr;}.container{padding:1rem;}.heat-guide{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 7 — Pass 6: Heat Scene Edit</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- HEAT LEVEL LANGUAGE GUIDE -->
+  <div class="section">
+    <h2>Heat Level Language Guide</h2>
+    <p style="margin-bottom:1rem;">Reference this when setting your heat level in the prompt. The language should match your pen name and your readers' expectations.</p>
+
+    <div class="heat-guide">
+      <div class="hg-head">Level</div>
+      <div class="hg-head">Language Style</div>
+      <div class="hg-head">Examples</div>
+      <div class="hg-level">2-3/5</div>
+      <div class="hg-cell">Sensual. Sensations over mechanics. Emotional focus.</div>
+      <div class="hg-cell">"He filled her," arousal, desire, longing, warmth, ache</div>
+      <div class="hg-level">3-4/5</div>
+      <div class="hg-cell">More explicit terms allowed. Direct. Emotional interiority intact.</div>
+      <div class="hg-cell">Specific body references, explicit actions, internal experience</div>
+      <div class="hg-level">4-5/5</div>
+      <div class="hg-cell">Full explicit vocabulary. Anatomical specificity. Dirty talk.</div>
+      <div class="hg-cell">Nothing off limits if it serves the scene and the characters</div>
+    </div>
+  </div>
+
+  <!-- THE PROMPT — ROMANCE VERSION -->
+  <div class="section">
+    <h2>The Heat Scene Edit Prompt</h2>
+    <p style="margin-bottom:0.5rem;">Copy this prompt. Replace the placeholders in gold. Paste your full chapter (not just the scene).</p>
+
+    <div class="tab-container">
+      <div class="tab-buttons">
+        <div class="tab-btn active" onclick="switchTab('romance')">Romance</div>
+        <div class="tab-btn" onclick="switchTab('nonromance')">Non-Romance (Action/Tension)</div>
+      </div>
+
+      <div class="tab-content active" id="tab-romance">
+        <div class="prompt-box" id="promptBoxRomance">
+          <button class="copy-btn" onclick="copyPrompt('promptBoxRomance')">Copy</button>You are editing a heat/intimate scene for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here is the chapter containing the intimate scene:
+<span class="placeholder">[PASTE FULL CHAPTER HERE]</span>
+
+Run a HEAT SCENE EDIT on this chapter. Check all 9 points:
+
+1. EMOTION OVER MECHANICS — Is the emotional connection driving the scene, not just body parts? The reader should feel what this means to the characters, not just what their bodies are doing.
+2. SENSORY BALANCE — All five senses engaged? Not just visual? Add touch, taste, sound, scent where missing.
+3. PACING — Does it build? Is there push-pull, or does it rush to the finish? Mark where the tension peaks and valleys are.
+4. VOICE CONSISTENCY — Does the POV character's internal voice stay distinct, even in the moment? They should still sound like themselves.
+5. VERB VARIETY — Flag repetitive action words. Find alternatives that fit the tone and heat level.
+6. EUPHEMISM AUDIT — Are the terms genre-appropriate? Too clinical? Too purple? Match pen name style. Heat level <span class="placeholder">[X]</span>/5 language guide:
+   - 2-3: Sensual, sensations over mechanics, arousal, desire
+   - 3-4: More explicit terms, direct, emotional interiority
+   - 4-5: Full explicit vocabulary, anatomical specificity, dirty talk
+7. EMOTIONAL AFTERMATH — Does the scene END with emotional resonance, not just physical resolution? What changed between these characters?
+8. POWER DYNAMICS — Is the tension/control dynamic intact and consensual throughout?
+9. SLOW BURN PAYOFF — If this is a slow burn, is there anywhere to add tension that makes the payoff more impactful?
+
+Return the revised chapter with all fixes applied, plus a change summary.</div>
+      </div>
+
+      <div class="tab-content" id="tab-nonromance">
+        <div class="prompt-box" id="promptBoxNonRomance">
+          <button class="copy-btn" onclick="copyPrompt('promptBoxNonRomance')">Copy</button>You are editing an action/tension scene for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author.
+
+Here is the chapter containing the action/tension scene:
+<span class="placeholder">[PASTE FULL CHAPTER HERE]</span>
+
+Run an ACTION/TENSION SCENE EDIT on this chapter. Check all points:
+
+1. CHARACTER VOICE UNDER PRESSURE — Does the POV character still sound like themselves during the action? Internal voice should be consistent with non-action chapters.
+2. TENSION ESCALATION — Is the tension escalating or flat? Mark where it builds and where it sags.
+3. SENSORY IMMERSION — All five senses engaged? Not just visual? Add sound, smell, pain, taste where missing.
+4. PHYSICAL LOGISTICS — Are the action mechanics believable? Can the reader track where everyone is and what is happening?
+5. PACING — Does it build with push-pull? Any sections that rush or drag?
+6. VERB VARIETY — Flag repetitive action words. Find alternatives that match the scene intensity.
+7. CONSEQUENCES — Does the scene have consequences? Injury, exhaustion, emotional cost. Action without cost is hollow.
+8. STAKES CLARITY — Does the reader know what the POV character stands to lose?
+9. AFTERMATH — Does the scene end with emotional resonance, not just resolution? What changed?
+
+Return the revised chapter with all fixes applied, plus a change summary.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section">
+    <h2>Before & After Examples</h2>
+
+    <p style="font-weight:bold; margin-bottom:0.5rem;">Example 1 — Emotion Over Mechanics (Heat 4)</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        He kissed her deeply. She moaned. He moved his hands over her body, feeling every curve. She arched into him, wanting more. The electricity between them was undeniable. Their bodies moved together in perfect rhythm.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        He kissed the corner of her mouth first. Testing. She turned into it, caught his bottom lip between her teeth. He made a sound that was almost a laugh. Almost. His hands found her waist, then her ribs, then the place where her breath hitched and she forgot the clever thing she was going to say.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">AI-isms removed. Personality added. Varied sentence structure. Push-pull pacing. Character voice intact.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 2 — Voice Consistency (Heat 3)</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (voice drops):</strong><br>
+        His touch ignited a fire within her soul. She surrendered to the overwhelming tide of passion that consumed her very being. In his arms, she found the home she had always been searching for.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (voice holds):</strong><br>
+        His thumb traced her collarbone and she thought, absurdly, about the grocery list on the counter. Then he kissed the spot his thumb had been and the grocery list evaporated. "You are thinking too hard," he said. "I am not thinking at all," she lied.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">The character's personality stays present. She is still herself. The humor and the deflection are part of who she is.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 3 — Emotional Aftermath</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (ends flat):</strong><br>
+        They lay together, satisfied. He pulled her close and they both fell asleep, content and at peace.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (emotional landing):</strong><br>
+        He was tracing circles on her shoulder. She watched his hand and thought about how strange it was that this felt more intimate than anything that had come before it. She wanted to say something. She did not. He pressed his mouth to her hair and she felt him smile against it.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">The aftermath reveals what changed. The quiet moment carries more weight than the scene itself.</p>
+  </div>
+
+  <!-- YOUR WORKSPACE -->
+  <div class="section">
+    <h2>Your Heat Scene Edit Workspace</h2>
+    <p style="margin-bottom:0.5rem;">Track your results after running the prompt with your AI.</p>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name:</label>
+    <input type="text" id="penName" placeholder="e.g., Sage Kennedy">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Chapter Number / Title:</label>
+    <input type="text" id="chapterNum" placeholder="e.g., Chapter 12 — The Lake House">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Heat Level:</label>
+    <select id="heatLevel" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);">
+      <option value="">Select heat level...</option>
+      <option value="1">1/5 — Closed door</option>
+      <option value="2">2/5 — Sweet / sensual fade</option>
+      <option value="3">3/5 — Sensual / sensation-forward</option>
+      <option value="4">4/5 — Explicit / emotional</option>
+      <option value="5">5/5 — Full explicit</option>
+    </select>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Paste Your Chapter Here (for reference):</label>
+    <textarea id="chapterText" style="min-height:250px;" placeholder="Paste the chapter you are running through the Heat Scene Edit..."></textarea>
+  </div>
+
+  <!-- RESULTS TRACKER -->
+  <div class="section">
+    <h2>Heat Scene Edit Results</h2>
+    <p style="margin-bottom:1rem;">After running the prompt, mark each item as PASS or FAIL based on the AI's findings and your review.</p>
+
+    <div id="resultsGrid">
+      <div class="check-row">
+        <span class="check-num">1</span>
+        <span class="check-label">Emotion Over Mechanics</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">2</span>
+        <span class="check-label">Sensory Balance (all 5 senses)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">3</span>
+        <span class="check-label">Pacing (build, push-pull, peaks/valleys)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">4</span>
+        <span class="check-label">Voice Consistency (still sounds like the character)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">5</span>
+        <span class="check-label">Verb Variety (no repetitive action words)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">6</span>
+        <span class="check-label">Euphemism Audit (genre-appropriate language)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">7</span>
+        <span class="check-label">Emotional Aftermath</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">8</span>
+        <span class="check-label">Power Dynamics (consensual, earned)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">9</span>
+        <span class="check-label">Slow Burn Payoff (if applicable)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SCORE SUMMARY -->
+    <div id="scoreSummary" style="margin-top:1rem;padding:1rem;background:var(--light-gray);border-radius:8px;display:none;">
+      <strong>Score:</strong> <span id="scoreText"></span>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Notes on issues found / changes made:</label>
+      <textarea style="min-height:120px;" placeholder="What did the AI change? Where did voice drop? Any euphemisms you overrode? Patterns to watch for?"></textarea>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Senses present in revised version:</label>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
+        <label style="display:flex;align-items:center;gap:0.3rem;padding:0.4rem 0.8rem;background:var(--light-gray);border-radius:20px;cursor:pointer;font-size:0.9rem;">
+          <input type="checkbox" style="accent-color:var(--coral);"> Sight
+        </label>
+        <label style="display:flex;align-items:center;gap:0.3rem;padding:0.4rem 0.8rem;background:var(--light-gray);border-radius:20px;cursor:pointer;font-size:0.9rem;">
+          <input type="checkbox" style="accent-color:var(--coral);"> Touch
+        </label>
+        <label style="display:flex;align-items:center;gap:0.3rem;padding:0.4rem 0.8rem;background:var(--light-gray);border-radius:20px;cursor:pointer;font-size:0.9rem;">
+          <input type="checkbox" style="accent-color:var(--coral);"> Sound
+        </label>
+        <label style="display:flex;align-items:center;gap:0.3rem;padding:0.4rem 0.8rem;background:var(--light-gray);border-radius:20px;cursor:pointer;font-size:0.9rem;">
+          <input type="checkbox" style="accent-color:var(--coral);"> Taste
+        </label>
+        <label style="display:flex;align-items:center;gap:0.3rem;padding:0.4rem 0.8rem;background:var(--light-gray);border-radius:20px;cursor:pointer;font-size:0.9rem;">
+          <input type="checkbox" style="accent-color:var(--coral);"> Scent
+        </label>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyPrompt(boxId) {
+  const box = document.getElementById(boxId);
+  const text = box.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'romance') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('tab-romance').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('tab-nonromance').classList.add('active');
+  }
+}
+
+function updateResult(sel) {
+  const row = sel.closest('.check-row');
+  if (sel.value === 'pass') row.style.background = '#E8F5E9';
+  else if (sel.value === 'fail') row.style.background = '#FFEBEE';
+  else if (sel.value === 'na') row.style.background = '#FFF9C4';
+  else row.style.background = 'transparent';
+  updateScore();
+}
+
+function updateScore() {
+  const selects = document.querySelectorAll('.check-select');
+  let pass = 0, fail = 0, total = 0;
+  selects.forEach(s => {
+    if (s.value === 'pass') { pass++; total++; }
+    else if (s.value === 'fail') { fail++; total++; }
+  });
+  const summary = document.getElementById('scoreSummary');
+  const scoreText = document.getElementById('scoreText');
+  if (total > 0) {
+    summary.style.display = 'block';
+    scoreText.textContent = pass + '/' + total + ' passed' + (fail > 0 ? ' (' + fail + ' need revision)' : ' — clean pass!');
+    summary.style.background = fail === 0 ? '#E8F5E9' : fail <= 2 ? '#FFF9C4' : '#FFEBEE';
+  } else {
+    summary.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>

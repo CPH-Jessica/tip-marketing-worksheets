@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 8 — Developmental Edit (Slash Editor) Worksheet</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:850px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+textarea{width:100%;min-height:200px;border:2px solid var(--border);border-radius:8px;padding:1rem;font-family:'Georgia',serif;font-size:0.95rem;resize:vertical;background:var(--cream);}
+textarea:focus{outline:none;border-color:var(--coral);}
+input[type="text"],input[type="number"]{width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);}
+input[type="text"]:focus,input[type="number"]:focus{outline:none;border-color:var(--coral);}
+.example-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.example-box{padding:1rem;border-radius:8px;font-size:0.9rem;}
+.example-before{background:#FFEBEE;border-left:3px solid #E53935;}
+.example-after{background:#E8F5E9;border-left:3px solid #43A047;}
+.justify-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin:1rem 0;}
+.justify-card{padding:1rem;border-radius:8px;background:var(--light-gray);border:2px solid transparent;text-align:center;font-size:0.95rem;}
+.justify-card strong{display:block;color:var(--navy);margin-bottom:0.25rem;}
+.justify-card.yes{border-color:var(--sage);background:#E8F5E9;}
+.justify-card.no{border-color:#E53935;background:#FFEBEE;}
+.check-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);}
+.check-row:last-child{border-bottom:none;}
+.check-num{width:30px;font-weight:bold;color:var(--coral);}
+.check-label{flex:1;}
+.check-select{padding:0.3rem;border-radius:4px;border:1px solid var(--border);font-family:Georgia;}
+.mode-selector{display:flex;gap:0.5rem;margin:1rem 0;flex-wrap:wrap;}
+.mode-btn{padding:0.6rem 1.2rem;border:2px solid var(--border);background:var(--light-gray);cursor:pointer;font-family:Georgia;font-size:0.9rem;border-radius:6px;color:#888;transition:all 0.2s;}
+.mode-btn.active{background:var(--coral);color:white;border-color:var(--coral);}
+.mode-btn:hover{border-color:var(--coral);}
+.verdict-box{padding:1.25rem;border-radius:8px;margin:1rem 0;text-align:center;font-size:1.1rem;font-weight:bold;display:none;}
+.verdict-tight{background:#E8F5E9;color:#2E7D32;border:2px solid #43A047;}
+.verdict-cuts{background:#FFF9C4;color:#F57F17;border:2px solid #F9A825;}
+.verdict-bloated{background:#FFEBEE;color:#C62828;border:2px solid #E53935;}
+.scene-trial{background:var(--light-gray);border-radius:8px;padding:1rem;margin:0.75rem 0;border-left:3px solid var(--gold);}
+.scene-trial .scene-title{font-weight:bold;color:var(--navy);margin-bottom:0.25rem;}
+.scene-trial .scene-reason{font-size:0.9rem;color:#666;margin-bottom:0.5rem;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.example-compare,.justify-grid{grid-template-columns:1fr;}.container{padding:1rem;}.mode-selector{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 8 — Pass 7: Developmental Edit (The Slash Editor)</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- SCENE JUSTIFICATION TEST -->
+  <div class="section">
+    <h2>The Scene Justification Test</h2>
+    <p style="margin-bottom:1rem;">Every scene must answer YES to at least 2 of these 4 questions. One is not enough. Zero is an automatic cut.</p>
+    <div class="justify-grid">
+      <div class="justify-card">
+        <strong>1. Advances Plot?</strong>
+        Does something happen that moves the story forward?
+      </div>
+      <div class="justify-card">
+        <strong>2. Deepens Character?</strong>
+        Do we learn something meaningful about who this person is?
+      </div>
+      <div class="justify-card">
+        <strong>3. Escalates Tension/Stakes?</strong>
+        Does the pressure increase? Does the risk grow?
+      </div>
+      <div class="justify-card">
+        <strong>4. Delivers Genre Promise?</strong>
+        Does this scene give the reader what they bought this book for?
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;text-align:center;margin-top:0.5rem;">2+ YES = Stays &nbsp;|&nbsp; 1 YES = On Trial &nbsp;|&nbsp; 0 YES = Cut</p>
+  </div>
+
+  <!-- THE PROMPT -->
+  <div class="section">
+    <h2>The Developmental Edit (Slash Editor) Prompt</h2>
+    <p style="margin-bottom:0.5rem;">Copy this prompt. Replace the placeholders in gold. Choose your mode at the bottom of the prompt.</p>
+
+    <p style="font-weight:bold;margin-bottom:0.5rem;margin-top:1rem;">Select your mode:</p>
+    <div class="mode-selector">
+      <div class="mode-btn active" onclick="selectMode(this, 'propose')">Propose Only</div>
+      <div class="mode-btn" onclick="selectMode(this, 'option')">Option-by-Option</div>
+      <div class="mode-btn" onclick="selectMode(this, 'auto')">Auto-Slash</div>
+    </div>
+    <p id="modeDesc" style="font-size:0.85rem;color:#888;margin-bottom:1rem;">Propose Only: AI lists what it would cut and why. You decide. Best for learning the system.</p>
+
+    <div class="prompt-box" id="promptBox">
+      <button class="copy-btn" onclick="copyPrompt()">Copy</button>You are running a developmental edit (Slash Editor pass) on a chapter for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here is the codex/outline (if available):
+<span class="placeholder">[PASTE CODEX/OUTLINE OR "Working without codex — flag anything potentially load-bearing"]</span>
+
+Here is the chapter:
+<span class="placeholder">[PASTE FULL CHAPTER HERE]</span>
+
+Run a DEVELOPMENTAL EDIT on this chapter. Check all 10 points:
+
+1. SCENE PURPOSE — Does every scene advance plot, character, or relationship? Flag anything that's "just vibes" or exists because the author enjoyed writing it.
+2. MOTIVATION CLARITY — Is it clear WHY characters act/react the way they do? Flag any unmotivated behavior.
+3. CONFLICT PRESENT — Is there tension (internal, external, or romantic) on every page? Where does it sag?
+4. EMOTIONAL STAKES — Does the reader know what the POV character stands to lose/gain?
+5. CHARACTER VOICE DRIFT — Does the POV character sound consistent with earlier chapters?
+6. PACING DRAG — Any sections that stall momentum? Mark for trim or punch-up.
+7. SETUP/PAYOFF TRACKING — Are promises from earlier chapters being honored? Any dangling threads?
+8. ROMANTIC PROGRESSION — Is the push/pull balance right for this point in the arc?
+9. READER QUESTION — What question is the reader asking at the end of this chapter? Is it the RIGHT question?
+10. GENRE EXPECTATION — Does this chapter deliver what readers of this pen name expect at this story beat?
+
+SCENE JUSTIFICATION TEST: Every scene must answer YES to at least 2:
+- Does it advance the plot?
+- Does it deepen character?
+- Does it escalate tension/stakes?
+- Does it deliver on genre promise?
+
+If a scene fails AND is not flagged as load-bearing, recommend cutting or merging.
+
+LOAD-BEARING CHECK: Before recommending any cut, verify it won't break a downstream setup/payoff. Flag with [LOAD-BEARING?] if uncertain.
+
+MODE: <span class="placeholder" id="modeText">[PROPOSE ONLY — list what you'd cut and why. Author decides.]</span>
+
+Output as a SLASH ASSESSMENT with: Verdict (TIGHT/NEEDS CUTS/BLOATED), word count current vs target, Immediate Cuts, Load-Bearing Flags, Consolidation Needed, Scenes on Trial, and Voice Check.</div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section">
+    <h2>Before & After Examples</h2>
+
+    <p style="font-weight:bold; margin-bottom:0.5rem;">Example 1 — The Getting-Ready Scene</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (bloat):</strong><br>
+        Three pages: Heroine tries on outfits. Calls best friend. They discuss what to wear. She does her makeup. She looks in the mirror and thinks about how nervous she is.<br><br>
+        <em>Justification: Maybe 1/4 (deepens character?). On trial.</em>
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (consolidated):</strong><br>
+        She was already at the restaurant, adjusting a dress she was not sure about, when he walked in.<br><br>
+        <em>Same beat. Two sentences. Zero bloat.</em>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">The getting-ready montage is one of the most common scenes that fails the justification test. If it does not advance plot or escalate tension, consolidate it into a detail.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 2 — The Recap Conversation</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE (redundant):</strong><br>
+        Heroine tells her best friend everything that happened in the previous chapter. Two pages of dialogue the reader already witnessed.<br><br>
+        <em>Justification: 0/4. Reader already knows this.</em>
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER (purposeful):</strong><br>
+        "I told Mara everything." She paused. "Well. Almost everything."<br><br>
+        <em>One line. Introduces mystery (what did she leave out?) which escalates tension.</em>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Recap conversations are almost always cut material. If the reader already saw it happen, they do not need to hear it retold.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 3 — Load-Bearing Scene</p>
+    <div class="scene-trial">
+      <div class="scene-title">[LOAD-BEARING?] Chapter 6: Coffee shop conversation with sister</div>
+      <div class="scene-reason">Appears to be filler. Sister mentions an ex-boyfriend in passing. No plot advancement, minimal tension. Justification: 1/4 (character).</div>
+      <p style="font-size:0.85rem;"><strong>Recommendation:</strong> Flag for author review. The sister's ex-boyfriend mention may set up a reveal in Chapter 18. Do NOT cut without checking the outline.</p>
+    </div>
+    <p style="font-size:0.85rem;color:#888;margin-top:0.5rem;">This is why the load-bearing check matters. What looks like filler might be a planted seed.</p>
+  </div>
+
+  <!-- YOUR WORKSPACE -->
+  <div class="section">
+    <h2>Your Slash Editor Workspace</h2>
+    <p style="margin-bottom:0.5rem;">Track your results after running the prompt.</p>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name:</label>
+    <input type="text" id="penName" placeholder="e.g., Moxie Savage">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Chapter Number / Title:</label>
+    <input type="text" id="chapterNum" placeholder="e.g., Chapter 9 — The Warehouse">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Current Word Count:</label>
+        <input type="number" id="wcCurrent" placeholder="e.g., 4200">
+      </div>
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Target Word Count:</label>
+        <input type="number" id="wcTarget" placeholder="e.g., 3500">
+      </div>
+    </div>
+
+    <!-- VERDICT SELECTOR -->
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">AI Verdict:</label>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+      <button onclick="setVerdict('tight')" style="flex:1;padding:0.6rem;border:2px solid var(--sage);background:#E8F5E9;border-radius:6px;cursor:pointer;font-family:Georgia;font-weight:bold;color:#2E7D32;">TIGHT</button>
+      <button onclick="setVerdict('cuts')" style="flex:1;padding:0.6rem;border:2px solid #F9A825;background:#FFF9C4;border-radius:6px;cursor:pointer;font-family:Georgia;font-weight:bold;color:#F57F17;">NEEDS CUTS</button>
+      <button onclick="setVerdict('bloated')" style="flex:1;padding:0.6rem;border:2px solid #E53935;background:#FFEBEE;border-radius:6px;cursor:pointer;font-family:Georgia;font-weight:bold;color:#C62828;">BLOATED</button>
+    </div>
+    <div id="verdictDisplay" class="verdict-box"></div>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Paste Your Chapter Here (for reference):</label>
+    <textarea id="chapterText" style="min-height:250px;" placeholder="Paste the chapter you are running through the Slash Editor..."></textarea>
+  </div>
+
+  <!-- RESULTS TRACKER -->
+  <div class="section">
+    <h2>Developmental Edit Results</h2>
+    <p style="margin-bottom:1rem;">After running the prompt, mark each item as PASS or FAIL.</p>
+
+    <div id="resultsGrid">
+      <div class="check-row">
+        <span class="check-num">1</span>
+        <span class="check-label">Scene Purpose (every scene justified)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">2</span>
+        <span class="check-label">Motivation Clarity</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">3</span>
+        <span class="check-label">Conflict Present (tension on every page)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">4</span>
+        <span class="check-label">Emotional Stakes (reader knows the risk)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">5</span>
+        <span class="check-label">Character Voice Drift</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">6</span>
+        <span class="check-label">Pacing Drag (no stalling sections)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">7</span>
+        <span class="check-label">Setup/Payoff Tracking</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">8</span>
+        <span class="check-label">Romantic Progression (push-pull balanced)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">9</span>
+        <span class="check-label">Reader Question (right question at chapter end)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="check-num">10</span>
+        <span class="check-label">Genre Expectation (delivers what readers expect)</span>
+        <select class="check-select" onchange="updateResult(this)">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FAIL</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SCORE SUMMARY -->
+    <div id="scoreSummary" style="margin-top:1rem;padding:1rem;background:var(--light-gray);border-radius:8px;display:none;">
+      <strong>Score:</strong> <span id="scoreText"></span>
+    </div>
+  </div>
+
+  <!-- SCENES ON TRIAL -->
+  <div class="section">
+    <h2>Scenes on Trial</h2>
+    <p style="margin-bottom:1rem;">List any scenes the AI flagged or that you identified as on trial. For each, note the justification test results and your decision.</p>
+
+    <div id="trialScenes">
+      <div class="scene-trial" id="trialTemplate">
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap;">
+          <input type="text" style="flex:1;min-width:200px;margin-bottom:0;" placeholder="Scene description (e.g., Getting-ready montage, pg 3-5)">
+          <select style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);font-family:Georgia;">
+            <option value="">Decision...</option>
+            <option value="keep">KEEP</option>
+            <option value="cut">CUT</option>
+            <option value="merge">MERGE</option>
+            <option value="loadbearing">LOAD-BEARING?</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;font-size:0.85rem;">
+          <label style="display:flex;align-items:center;gap:0.25rem;"><input type="checkbox"> Advances plot</label>
+          <label style="display:flex;align-items:center;gap:0.25rem;"><input type="checkbox"> Deepens character</label>
+          <label style="display:flex;align-items:center;gap:0.25rem;"><input type="checkbox"> Escalates tension</label>
+          <label style="display:flex;align-items:center;gap:0.25rem;"><input type="checkbox"> Genre promise</label>
+        </div>
+      </div>
+    </div>
+    <button onclick="addTrialScene()" style="margin-top:0.75rem;padding:0.5rem 1rem;background:var(--navy);color:white;border:none;border-radius:6px;cursor:pointer;font-family:Georgia;font-size:0.9rem;">+ Add Scene</button>
+  </div>
+
+  <!-- NOTES -->
+  <div class="section">
+    <h2>Notes & Decisions</h2>
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">What was cut or consolidated?</label>
+    <textarea style="min-height:100px;margin-bottom:1rem;" placeholder="List scenes you cut, merged, or kept despite the AI's recommendation..."></textarea>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Load-bearing items to verify against outline:</label>
+    <textarea style="min-height:80px;margin-bottom:1rem;" placeholder="List any [LOAD-BEARING?] flags that need outline verification..."></textarea>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Patterns noticed (for future chapters):</label>
+    <textarea style="min-height:80px;" placeholder="Any recurring bloat patterns? Scene types that keep failing the test? Voice drift tendencies?"></textarea>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyPrompt() {
+  const box = document.getElementById('promptBox');
+  const text = box.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function selectMode(btn, mode) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const modeText = document.getElementById('modeText');
+  const modeDesc = document.getElementById('modeDesc');
+  if (mode === 'propose') {
+    modeText.textContent = '[PROPOSE ONLY — list what you\'d cut and why. Author decides.]';
+    modeDesc.textContent = 'Propose Only: AI lists what it would cut and why. You decide. Best for learning the system.';
+  } else if (mode === 'option') {
+    modeText.textContent = '[OPTION-BY-OPTION — flag each potential cut. Author chooses: keep, cut, or merge.]';
+    modeDesc.textContent = 'Option-by-Option: AI flags each potential cut and you choose keep, cut, or merge for each one.';
+  } else {
+    modeText.textContent = '[AUTO-SLASH — make all cuts that fail the justification test. Return the tighter chapter.]';
+    modeDesc.textContent = 'Auto-Slash: AI makes the cuts for you and returns a tighter chapter. Use when you trust the process.';
+  }
+}
+
+function setVerdict(type) {
+  const display = document.getElementById('verdictDisplay');
+  display.style.display = 'block';
+  display.className = 'verdict-box';
+  if (type === 'tight') {
+    display.classList.add('verdict-tight');
+    display.textContent = 'TIGHT — Every scene earns its place.';
+  } else if (type === 'cuts') {
+    display.classList.add('verdict-cuts');
+    display.textContent = 'NEEDS CUTS — Specific sections to trim or merge.';
+  } else {
+    display.classList.add('verdict-bloated');
+    display.textContent = 'BLOATED — Significant structural trimming needed.';
+  }
+}
+
+function updateResult(sel) {
+  const row = sel.closest('.check-row');
+  if (sel.value === 'pass') row.style.background = '#E8F5E9';
+  else if (sel.value === 'fail') row.style.background = '#FFEBEE';
+  else row.style.background = 'transparent';
+  updateScore();
+}
+
+function updateScore() {
+  const selects = document.querySelectorAll('.check-select');
+  let pass = 0, fail = 0, total = 0;
+  selects.forEach(s => {
+    if (s.value === 'pass') { pass++; total++; }
+    else if (s.value === 'fail') { fail++; total++; }
+  });
+  const summary = document.getElementById('scoreSummary');
+  const scoreText = document.getElementById('scoreText');
+  if (total > 0) {
+    summary.style.display = 'block';
+    scoreText.textContent = pass + '/' + total + ' passed' + (fail > 0 ? ' (' + fail + ' need revision)' : ' — clean pass!');
+    summary.style.background = fail === 0 ? '#E8F5E9' : fail <= 2 ? '#FFF9C4' : '#FFEBEE';
+  } else {
+    summary.style.display = 'none';
+  }
+}
+
+function addTrialScene() {
+  const container = document.getElementById('trialScenes');
+  const template = document.getElementById('trialTemplate');
+  const clone = template.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+  clone.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
+  clone.querySelector('select').selectedIndex = 0;
+  container.appendChild(clone);
+}
+</script>
+</body>
+</html>

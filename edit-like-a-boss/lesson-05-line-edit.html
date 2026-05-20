@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 5 — Line Edit Worksheet</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:850px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.82rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+textarea{width:100%;min-height:120px;border:2px solid var(--border);border-radius:8px;padding:1rem;font-family:'Georgia',serif;font-size:0.95rem;resize:vertical;background:var(--cream);}
+textarea:focus{outline:none;border-color:var(--coral);}
+.example-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.example-box{padding:1rem;border-radius:8px;font-size:0.9rem;}
+.example-before{background:#FFEBEE;border-left:3px solid #E53935;}
+.example-after{background:#E8F5E9;border-left:3px solid #43A047;}
+.banned-section{background:var(--navy);color:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;}
+.banned-section h2{color:var(--coral);border-bottom-color:var(--coral);}
+.banned-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem;}
+.banned-col h3{color:var(--gold);font-size:0.95rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;}
+.banned-col ul{list-style:none;padding:0;}
+.banned-col ul li{padding:0.3rem 0;font-size:0.88rem;color:#D0CCC4;border-bottom:1px solid rgba(255,255,255,0.1);}
+.banned-col ul li:last-child{border-bottom:none;}
+.banned-col ul li::before{content:"\2716 ";color:var(--coral);font-size:0.75rem;margin-right:0.3rem;}
+.check-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);}
+.check-row:last-child{border-bottom:none;}
+.check-row .num{width:30px;font-weight:bold;color:var(--coral);flex-shrink:0;}
+.check-row .label{flex:1;}
+.check-row select{padding:0.3rem;border-radius:4px;border:1px solid var(--border);font-family:'Georgia',serif;}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;}
+.btn:hover{background:#D4634A;}
+.progress-bar{background:var(--light-gray);border-radius:20px;height:24px;overflow:hidden;margin:1rem 0;}
+.progress-fill{background:linear-gradient(90deg, var(--coral), var(--gold));height:100%;border-radius:20px;transition:width 0.5s ease;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:bold;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+.custom-banned{background:var(--light-gray);border-radius:8px;padding:1rem;margin-top:1rem;}
+.custom-banned input{width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.9rem;background:white;margin-top:0.5rem;}
+@media(max-width:600px){.example-compare,.banned-grid{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Lesson 5 — Pass 4: Line Edit</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- THE PROMPT -->
+  <div class="section">
+    <h2>The Line Edit Prompt</h2>
+    <p style="margin-bottom:1rem;">Copy this prompt. Replace the placeholders in gold with your project details. Paste your chapter where indicated.</p>
+
+    <div class="prompt-box" id="promptBox">
+      <button class="copy-btn" onclick="copyPrompt()">Copy</button>You are line-editing a chapter for <span class="placeholder">[PEN NAME]</span>, a <span class="placeholder">[GENRE]</span> author. Heat level: <span class="placeholder">[1-5]</span>/5.
+
+Here is the chapter to line edit:
+<span class="placeholder">[PASTE FULL CHAPTER HERE]</span>
+
+Run a LINE EDIT on this chapter. Check all 10 points:
+
+1. ECHOES — Flag repeated words within 2-3 paragraphs (especially: eyes, heart, breath, gaze, chest, stomach). Replace with varied alternatives.
+2. FILTER WORDS — Remove: felt, noticed, realized, seemed, watched, saw, heard, wondered, thought. Show the sensation directly instead.
+3. WEAK VERBS — Replace was/were + -ing with active verbs. Kill "started to" and "began to."
+4. ADVERB CRUTCHES — Cut -ly adverbs. Strengthen the verb instead.
+5. DIALOGUE TAGS — Trim to "said/asked" or action beats. No "exclaimed, murmured, breathed" unless truly earned.
+6. SENTENCE VARIETY — Flag strings of same-length sentences or repetitive structures.
+7. OVERWRITING — Cut purple prose, redundant descriptions, metaphors that don't land.
+8. FILLER PHRASES — Remove: "a little," "sort of," "kind of," "just," "really," "very," "that" (when unnecessary).
+9. BODY LANGUAGE INVENTORY — Too many eyebrow raises, lip bites, jaw clenches? Vary the physical tells.
+10. RHYTHM CHECK — Read dialogue aloud mentally. Does it flow or stumble?
+
+ALSO CHECK THE BANNED LIST:
+- Banned AI-isms: "electricity coursing through," "a smile tugging at," "couldn't help but," "found myself," "before I could stop myself," "let out a breath I didn't know I was holding," "something shifted," "I didn't trust my voice," "swallowed hard," "a beat of silence," "broke the silence," "search my face," "meet my gaze," "hold my gaze," "the air between us"
+- Banned words: suddenly, slowly, quietly, incredibly, entirely, finally, slightly, completely
+- Banned physical actions: arms crossed, eyes rolled, heart hammered, smirked
+- Banned dialogue tags: growled, whispered (overuse), softly, slightly
+- Never start with "[Name] + verb" repeatedly. Never start two consecutive paragraphs the same way.
+
+Return the revised chapter with all fixes applied, plus a change summary listing what was fixed and where.</div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section">
+    <h2>Before & After Examples</h2>
+
+    <p style="font-weight:bold; margin-bottom:0.5rem;">Example 1 — Filter Words Removed</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        She felt the anger rise in her chest. She noticed his jaw tighten. She realized he was not going to apologize. She watched him turn toward the door.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        The anger rose hot in her chest. His jaw tightened. He was not going to apologize. He turned toward the door.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Four filter words removed (felt, noticed, realized, watched). Same beats, no distance between reader and experience.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 2 — Weak Verbs Strengthened</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        She was walking toward the barn when she started to hear the sound of hooves. He was leaning against the fence, and he began to smile when he saw her.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        She walked toward the barn. Hooves drummed somewhere beyond the tree line. He leaned against the fence and grinned when she rounded the corner.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Active verbs replace was/were + -ing. "Started to" and "began to" eliminated. Tighter, more immediate.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 3 — Echoes Fixed</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        His <u>eyes</u> found hers across the room. She held his <u>gaze</u> for a beat, then looked away. When she looked back, his <u>eyes</u> had not moved. Something in his <u>gaze</u> made her breath catch.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        He found her across the room. She held the look for a beat, then turned to the bar. When she glanced back, he had not moved. Something in the way he watched her made her breath catch.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">"Eyes" x2 and "gaze" x2 in four sentences. Fixed with varied alternatives. Same tension, no echo.</p>
+
+    <p style="font-weight:bold; margin-top:1.5rem; margin-bottom:0.5rem;">Example 4 — AI-isms Replaced</p>
+    <div class="example-compare">
+      <div class="example-box example-before">
+        <strong>BEFORE:</strong><br>
+        Electricity coursed through her when their hands touched. She couldn't help but lean closer. Something shifted in the air between them, and she let out a breath she didn't know she was holding.
+      </div>
+      <div class="example-box example-after">
+        <strong>AFTER:</strong><br>
+        His thumb grazed her wrist and her skin went warm. She leaned closer before she thought about it. The kitchen was too small for two people who were not going to kiss. She exhaled.
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:#888;">Four AI-isms replaced with specific, character-grounded details. "The kitchen was too small" does what "the air between them" could not.</p>
+  </div>
+
+  <!-- BANNED LIST QUICK REFERENCE -->
+  <div class="banned-section">
+    <h2>Banned List — Quick Reference</h2>
+
+    <div class="banned-grid">
+      <div class="banned-col">
+        <h3>Banned AI-isms</h3>
+        <ul>
+          <li>"electricity coursing through"</li>
+          <li>"a smile tugging at"</li>
+          <li>"couldn't help but"</li>
+          <li>"found myself"</li>
+          <li>"before I could stop myself"</li>
+          <li>"let out a breath I didn't know I was holding"</li>
+          <li>"something shifted"</li>
+          <li>"I didn't trust my voice"</li>
+          <li>"swallowed hard"</li>
+          <li>"a beat of silence"</li>
+          <li>"broke the silence"</li>
+          <li>"search my face"</li>
+          <li>"meet my gaze" / "hold my gaze"</li>
+          <li>"the air between us"</li>
+        </ul>
+      </div>
+      <div class="banned-col">
+        <h3>Banned Words</h3>
+        <ul>
+          <li>suddenly</li>
+          <li>slowly</li>
+          <li>quietly</li>
+          <li>incredibly</li>
+          <li>entirely</li>
+          <li>finally</li>
+          <li>slightly</li>
+          <li>completely</li>
+        </ul>
+        <h3 style="margin-top:1rem;">Banned Physical Actions</h3>
+        <ul>
+          <li>arms crossed</li>
+          <li>eyes rolled</li>
+          <li>heart hammered</li>
+          <li>smirked</li>
+        </ul>
+        <h3 style="margin-top:1rem;">Banned Dialogue Tags</h3>
+        <ul>
+          <li>growled</li>
+          <li>whispered (overuse)</li>
+          <li>softly</li>
+          <li>slightly</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="custom-banned">
+      <strong style="color:var(--navy);">Add Your Own Banned Patterns:</strong>
+      <p style="font-size:0.85rem;color:#555;margin-top:0.25rem;">As you run Line Edits, note patterns your AI repeats. Add them here to build your custom filter.</p>
+      <input type="text" id="custom1" placeholder='e.g., "a flicker of something"'>
+      <input type="text" id="custom2" placeholder='e.g., "part of her knew"' style="margin-top:0.5rem;">
+      <input type="text" id="custom3" placeholder='e.g., always starts internal thoughts with "Maybe"' style="margin-top:0.5rem;">
+      <input type="text" id="custom4" placeholder="Add another..." style="margin-top:0.5rem;">
+    </div>
+  </div>
+
+  <!-- YOUR WORKSPACE -->
+  <div class="section">
+    <h2>Your Line Edit Workspace</h2>
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Pen Name:</label>
+    <input type="text" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Sage Kennedy">
+
+    <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Chapter Number / Title:</label>
+    <input type="text" style="width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:6px;font-family:Georgia;font-size:0.95rem;margin-bottom:1rem;background:var(--cream);" placeholder="e.g., Chapter 7 — The Cabin">
+  </div>
+
+  <!-- RESULTS TRACKER -->
+  <div class="section">
+    <h2>Line Edit Results Tracker</h2>
+    <p style="margin-bottom:0.5rem;">After running the prompt, mark each checkpoint based on the AI's findings and your review.</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%">0 / 10</div>
+    </div>
+
+    <div id="resultsGrid">
+      <div class="check-row">
+        <span class="num">1</span>
+        <span class="label">Echoes (repeated words within 2-3 paragraphs)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">2</span>
+        <span class="label">Filter Words (felt, noticed, realized, etc.)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">3</span>
+        <span class="label">Weak Verbs (was/were + -ing, started to, began to)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">4</span>
+        <span class="label">Adverb Crutches (-ly adverbs cut or replaced)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">5</span>
+        <span class="label">Dialogue Tags (trimmed to said/asked + action beats)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">6</span>
+        <span class="label">Sentence Variety (no monotonous patterns)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">7</span>
+        <span class="label">Overwriting (purple prose, redundant descriptions cut)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">8</span>
+        <span class="label">Filler Phrases (a little, sort of, just, very, etc.)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">9</span>
+        <span class="label">Body Language Inventory (physical tells varied)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+      <div class="check-row">
+        <span class="num">10</span>
+        <span class="label">Rhythm Check (dialogue flows, no stumbles)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+
+      <div class="check-row" style="background:var(--navy);border-radius:6px;padding:0.6rem 0.75rem;margin-top:0.5rem;">
+        <span class="num" style="color:var(--gold);">+</span>
+        <span class="label" style="color:white;">Banned List Check (AI-isms, words, actions, tags)</span>
+        <select onchange="updateResults()" class="result-select" style="padding:0.3rem;border-radius:4px;border:1px solid var(--border);">
+          <option value="">--</option>
+          <option value="pass">PASS</option>
+          <option value="fail">FIXED</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.25rem;">Notes on issues found / changes made:</label>
+      <textarea style="min-height:150px;" placeholder="What did the AI catch? What did you override? Any new patterns to add to your banned list? Which filter words appeared most often?"></textarea>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyPrompt() {
+  const box = document.getElementById('promptBox');
+  const text = box.innerText.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+function updateResults() {
+  const selects = document.querySelectorAll('.result-select');
+  let completed = 0;
+  let total = selects.length;
+  selects.forEach(sel => {
+    const row = sel.closest('.check-row');
+    if (sel.value === 'pass') {
+      row.style.background = '#E8F5E9';
+      completed++;
+    } else if (sel.value === 'fail') {
+      row.style.background = '#FFF3E0';
+      completed++;
+    } else {
+      row.style.background = row.classList.contains('banned-row') ? 'var(--navy)' : 'transparent';
+    }
+  });
+  const pct = Math.round((completed / total) * 100);
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  fill.textContent = completed + ' / ' + total;
+}
+</script>
+</body>
+</html>

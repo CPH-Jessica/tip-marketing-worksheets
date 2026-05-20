@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 10 — Full Manuscript Audit Tracker</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 0;
+}
+.header {
+  background: var(--navy);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+.header .subtitle {
+  color: var(--coral);
+  font-size: 1rem;
+  font-style: italic;
+}
+.header .brand {
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Dashboard */
+.dashboard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border-top: 4px solid var(--coral);
+}
+.dashboard h2 {
+  color: var(--navy);
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.dash-card {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+.dash-card .dash-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--navy);
+}
+.dash-card .dash-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+.dash-card.highlight { background: var(--coral); }
+.dash-card.highlight .dash-number { color: white; }
+.dash-card.highlight .dash-label { color: rgba(255,255,255,0.85); }
+
+/* Overall progress bar */
+.overall-progress {
+  margin: 1rem 0;
+}
+.overall-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+.progress-bar {
+  background: var(--light-gray);
+  border-radius: 20px;
+  height: 28px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--coral), var(--gold));
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  min-width: 2rem;
+}
+
+/* Pass progress bars */
+.pass-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.pass-progress-item {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+.pass-progress-item .pass-label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+}
+.pass-mini-bar {
+  background: #E0DDD8;
+  border-radius: 10px;
+  height: 12px;
+  overflow: hidden;
+}
+.pass-mini-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+.pass-mini-fill.p1 { background: var(--coral); }
+.pass-mini-fill.p2 { background: #E8735A; }
+.pass-mini-fill.p3 { background: #D4634A; }
+.pass-mini-fill.p4 { background: var(--gold); }
+.pass-mini-fill.p5 { background: #C49843; }
+.pass-mini-fill.p6 { background: #B48833; }
+.pass-mini-fill.p7 { background: var(--sage); }
+.pass-mini-fill.p8 { background: #6A8E6E; }
+.pass-pct {
+  font-size: 0.7rem;
+  color: #888;
+  margin-top: 0.2rem;
+  text-align: right;
+}
+
+/* Setup section */
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section h2 {
+  color: var(--navy);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--coral);
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  background: var(--cream);
+}
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+.btn {
+  background: var(--coral);
+  color: white;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn:hover { background: #D4634A; }
+.btn-navy { background: var(--navy); }
+.btn-navy:hover { background: #2A3D5E; }
+.btn-sage { background: var(--sage); }
+.btn-sage:hover { background: #6A8E6E; }
+.btn-gold { background: var(--gold); }
+.btn-gold:hover { background: #C49843; }
+.btn-sm {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
+}
+
+/* Tracker table */
+.tracker-wrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.tracker-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  min-width: 900px;
+}
+.tracker-table thead th {
+  background: var(--navy);
+  color: white;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.tracker-table thead th:first-child {
+  text-align: left;
+  padding-left: 0.75rem;
+  min-width: 55px;
+}
+.tracker-table thead th:last-child {
+  min-width: 80px;
+}
+.tracker-table thead th.pass-header {
+  min-width: 60px;
+}
+.tracker-table tbody td {
+  padding: 0.4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--light-gray);
+}
+.tracker-table tbody tr:nth-child(even) {
+  background: #FDFAF5;
+}
+.tracker-table tbody tr:hover {
+  background: #FFF0EC;
+}
+.tracker-table tbody td:first-child {
+  text-align: left;
+  font-weight: bold;
+  color: var(--navy);
+  padding-left: 0.75rem;
+  white-space: nowrap;
+}
+.tracker-table tbody td input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--coral);
+  cursor: pointer;
+}
+.tracker-table .status-select {
+  font-size: 0.72rem;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  font-family: Georgia, serif;
+  width: 100%;
+  max-width: 85px;
+}
+.tracker-table .notes-input {
+  font-size: 0.72rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: Georgia, serif;
+  width: 100%;
+  min-width: 100px;
+  background: var(--cream);
+}
+.tracker-table .notes-input:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+
+/* Chapter row status */
+.row-approved td:first-child {
+  border-left: 3px solid var(--sage);
+}
+.row-reedit td:first-child {
+  border-left: 3px solid var(--coral);
+}
+
+/* Quality checkpoints */
+.checkpoints {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.checkpoint-card {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid var(--border);
+}
+.checkpoint-card.checkpoint-pass {
+  border-left-color: var(--sage);
+  background: #F0F7F0;
+}
+.checkpoint-card.checkpoint-fail {
+  border-left-color: var(--coral);
+  background: #FFF0EE;
+}
+.checkpoint-card h4 {
+  color: var(--navy);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.checkpoint-card p {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.checkpoint-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.checkpoint-toggle button {
+  flex: 1;
+  padding: 0.4rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+.checkpoint-toggle button.active-pass {
+  background: var(--sage);
+  color: white;
+  border-color: var(--sage);
+}
+.checkpoint-toggle button.active-fail {
+  background: var(--coral);
+  color: white;
+  border-color: var(--coral);
+}
+
+/* Time estimates */
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.time-card {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+.time-card .time-pass {
+  font-size: 0.7rem;
+  color: var(--coral);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.time-card .time-name {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--navy);
+  margin: 0.2rem 0;
+}
+.time-card .time-range {
+  font-size: 0.75rem;
+  color: #666;
+}
+.time-card .time-total {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--navy);
+  margin-top: 0.25rem;
+}
+
+/* Notes section */
+.notes-area {
+  width: 100%;
+  min-height: 100px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  resize: vertical;
+  background: var(--cream);
+  margin-top: 0.5rem;
+}
+.notes-area:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.tip-box {
+  background: #FFF8E1;
+  border-left: 4px solid var(--gold);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+}
+.tip-box strong { color: var(--gold); }
+
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+  .pass-progress-grid { grid-template-columns: repeat(2, 1fr); }
+  .checkpoints { grid-template-columns: 1fr; }
+  .time-grid { grid-template-columns: repeat(2, 1fr); }
+  .container { padding: 1rem; }
+}
+@media (max-width: 600px) {
+  .dashboard-grid { grid-template-columns: 1fr 1fr; }
+  .time-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Full Manuscript Audit Tracker</h1>
+  <div class="subtitle">Track all 8 editing passes across every chapter</div>
+  <div class="brand">Edit Like a Boss | The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- Summary Dashboard -->
+  <div class="dashboard" id="dashboard">
+    <h2>Manuscript Dashboard</h2>
+    <div id="book-title-display" style="font-size: 1.1rem; color: var(--coral); margin-bottom: 1rem; font-style: italic; display: none;"></div>
+
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-number" id="dash-total-chapters">0</div>
+        <div class="dash-label">Total Chapters</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-number" id="dash-total-checks">0</div>
+        <div class="dash-label">Total Checks (8 x chapters)</div>
+      </div>
+      <div class="dash-card highlight">
+        <div class="dash-number" id="dash-completed">0</div>
+        <div class="dash-label">Checks Completed</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-number" id="dash-approved">0</div>
+        <div class="dash-label">Chapters Approved</div>
+      </div>
+    </div>
+
+    <div class="overall-progress">
+      <div class="overall-progress-label">
+        <span>Overall Editing Progress</span>
+        <span id="overall-pct-label">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="overall-progress-fill" style="width: 0%;">0%</div>
+      </div>
+    </div>
+
+    <div class="pass-progress-grid" id="pass-progress-grid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- Setup Section -->
+  <div class="section">
+    <h2>Manuscript Setup</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="book-title">Book Title</label>
+        <input type="text" id="book-title" placeholder="Enter your book title">
+      </div>
+      <div class="form-group" style="max-width: 140px;">
+        <label for="total-chapters">Total Chapters</label>
+        <input type="number" id="total-chapters" min="1" max="60" value="25">
+      </div>
+      <div class="form-group" style="max-width: 180px;">
+        <label for="pen-name-select">Pen Name</label>
+        <select id="pen-name-select">
+          <option value="">Select...</option>
+          <option value="Sage Kennedy">Sage Kennedy</option>
+          <option value="Constance Ruth Clark">Constance Ruth Clark</option>
+          <option value="Ruthie Clark">Ruthie Clark</option>
+          <option value="Marjorie Adams">Marjorie Adams</option>
+          <option value="Kelsey Croft">Kelsey Croft</option>
+          <option value="Moxie Savage">Moxie Savage</option>
+          <option value="Rosemary Irving">Rosemary Irving</option>
+          <option value="Garrett Stone">Garrett Stone</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button class="btn" onclick="buildTracker()">Build Tracker</button>
+    </div>
+    <div class="form-row" style="gap: 0.5rem;">
+      <button class="btn btn-navy btn-sm" onclick="saveProgress()">Save Progress</button>
+      <button class="btn btn-sage btn-sm" onclick="loadProgress()">Load Saved</button>
+      <button class="btn btn-gold btn-sm" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <div id="save-status" style="font-size: 0.8rem; color: var(--sage); margin-top: 0.5rem;"></div>
+  </div>
+
+  <!-- Time Estimates -->
+  <div class="section">
+    <h2>Estimated Time Per Pass</h2>
+    <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Based on <span id="time-chapter-count">25</span> chapters at 3,000-5,000 words each.</p>
+    <div class="time-grid" id="time-grid">
+      <!-- Filled by JS -->
+    </div>
+    <div style="text-align: center; margin-top: 1rem; padding: 0.75rem; background: var(--navy); color: white; border-radius: 8px;">
+      <span style="font-size: 0.85rem;">Estimated Total:</span>
+      <span style="font-size: 1.2rem; font-weight: bold; margin-left: 0.5rem;" id="total-time-estimate">50-75 hours</span>
+    </div>
+  </div>
+
+  <!-- The Tracker Table -->
+  <div class="section">
+    <h2>Chapter-by-Chapter Tracker</h2>
+    <p>Check off each pass as you complete it for each chapter. Set the status to track which chapters are approved or need re-editing.</p>
+
+    <div class="tracker-wrapper">
+      <table class="tracker-table" id="tracker-table">
+        <thead>
+          <tr>
+            <th>Ch.</th>
+            <th class="pass-header">P1<br>Quality</th>
+            <th class="pass-header">P2<br>Plot</th>
+            <th class="pass-header">P3<br>Time</th>
+            <th class="pass-header">P4<br>Line</th>
+            <th class="pass-header">P5<br>Dialog</th>
+            <th class="pass-header">P6<br>Heat</th>
+            <th class="pass-header">P7<br>Dev</th>
+            <th class="pass-header">P8<br>Voice</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tracker-body">
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button class="btn btn-sm" onclick="markAllPass(currentPass)" id="mark-all-btn">Mark Current Pass Complete</button>
+      <select id="current-pass-select" onchange="currentPass = parseInt(this.value)" style="padding: 0.4rem; border-radius: 4px; border: 2px solid var(--border); font-family: Georgia, serif; font-size: 0.8rem;">
+        <option value="1">Pass 1 - Quality</option>
+        <option value="2">Pass 2 - Plot Holes</option>
+        <option value="3">Pass 3 - Timeline</option>
+        <option value="4">Pass 4 - Line Edit</option>
+        <option value="5">Pass 5 - Dialogue</option>
+        <option value="6">Pass 6 - Heat/Action</option>
+        <option value="7">Pass 7 - Dev Edit</option>
+        <option value="8">Pass 8 - Voice Audit</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Quality Checkpoints -->
+  <div class="section">
+    <h2>Quality Checkpoints</h2>
+    <p>Mark these as you hit each milestone. Do not proceed past a checkpoint until it passes.</p>
+    <div class="checkpoints">
+      <div class="checkpoint-card" id="cp1">
+        <h4>After Pass 3: Logic Test</h4>
+        <p>Can you read the entire book without any moment where you think "that does not make sense"?</p>
+        <div class="checkpoint-toggle">
+          <button onclick="setCheckpoint(1, 'pass')">Pass</button>
+          <button onclick="setCheckpoint(1, 'fail')">Not Yet</button>
+        </div>
+      </div>
+      <div class="checkpoint-card" id="cp2">
+        <h4>After Pass 5: Dialogue Test</h4>
+        <p>Cover the dialogue tags. Can you tell who is speaking just by how they talk?</p>
+        <div class="checkpoint-toggle">
+          <button onclick="setCheckpoint(2, 'pass')">Pass</button>
+          <button onclick="setCheckpoint(2, 'fail')">Not Yet</button>
+        </div>
+      </div>
+      <div class="checkpoint-card" id="cp3">
+        <h4>After Pass 7: Pacing Test</h4>
+        <p>Is there any scene you would skip as a reader? Be honest.</p>
+        <div class="checkpoint-toggle">
+          <button onclick="setCheckpoint(3, 'pass')">Pass</button>
+          <button onclick="setCheckpoint(3, 'fail')">Not Yet</button>
+        </div>
+      </div>
+      <div class="checkpoint-card" id="cp4">
+        <h4>After Pass 8: Voice Test</h4>
+        <p>Does the last chapter sound like the first chapter? Is the voice consistent throughout?</p>
+        <div class="checkpoint-toggle">
+          <button onclick="setCheckpoint(4, 'pass')">Pass</button>
+          <button onclick="setCheckpoint(4, 'fail')">Not Yet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manuscript-Level Audit -->
+  <div class="section">
+    <h2>Manuscript-Level Audit</h2>
+    <p>After all 8 passes on every chapter, zoom out and check the book as a whole.</p>
+    <div style="margin-top: 1rem;">
+      <div class="checkpoint-card" style="margin-bottom: 0.75rem;">
+        <h4>Overall Pacing</h4>
+        <p>Does the pacing feel right across the full arc? No sagging middle?</p>
+        <textarea class="notes-area" style="min-height: 60px;" placeholder="Notes on overall pacing..."></textarea>
+      </div>
+      <div class="checkpoint-card" style="margin-bottom: 0.75rem;">
+        <h4>Character Arc Resolution</h4>
+        <p>Do the arcs resolve satisfyingly, both logically AND emotionally?</p>
+        <textarea class="notes-area" style="min-height: 60px;" placeholder="Notes on character arcs..."></textarea>
+      </div>
+      <div class="checkpoint-card" style="margin-bottom: 0.75rem;">
+        <h4>Heat/Tension Progression</h4>
+        <p>Is the escalation pattern right? Does each scene build on the last?</p>
+        <textarea class="notes-area" style="min-height: 60px;" placeholder="Notes on heat/tension progression..."></textarea>
+      </div>
+      <div class="checkpoint-card" style="margin-bottom: 0.75rem;">
+        <h4>Unresolved Threads</h4>
+        <p>Any subplots, promises, or setups that never pay off?</p>
+        <textarea class="notes-area" style="min-height: 60px;" placeholder="List any unresolved threads..."></textarea>
+      </div>
+      <div class="checkpoint-card">
+        <h4>Series Setup (if applicable)</h4>
+        <p>Are series hooks planted naturally? Do they create anticipation without cliffhangers?</p>
+        <textarea class="notes-area" style="min-height: 60px;" placeholder="Notes on series elements..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Notes -->
+  <div class="section">
+    <h2>Final Assessment</h2>
+    <div style="margin-bottom: 1rem;">
+      <label style="font-weight: bold; color: var(--navy); display: block; margin-bottom: 0.5rem;">Is this manuscript ready to publish?</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-sage" onclick="setPublishReady(true)" id="ready-yes">Yes, Ready to Publish</button>
+        <button class="btn" onclick="setPublishReady(false)" id="ready-no">Needs More Work</button>
+      </div>
+      <div id="publish-status" style="margin-top: 0.75rem; display: none;"></div>
+    </div>
+    <div>
+      <label style="font-weight: bold; color: var(--navy); display: block; margin-bottom: 0.5rem;">Lessons Learned for Next Book</label>
+      <textarea class="notes-area" placeholder="What will you do differently on your next manuscript? What prompts worked best? What did you learn about your pen name's voice? What should you add to your voice profile or codex?"></textarea>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>Remember:</strong> The system gets better every time you use it. After this book, update your pen name voice profile, refine your banned word list, and improve your prompt templates. Book 5 edits faster than Book 1.
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss | The Invisible Pen | &copy; 2026 Jessica Waldron
+</div>
+
+<script>
+const passNames = [
+  'Quality Check', 'Plot Holes', 'Timeline', 'Line Edit',
+  'Dialogue', 'Heat/Action', 'Dev Edit', 'Voice Audit'
+];
+const passTimesMin = [15, 20, 10, 30, 20, 5, 20, 15];
+const passTimesMax = [20, 30, 30, 45, 30, 45, 30, 25];
+
+let totalChapters = 25;
+let currentPass = 1;
+let trackerData = [];
+
+function buildTracker() {
+  totalChapters = parseInt(document.getElementById('total-chapters').value) || 25;
+  const title = document.getElementById('book-title').value;
+  const penName = document.getElementById('pen-name-select').value;
+
+  // Show title
+  const titleDisplay = document.getElementById('book-title-display');
+  if (title) {
+    titleDisplay.textContent = '"' + title + '"' + (penName ? ' by ' + penName : '');
+    titleDisplay.style.display = 'block';
+  } else {
+    titleDisplay.style.display = 'none';
+  }
+
+  // Init data
+  trackerData = [];
+  for (let i = 0; i < totalChapters; i++) {
+    trackerData.push({
+      passes: [false, false, false, false, false, false, false, false],
+      status: 'pending',
+      notes: ''
+    });
+  }
+
+  renderTracker();
+  updateTimeEstimates();
+  updateDashboard();
+}
+
+function renderTracker() {
+  const tbody = document.getElementById('tracker-body');
+  let html = '';
+  for (let i = 0; i < totalChapters; i++) {
+    const d = trackerData[i];
+    const rowClass = d.status === 'approved' ? 'row-approved' : (d.status === 'reedit' ? 'row-reedit' : '');
+    html += `<tr class="${rowClass}">`;
+    html += `<td>Ch ${i + 1}</td>`;
+    for (let p = 0; p < 8; p++) {
+      html += `<td><input type="checkbox" ${d.passes[p] ? 'checked' : ''} onchange="togglePass(${i}, ${p}, this.checked)"></td>`;
+    }
+    html += `<td><select class="status-select" onchange="setStatus(${i}, this.value)">
+      <option value="pending" ${d.status === 'pending' ? 'selected' : ''}>Pending</option>
+      <option value="approved" ${d.status === 'approved' ? 'selected' : ''}>Approved</option>
+      <option value="reedit" ${d.status === 'reedit' ? 'selected' : ''}>Re-edit</option>
+    </select></td>`;
+    html += `<td><input type="text" class="notes-input" value="${escapeHtml(d.notes)}" onchange="setNotes(${i}, this.value)" placeholder="Notes..."></td>`;
+    html += '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function togglePass(ch, pass, checked) {
+  trackerData[ch].passes[pass] = checked;
+  updateDashboard();
+}
+
+function setStatus(ch, status) {
+  trackerData[ch].status = status;
+  renderTracker();
+  updateDashboard();
+}
+
+function setNotes(ch, text) {
+  trackerData[ch].notes = text;
+}
+
+function markAllPass(passNum) {
+  const idx = passNum - 1;
+  for (let i = 0; i < trackerData.length; i++) {
+    trackerData[i].passes[idx] = true;
+  }
+  renderTracker();
+  updateDashboard();
+}
+
+function updateDashboard() {
+  const total = totalChapters;
+  const totalChecks = total * 8;
+  let completed = 0;
+  let approved = 0;
+  const passCounts = [0, 0, 0, 0, 0, 0, 0, 0];
+
+  for (let i = 0; i < trackerData.length; i++) {
+    const d = trackerData[i];
+    for (let p = 0; p < 8; p++) {
+      if (d.passes[p]) {
+        completed++;
+        passCounts[p]++;
+      }
+    }
+    if (d.status === 'approved') approved++;
+  }
+
+  document.getElementById('dash-total-chapters').textContent = total;
+  document.getElementById('dash-total-checks').textContent = totalChecks;
+  document.getElementById('dash-completed').textContent = completed;
+  document.getElementById('dash-approved').textContent = approved;
+
+  const overallPct = totalChecks > 0 ? Math.round((completed / totalChecks) * 100) : 0;
+  document.getElementById('overall-progress-fill').style.width = overallPct + '%';
+  document.getElementById('overall-progress-fill').textContent = overallPct + '%';
+  document.getElementById('overall-pct-label').textContent = overallPct + '%';
+
+  // Pass progress bars
+  let passHtml = '';
+  for (let p = 0; p < 8; p++) {
+    const pct = total > 0 ? Math.round((passCounts[p] / total) * 100) : 0;
+    passHtml += `
+      <div class="pass-progress-item">
+        <div class="pass-label">P${p + 1}: ${passNames[p]}</div>
+        <div class="pass-mini-bar">
+          <div class="pass-mini-fill p${p + 1}" style="width: ${pct}%;"></div>
+        </div>
+        <div class="pass-pct">${passCounts[p]}/${total} (${pct}%)</div>
+      </div>`;
+  }
+  document.getElementById('pass-progress-grid').innerHTML = passHtml;
+}
+
+function updateTimeEstimates() {
+  const count = totalChapters;
+  document.getElementById('time-chapter-count').textContent = count;
+
+  let html = '';
+  let totalMin = 0, totalMax = 0;
+  for (let i = 0; i < 8; i++) {
+    const tMin = passTimesMin[i] * count;
+    const tMax = passTimesMax[i] * count;
+    totalMin += tMin;
+    totalMax += tMax;
+    const hMin = Math.round(tMin / 60);
+    const hMax = Math.round(tMax / 60);
+    html += `
+      <div class="time-card">
+        <div class="time-pass">Pass ${i + 1}</div>
+        <div class="time-name">${passNames[i]}</div>
+        <div class="time-range">${passTimesMin[i]}-${passTimesMax[i]} min/ch</div>
+        <div class="time-total">${hMin}-${hMax} hrs total</div>
+      </div>`;
+  }
+  document.getElementById('time-grid').innerHTML = html;
+
+  const totalHMin = Math.round(totalMin / 60);
+  const totalHMax = Math.round(totalMax / 60);
+  document.getElementById('total-time-estimate').textContent = totalHMin + '-' + totalHMax + ' hours';
+}
+
+function setCheckpoint(num, result) {
+  const card = document.getElementById('cp' + num);
+  const btns = card.querySelectorAll('.checkpoint-toggle button');
+  btns.forEach(b => { b.classList.remove('active-pass', 'active-fail'); });
+  if (result === 'pass') {
+    btns[0].classList.add('active-pass');
+    card.classList.add('checkpoint-pass');
+    card.classList.remove('checkpoint-fail');
+  } else {
+    btns[1].classList.add('active-fail');
+    card.classList.add('checkpoint-fail');
+    card.classList.remove('checkpoint-pass');
+  }
+}
+
+function setPublishReady(ready) {
+  const status = document.getElementById('publish-status');
+  status.style.display = 'block';
+  if (ready) {
+    status.innerHTML = '<div style="background: #F0F7F0; border: 2px solid var(--sage); border-radius: 8px; padding: 1rem; color: var(--navy);"><strong style="color: var(--sage); font-size: 1.1rem;">This manuscript is ready to publish.</strong><br>All passes complete. Quality checkpoints passed. Voice is consistent. Go make your readers happy.</div>';
+    document.getElementById('ready-yes').style.opacity = '1';
+    document.getElementById('ready-no').style.opacity = '0.5';
+  } else {
+    status.innerHTML = '<div style="background: #FFF0EE; border: 2px solid var(--coral); border-radius: 8px; padding: 1rem; color: var(--navy);"><strong style="color: var(--coral); font-size: 1.1rem;">Not yet.</strong><br>Review the tracker above. Which passes are incomplete? Which checkpoints did not pass? Address those items first.</div>';
+    document.getElementById('ready-yes').style.opacity = '0.5';
+    document.getElementById('ready-no').style.opacity = '1';
+  }
+}
+
+function saveProgress() {
+  const data = {
+    title: document.getElementById('book-title').value,
+    totalChapters: totalChapters,
+    penName: document.getElementById('pen-name-select').value,
+    trackerData: trackerData,
+    savedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem('elab-audit-tracker', JSON.stringify(data));
+    document.getElementById('save-status').textContent = 'Progress saved at ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById('save-status').textContent = 'Could not save. Try exporting CSV instead.';
+  }
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem('elab-audit-tracker');
+    if (!raw) {
+      document.getElementById('save-status').textContent = 'No saved progress found.';
+      return;
+    }
+    const data = JSON.parse(raw);
+    document.getElementById('book-title').value = data.title || '';
+    document.getElementById('total-chapters').value = data.totalChapters || 25;
+    document.getElementById('pen-name-select').value = data.penName || '';
+    totalChapters = data.totalChapters || 25;
+    trackerData = data.trackerData || [];
+    renderTracker();
+    updateTimeEstimates();
+    updateDashboard();
+
+    const titleDisplay = document.getElementById('book-title-display');
+    if (data.title) {
+      titleDisplay.textContent = '"' + data.title + '"' + (data.penName ? ' by ' + data.penName : '');
+      titleDisplay.style.display = 'block';
+    }
+
+    document.getElementById('save-status').textContent = 'Loaded. Last saved: ' + new Date(data.savedAt).toLocaleString();
+  } catch (e) {
+    document.getElementById('save-status').textContent = 'Error loading saved data.';
+  }
+}
+
+function exportCSV() {
+  const title = document.getElementById('book-title').value || 'Manuscript';
+  let csv = 'Chapter,P1 Quality,P2 Plot,P3 Timeline,P4 Line,P5 Dialogue,P6 Heat,P7 Dev,P8 Voice,Status,Notes\n';
+  for (let i = 0; i < trackerData.length; i++) {
+    const d = trackerData[i];
+    const passes = d.passes.map(p => p ? 'Done' : '').join(',');
+    const notes = '"' + (d.notes || '').replace(/"/g, '""') + '"';
+    csv += `Ch ${i + 1},${passes},${d.status},${notes}\n`;
+  }
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = title.replace(/[^a-zA-Z0-9]/g, '_') + '_audit_tracker.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Initialize
+buildTracker();
+</script>
+</body>
+</html>
