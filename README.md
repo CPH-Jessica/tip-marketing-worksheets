@@ -27,6 +27,14 @@ Located in `/amazon-ads/`
 | 3 | Campaign Builder | Step-by-step wizard to set up 3 campaigns (keyword, ASIN, auto) with breakeven math |
 | 4 | Ad Performance Tracker | Weekly data tracker with auto-calculated ACOS, breakeven, and scale/pause recommendations |
 
+## Standalone Tools
+
+Located in `/tools/`
+
+| Tool | What It Does |
+|---|---|
+| Series Read-Through Calculator | Model series read-through rates and revenue projections across books in a series |
+
 ## How to Use
 
 Open any `.html` file in a web browser. Fill in the inputs, click the generate buttons, print or save your results. Nothing is stored on a server — all calculations happen in your browser.
