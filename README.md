@@ -43,6 +43,7 @@ Located in `/edit-like-a-boss/`
 | 8 | Lesson 8: Pass 7 — Developmental Edit | Structure & arc |
 | 9 | Lesson 9: Pass 8 — Voice Audit | Author voice consistency |
 | 10 | Lesson 10: Putting It All Together | Workflow integration |
+| 11 | Lesson 11: Pass 9 — YOU, The Human Pass | Final human review before publishing |
 
 ## Standalone Tools
 

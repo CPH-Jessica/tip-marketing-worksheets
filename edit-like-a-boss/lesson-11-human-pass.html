@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Lesson 11 — Pass 9: YOU. The Human Pass</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; --red:#E53935; --green:#43A047; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+.frame-banner{background:linear-gradient(135deg, var(--navy) 0%, #2A3D5C 100%);color:white;padding:2rem;border-radius:8px;margin-bottom:1.5rem;text-align:center;}
+.frame-banner h2{color:var(--coral);font-size:1.5rem;margin-bottom:0.75rem;border:none;padding:0;}
+.frame-banner .you{font-size:3rem;color:var(--gold);font-weight:bold;margin:0.5rem 0;}
+.frame-banner .tagline{font-style:italic;color:#D4CFC7;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h2.sub{font-size:1.1rem;border-bottom-color:var(--gold);}
+.help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);}
+input[type="text"], input[type="number"], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);margin-bottom:1rem;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:80px;resize:vertical;}
+.component-card{background:var(--cream);border-left:4px solid var(--coral);border-radius:0 8px 8px 0;padding:1.25rem;margin-bottom:1rem;}
+.component-card h3{color:var(--navy);font-size:1.1rem;margin-bottom:0.5rem;}
+.component-card .num{display:inline-block;background:var(--coral);color:white;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:bold;margin-right:0.5rem;}
+.checklist-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.6rem 0;border-bottom:1px solid var(--light-gray);}
+.checklist-item:last-child{border-bottom:none;}
+.checklist-item input{margin-top:4px;accent-color:var(--coral);width:18px;height:18px;}
+.checklist-item label{cursor:pointer;flex:1;font-weight:normal;}
+.checklist-item label strong{color:var(--navy);}
+.gut-q{background:var(--light-gray);padding:1rem;border-radius:6px;margin-bottom:1rem;border-left:3px solid var(--gold);}
+.gut-q strong{color:var(--navy);display:block;margin-bottom:0.3rem;}
+.divider{display:flex;align-items:center;margin:2.5rem 0 1.5rem 0;}
+.divider .line{flex:1;height:2px;background:var(--gold);}
+.divider .text{padding:0 1rem;color:var(--gold);font-weight:bold;text-transform:uppercase;letter-spacing:2px;font-size:0.9rem;}
+.q-card{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+.q-card.yes{border-color:var(--green);background:#F1F8F2;}
+.q-card.no{border-color:var(--red);background:#FBEEEE;}
+.q-card h3{color:var(--navy);font-size:1rem;margin-bottom:0.5rem;}
+.q-card .q-text{margin-bottom:0.75rem;font-size:0.95rem;}
+.q-buttons{display:flex;gap:0.5rem;}
+.q-btn{flex:1;padding:0.5rem;border-radius:6px;border:2px solid var(--border);background:white;cursor:pointer;font-family:'Georgia',serif;font-weight:bold;}
+.q-btn.active.yes{background:var(--green);color:white;border-color:var(--green);}
+.q-btn.active.no{background:var(--red);color:white;border-color:var(--red);}
+.verdict-box{background:var(--navy);color:white;border-radius:8px;padding:1.5rem;margin-top:1rem;text-align:center;display:none;}
+.verdict-box.show{display:block;}
+.verdict-box h3{font-size:1.3rem;color:var(--coral);margin-bottom:0.5rem;}
+.verdict-box .v-result{font-size:2rem;font-weight:bold;color:var(--gold);margin:1rem 0;}
+.editor-types{display:grid;grid-template-columns:repeat(2, 1fr);gap:1rem;margin-top:1rem;}
+.editor-card{background:var(--light-gray);border-radius:8px;padding:1rem;border-left:4px solid var(--coral);}
+.editor-card h4{color:var(--navy);font-size:1rem;margin-bottom:0.3rem;}
+.editor-card .rate{color:var(--coral);font-weight:bold;font-size:0.95rem;}
+.editor-card .when{font-size:0.85rem;color:#666;margin-top:0.3rem;font-style:italic;}
+.editor-card.recommend{border-left-color:var(--gold);background:#FDF3E3;}
+.editor-card.recommend .badge{background:var(--gold);color:white;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.7rem;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px;display:inline-block;margin-bottom:0.3rem;}
+.cost-calc{background:var(--cream);border:2px dashed var(--coral);border-radius:8px;padding:1.25rem;}
+.cost-result{font-size:1.5rem;font-weight:bold;color:var(--navy);text-align:center;margin-top:1rem;padding:1rem;background:white;border-radius:6px;}
+.handoff-list{counter-reset:hi;list-style:none;padding-left:0;}
+.handoff-list li{counter-increment:hi;padding-left:2.5rem;position:relative;padding-bottom:0.75rem;margin-bottom:0.75rem;border-bottom:1px solid var(--light-gray);}
+.handoff-list li:last-child{border-bottom:none;margin-bottom:0;}
+.handoff-list li:before{content:counter(hi);position:absolute;left:0;top:0;background:var(--coral);color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+.skip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem;border-radius:0 6px 6px 0;margin:1rem 0;}
+.skip-box strong{color:var(--navy);}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;font-weight:bold;}
+.btn:hover{background:#D4634A;}
+.scene-flag{background:#FFF;border:1px solid var(--border);border-radius:6px;padding:0.75rem;margin-bottom:0.5rem;display:flex;gap:0.5rem;align-items:center;}
+.scene-flag input{flex:1;margin-bottom:0;}
+.scene-flag button{background:var(--coral);color:white;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:bold;}
+.add-btn{background:var(--sage);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-family:'Georgia',serif;font-size:0.85rem;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.editor-types{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Pass 9: YOU — The Human Pass</h1>
+  <div class="subtitle">Edit Like a Boss — Lesson 11</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- FRAME -->
+  <div class="frame-banner">
+    <h2>The 8 passes are your fiction skill editor.</h2>
+    <div class="you">PASS 9 = YOU</div>
+    <div class="tagline">The judgment can't be outsourced. The reader handoff is yours.</div>
+  </div>
+
+  <!-- WHAT PASS 9 IS -->
+  <div class="section">
+    <h2>What Pass 9 Is (And Isn't)</h2>
+    <p>Pass 9 is YOUR final pass on every book. Always. Every project. It is non-negotiable — there is no version of this system where the AI does all the work and you just hit publish.</p>
+    <p style="margin-top:0.5rem;">Within YOUR Pass 9, you may also decide to bring in outside human help (a paid copy editor or proofreader). That's a business decision. We cover it in the second half of this worksheet. But YOU are always the primary 9th pass. The paid editor is OPTIONAL extra muscle.</p>
+  </div>
+
+  <!-- PART 1: YOUR PASS -->
+  <div class="divider"><div class="line"></div><div class="text">Part 1 — YOUR Pass 9</div><div class="line"></div></div>
+
+  <!-- PROJECT INFO -->
+  <div class="section">
+    <h2>Project Setup</h2>
+    <label>Book title / project:</label>
+    <input type="text" placeholder="e.g., Hockey Holidays Book 1">
+    <label>Pen name:</label>
+    <input type="text" placeholder="e.g., Sage Kennedy">
+    <label>Chapters in this manuscript:</label>
+    <input type="number" placeholder="e.g., 24">
+    <label>Date you're starting Pass 9:</label>
+    <input type="text" placeholder="e.g., 2026-05-25">
+  </div>
+
+  <!-- COMPONENT 1: READ ALOUD -->
+  <div class="component-card">
+    <h3><span class="num">1</span>The Read-Aloud Pass</h3>
+    <p class="help">Read the whole manuscript out loud (or via text-to-speech). On a different device than you edited on. Print it if you can.</p>
+
+    <label>Read-aloud method:</label>
+    <select>
+      <option>Reading aloud myself</option>
+      <option>Mac built-in text-to-speech</option>
+      <option>Word "Read Aloud"</option>
+      <option>ElevenLabs / similar TTS</option>
+      <option>Mix — TTS for first pass, voice for problem chapters</option>
+    </select>
+
+    <label>Format change for this pass:</label>
+    <select>
+      <option>Printed</option>
+      <option>Different device (e.g., editing on laptop, reading on Kindle)</option>
+      <option>Different app (e.g., wrote in Word, reading in Vellum preview)</option>
+      <option>No format change (NOT recommended)</option>
+    </select>
+
+    <label>Chapters flagged during read-aloud (rhythm issues, dialogue stumbles, sentences you had to back up on):</label>
+    <div id="rhythmFlags">
+      <div class="scene-flag"><input type="text" placeholder="e.g., Ch 7 — proposal dialogue stumbles in para 4-5"><button onclick="removeRow(this)">×</button></div>
+    </div>
+    <button class="add-btn" onclick="addRow('rhythmFlags', 'e.g., Chapter X — issue')">+ Add another</button>
+  </div>
+
+  <!-- COMPONENT 2: EMOTIONAL GUT CHECK -->
+  <div class="component-card">
+    <h3><span class="num">2</span>Emotional Gut Check</h3>
+    <p class="help">Did you FEEL anything reading this? Honest answer.</p>
+
+    <div class="gut-q">
+      <strong>Where did I disengage?</strong>
+      <textarea placeholder="Be honest. If you started skimming around chapter 12, that's data. Your reader will skim there too."></textarea>
+    </div>
+
+    <div class="gut-q">
+      <strong>What didn't I FEEL that I was supposed to feel?</strong>
+      <textarea placeholder="Mechanically correct ≠ emotionally true. List every scene where the intended emotion didn't land."></textarea>
+    </div>
+
+    <div class="gut-q">
+      <strong>What would my #1 fan flag?</strong>
+      <textarea placeholder="Channel your most devoted reader. Off-character moments? Tone breaks? Continuity issues? List them."></textarea>
+    </div>
+  </div>
+
+  <!-- COMPONENT 3: BRAND CHECK -->
+  <div class="component-card">
+    <h3><span class="num">3</span>Brand Check</h3>
+    <p class="help">Does this book deliver what readers of THIS pen name expect? You are the brand authority — the AI follows your skill, but YOU verify the skill is doing its job.</p>
+
+    <div class="checklist-item"><input type="checkbox"><label><strong>Heat level matches the pen name calibration across the full manuscript</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Humor / intensity / darkness ratio is on-brand</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Vocabulary register matches the pen name (no Regency slang in modern, no modern slang in historical)</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>The character voices sound like THIS pen name's characters, not generic versions</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Series continuity is intact (if applicable)</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>This book delivers the genre promise (HEA for romance, justice for thriller, etc.)</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>A loyal reader of this pen name would feel satisfied and want the next book</strong></label></div>
+  </div>
+
+  <!-- COMPONENT 4: READER HANDOFF TEST -->
+  <div class="component-card">
+    <h3><span class="num">4</span>Reader Handoff Test</h3>
+    <p class="help">If you handed this to your #1 fan right now, what would she text back?</p>
+
+    <label>Best-case reaction (what you HOPE she'd say):</label>
+    <textarea placeholder="e.g., 'I cried at the proposal scene and stayed up til 2am finishing'"></textarea>
+
+    <label>Realistic reaction (what you actually think she'd say):</label>
+    <textarea placeholder="Be honest. Polite ≠ enthusiastic. Polite means it didn't land."></textarea>
+
+    <label>Gap between best-case and realistic:</label>
+    <select>
+      <option>No gap — they match</option>
+      <option>Small gap — minor polish needed</option>
+      <option>Medium gap — specific scenes need work</option>
+      <option>Large gap — book isn't ready</option>
+    </select>
+  </div>
+
+  <!-- COMPONENT 5: FINAL DECISION -->
+  <div class="component-card">
+    <h3><span class="num">5</span>Final Decision Call</h3>
+    <p class="help">Only YOU can answer this. Not your editor. Not your beta. Not your AI.</p>
+
+    <label>This book is:</label>
+    <select style="font-size:1.1rem;">
+      <option>--</option>
+      <option>READY TO SHIP — proceed to publishing prep</option>
+      <option>NEEDS ANOTHER POLISH ROUND — back to specific passes</option>
+      <option>NEEDS PAID HUMAN EDITOR — proceed to Part 2 of this worksheet</option>
+      <option>NEEDS BOTH — another polish round + paid editor</option>
+    </select>
+
+    <label>If polish round needed, which passes?</label>
+    <textarea placeholder="e.g., 'Rerun Pass 6 on Ch 12 heat scene + Pass 5 dialogue polish on Ch 7-9'"></textarea>
+  </div>
+
+  <!-- PART 2: PAID EDITOR DECISION -->
+  <div class="divider"><div class="line"></div><div class="text">Part 2 — Do You Also Need a Paid Editor?</div><div class="line"></div></div>
+
+  <div class="section">
+    <h2>Within YOUR Pass 9 — The Paid Editor Decision</h2>
+    <p>This section is OPTIONAL. Pass 9 is always YOU. Sometimes — when the project justifies it — you also bring in outside human help. Use the questions below to decide for THIS book.</p>
+  </div>
+
+  <!-- THE 5-QUESTION DECISION -->
+  <div class="section">
+    <h2 class="sub">The 5-Question Decision Framework</h2>
+    <p class="help">Two or more YES answers = hire a paid editor. Mostly NO = YOUR Pass 9 is enough.</p>
+
+    <div class="q-card" id="q1">
+      <h3>Question 1: Publishing Path</h3>
+      <div class="q-text">Is this going trad, or to an imprint that requires "professionally edited"?</div>
+      <div class="q-buttons">
+        <button class="q-btn yes" onclick="answerQ(1,'yes')">YES</button>
+        <button class="q-btn no" onclick="answerQ(1,'no')">NO</button>
+      </div>
+    </div>
+
+    <div class="q-card" id="q2">
+      <h3>Question 2: Launch Profile</h3>
+      <div class="q-text">Tier-one launch — paid ads, BookTok push, six-figure expectation?</div>
+      <div class="q-buttons">
+        <button class="q-btn yes" onclick="answerQ(2,'yes')">YES</button>
+        <button class="q-btn no" onclick="answerQ(2,'no')">NO</button>
+      </div>
+    </div>
+
+    <div class="q-card" id="q3">
+      <h3>Question 3: New Pen Name or Genre</h3>
+      <div class="q-text">First book in a new pen name, or first time in this genre?</div>
+      <div class="q-buttons">
+        <button class="q-btn yes" onclick="answerQ(3,'yes')">YES</button>
+        <button class="q-btn no" onclick="answerQ(3,'no')">NO</button>
+      </div>
+    </div>
+
+    <div class="q-card" id="q4">
+      <h3>Question 4: Style Guide Maturity</h3>
+      <div class="q-text">Is your pen name style guide STILL EVOLVING (not yet confident the AI consistently lands where you want it)?</div>
+      <div class="q-buttons">
+        <button class="q-btn yes" onclick="answerQ(4,'yes')">YES</button>
+        <button class="q-btn no" onclick="answerQ(4,'no')">NO</button>
+      </div>
+    </div>
+
+    <div class="q-card" id="q5">
+      <h3>Question 5: ROI Math</h3>
+      <div class="q-text">Will this book earn enough lifetime revenue to justify a $1,500-$5,000 editorial investment?</div>
+      <div class="q-buttons">
+        <button class="q-btn yes" onclick="answerQ(5,'yes')">YES</button>
+        <button class="q-btn no" onclick="answerQ(5,'no')">NO</button>
+      </div>
+    </div>
+
+    <div class="verdict-box" id="verdict">
+      <h3>Your Verdict</h3>
+      <div class="v-result" id="vResult">--</div>
+      <p id="vText"></p>
+    </div>
+  </div>
+
+  <!-- EDITOR TYPE SELECTOR -->
+  <div class="section">
+    <h2 class="sub">Which Type of Paid Editor</h2>
+    <p class="help">For most ELAB users, Copy Editor + Proofreader is the high-ROI pass. Dev and line editing are covered by the 8 AI passes.</p>
+
+    <div class="editor-types">
+      <div class="editor-card">
+        <h4>Developmental Editor</h4>
+        <div class="rate">$0.04 - $0.10/word</div>
+        <p style="font-size:0.85rem;margin-top:0.3rem;">Story structure, character arcs, pacing.</p>
+        <div class="when">When: High-stakes only. Pass 7 covers most.</div>
+      </div>
+      <div class="editor-card">
+        <h4>Line Editor</h4>
+        <div class="rate">$0.03 - $0.06/word</div>
+        <p style="font-size:0.85rem;margin-top:0.3rem;">Sentence-level prose, voice.</p>
+        <div class="when">When: High-stakes only. Pass 4 + 8 cover most.</div>
+      </div>
+      <div class="editor-card recommend">
+        <div class="badge">Recommended</div>
+        <h4>Copy Editor</h4>
+        <div class="rate">$0.02 - $0.04/word</div>
+        <p style="font-size:0.85rem;margin-top:0.3rem;">Grammar, punctuation, consistency.</p>
+        <div class="when">When: Most cost-effective human pass.</div>
+      </div>
+      <div class="editor-card recommend">
+        <div class="badge">Recommended</div>
+        <h4>Proofreader</h4>
+        <div class="rate">$0.015 - $0.025/word</div>
+        <p style="font-size:0.85rem;margin-top:0.3rem;">Final pass: typos, formatting.</p>
+        <div class="when">When: Always for print.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COST CALCULATOR -->
+  <div class="section">
+    <h2 class="sub">Cost Calculator</h2>
+    <label>Manuscript word count:</label>
+    <input type="number" id="wordCount" value="80000" oninput="calcCost()">
+    <label>Projected lifetime revenue for this book:</label>
+    <input type="number" id="revenue" value="10000" oninput="calcCost()">
+
+    <div class="cost-calc">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div><strong>Developmental:</strong> <span id="devCost">$3,200 - $8,000</span></div>
+        <div><strong>Line Edit:</strong> <span id="lineCost">$2,400 - $4,800</span></div>
+        <div><strong>Copy Edit:</strong> <span id="copyCost">$1,600 - $3,200</span></div>
+        <div><strong>Proofread:</strong> <span id="proofCost">$1,200 - $2,000</span></div>
+      </div>
+      <div class="cost-result" id="recommendation">Enter your numbers above to see your recommended paid pass.</div>
+    </div>
+  </div>
+
+  <!-- HANDOFF PACKAGE -->
+  <div class="section">
+    <h2 class="sub">The Handoff Package</h2>
+    <ol class="handoff-list">
+      <li><strong>Clean manuscript</strong> — After 8 AI passes AND your own Pass 9 read-through</li>
+      <li><strong>Pen name style guide</strong> — From Day 2 Lesson 3</li>
+      <li><strong>What-NOT-to-change list</strong> — Intentional choices the editor shouldn't "fix"</li>
+      <li><strong>Deadline + budget</strong> — In writing</li>
+      <li><strong>Genre + target reader</strong> — So they know which standards apply</li>
+    </ol>
+  </div>
+
+  <!-- VETTING CHECKLIST -->
+  <div class="section">
+    <h2 class="sub">Vetting Checklist (Before You Hire)</h2>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Samples in YOUR genre at YOUR heat level requested and received</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Sample edit paid and reviewed</strong> (1 chapter, single most important step)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Voice understanding confirmed</strong> — they preserved your voice, not imposed generic prose</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>References contacted</strong> — at least 2 other authors in your genre</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Deadline + price agreed in writing</strong></label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Gut check passed</strong> — sample edit gave you "smart catch" feeling, not unjustified defensiveness</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Small project tested first if new editor</strong> — never make your first project a tier-one launch</label></div>
+  </div>
+
+  <!-- INTEGRATING EDITS -->
+  <div class="section">
+    <h2 class="sub">Integrating Edits Back</h2>
+    <div style="background:var(--light-gray);padding:1rem;border-radius:6px;">
+      <strong>The integration rule:</strong>
+      <ul style="margin-top:0.5rem;padding-left:1.5rem;">
+        <li><strong>Accept without overthinking:</strong> Grammar, punctuation, spelling</li>
+        <li><strong>Question every style change:</strong> "Does this sound MORE or LESS like my pen name?"</li>
+        <li><strong>Reject anything off-brand</strong> even if "technically better"</li>
+        <li><strong>If rejection rate &gt;40%:</strong> Wrong editor OR rigid style guide — diagnose before next project</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SKIP -->
+  <div class="section">
+    <h2 class="sub">When YOUR Pass 9 Is Enough (Skip the Paid Editor)</h2>
+    <div class="skip-box">
+      <strong>The paid editor is a BUSINESS decision, not a moral imperative.</strong>
+      <p style="margin-top:0.5rem;">Skip the paid editor for:</p>
+      <ul style="margin-top:0.5rem;padding-left:1.5rem;">
+        <li>Rapid-release books in an established series with loyal readers</li>
+        <li>Box sets and reissues of previously-edited material</li>
+        <li>Free reader magnets / novellas (list growth, not revenue)</li>
+        <li>Backlist AI-refresh relaunches</li>
+        <li>Test books in a new pen name (ship first, invest if data justifies it)</li>
+      </ul>
+      <p style="margin-top:0.5rem;">For these, YOUR Pass 9 plus the 8 AI passes is the complete editing system. Ship and move on.</p>
+    </div>
+  </div>
+
+  <!-- EDITOR ROSTER -->
+  <div class="section">
+    <h2 class="sub">Your Editor Roster</h2>
+    <p class="help">Track editors you've vetted, tried, or want to try. Build relationships over time.</p>
+
+    <label>Editor Name + Specialty:</label>
+    <input type="text" placeholder="e.g., Jane Doe — copy editor, contemporary romance">
+    <label>Contact:</label>
+    <input type="text" placeholder="email / website">
+    <label>Rate:</label>
+    <input type="text" placeholder="e.g., $0.025/word for copy edit">
+    <label>Status:</label>
+    <select>
+      <option>Vetting in progress</option>
+      <option>Sample edit complete — would hire</option>
+      <option>Hired and successful</option>
+      <option>Hired but won't rehire</option>
+    </select>
+    <label>Notes:</label>
+    <textarea placeholder="Strengths, weaknesses, fit for which pen names, deadline reliability."></textarea>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+const answers = {};
+function answerQ(num, val) {
+  answers[num] = val;
+  const card = document.getElementById('q' + num);
+  card.classList.remove('yes', 'no');
+  card.classList.add(val);
+  card.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  card.querySelector('.q-btn.' + val).classList.add('active');
+  updateVerdict();
+}
+function updateVerdict() {
+  const yes = Object.values(answers).filter(v => v === 'yes').length;
+  if (Object.keys(answers).length < 5) return;
+  const box = document.getElementById('verdict');
+  const result = document.getElementById('vResult');
+  const text = document.getElementById('vText');
+  box.classList.add('show');
+  if (yes >= 2) {
+    result.textContent = 'HIRE A PAID EDITOR';
+    result.style.color = '#FFD54F';
+    text.textContent = yes + ' of 5 YES = the investment is justified. Continue to editor type selection.';
+  } else {
+    result.textContent = 'YOUR PASS 9 IS ENOUGH';
+    result.style.color = '#A5D6A7';
+    text.textContent = yes + ' of 5 YES = the 8 AI passes plus YOUR Pass 9 is the complete editing system for this book. Ship it.';
+  }
+}
+function calcCost() {
+  const wc = parseInt(document.getElementById('wordCount').value) || 0;
+  const fmt = n => '$' + n.toLocaleString();
+  document.getElementById('devCost').textContent = fmt(Math.round(wc * 0.04)) + ' - ' + fmt(Math.round(wc * 0.10));
+  document.getElementById('lineCost').textContent = fmt(Math.round(wc * 0.03)) + ' - ' + fmt(Math.round(wc * 0.06));
+  document.getElementById('copyCost').textContent = fmt(Math.round(wc * 0.02)) + ' - ' + fmt(Math.round(wc * 0.04));
+  document.getElementById('proofCost').textContent = fmt(Math.round(wc * 0.015)) + ' - ' + fmt(Math.round(wc * 0.025));
+  const rev = parseInt(document.getElementById('revenue').value) || 0;
+  const rec = document.getElementById('recommendation');
+  const copyMid = wc * 0.03;
+  const proofMid = wc * 0.02;
+  const minPass = copyMid + proofMid;
+  const ratio = rev > 0 ? (minPass / rev) * 100 : 0;
+  if (rev === 0) {
+    rec.textContent = 'Enter projected revenue.';
+    rec.style.color = '#666';
+  } else if (rev < 1500) {
+    rec.innerHTML = 'SKIP THE PAID EDITOR. Revenue too low to justify. Your Pass 9 + 8 AI passes = ship it.';
+    rec.style.color = 'var(--red)';
+  } else if (ratio > 50) {
+    rec.innerHTML = 'PROOFREAD ONLY. Copy edit ratio (~' + ratio.toFixed(0) + '% of revenue) too high.';
+    rec.style.color = 'var(--gold)';
+  } else if (ratio > 25) {
+    rec.innerHTML = 'COPY EDIT + PROOFREAD recommended. ~' + ratio.toFixed(0) + '% of revenue — defensible.';
+    rec.style.color = 'var(--coral)';
+  } else {
+    rec.innerHTML = 'FULL EDITORIAL TEAM justified. Investment <' + ratio.toFixed(0) + '% of revenue.';
+    rec.style.color = 'var(--green)';
+  }
+}
+function addRow(containerId, placeholder) {
+  const container = document.getElementById(containerId);
+  const row = document.createElement('div');
+  row.className = 'scene-flag';
+  row.innerHTML = '<input type="text" placeholder="' + placeholder + '"><button onclick="removeRow(this)">×</button>';
+  container.appendChild(row);
+}
+function removeRow(btn) { btn.parentElement.remove(); }
+calcCost();
+</script>
+
+</body>
+</html>
