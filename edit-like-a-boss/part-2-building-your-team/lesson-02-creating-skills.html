@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Day 2 — Lesson 2 — Creating Your Own Skills</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.05rem;margin:1.25rem 0 0.5rem;}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+.prompt-box .label{color:var(--coral);font-weight:bold;}
+input[type=text], input[type=number], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:90px;resize:vertical;line-height:1.5;}
+label{font-weight:bold;display:block;margin:0.75rem 0 0.25rem;color:var(--navy);font-size:0.95rem;}
+label .hint{font-weight:normal;color:#888;font-size:0.82rem;font-style:italic;display:block;margin-top:0.15rem;}
+.btn{background:var(--coral);color:white;border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;margin-top:0.5rem;}
+.btn:hover{background:#D4634A;}
+.btn-navy{background:var(--navy);}
+.btn-navy:hover{background:#2A3D5C;}
+.btn-sage{background:var(--sage);}
+.btn-sage:hover{background:#6A8E6E;}
+.platform-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin:1rem 0;}
+.platform-card{background:var(--light-gray);border-radius:8px;padding:1rem;text-align:center;}
+.platform-card .name{font-weight:bold;color:var(--navy);font-size:1rem;margin-bottom:0.25rem;}
+.platform-card .file{color:var(--coral);font-size:0.8rem;font-family:'Courier New',monospace;}
+.compare-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.85rem;}
+.compare-table th{background:var(--navy);color:white;padding:0.6rem;text-align:left;}
+.compare-table td{padding:0.6rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.compare-table tr:nth-child(even){background:var(--light-gray);}
+.tabs{display:flex;gap:0.25rem;margin-bottom:0;border-bottom:2px solid var(--border);}
+.tab{padding:0.6rem 1rem;background:var(--light-gray);border:none;cursor:pointer;font-family:'Georgia',serif;font-size:0.9rem;border-radius:8px 8px 0 0;color:var(--navy);}
+.tab.active{background:var(--navy);color:white;}
+.tab-content{display:none;padding:1rem 0;}
+.tab-content.active{display:block;}
+.callout{background:#FFF4E8;border-left:4px solid var(--gold);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.callout strong{color:var(--navy);}
+.warning{background:#FFEBEE;border-left:4px solid #C62828;padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.success{background:#E8F5E9;border-left:4px solid var(--sage);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.template-box{background:var(--light-gray);border:2px dashed var(--border);border-radius:8px;padding:1.25rem;margin:1rem 0;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+.toc{background:var(--light-gray);border-radius:8px;padding:1rem 1.5rem;margin-bottom:1.5rem;}
+.toc ol{padding-left:1.25rem;}
+.toc a{color:var(--navy);text-decoration:none;}
+.toc a:hover{color:var(--coral);}
+@media(max-width:700px){.platform-grid{grid-template-columns:1fr 1fr;}.container{padding:1rem;}.tabs{flex-wrap:wrap;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Day 2 — Lesson 2: How to Create Your Own Skills</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <strong style="color:var(--navy);">In This Worksheet</strong>
+    <ol>
+      <li><a href="#what">What a skill is (and isn't)</a></li>
+      <li><a href="#anatomy">The universal 5-part anatomy</a></li>
+      <li><a href="#template">Platform-agnostic skill template</a></li>
+      <li><a href="#install">How to install in each platform</a></li>
+      <li><a href="#builder">Skill builder — fill it in</a></li>
+      <li><a href="#convert">Conversion table — same skill, 4 platforms</a></li>
+      <li><a href="#examples">Two complete example skills</a></li>
+    </ol>
+  </div>
+
+  <!-- WHAT A SKILL IS -->
+  <div class="section" id="what">
+    <h2>1. What A Skill Is (And Isn't)</h2>
+    <p><strong>A skill is just a saved prompt that the AI loads automatically every time you call on it.</strong> That's it. That's the entire concept.</p>
+    <p>You write the instructions one time. From then on, the AI applies them every single chat without you re-explaining a thing.</p>
+
+    <div class="callout">
+      <strong>The shift:</strong> A prompt lives in one chat. A skill lives forever — in every chat, on every platform that supports it.
+    </div>
+
+    <p><strong>What skills are NOT:</strong></p>
+    <ul style="padding-left:1.5rem;margin-bottom:0.5rem;">
+      <li>Advanced or technical</li>
+      <li>For developers only</li>
+      <li>Hard to build</li>
+      <li>Something you need permission to create</li>
+    </ul>
+  </div>
+
+  <!-- ANATOMY -->
+  <div class="section" id="anatomy">
+    <h2>2. The Universal 5-Part Anatomy</h2>
+    <p>Every skill on every platform has the same five parts. Learn it once. Use it everywhere.</p>
+
+    <table class="compare-table">
+      <tr><th style="width:18%;">Part</th><th>What it does</th></tr>
+      <tr><td><strong>1. NAME</strong></td><td>Short, specific identifier. "Sage Kennedy Voice." Not "My Helper."</td></tr>
+      <tr><td><strong>2. DESCRIPTION</strong></td><td>Tells the AI <em>when</em> to apply this skill. The trigger condition.</td></tr>
+      <tr><td><strong>3. INSTRUCTIONS</strong></td><td>The body. What the skill actually does. Rules, tone, format, voice.</td></tr>
+      <tr><td><strong>4. EXAMPLES</strong></td><td>One good output, one bad output, labeled. AI learns faster from examples than rules.</td></tr>
+      <tr><td><strong>5. RULES</strong></td><td>Non-negotiables. Hard lines. "Never X. Always Y."</td></tr>
+    </table>
+  </div>
+
+  <!-- TEMPLATE -->
+  <div class="section" id="template">
+    <h2>3. Platform-Agnostic Skill Template</h2>
+    <p>Use this template as your source of truth. Write your skill here ONCE. Then convert to any platform.</p>
+
+    <div class="prompt-box" id="templateBox">
+      <button class="copy-btn" onclick="copyBox('templateBox')">Copy</button><span class="label">SKILL NAME:</span>
+<span class="placeholder">[Short, specific name — e.g., "Sage Kennedy Voice"]</span>
+
+<span class="label">DESCRIPTION (trigger condition):</span>
+Use this skill when <span class="placeholder">[describe the specific situation — task type, pen name, content type, etc.]</span>.
+
+<span class="label">INSTRUCTIONS:</span>
+<span class="placeholder">[The body of the skill. What it does. Voice, tone, format, rules, persona, expertise, output style. Write it like you're explaining the job to a new assistant.]</span>
+
+Voice / tone:
+<span class="placeholder">[describe the voice — sentence rhythm, register, energy]</span>
+
+Output format:
+<span class="placeholder">[what should the response look like? plain prose, bullets, structured sections?]</span>
+
+Behavior:
+<span class="placeholder">[how should the AI act? ask before acting? deliver fully then explain? push back when something is off?]</span>
+
+<span class="label">EXAMPLES:</span>
+
+GOOD output:
+"<span class="placeholder">[paste an example that nails the voice/format/rules]</span>"
+Why this works: <span class="placeholder">[explain in one sentence]</span>
+
+BAD output:
+"<span class="placeholder">[paste an example that misses — common AI default, wrong tone, off-format]</span>"
+Why this fails: <span class="placeholder">[explain in one sentence]</span>
+
+<span class="label">RULES (non-negotiables):</span>
+- Never <span class="placeholder">[hard line — banned word, format, behavior]</span>
+- Always <span class="placeholder">[required behavior or format]</span>
+- Never <span class="placeholder">[hard line]</span>
+- Always <span class="placeholder">[required behavior]</span></div>
+
+    <div class="callout">
+      <strong>Pro tip:</strong> Save this template as a plain text file on your computer. Every new skill you build starts as a copy of this template. You'll thank yourself in six months.
+    </div>
+  </div>
+
+  <!-- INSTALL -->
+  <div class="section" id="install">
+    <h2>4. How To Install In Each Platform</h2>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="name">Claude</div>
+        <div class="file">SKILL.md file</div>
+      </div>
+      <div class="platform-card">
+        <div class="name">Gemini</div>
+        <div class="file">Gem (form-based)</div>
+      </div>
+      <div class="platform-card">
+        <div class="name">ChatGPT</div>
+        <div class="file">Custom GPT</div>
+      </div>
+      <div class="platform-card">
+        <div class="name">Grok</div>
+        <div class="file">Custom / API</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab(event,'claude')">Claude</button>
+      <button class="tab" onclick="showTab(event,'gemini')">Gemini</button>
+      <button class="tab" onclick="showTab(event,'gpt')">ChatGPT</button>
+      <button class="tab" onclick="showTab(event,'grok')">Grok</button>
+    </div>
+
+    <div id="claude" class="tab-content active">
+      <h3>Installing as a Claude Skill</h3>
+      <ol style="padding-left:1.5rem;">
+        <li>Create a file named <code style="background:var(--light-gray);padding:2px 6px;border-radius:3px;">SKILL.md</code> (markdown file)</li>
+        <li>Add the frontmatter header at the top (name + description in YAML format)</li>
+        <li>Paste your INSTRUCTIONS, EXAMPLES, and RULES below the frontmatter as markdown</li>
+        <li>Save to your Claude skills directory</li>
+        <li>Trigger automatically by description match, or invoke directly: <em>"Use the [skill name] skill"</em></li>
+      </ol>
+
+      <p><strong>Claude SKILL.md format:</strong></p>
+      <div class="prompt-box" id="claudeFormat">
+<button class="copy-btn" onclick="copyBox('claudeFormat')">Copy</button>---
+name: sage-kennedy-voice
+description: Use this skill when writing or editing Sage Kennedy fiction. Sage Kennedy is a steamy billionaire holiday romance pen name. Heat 4/5.
+---
+
+# Sage Kennedy Voice
+
+## Instructions
+[Your full instructions here as markdown]
+
+## Examples
+### Good
+"[example passage]"
+
+### Bad
+"[example passage]"
+
+## Rules
+- Never [X]
+- Always [Y]</div>
+
+      <div class="success">
+        <strong>The Skill Creator move:</strong> Ask Claude — "Use the Skill Creator to build me a skill for [your idea]." Claude walks you through every field, formats the SKILL.md for you, and saves it correctly. Use this for your first three skills.
+      </div>
+    </div>
+
+    <div id="gemini" class="tab-content">
+      <h3>Installing as a Gemini Gem</h3>
+      <ol style="padding-left:1.5rem;">
+        <li>Go to <strong>gemini.google.com/gems</strong></li>
+        <li>Click "Create a new Gem"</li>
+        <li>Fill in <strong>Name</strong> (your skill name)</li>
+        <li>Fill in <strong>Instructions</strong> — paste the INSTRUCTIONS + EXAMPLES + RULES sections from your template</li>
+        <li>Upload any reference files (style guide PDFs, sample chapters) to <strong>Knowledge</strong></li>
+        <li>Click <strong>Save</strong></li>
+        <li>Select the Gem from your sidebar when you start a new chat</li>
+      </ol>
+
+      <div class="callout">
+        <strong>Gemini strength:</strong> File attachments work cleanly. If you have a finished style guide PDF, drop it into Knowledge and the Gem will reference it on every chat.
+      </div>
+    </div>
+
+    <div id="gpt" class="tab-content">
+      <h3>Installing as a ChatGPT Custom GPT</h3>
+      <ol style="padding-left:1.5rem;">
+        <li>Go to <strong>chatgpt.com/gpts</strong></li>
+        <li>Click "Create" (upper right)</li>
+        <li>Use the "Configure" tab (skip the conversational builder — it adds fluff)</li>
+        <li>Fill in <strong>Name</strong> and <strong>Description</strong></li>
+        <li>Paste INSTRUCTIONS + EXAMPLES + RULES into the <strong>Instructions</strong> box</li>
+        <li>Upload reference files under <strong>Knowledge</strong></li>
+        <li>Toggle <strong>Capabilities</strong> (web browsing, code interpreter, image gen) — turn OFF anything not needed</li>
+        <li>Click <strong>Save</strong> and select access (private recommended)</li>
+      </ol>
+
+      <div class="warning">
+        <strong>Heads-up:</strong> Jessica does not recommend ChatGPT for fiction work — caught it fabricating information enough times that trust is permanently lost. If you're already on ChatGPT and not switching, the skill structure is identical to the others. Use it. Just know the foundation underneath is shakier.
+      </div>
+    </div>
+
+    <div id="grok" class="tab-content">
+      <h3>Installing as a Grok Custom</h3>
+      <ol style="padding-left:1.5rem;">
+        <li>Open Grok, go to Custom / Personas (depending on interface version)</li>
+        <li>Create a new custom configuration</li>
+        <li>Paste your INSTRUCTIONS + EXAMPLES + RULES into the system prompt area</li>
+        <li>Save and select that Custom for the session you want</li>
+      </ol>
+
+      <p><strong>For API users:</strong> Pass the same content as the <code style="background:var(--light-gray);padding:2px 6px;border-radius:3px;">system</code> message in your API call. Identical structure.</p>
+
+      <div class="callout">
+        <strong>Grok note:</strong> Skills live per-session more than the other platforms. Save your skill text as a plain file you can re-paste when starting work.
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILDER -->
+  <div class="section" id="builder">
+    <h2>5. Skill Builder — Fill It In</h2>
+    <p>Fill in each field below. When you're done, click <strong>Generate My Skill</strong> to assemble the complete skill in platform-agnostic format. Copy and convert to your platform of choice.</p>
+
+    <label for="sName">Skill Name <span class="hint">Short, specific — e.g., "Sage Kennedy Voice" or "Lucy Beta Reader"</span></label>
+    <input type="text" id="sName" placeholder="Skill Name">
+
+    <label for="sDesc">When To Use This Skill <span class="hint">Complete the sentence: "Use this skill when..."</span></label>
+    <textarea id="sDesc" placeholder="...writing or editing fiction for [pen name], a [genre] author at heat level [X]/5."></textarea>
+
+    <label for="sVoice">Voice / Tone <span class="hint">Sentence rhythm, register, energy, emotional default</span></label>
+    <textarea id="sVoice" placeholder="e.g., Champagne banter with fast wit. Medium sentences with occasional one-word punches. Heroines are competent professionals who do not need rescuing..."></textarea>
+
+    <label for="sFormat">Output Format <span class="hint">What should the response look like? Prose, bullets, structured sections?</span></label>
+    <textarea id="sFormat" placeholder="e.g., Deliver as polished prose. No commentary, no preamble. End every chapter on a hook."></textarea>
+
+    <label for="sBehavior">Behavior <span class="hint">How should the AI act? Push back? Ask before acting? Deliver and explain?</span></label>
+    <textarea id="sBehavior" placeholder="e.g., Push back if a beat would break the pen name brand. Otherwise deliver the chapter and provide a one-paragraph change summary."></textarea>
+
+    <label for="sGood">Good Output Example <span class="hint">A passage that nails the voice/format</span></label>
+    <textarea id="sGood" placeholder="Paste an example that hits the mark..."></textarea>
+
+    <label for="sGoodWhy">Why It Works (one sentence)</label>
+    <input type="text" id="sGoodWhy" placeholder="e.g., Specific sensory detail, no filter words, sentence rhythm matches the brand.">
+
+    <label for="sBad">Bad Output Example <span class="hint">A passage that misses — common AI default, wrong tone, off-brand</span></label>
+    <textarea id="sBad" placeholder="Paste an example that misses..."></textarea>
+
+    <label for="sBadWhy">Why It Fails (one sentence)</label>
+    <input type="text" id="sBadWhy" placeholder="e.g., Purple prose, generic emotion words, no specificity.">
+
+    <label for="sRules">Rules (non-negotiables — one per line) <span class="hint">Start each with "Never" or "Always"</span></label>
+    <textarea id="sRules" placeholder="Never use the word 'electricity' in a description&#10;Always end chapters on a hook&#10;Heat level never below 3, never above 4.5&#10;Holiday setting required in every story"></textarea>
+
+    <button class="btn" onclick="generateSkill()">Generate My Skill</button>
+    <button class="btn btn-navy" onclick="clearBuilder()">Clear All</button>
+
+    <h3 style="margin-top:1.5rem;">Your Assembled Skill</h3>
+    <div class="prompt-box" id="generatedSkill" style="min-height:80px;">
+      <button class="copy-btn" onclick="copyBox('generatedSkill')">Copy</button>(Fill in the fields above and click Generate My Skill)</div>
+  </div>
+
+  <!-- CONVERSION TABLE -->
+  <div class="section" id="convert">
+    <h2>6. Conversion Table — Same Skill, 4 Platforms</h2>
+    <p>Here is the same Lucy Beta Reader skill in each platform's format. Notice how the content barely changes — only the wrapper does.</p>
+
+    <table class="compare-table">
+      <tr>
+        <th style="width:20%;">Element</th>
+        <th>Claude (SKILL.md)</th>
+        <th>Gemini Gem</th>
+        <th>ChatGPT GPT</th>
+        <th>Grok Custom</th>
+      </tr>
+      <tr>
+        <td><strong>Name</strong></td>
+        <td>In frontmatter: <code>name:</code></td>
+        <td>"Name" field</td>
+        <td>"Name" field</td>
+        <td>Top of system prompt</td>
+      </tr>
+      <tr>
+        <td><strong>Description</strong></td>
+        <td>In frontmatter: <code>description:</code></td>
+        <td>"Description" field</td>
+        <td>"Description" field</td>
+        <td>First line of prompt</td>
+      </tr>
+      <tr>
+        <td><strong>Instructions</strong></td>
+        <td>Markdown body</td>
+        <td>"Instructions" textarea</td>
+        <td>"Instructions" textarea</td>
+        <td>System prompt body</td>
+      </tr>
+      <tr>
+        <td><strong>Examples</strong></td>
+        <td>Markdown section</td>
+        <td>Inline in Instructions, or in Knowledge file</td>
+        <td>Inline in Instructions, or in Knowledge file</td>
+        <td>Inline in system prompt</td>
+      </tr>
+      <tr>
+        <td><strong>Reference files</strong></td>
+        <td>Reference in body, or use /skills folder</td>
+        <td>Upload to Knowledge</td>
+        <td>Upload to Knowledge</td>
+        <td>Paste content inline</td>
+      </tr>
+      <tr>
+        <td><strong>Trigger</strong></td>
+        <td>Auto (by description) OR "use the X skill"</td>
+        <td>Select Gem before chatting</td>
+        <td>Select GPT from sidebar</td>
+        <td>Active for session</td>
+      </tr>
+    </table>
+
+    <div class="callout">
+      <strong>The lesson:</strong> Once you've written your skill in the universal template, conversion is mostly copy-paste. Don't write four versions. Write one and translate.
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="section" id="examples">
+    <h2>7. Two Complete Example Skills</h2>
+
+    <h3>Example 1 — Lucy Kennedy Beta Reader</h3>
+    <div class="prompt-box" id="ex1">
+      <button class="copy-btn" onclick="copyBox('ex1')">Copy</button><span class="label">SKILL NAME:</span>
+Lucy Kennedy Beta Reader
+
+<span class="label">DESCRIPTION:</span>
+Use this skill when the author asks for beta reader feedback on contemporary or billionaire romance manuscripts. Lucy is a 42-year-old marketing director who reads four romance novels a week and gravitates toward grounded, emotionally driven contemporary stories with grumpy-sunshine, second-chance, and small-town tropes.
+
+<span class="label">INSTRUCTIONS:</span>
+Lucy reads chapter by chapter. She gives reactions in real time, not summary critiques. She uses casual reader language, not editor language. She flags moments that pulled her out of the story. She celebrates moments that landed. She is brutally honest but never mean. She does not suggest fixes — that is not her job. She tells the author what worked and what did not.
+
+Voice / tone:
+Casual. Conversational. First-person reader voice. Uses phrases like "okay so," "I'm living for this," "this lost me a little," "chef's kiss," "ugh, no."
+
+Output format:
+Chapter-by-chapter reactions, then a one-paragraph overall takeaway at the end. No headers, no rubrics, no scoring.
+
+<span class="label">EXAMPLES:</span>
+
+GOOD output:
+"Okay, I am LIVING for this scene. The way she just walked out of the diner without looking back? Chef's kiss. But the whole bit where she explained her trauma to the random stranger felt like info dump city. That stopped me cold."
+Why this works: Reader voice, specific scene callouts, emotional reaction first.
+
+BAD output:
+"This chapter has issues with exposition pacing and dialogue tagging conventions. The author may want to consider restructuring the trauma reveal."
+Why this fails: Editor language. Craft jargon. Sounds like Claude, not Lucy.
+
+<span class="label">RULES:</span>
+- Never use craft terminology (exposition, dialogue tags, pacing, beats, arc)
+- Never suggest a rewrite or fix
+- Always react emotionally before analyzing
+- Always speak in first person as a reader
+- Never end on a negative note — close with what's hooking her enough to keep reading</div>
+
+    <h3 style="margin-top:2rem;">Example 2 — Sage Kennedy Voice</h3>
+    <div class="prompt-box" id="ex2">
+      <button class="copy-btn" onclick="copyBox('ex2')">Copy</button><span class="label">SKILL NAME:</span>
+Sage Kennedy Voice
+
+<span class="label">DESCRIPTION:</span>
+Use this skill when writing or editing any Sage Kennedy fiction. Sage Kennedy is a steamy billionaire holiday romance pen name. Heat level 4/5. Comp authors: Lauren Layne, Christina Lauren.
+
+<span class="label">INSTRUCTIONS:</span>
+Sage Kennedy prose features champagne banter, fast wit, and grounded emotional beats underneath the sparkle. Sentences are medium length with occasional one-word punches for emphasis. Internal monologue is observational and slightly self-deprecating. Heroines are competent professionals who do not need rescuing. Heroes are emotionally available billionaires who lead with charm and reveal depth in private moments.
+
+Setting details lean luxe but specific — not just "a Manhattan penthouse," but the way the light hits the marble counter at six in the morning when she finally admits she stayed over.
+
+Voice / tone:
+Quick. Witty. Warm under the polish. Banter-forward dialogue. Slightly knowing narration.
+
+Output format:
+Polished prose chapters. No commentary, no preamble. End on a hook with forward momentum.
+
+<span class="label">EXAMPLES:</span>
+
+GOOD output:
+"He poured the coffee like he was performing surgery. Slow. Deliberate. Like one wrong move would shatter the morning. She watched him and tried to remember the last time anyone had made her breakfast without expecting something in return."
+Why this works: Specific physical detail, sentence rhythm with the one-word punches, observational internal monologue with grounded emotional beat.
+
+BAD output:
+"He poured the coffee with reverent, almost worshipful precision, his every motion a testament to the gravity of the moment they were sharing together."
+Why this fails: Purple prose. Too literary. Vocabulary that doesn't match the brand. Sage doesn't say "testament to the gravity."
+
+<span class="label">RULES:</span>
+- Never use the word "electricity" or "currents" in physical attraction
+- Never describe heroines as "spunky" or "feisty"
+- Always include a holiday setting (Christmas, New Year's, Valentine's, July 4th)
+- Heat level never below 3, never above 4.5
+- Always end chapters on a hook — no neat resolution</div>
+
+    <div class="success">
+      <strong>Use these as models.</strong> Copy either example into your platform, swap in your pen name details, and you have a working skill in five minutes.
+    </div>
+  </div>
+
+  <!-- HOMEWORK -->
+  <div class="section">
+    <h2>Your Homework</h2>
+    <p><strong>Build ONE skill before you close this lesson.</strong> Just one. Any topic.</p>
+    <ul style="padding-left:1.5rem;">
+      <li>A beta reader persona you keep wishing you had on call</li>
+      <li>A pen name voice you re-explain in every chat</li>
+      <li>One of the Day 1 editing passes you want to save as a permanent tool</li>
+      <li>A blurb-writing skill, a back cover skill, an Amazon ad copy skill</li>
+    </ul>
+    <p>Use the builder above. Use the Claude Skill Creator if you're on Claude. Just build one and use it. You'll get the rhythm immediately.</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyBox(id) {
+  const box = document.getElementById(id);
+  const text = box.innerText.replace(/^Copy(\s*)/, '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = original, 2000);
+  });
+}
+
+function showTab(evt, name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  evt.currentTarget.classList.add('active');
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function generateSkill() {
+  const name = val('sName') || '[skill name]';
+  const desc = val('sDesc') || '[trigger condition]';
+  const voice = val('sVoice') || '[voice description]';
+  const format = val('sFormat') || '[output format]';
+  const behavior = val('sBehavior') || '[behavior]';
+  const good = val('sGood') || '[good example]';
+  const goodWhy = val('sGoodWhy') || '[why it works]';
+  const bad = val('sBad') || '[bad example]';
+  const badWhy = val('sBadWhy') || '[why it fails]';
+  const rules = val('sRules').split('\n').filter(l => l.trim()).map(l => '- ' + l.trim().replace(/^[-•*]\s*/, '')).join('\n') || '- [add rules]';
+
+  const output = `SKILL NAME:
+${name}
+
+DESCRIPTION:
+Use this skill when ${desc}
+
+INSTRUCTIONS:
+
+Voice / tone:
+${voice}
+
+Output format:
+${format}
+
+Behavior:
+${behavior}
+
+EXAMPLES:
+
+GOOD output:
+"${good}"
+Why this works: ${goodWhy}
+
+BAD output:
+"${bad}"
+Why this fails: ${badWhy}
+
+RULES:
+${rules}`;
+
+  const box = document.getElementById('generatedSkill');
+  box.innerHTML = '<button class="copy-btn" onclick="copyBox(\'generatedSkill\')">Copy</button>' + output.replace(/</g,'&lt;');
+}
+
+function clearBuilder() {
+  ['sName','sDesc','sVoice','sFormat','sBehavior','sGood','sGoodWhy','sBad','sBadWhy','sRules'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('generatedSkill').innerHTML = '<button class="copy-btn" onclick="copyBox(\'generatedSkill\')">Copy</button>(Fill in the fields above and click Generate My Skill)';
+}
+</script>
+</body>
+</html>

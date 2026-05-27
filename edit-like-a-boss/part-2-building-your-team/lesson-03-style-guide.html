@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Day 2 — Lesson 3 — Pen Name Style Guide Builder</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+.intro{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.intro h2{color:var(--navy);font-size:1.3rem;margin-bottom:0.75rem;}
+.component{background:white;border-radius:8px;padding:1.25rem 1.75rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid var(--coral);}
+.component-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;}
+.component-num{background:var(--coral);color:white;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1rem;flex-shrink:0;}
+.component-title{color:var(--navy);font-size:1.15rem;font-weight:bold;}
+.component-help{color:#666;font-size:0.88rem;font-style:italic;margin-bottom:0.85rem;line-height:1.5;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;}
+.field{margin-bottom:0.75rem;}
+label{font-weight:bold;display:block;margin:0.5rem 0 0.25rem;color:var(--navy);font-size:0.9rem;}
+label .hint{font-weight:normal;color:#888;font-size:0.8rem;font-style:italic;display:block;margin-top:0.1rem;}
+input[type=text], input[type=number], select, textarea{width:100%;padding:0.55rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.92rem;background:var(--cream);}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:80px;resize:vertical;line-height:1.5;}
+textarea.tall{min-height:140px;}
+textarea.taller{min-height:200px;}
+.scale-grid{display:grid;grid-template-columns:1fr auto;gap:0.5rem;align-items:center;}
+.scale-grid input[type=range]{width:100%;}
+.scale-value{font-weight:bold;color:var(--coral);font-size:1.1rem;min-width:30px;text-align:center;}
+.scale-table{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;}
+.scale-row{background:var(--light-gray);padding:0.6rem 0.8rem;border-radius:6px;}
+.scale-row label{margin:0 0 0.25rem;font-size:0.85rem;}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;margin-top:0.5rem;}
+.btn:hover{background:#D4634A;}
+.btn-navy{background:var(--navy);}
+.btn-navy:hover{background:#2A3D5C;}
+.btn-sage{background:var(--sage);}
+.btn-sage:hover{background:#6A8E6E;}
+.action-bar{position:sticky;bottom:0;background:white;padding:1rem;border-top:2px solid var(--coral);box-shadow:0 -2px 12px rgba(0,0,0,0.08);margin-top:1rem;text-align:center;border-radius:8px 8px 0 0;z-index:10;}
+.output-section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.output-section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.prompt-box{background:#1B2A4A;color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;position:relative;margin:1rem 0;}
+.prompt-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.prompt-box .copy-btn:hover{background:#D4634A;}
+.prompt-box .placeholder{color:var(--gold);font-weight:bold;}
+.prompt-box .label{color:var(--coral);font-weight:bold;}
+.callout{background:#FFF4E8;border-left:4px solid var(--gold);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.callout strong{color:var(--navy);}
+.success{background:#E8F5E9;border-left:4px solid var(--sage);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.warning{background:#FFEBEE;border-left:4px solid #C62828;padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:0.92rem;}
+.example-pill{display:inline-block;background:var(--light-gray);border-radius:12px;padding:0.15rem 0.65rem;font-size:0.78rem;color:var(--navy);margin:0.15rem 0.2rem 0.15rem 0;}
+.steps{counter-reset:step;padding-left:0;list-style:none;}
+.steps li{counter-increment:step;padding:0.5rem 0 0.5rem 2.5rem;position:relative;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0.5rem;background:var(--coral);color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85rem;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+.progress-bar{position:sticky;top:0;background:white;padding:0.5rem 1rem;z-index:9;border-bottom:1px solid var(--border);font-size:0.85rem;color:var(--navy);}
+.progress-fill{height:4px;background:var(--coral);width:0%;border-radius:2px;margin-top:0.25rem;transition:width 0.3s;}
+@media(max-width:700px){.field-row,.field-row-3,.scale-table{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss</h1>
+  <div class="subtitle">Day 2 — Lesson 3: Pen Name Style Guide Builder</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="progress-bar">
+  <div>Build progress: <span id="progressText">0%</span></div>
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="container">
+
+  <div class="intro">
+    <h2>Build Your Style Guide — One Pen Name At A Time</h2>
+    <p>Fill in each of the 10 components below for ONE pen name. When you're done, click <strong>Generate Style Guide</strong> at the bottom. You'll get a complete style guide document you can save as a skill in Claude, Gemini, ChatGPT, or Grok.</p>
+
+    <div class="warning">
+      <strong>Important:</strong> Do not try to build all your pen name guides in one session. Pick your most active pen name. Spend 30-60 minutes here. Build the next one another day.
+    </div>
+
+    <div class="callout">
+      <strong>Pro move:</strong> Open Claude in another tab. Use the Claude Skill Creator alongside this worksheet for any component where you're stuck. The exact prompt to use is at the bottom of this page.
+    </div>
+  </div>
+
+  <!-- COMPONENT 1 — BRAND IDENTITY -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">1</div>
+      <div class="component-title">Brand Identity</div>
+    </div>
+    <div class="component-help">The elevator pitch the AI needs to orient itself.</div>
+
+    <label>Pen Name</label>
+    <input type="text" id="penName" placeholder="e.g., Sage Kennedy" oninput="updateProgress()">
+
+    <div class="field-row">
+      <div>
+        <label>Primary Genre</label>
+        <input type="text" id="genre" placeholder="e.g., Contemporary Romance" oninput="updateProgress()">
+      </div>
+      <div>
+        <label>Sub-Genre</label>
+        <input type="text" id="subGenre" placeholder="e.g., Steamy Billionaire Holiday Romance" oninput="updateProgress()">
+      </div>
+    </div>
+
+    <label>Comp Authors <span class="hint">2-3 authors readers would recognize as similar</span></label>
+    <input type="text" id="compAuthors" placeholder="e.g., Lauren Layne, Christina Lauren" oninput="updateProgress()">
+
+    <label>Series Titles (if applicable)</label>
+    <input type="text" id="seriesTitles" placeholder="e.g., The Manhattan Holiday Series" oninput="updateProgress()">
+  </div>
+
+  <!-- COMPONENT 2 — HEAT LEVEL -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">2</div>
+      <div class="component-title">Heat Level + Language Calibration</div>
+    </div>
+    <div class="component-help">Heat 3 means something different to every author. Define what it means here.</div>
+
+    <label>Heat Level (1-5)</label>
+    <div class="scale-grid">
+      <input type="range" id="heatLevel" min="1" max="5" step="0.5" value="3" oninput="document.getElementById('heatVal').textContent=this.value;updateProgress();">
+      <div class="scale-value" id="heatVal">3</div>
+    </div>
+    <p style="font-size:0.78rem;color:#888;margin-top:-0.25rem;">1 = closed door / clean | 2 = kissing on-page | 3 = sensual, fade-to-black at peaks | 4 = open-door, explicit | 5 = explicit and intense</p>
+
+    <label>Heat Language Calibration <span class="hint">What language is in bounds for THIS pen name? Where does fade-to-black happen? How explicit does body part vocabulary get?</span></label>
+    <textarea id="heatCalibration" class="tall" placeholder="e.g., Open door for the main intimate scenes. Sensual vocabulary, not clinical. No anatomical four-letter words for body parts. Foreplay scenes are extended and emotionally driven. Climax scenes can be explicit but never lose the emotional thread." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 3 — VOICE MARKERS -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">3</div>
+      <div class="component-title">Voice Markers</div>
+    </div>
+    <div class="component-help">The structural fingerprints of your voice.</div>
+
+    <label>Vocabulary Register</label>
+    <select id="vocab" onchange="updateProgress()">
+      <option value="">— Select —</option>
+      <option>Elevated / literary</option>
+      <option>Conversational / accessible</option>
+      <option>Conversational with witty asides</option>
+      <option>Regional / dialect-flavored</option>
+      <option>Slangy / contemporary</option>
+      <option>Period-formal (historical)</option>
+      <option>Mixed — formal narration, conversational dialogue</option>
+    </select>
+
+    <label>Sentence Rhythm</label>
+    <select id="rhythm" onchange="updateProgress()">
+      <option value="">— Select —</option>
+      <option>Long flowing prose, complex clauses</option>
+      <option>Punchy short sentences</option>
+      <option>Mixed — medium with one-word punches</option>
+      <option>Varied with strong rhythm shifts</option>
+      <option>Lyrical / poetic</option>
+      <option>Dense paragraphs, minimal white space</option>
+      <option>Quick exchanges, lots of white space</option>
+    </select>
+
+    <label>Internal Monologue Flavor <span class="hint">How does the POV character think? Pick the closest fit.</span></label>
+    <select id="monologue" onchange="updateProgress()">
+      <option value="">— Select —</option>
+      <option>Observational and slightly self-deprecating</option>
+      <option>Anxious / overthinking</option>
+      <option>Witty / sharp / sarcastic</option>
+      <option>Dreamy / sensory</option>
+      <option>Pragmatic / measured</option>
+      <option>Emotionally raw / vulnerable</option>
+      <option>Wry / knowing</option>
+      <option>Earnest / hopeful</option>
+    </select>
+
+    <label>Additional Voice Notes <span class="hint">Specifics that make this pen name's voice unique — phrasings, signature moves, things you do that other authors in the genre don't</span></label>
+    <textarea id="voiceNotes" placeholder="e.g., Heroines tend to deflect with humor when they're feeling things. Dialogue runs banter-heavy in the first half, softens in the second. Setting descriptions lean luxe-but-specific." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 4 — MUST-HAVES -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">4</div>
+      <div class="component-title">Must-Haves</div>
+    </div>
+    <div class="component-help">Your reader contract. What does this pen name ALWAYS deliver?</div>
+
+    <label>Must-Haves (one per line)</label>
+    <textarea id="mustHaves" class="tall" placeholder="e.g.&#10;Holiday setting (Christmas, NYE, Valentine's, July 4th)&#10;Manhattan or Hamptons location&#10;Female main character with a career&#10;HEA (happily ever after) by book's end&#10;At least one banter-heavy meet-cute scene" oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 5 — MUST-NOT-HAVES -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">5</div>
+      <div class="component-title">Must-NOT-Haves</div>
+    </div>
+    <div class="component-help">Your guardrails. What would break this brand if it slipped in?</div>
+
+    <label>Must-NOT-Haves (one per line)</label>
+    <textarea id="mustNotHaves" class="tall" placeholder="e.g.&#10;Cheating between MCs&#10;On-page violence or assault&#10;Cliffhanger endings without resolution&#10;Sad/ambiguous endings&#10;Heroines who need rescuing&#10;Heroes who use the word 'sweetheart' (too generic)" oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 6 — BANNED WORDS -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">6</div>
+      <div class="component-title">Banned Words & Phrases (Pen Name Specific)</div>
+    </div>
+    <div class="component-help">Different from the universal AI-ism banned list. These are specific to THIS pen name's brand.</div>
+
+    <label>Banned Words (one per line or comma-separated)</label>
+    <textarea id="bannedWords" placeholder="e.g.&#10;feisty&#10;spunky&#10;electricity (in attraction descriptions)&#10;ravished&#10;quivered&#10;hetaera" oninput="updateProgress()"></textarea>
+
+    <label>Banned Phrases (one per line)</label>
+    <textarea id="bannedPhrases" placeholder="e.g.&#10;'a smile played at the corner of his lips'&#10;'her heart skipped a beat'&#10;'breath she didn't know she was holding'" oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 7 — READER EXPECTATIONS -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">7</div>
+      <div class="component-title">Reader Expectations</div>
+    </div>
+    <div class="component-help">What did the reader buy when they bought your book? Articulate the promise so the AI never violates it.</div>
+
+    <label>The Promise Your Brand Makes To Readers <span class="hint">What does the cover suggest? What does the blurb deliver? What does the category guarantee?</span></label>
+    <textarea id="readerPromise" class="tall" placeholder="e.g., Readers come to Sage Kennedy for escapist, glittery holiday romance with banter, smart heroines, billionaire heroes who are emotionally available beneath the polish, steam at heat 4, and a guaranteed HEA before the credits roll. They expect Manhattan luxury, holiday magic, fast wit, and a hero who falls first." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 8 — TONE CALIBRATION TABLE -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">8</div>
+      <div class="component-title">Tone Calibration Table</div>
+    </div>
+    <div class="component-help">Numerical handles the AI can use to calibrate scenes. Slide each dimension to where this pen name sits.</div>
+
+    <div class="scale-table">
+      <div class="scale-row">
+        <label>Humor Level</label>
+        <div class="scale-grid">
+          <input type="range" id="humor" min="1" max="5" value="3" oninput="document.getElementById('humorVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="humorVal">3</div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <label>Darkness Level</label>
+        <div class="scale-grid">
+          <input type="range" id="darkness" min="1" max="5" value="2" oninput="document.getElementById('darknessVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="darknessVal">2</div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <label>Intensity Level</label>
+        <div class="scale-grid">
+          <input type="range" id="intensity" min="1" max="5" value="3" oninput="document.getElementById('intensityVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="intensityVal">3</div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <label>Romantic Tension Level</label>
+        <div class="scale-grid">
+          <input type="range" id="tension" min="1" max="5" value="4" oninput="document.getElementById('tensionVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="tensionVal">4</div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <label>Pace</label>
+        <div class="scale-grid">
+          <input type="range" id="pace" min="1" max="5" value="3" oninput="document.getElementById('paceVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="paceVal">3</div>
+        </div>
+      </div>
+      <div class="scale-row">
+        <label>Emotional Stakes</label>
+        <div class="scale-grid">
+          <input type="range" id="stakes" min="1" max="5" value="4" oninput="document.getElementById('stakesVal').textContent=this.value;updateProgress();">
+          <div class="scale-value" id="stakesVal">4</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENT 9 — SAMPLE PASSAGES -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">9</div>
+      <div class="component-title">Sample Passages</div>
+    </div>
+    <div class="component-help"><strong>This is the most powerful component.</strong> Paste 3-5 paragraphs of your actual prose at its most ON-BRAND. The AI learns voice from examples faster than from rules. Include a mix: internal monologue, dialogue, description, emotional beat.</div>
+
+    <label>Sample 1 — Internal Monologue</label>
+    <textarea id="sample1" class="tall" placeholder="Paste a paragraph or two where the POV character's internal voice is the most YOU it ever is..." oninput="updateProgress()"></textarea>
+
+    <label>Sample 2 — Dialogue Exchange</label>
+    <textarea id="sample2" class="tall" placeholder="Paste a dialogue exchange that captures how your characters talk to each other..." oninput="updateProgress()"></textarea>
+
+    <label>Sample 3 — Description / Setting</label>
+    <textarea id="sample3" class="tall" placeholder="Paste a descriptive moment that shows how you handle setting and sensory detail..." oninput="updateProgress()"></textarea>
+
+    <label>Sample 4 — Emotional Beat (optional)</label>
+    <textarea id="sample4" class="tall" placeholder="Paste an emotional moment that shows how you handle feelings on the page..." oninput="updateProgress()"></textarea>
+
+    <label>Sample 5 — Chapter Ending (optional)</label>
+    <textarea id="sample5" class="tall" placeholder="Paste one of your best chapter endings — the kind that makes readers turn the page..." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- COMPONENT 10 — CHARACTER VOICE -->
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">10</div>
+      <div class="component-title">Character Voice Patterns</div>
+    </div>
+    <div class="component-help">Voice patterns that scale across every character in this brand.</div>
+
+    <label>How Heroines Sound <span class="hint">Default voice, defaults under pressure, signature moves</span></label>
+    <textarea id="heroineVoice" placeholder="e.g., Heroines lead with wit and deflect with humor. Under emotional pressure, they default to dry observation rather than direct vulnerability. They use 'okay' as a verbal reset. They don't apologize for ambition." oninput="updateProgress()"></textarea>
+
+    <label>How Heroes Sound</label>
+    <textarea id="heroVoice" placeholder="e.g., Heroes are observational and economical with words. They notice details about the heroine that no one else has. They reveal depth in private moments — never in dialogue with friends. They never use the word 'baby' in a non-ironic way." oninput="updateProgress()"></textarea>
+
+    <label>How They Talk To Each Other <span class="hint">The dynamic when they're together</span></label>
+    <textarea id="interaction" placeholder="e.g., Banter-forward in the first half — quick exchanges, neither backing down. Softens after the first vulnerable scene. By the end, they finish each other's sentences and the banter has acquired tenderness." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <button class="btn" onclick="generateStyleGuide()">Generate Style Guide</button>
+    <button class="btn btn-navy" onclick="saveDraft()">Save Draft (Local)</button>
+    <button class="btn btn-sage" onclick="loadDraft()">Load Draft</button>
+  </div>
+
+  <!-- GENERATED OUTPUT -->
+  <div class="output-section">
+    <h2>Your Style Guide</h2>
+    <p>Once you click <strong>Generate Style Guide</strong>, your complete style guide will assemble below. Copy it and save it as a skill in your preferred LLM. Installation instructions follow below.</p>
+    <div class="prompt-box" id="generatedGuide" style="min-height:120px;">
+      <button class="copy-btn" onclick="copyBox('generatedGuide')">Copy</button>(Fill in the components above and click Generate Style Guide)</div>
+  </div>
+
+  <!-- INSTALL AS CLAUDE SKILL -->
+  <div class="output-section">
+    <h2>How To Install This As A Claude Skill</h2>
+
+    <ol class="steps" style="margin-bottom:1rem;">
+      <li>Click <strong>Generate Style Guide</strong> above. Copy the output.</li>
+      <li>Open Claude. Create a new SKILL.md file in your skills directory.</li>
+      <li>Add the frontmatter header at the top (see template below).</li>
+      <li>Paste your generated style guide content below the frontmatter.</li>
+      <li>Save the file. Restart Claude or refresh the skills directory.</li>
+      <li>Test by asking: <em>"Use the [pen name] style guide skill to write a scene where..."</em></li>
+    </ol>
+
+    <p><strong>SKILL.md frontmatter template:</strong></p>
+    <div class="prompt-box" id="claudeFrontmatter">
+<button class="copy-btn" onclick="copyBox('claudeFrontmatter')">Copy</button>---
+name: <span class="placeholder">[pen-name-style-guide]</span>
+description: Use this skill when writing or editing any <span class="placeholder">[Pen Name]</span> fiction. <span class="placeholder">[Pen Name]</span> is a <span class="placeholder">[genre]</span> author. Heat level <span class="placeholder">[X]</span>/5.
+---
+
+# <span class="placeholder">[Pen Name]</span> Style Guide
+
+<span class="placeholder">[PASTE YOUR GENERATED STYLE GUIDE HERE]</span></div>
+  </div>
+
+  <!-- USE WITH SKILL CREATOR -->
+  <div class="output-section">
+    <h2>Upgrade Path — Use Claude's Skill Creator</h2>
+    <p>If you want to take your style guide further, use Claude's built-in Skill Creator skill. It will interview you and refine your guide into a polished, optimized skill file.</p>
+
+    <p><strong>The exact prompt to use:</strong></p>
+    <div class="prompt-box" id="skillCreatorPrompt">
+<button class="copy-btn" onclick="copyBox('skillCreatorPrompt')">Copy</button>Use the Skill Creator to help me build (or refine) a pen name style guide skill.
+
+Here is my draft style guide so far:
+
+<span class="placeholder">[PASTE YOUR GENERATED STYLE GUIDE HERE]</span>
+
+Walk me through each component and help me sharpen it. Ask me follow-up questions where my answers are vague or generic. Push back if anything contradicts itself. I want this to be specific enough that another writer reading it would know exactly what this pen name sounds like.
+
+When we're done, format the final result as a Claude SKILL.md file with proper frontmatter that I can save directly to my skills directory.</div>
+
+    <div class="callout">
+      <strong>Why this works:</strong> The Skill Creator is built to interrogate vague instructions and demand specificity. Your guide will come out sharper than what you can build alone on a worksheet.
+    </div>
+  </div>
+
+  <!-- TEST YOUR STYLE GUIDE -->
+  <div class="output-section">
+    <h2>Test Your Style Guide</h2>
+    <p>Once your style guide is installed, run this test to see if it's working.</p>
+
+    <ol class="steps">
+      <li>Pick a chapter prompt you've used before. Something simple — a meet-cute scene, an argument, a kiss.</li>
+      <li>Run it through the AI WITHOUT your style guide active. Save the output.</li>
+      <li>Run the same prompt through the AI WITH your style guide active. Save that output.</li>
+      <li>Read both side by side. The difference should be obvious.</li>
+      <li>If the difference is NOT obvious, your guide needs more detail — particularly in Component 9 (sample passages) and Component 3 (voice markers).</li>
+    </ol>
+
+    <div class="success">
+      <strong>The test does not lie.</strong> Either the guide is doing the work or it isn't. Iterate based on what you see.
+    </div>
+  </div>
+
+  <!-- ITERATION CYCLE -->
+  <div class="output-section">
+    <h2>The Iteration Cycle</h2>
+    <p>Your style guide is not a write-once document. It evolves.</p>
+
+    <ol class="steps">
+      <li>Run Pass 8 (Voice Audit) from Day 1 on a finished chapter.</li>
+      <li>The AI flags a line as off-brand. Look at it.</li>
+      <li>Ask: was the AI right?</li>
+      <li><strong>If yes:</strong> Style guide is working. Fix the line. Move on.</li>
+      <li><strong>If no:</strong> Style guide is missing something. Either the voice markers are too rigid, or there's no example of that kind of moment. Add the missing piece.</li>
+      <li>Update your skill file. The next audit will be sharper.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Six months of iteration</strong> turns a starter style guide into a precision instrument. Build it. Use it. Improve it. Repeat.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+const FIELDS = ['penName','genre','subGenre','compAuthors','heatCalibration','vocab','rhythm','monologue','voiceNotes','mustHaves','mustNotHaves','bannedWords','bannedPhrases','readerPromise','sample1','sample2','sample3','heroineVoice','heroVoice','interaction'];
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function updateProgress() {
+  const filled = FIELDS.filter(id => val(id).length > 0).length;
+  const pct = Math.round((filled / FIELDS.length) * 100);
+  document.getElementById('progressText').textContent = pct + '% (' + filled + '/' + FIELDS.length + ' fields)';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function copyBox(id) {
+  const box = document.getElementById(id);
+  const text = box.innerText.replace(/^Copy(\s*)/, '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = original, 2000);
+  });
+}
+
+function formatList(text) {
+  if (!text) return '  [not specified]';
+  return text.split('\n').filter(l => l.trim()).map(l => '  - ' + l.trim().replace(/^[-•*]\s*/, '')).join('\n');
+}
+
+function generateStyleGuide() {
+  const pn = val('penName') || '[Pen Name]';
+  const out = `# ${pn} — Style Guide
+
+## 1. Brand Identity
+- Pen Name: ${pn}
+- Primary Genre: ${val('genre') || '[not specified]'}
+- Sub-Genre: ${val('subGenre') || '[not specified]'}
+- Comp Authors: ${val('compAuthors') || '[not specified]'}
+- Series: ${val('seriesTitles') || '[none specified]'}
+
+## 2. Heat Level + Language Calibration
+- Heat Level: ${val('heatLevel') || '3'}/5
+- Calibration:
+${val('heatCalibration') ? '  ' + val('heatCalibration').replace(/\n/g, '\n  ') : '  [not specified]'}
+
+## 3. Voice Markers
+- Vocabulary register: ${val('vocab') || '[not specified]'}
+- Sentence rhythm: ${val('rhythm') || '[not specified]'}
+- Internal monologue flavor: ${val('monologue') || '[not specified]'}
+- Additional voice notes:
+${val('voiceNotes') ? '  ' + val('voiceNotes').replace(/\n/g, '\n  ') : '  [not specified]'}
+
+## 4. Must-Haves (Reader Contract)
+${formatList(val('mustHaves'))}
+
+## 5. Must-NOT-Haves (Guardrails)
+${formatList(val('mustNotHaves'))}
+
+## 6. Banned Words & Phrases (Pen Name Specific)
+Banned Words:
+${formatList(val('bannedWords'))}
+
+Banned Phrases:
+${formatList(val('bannedPhrases'))}
+
+## 7. Reader Expectations
+${val('readerPromise') || '[not specified]'}
+
+## 8. Tone Calibration Table
+| Dimension | Level (1-5) |
+|---|---|
+| Humor | ${val('humor') || '3'} |
+| Darkness | ${val('darkness') || '2'} |
+| Intensity | ${val('intensity') || '3'} |
+| Romantic Tension | ${val('tension') || '4'} |
+| Pace | ${val('pace') || '3'} |
+| Emotional Stakes | ${val('stakes') || '4'} |
+
+## 9. Sample Passages (Most Powerful Section)
+
+### Sample 1 — Internal Monologue
+${val('sample1') || '[paste sample]'}
+
+### Sample 2 — Dialogue Exchange
+${val('sample2') || '[paste sample]'}
+
+### Sample 3 — Description / Setting
+${val('sample3') || '[paste sample]'}
+${val('sample4') ? '\n### Sample 4 — Emotional Beat\n' + val('sample4') : ''}
+${val('sample5') ? '\n### Sample 5 — Chapter Ending\n' + val('sample5') : ''}
+
+## 10. Character Voice Patterns
+
+### Heroines
+${val('heroineVoice') || '[not specified]'}
+
+### Heroes
+${val('heroVoice') || '[not specified]'}
+
+### How They Interact
+${val('interaction') || '[not specified]'}
+
+---
+
+## How To Use This Style Guide
+1. Save this document as a skill file in your preferred LLM (Claude SKILL.md, Gemini Gem, ChatGPT GPT, or Grok Custom).
+2. Invoke the skill any time you write or edit ${pn} fiction.
+3. Run Pass 8 (Voice Audit) from Edit Like a Boss Day 1 against chapters to catch drift.
+4. Update this guide whenever a voice audit reveals a gap.
+
+*Generated with the Edit Like a Boss Style Guide Builder | The Invisible Pen*`;
+
+  const box = document.getElementById('generatedGuide');
+  box.innerHTML = '<button class="copy-btn" onclick="copyBox(\'generatedGuide\')">Copy</button>' + out.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function saveDraft() {
+  const data = {};
+  FIELDS.forEach(id => data[id] = val(id));
+  ['heatLevel','humor','darkness','intensity','tension','pace','stakes'].forEach(id => {
+    data[id] = document.getElementById(id).value;
+  });
+  data.seriesTitles = val('seriesTitles');
+  data.sample4 = val('sample4');
+  data.sample5 = val('sample5');
+  try {
+    localStorage.setItem('elab-style-guide-draft', JSON.stringify(data));
+    alert('Draft saved locally. Use Load Draft to restore it later.');
+  } catch (e) {
+    alert('Could not save draft (storage may be disabled).');
+  }
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem('elab-style-guide-draft');
+    if (!raw) { alert('No saved draft found.'); return; }
+    const data = JSON.parse(raw);
+    Object.keys(data).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = data[id];
+        if (el.type === 'range') {
+          const valEl = document.getElementById(id + 'Val');
+          if (valEl) valEl.textContent = data[id];
+        }
+      }
+    });
+    updateProgress();
+    alert('Draft restored.');
+  } catch (e) {
+    alert('Could not load draft.');
+  }
+}
+
+updateProgress();
+</script>
+</body>
+</html>

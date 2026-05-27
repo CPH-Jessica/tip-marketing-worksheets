@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Day 2 — Lesson 1: Beta Bestie Builder</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section .help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);}
+input[type="text"], input[type="email"], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);margin-bottom:1rem;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:80px;resize:vertical;}
+.persona-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:1rem;margin:1rem 0;}
+.persona-card{background:var(--light-gray);border-radius:8px;padding:1rem;border-left:4px solid var(--coral);}
+.persona-card.cecily{border-left-color:var(--gold);}
+.persona-card.brinley{border-left-color:#E91E63;}
+.persona-card.leah{border-left-color:var(--navy);}
+.persona-card h3{color:var(--navy);font-size:1rem;margin-bottom:0.3rem;}
+.persona-card .vibe{font-size:0.8rem;font-style:italic;color:#666;margin-bottom:0.5rem;}
+.persona-card .sig{font-size:0.8rem;background:white;padding:0.5rem;border-radius:4px;border-left:2px solid var(--coral);}
+.step-card{background:var(--cream);border:2px solid var(--coral);border-radius:8px;padding:1.5rem;margin-bottom:1rem;position:relative;}
+.step-card .step-num{position:absolute;top:-15px;left:1.5rem;background:var(--coral);color:white;border-radius:50%;width:35px;height:35px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.1rem;}
+.step-card h3{color:var(--navy);font-size:1.1rem;margin-bottom:0.5rem;margin-top:0.5rem;padding-left:0.5rem;}
+.btn{background:var(--coral);color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:'Georgia',serif;font-weight:bold;}
+.btn:hover{background:#D4634A;}
+.btn-gold{background:var(--gold);}
+.btn-gold:hover{background:#B8892E;}
+.output-box{background:var(--navy);color:#E0DDD6;border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.6;white-space:pre-wrap;position:relative;margin-top:1rem;display:none;}
+.output-box.show{display:block;}
+.output-box .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:var(--coral);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:'Georgia',serif;}
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem;border-radius:0 6px 6px 0;margin:1rem 0;}
+.tip-box strong{color:var(--navy);}
+.comparison-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.comparison-table th{background:var(--navy);color:white;padding:0.75rem;text-align:left;font-size:0.9rem;}
+.comparison-table td{padding:0.75rem;border-bottom:1px solid var(--border);font-size:0.9rem;vertical-align:top;}
+.comparison-table tr:nth-child(even) td{background:var(--cream);}
+.phrase-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;}
+.phrase-row{display:flex;gap:0.5rem;align-items:center;}
+.phrase-row input{margin-bottom:0;flex:1;}
+.phrase-row button{background:var(--coral);color:white;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:bold;}
+.add-phrase-btn{background:var(--sage);color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-family:'Georgia',serif;font-size:0.85rem;}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.persona-grid{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Beta Bestie Builder</h1>
+  <div class="subtitle">Edit Like a Boss — Day 2, Lesson 1</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>What You Are Building</h2>
+    <p>You are building a custom AI reader persona — your Beta Bestie. By the end of this worksheet you will have a complete persona description you can save as a skill in Lesson 2 and use on every project from here forward.</p>
+    <div class="tip-box">
+      <strong>Reminder:</strong> Your Beta Bestie is a READER, not an editor. She gives you reader reactions, not writing advice. She tells you what made her keep reading, what made her DNF, what made her text her group chat.
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="section">
+    <h2>Examples — Jessica's Active Beta Besties</h2>
+    <p class="help">Study these before building your own. Notice how each one is calibrated to a different genre and reader type.</p>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <h3>Paprika Lynn</h3>
+        <div class="vibe">General romance · Southern bestie energy</div>
+        <div class="sig">"Girl. GIRL. Why is she still entertaining this man after he did THAT"</div>
+      </div>
+      <div class="persona-card cecily">
+        <h3>Cecily Hale</h3>
+        <div class="vibe">Vampire rom-com · Dry, arch, precise</div>
+        <div class="sig">"Right. So. We need to discuss this."</div>
+      </div>
+      <div class="persona-card brinley">
+        <h3>Brinley Chase</h3>
+        <div class="vibe">Steamy romcom · Rosé-drunk couch energy</div>
+        <div class="sig">"OKAY. Okay okay okay. I need to talk about this scene."</div>
+      </div>
+      <div class="persona-card leah">
+        <h3>Leah Voss</h3>
+        <div class="vibe">Literary critic · Ruthless stress test</div>
+        <div class="sig">"Competent. The highest insult I can offer."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BETA BESTIE VS SLASH EDITOR -->
+  <div class="section">
+    <h2>Beta Bestie vs. Slash Editor — Know the Difference</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Slash Editor (Pass 7)</th><th>Beta Bestie</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Editor mindset</td><td>Reader mindset</td></tr>
+        <tr><td>Asks: Does this scene EARN its place?</td><td>Asks: Did this scene make me KEEP READING?</td></tr>
+        <tr><td>Structural feedback</td><td>Emotional feedback</td></tr>
+        <tr><td>Cuts what doesn't serve the story</td><td>Flags what doesn't satisfy the reader</td></tr>
+        <tr><td>Runs DURING the 8-pass system</td><td>Runs AFTER the 8-pass system</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STEP 1: TARGET READER -->
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <h3>Identify Your Target Reader</h3>
+    <p class="help">Be specific. Generic reader profiles produce generic feedback.</p>
+
+    <label>What genre/subgenre does this Beta Bestie cover?</label>
+    <input type="text" id="genre" placeholder="e.g., Vampire rom-com / Small-town romance / Psychological thriller">
+
+    <label>What does she read? (3-5 specific authors or comp titles)</label>
+    <input type="text" id="reads" placeholder="e.g., Tessa Bailey, Ali Hazelwood, Helena Hunting">
+
+    <label>What does she watch? (TV/film references that match her taste)</label>
+    <input type="text" id="watches" placeholder="e.g., Schitt's Creek, Ted Lasso, classic 80s romcoms">
+
+    <label>How does she communicate? (text style, energy level, vocabulary)</label>
+    <textarea id="comms" placeholder="e.g., Texts in seventeen consecutive messages with all caps and keyboard smashes. Voice notes when she's really feeling it."></textarea>
+
+    <label>What makes her DNF a book?</label>
+    <textarea id="dnf" placeholder="e.g., Insta-love without buildup. Heroes who don't grovel after they mess up. Heat scenes that read like assembly instructions."></textarea>
+  </div>
+
+  <!-- STEP 2: NAME AND VIBE -->
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <h3>Give Her a Name and a Vibe</h3>
+    <p class="help">The name and vibe make her feel like a person, not a prompt.</p>
+
+    <label>First and last name:</label>
+    <input type="text" id="name" placeholder="e.g., Sloane Whitley, Marigold Park, Devon Sharp">
+
+    <label>One-sentence vibe description:</label>
+    <input type="text" id="vibe" placeholder="e.g., 30-something book blogger who reads at 11pm with a glass of wine and never holds back">
+
+    <label>Physical/visual cue (what she's holding, where she is, what she's wearing):</label>
+    <input type="text" id="visual" placeholder="e.g., Fuzzy socks, rosé, phone in hand, blanket on the couch">
+
+    <label>Energy level (1 = composed and dry, 10 = full ALL CAPS chaos):</label>
+    <input type="text" id="energy" placeholder="e.g., 8 — high enthusiasm with occasional moments of stunned silence">
+  </div>
+
+  <!-- STEP 3: OPINIONS -->
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <h3>Define Her Opinions</h3>
+    <p class="help">These are the criteria she will use to evaluate your work.</p>
+
+    <label>What does she LOVE in this genre? (specific tropes, character types, scenes)</label>
+    <textarea id="loves" placeholder="e.g., Grumpy/sunshine done right. Forced proximity. A hero who tracks her down to apologize. Heat scenes with banter. Female friendships that aren't catty."></textarea>
+
+    <label>What does she HATE? (tropes, character types, writing choices)</label>
+    <textarea id="hates" placeholder="e.g., Heroines who can't take a compliment without internal monologue about being 'not like other girls.' Heroes who growl their way through every dialogue tag. Fade-to-black when the book promised explicit."></textarea>
+
+    <label>What are her ABSOLUTE DEALBREAKERS?</label>
+    <textarea id="dealbreakers" placeholder="e.g., Heroine who forgives without the hero earning it. Heat scenes that lose the character voice. Pacing that drags past 70% mark."></textarea>
+  </div>
+
+  <!-- STEP 4: SIGNATURE PHRASES -->
+  <div class="step-card">
+    <div class="step-num">4</div>
+    <h3>Give Her Signature Phrases</h3>
+    <p class="help">Real phrases. The way she actually talks. This is what makes her feel like a person.</p>
+
+    <label>Add at least 8-10 signature phrases (one per line). These will appear in her feedback.</label>
+    <div class="phrase-list" id="phraseList">
+      <div class="phrase-row"><input type="text" placeholder="e.g., 'Honey, this isn't going to land the way you think it is'"><button onclick="removeRow(this)">×</button></div>
+      <div class="phrase-row"><input type="text" placeholder="e.g., 'I literally said NO out loud at this part'"><button onclick="removeRow(this)">×</button></div>
+      <div class="phrase-row"><input type="text" placeholder="e.g., 'Why is this scene giving me nothing'"><button onclick="removeRow(this)">×</button></div>
+      <div class="phrase-row"><input type="text" placeholder="e.g., 'I need a moment. And also a cold shower.'"><button onclick="removeRow(this)">×</button></div>
+    </div>
+    <button class="add-phrase-btn" onclick="addPhrase()">+ Add another phrase</button>
+  </div>
+
+  <!-- STEP 5: BOUNDARIES -->
+  <div class="step-card">
+    <div class="step-num">5</div>
+    <h3>Define What She WON'T Do</h3>
+    <p class="help">Boundaries make her useful. Most AI personas are too nice. Yours shouldn't be.</p>
+
+    <label>What she WILL NOT do (check all that apply):</label>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+      <label style="font-weight:normal;"><input type="checkbox" id="b1" checked> Soften feedback to spare feelings</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b2" checked> Pretend to like something she didn't</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b3" checked> Give vague "this was great" praise</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b4" checked> Give writing advice or craft critique</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b5" checked> Fix the prose or suggest rewrites</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b6" checked> Compare your book to other authors unprompted</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b7"> Use profanity (uncheck if she swears)</label>
+      <label style="font-weight:normal;"><input type="checkbox" id="b8"> Break character to be helpful or balanced</label>
+    </div>
+
+    <label>What she WILL do (her primary job):</label>
+    <textarea id="willdo" placeholder="e.g., Give specific reader reactions to scenes. Tell me exactly where I lost her and why. Tell me what made her text her group chat. Tell me what she would say in a Goodreads review."></textarea>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="section" style="text-align:center;background:var(--navy);color:white;">
+    <h2 style="color:var(--coral);border-bottom-color:var(--coral);">Generate Your Beta Bestie</h2>
+    <p style="margin:1rem 0;">When you've filled in all 5 steps, click below to assemble your complete Beta Bestie persona.</p>
+    <button class="btn btn-gold" onclick="generatePersona()" style="font-size:1.1rem;padding:1rem 2rem;">Generate Persona</button>
+  </div>
+
+  <div class="output-box" id="output">
+    <button class="copy-btn" onclick="copyOutput()">Copy</button>
+    <span id="outputText"></span>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="section">
+    <h2>Next Steps</h2>
+    <ol style="padding-left:1.5rem;">
+      <li style="margin-bottom:0.5rem;">Copy the generated persona above</li>
+      <li style="margin-bottom:0.5rem;">Save it as a markdown file (e.g., your-beta-name.md)</li>
+      <li style="margin-bottom:0.5rem;">In <strong>Lesson 2</strong>, you will install this as a skill in your AI platform of choice (Claude, Gemini, ChatGPT, or Grok)</li>
+      <li style="margin-bottom:0.5rem;">Test her on a chapter you already have feedback on — compare her reactions to the real feedback</li>
+      <li>Iterate. The first version is rarely sharp enough. Sharpen her over time.</li>
+    </ol>
+  </div>
+
+  <!-- TEST PROMPT -->
+  <div class="section">
+    <h2>Test Prompt — Once She's Installed</h2>
+    <p>Use this prompt to put your Beta Bestie through her paces:</p>
+    <div class="output-box show" style="position:relative;">
+      <button class="copy-btn" onclick="copyTest()">Copy</button>
+<span id="testPrompt">[BETA BESTIE NAME], I need you to read this chapter and give me your honest reader reaction.
+
+Pen name: [PEN NAME]
+Heat level: [1-5]/5
+Where this chapter sits in the book: [Chapter X of Y / opening / mid / climax / etc.]
+
+[PASTE FULL CHAPTER HERE]
+
+Tell me:
+1. Did you want to keep reading? Where exactly did you start to drift, if you did?
+2. What made you react out loud (good or bad)?
+3. What would you text your group chat about this chapter?
+4. What would you say in a Goodreads review?
+5. Would you pre-order the next book?
+
+Stay in character. Use your signature phrases. Be honest, not nice.</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss — Day 2 &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function addPhrase() {
+  const list = document.getElementById('phraseList');
+  const row = document.createElement('div');
+  row.className = 'phrase-row';
+  row.innerHTML = '<input type="text" placeholder="Add a signature phrase..."><button onclick="removeRow(this)">×</button>';
+  list.appendChild(row);
+}
+function removeRow(btn) {
+  btn.parentElement.remove();
+}
+function generatePersona() {
+  const get = id => (document.getElementById(id)?.value || '').trim();
+  const phrases = [];
+  document.querySelectorAll('#phraseList input').forEach(i => { if (i.value.trim()) phrases.push('- ' + i.value.trim()); });
+
+  const willNot = [];
+  if (document.getElementById('b1').checked) willNot.push('- Will not soften feedback to spare feelings');
+  if (document.getElementById('b2').checked) willNot.push('- Will not pretend to like something she did not');
+  if (document.getElementById('b3').checked) willNot.push('- Will not give vague "this was great" praise');
+  if (document.getElementById('b4').checked) willNot.push('- Will not give writing advice or craft critique');
+  if (document.getElementById('b5').checked) willNot.push('- Will not fix the prose or suggest rewrites');
+  if (document.getElementById('b6').checked) willNot.push('- Will not compare your book to other authors unprompted');
+  if (document.getElementById('b7').checked) willNot.push('- Does not use profanity');
+  if (document.getElementById('b8').checked) willNot.push('- Will not break character to be helpful or balanced');
+
+  const name = get('name') || '[NAME]';
+  const genre = get('genre') || '[GENRE]';
+
+  const text = `# ${name} — Beta Bestie
+
+## Who She Is
+
+${name} is a ${genre} reader. ${get('vibe')}
+
+**Visual cue:** ${get('visual')}
+**Energy level:** ${get('energy')}
+**How she communicates:** ${get('comms')}
+
+## Her Reading Life
+
+**What she reads:** ${get('reads')}
+**What she watches:** ${get('watches')}
+**What makes her DNF a book:** ${get('dnf')}
+
+## Her Opinions
+
+**What she LOVES:**
+${get('loves')}
+
+**What she HATES:**
+${get('hates')}
+
+**Her absolute DEALBREAKERS:**
+${get('dealbreakers')}
+
+## Her Voice — Signature Phrases
+
+${phrases.join('\n')}
+
+## What She Will NOT Do
+
+${willNot.join('\n')}
+
+## What She WILL Do (Her Job)
+
+${get('willdo')}
+
+## How to Use Her
+
+Invoke her on a finished chapter or manuscript after the 8-pass ELAB editing system is complete. Ask for her honest reader reaction. Do not ask her to fix the prose — ask her to react to it.
+
+She is your reader. Treat her feedback like reader feedback. Specific things she flags = real problems. Vague things she shrugs at = sharpening needed.
+
+---
+
+*Built using the ELAB Day 2 Beta Bestie Builder. The Invisible Pen.*`;
+
+  document.getElementById('outputText').textContent = text;
+  document.getElementById('output').classList.add('show');
+  document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputText').textContent).then(() => {
+    const btn = document.querySelector('#output .copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+function copyTest() {
+  navigator.clipboard.writeText(document.getElementById('testPrompt').textContent).then(() => {
+    const btns = document.querySelectorAll('.copy-btn');
+    btns[btns.length-1].textContent = 'Copied!';
+    setTimeout(() => btns[btns.length-1].textContent = 'Copy', 2000);
+  });
+}
+</script>
+
+</body>
+</html>

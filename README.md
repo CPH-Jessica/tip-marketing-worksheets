@@ -27,13 +27,17 @@ Located in `/amazon-ads/`
 | 3 | Campaign Builder | Step-by-step wizard to set up 3 campaigns (keyword, ASIN, auto) with breakeven math |
 | 4 | Ad Performance Tracker | Weekly data tracker with auto-calculated ACOS, breakeven, and scale/pause recommendations |
 
-## Class 3: Edit Like a Boss — The 8-Pass AI Editing System
+## Class 3: Edit Like a Boss — The 9-Pass AI Editing System
 
-Located in `/edit-like-a-boss/`
+Located in `/edit-like-a-boss/`, organized into Parts.
+
+### Part 1: The Editing System
+
+Located in `/edit-like-a-boss/part-1-editing-system/`
 
 | # | Worksheet | Topic |
 |---|---|---|
-| 1 | Lesson 1: Why One Editing Pass Will Never Be Enough | Intro to the 8-pass system |
+| 1 | Lesson 1: Why One Editing Pass Will Never Be Enough | Intro to the 9-pass system |
 | 2 | Lesson 2: Pass 1 — Quality Check | First-pass evaluation |
 | 3 | Lesson 3: Pass 2 — Plot Hole Checker | Logic gaps & continuity |
 | 4 | Lesson 4: Pass 3 — Timeline Consistency | Chronology & sequence |
@@ -44,6 +48,17 @@ Located in `/edit-like-a-boss/`
 | 9 | Lesson 9: Pass 8 — Voice Audit | Author voice consistency |
 | 10 | Lesson 10: Putting It All Together | Workflow integration |
 | 11 | Lesson 11: Pass 9 — YOU, The Human Pass | Final human review before publishing |
+
+### Part 2: Building Your Team
+
+Located in `/edit-like-a-boss/part-2-building-your-team/`
+
+| # | Worksheet | Topic |
+|---|---|---|
+| 1 | Lesson 1: Beta Bestie Builder | Design your ideal AI beta reader persona |
+| 2 | Lesson 2: Creating Your Own Skills | Build reusable AI skills for your editing workflow |
+| 3 | Lesson 3: Pen Name Style Guide Builder | Lock in voice consistency per pen name |
+| 4 | Lesson 4: Writing System Audit | Evaluate and tune your end-to-end writing system |
 
 ## Standalone Tools
 

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Day 2 — Lesson 4: Writing System Audit</title>
+<style>
+:root {
+  --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E;
+  --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7;
+  --red:#E53935; --green:#43A047; --amber:#FB8C00;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.05rem;margin-top:1rem;margin-bottom:0.5rem;}
+.intro-callout{background:var(--light-gray);border-left:4px solid var(--coral);padding:1rem 1.25rem;border-radius:4px;margin-bottom:1rem;font-style:italic;}
+
+/* Pipeline visualization */
+.pipeline{display:grid;grid-template-columns:repeat(7, 1fr);gap:0.4rem;margin:1rem 0;}
+.pipeline-stage{background:var(--navy);color:white;padding:0.75rem 0.5rem;border-radius:6px;text-align:center;font-size:0.8rem;position:relative;}
+.pipeline-stage .num{display:block;color:var(--gold);font-weight:bold;font-size:0.9rem;}
+.pipeline-stage .name{display:block;font-size:0.75rem;margin-top:0.25rem;letter-spacing:0.5px;}
+.pipeline-stage.elab{background:var(--coral);}
+.pipeline-stage.elab .num{color:var(--cream);}
+
+/* Stage cards */
+.stage-card{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin-bottom:0.75rem;transition:border-color 0.2s;}
+.stage-card.has-system{border-color:var(--green);background:#F1F8E9;}
+.stage-card.partial{border-color:var(--amber);background:#FFF8E1;}
+.stage-card.winging{border-color:var(--red);background:#FFEBEE;}
+.stage-header{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+.stage-title{font-weight:bold;color:var(--navy);font-size:1.05rem;}
+.stage-tool{font-size:0.8rem;color:#666;font-style:italic;}
+.stage-status{display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;}
+.status-pill{padding:0.3rem 0.7rem;border-radius:20px;border:2px solid var(--border);background:white;cursor:pointer;font-size:0.78rem;font-family:'Georgia',serif;transition:all 0.15s;}
+.status-pill:hover{border-color:var(--navy);}
+.status-pill.selected.system{background:var(--green);color:white;border-color:var(--green);}
+.status-pill.selected.partial{background:var(--amber);color:white;border-color:var(--amber);}
+.status-pill.selected.winging{background:var(--red);color:white;border-color:var(--red);}
+.stage-notes{margin-top:0.5rem;}
+.stage-notes textarea{width:100%;min-height:50px;border:1px solid var(--border);border-radius:4px;padding:0.5rem;font-family:'Georgia',serif;font-size:0.85rem;background:white;}
+.stage-notes textarea:focus{outline:none;border-color:var(--coral);}
+
+/* Component checklist */
+.component-grid{display:grid;grid-template-columns:1fr;gap:0.6rem;}
+.component-row{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;background:var(--cream);border-radius:6px;border:1px solid var(--border);transition:background 0.2s;}
+.component-row.done{background:#F1F8E9;border-color:var(--green);}
+.component-row.progress{background:#FFF8E1;border-color:var(--amber);}
+.component-row.not-started{background:#FFF;border-color:var(--border);}
+.component-info{flex:1;}
+.component-name{font-weight:bold;color:var(--navy);font-size:0.95rem;}
+.component-desc{font-size:0.8rem;color:#666;margin-top:0.15rem;}
+.component-lesson{font-size:0.72rem;color:var(--coral);font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;margin-top:0.15rem;display:block;}
+.component-status{display:flex;gap:0.3rem;}
+.cstatus{padding:0.25rem 0.6rem;border-radius:4px;border:1px solid var(--border);background:white;cursor:pointer;font-size:0.72rem;font-family:'Georgia',serif;}
+.cstatus.selected.done{background:var(--green);color:white;border-color:var(--green);}
+.cstatus.selected.progress{background:var(--amber);color:white;border-color:var(--amber);}
+.cstatus.selected.not-started{background:var(--red);color:white;border-color:var(--red);}
+
+/* Recommendation engine */
+.recommendation{background:linear-gradient(135deg, var(--navy), #2A3D5C);color:white;border-radius:8px;padding:1.5rem;margin-top:1rem;}
+.recommendation .label{color:var(--gold);font-size:0.85rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:bold;margin-bottom:0.5rem;}
+.recommendation .rec-title{font-size:1.3rem;color:var(--coral);margin-bottom:0.5rem;font-weight:bold;}
+.recommendation .rec-body{font-size:0.95rem;line-height:1.6;}
+.recommendation .rec-empty{font-style:italic;color:#BBB;}
+
+/* Progress bar */
+.progress-track{background:var(--light-gray);border-radius:20px;height:24px;overflow:hidden;margin:0.75rem 0;position:relative;}
+.progress-fill{background:linear-gradient(90deg, var(--coral), var(--gold));height:100%;width:0%;transition:width 0.4s;border-radius:20px;}
+.progress-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-weight:bold;color:var(--navy);font-size:0.85rem;}
+
+/* Reference box */
+.ref-box{background:var(--light-gray);border-radius:6px;padding:1rem 1.25rem;margin:0.75rem 0;font-size:0.9rem;}
+.ref-box strong{color:var(--navy);}
+
+.btn{background:var(--coral);color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.9rem;cursor:pointer;font-family:'Georgia',serif;}
+.btn:hover{background:#D4634A;}
+.btn-secondary{background:var(--navy);}
+.btn-secondary:hover{background:#2A3D5C;}
+
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+
+@media(max-width:700px){
+  .pipeline{grid-template-columns:repeat(2,1fr);}
+  .container{padding:1rem;}
+  .section{padding:1.25rem 1rem;}
+  .header h1{font-size:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Writing System Audit</h1>
+  <div class="subtitle">Day 2 — Lesson 4: Start How You Mean to Write</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>Before You Start</h2>
+    <div class="intro-callout">
+      Most authors are not stuck because the AI is bad. They are stuck because they do not have a SYSTEM. This worksheet maps your current process, identifies the gaps, and tells you the ONE thing to build next.
+    </div>
+    <p>Be honest with yourself. The point is not to grade your existing process. The point is to find the highest-leverage thing you could build this week.</p>
+  </div>
+
+  <!-- THE CPH PIPELINE -->
+  <div class="section">
+    <h2>The CPH Writing Pipeline (Reference)</h2>
+    <p style="margin-bottom:0.5rem;">Seven stages. Each one has a tool, a skill, or a prompt. ELAB lives in stage 5.</p>
+    <div class="pipeline">
+      <div class="pipeline-stage"><span class="num">1</span><span class="name">PLAN</span></div>
+      <div class="pipeline-stage"><span class="num">2</span><span class="name">BUILD</span></div>
+      <div class="pipeline-stage"><span class="num">3</span><span class="name">DRAFT</span></div>
+      <div class="pipeline-stage"><span class="num">4</span><span class="name">CO-WRITE</span></div>
+      <div class="pipeline-stage elab"><span class="num">5</span><span class="name">EDIT (ELAB)</span></div>
+      <div class="pipeline-stage"><span class="num">6</span><span class="name">BETA</span></div>
+      <div class="pipeline-stage"><span class="num">7</span><span class="name">FINAL</span></div>
+    </div>
+    <div class="ref-box">
+      <strong>1. PLAN</strong> — Fiction Planner Skill (Foundations of Claude). Premise, codex, trope stack, story promise, chapter outline.<br>
+      <strong>2. BUILD</strong> — Chapter prompts generated from outline. One per chapter.<br>
+      <strong>3. DRAFT</strong> — Pen name skill + chapter prompt. Voice + plot.<br>
+      <strong>4. CO-WRITE</strong> — Co-writer skill for scenes you want to develop interactively.<br>
+      <strong>5. EDIT</strong> — All 8 ELAB passes per chapter.<br>
+      <strong>6. BETA</strong> — Beta Bestie pass with reader personas.<br>
+      <strong>7. FINAL</strong> — Manuscript-level voice audit, style guide check, publishing prep.
+    </div>
+  </div>
+
+  <!-- STAGE-BY-STAGE AUDIT -->
+  <div class="section">
+    <h2>Map Your Current Process</h2>
+    <p style="margin-bottom:1rem;">For each stage, tell the truth. Do you have a SYSTEM, are you PARTIAL, or are you WINGING IT?</p>
+
+    <div class="stage-card" data-stage="plan">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">1. PLAN</span>
+          <div class="stage-tool">Fiction Planner / outline / premise work</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="What does your planning look like right now?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="build">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">2. BUILD</span>
+          <div class="stage-tool">Chapter prompts / chapter briefs</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="How do you tell the AI what each chapter needs to accomplish?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="draft">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">3. DRAFT</span>
+          <div class="stage-tool">Pen name skill + chapter prompt</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="What does your first-draft process look like?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="cowrite">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">4. CO-WRITE</span>
+          <div class="stage-tool">Co-writer skill for interactive scenes</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="How do you handle the scenes you want to develop interactively?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="edit">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">5. EDIT (ELAB)</span>
+          <div class="stage-tool">The 8 ELAB passes</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="Are you running all 8 passes? Which ones are skipped?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="beta">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">6. BETA</span>
+          <div class="stage-tool">Beta Bestie personas</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="How do you get reader feedback before publishing?"></textarea>
+      </div>
+    </div>
+
+    <div class="stage-card" data-stage="final">
+      <div class="stage-header">
+        <div>
+          <span class="stage-title">7. FINAL</span>
+          <div class="stage-tool">Voice audit, style guide check, publishing prep</div>
+        </div>
+      </div>
+      <div class="stage-status">
+        <button class="status-pill" onclick="setStageStatus(this,'system')">SYSTEM</button>
+        <button class="status-pill" onclick="setStageStatus(this,'partial')">PARTIAL</button>
+        <button class="status-pill" onclick="setStageStatus(this,'winging')">WINGING IT</button>
+      </div>
+      <div class="stage-notes">
+        <textarea placeholder="What does your final pass and publishing prep look like?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENT CHECKLIST -->
+  <div class="section">
+    <h2>The 7 System Components</h2>
+    <p style="margin-bottom:1rem;">These are the artifacts that make the pipeline work. Track which ones you have built.</p>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-label" id="progressLabel">0 of 7 components complete</div>
+    </div>
+
+    <div class="component-grid" id="componentGrid">
+      <div class="component-row" data-component="planning">
+        <div class="component-info">
+          <div class="component-name">1. Planning Artifact</div>
+          <div class="component-desc">Fiction Planner outputs OR your own outline document. Knowing what the book is before you write it.</div>
+          <span class="component-lesson">Foundations of Claude</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="penname">
+        <div class="component-info">
+          <div class="component-name">2. Pen Name Skill</div>
+          <div class="component-desc">Voice profile, banned list, signature moves. One per pen name.</div>
+          <span class="component-lesson">Day 2 — Lesson 2</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="chapterprompt">
+        <div class="component-info">
+          <div class="component-name">3. Chapter Prompt Template</div>
+          <div class="component-desc">The reusable format you use when telling the AI what each chapter needs to do.</div>
+          <span class="component-lesson">Day 2 — Lesson 4</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="elab">
+        <div class="component-info">
+          <div class="component-name">4. ELAB Workflow</div>
+          <div class="component-desc">All 8 editing passes. In order. Run on every chapter.</div>
+          <span class="component-lesson">Day 1</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="beta">
+        <div class="component-info">
+          <div class="component-name">5. Beta Persona Library</div>
+          <div class="component-desc">2-5 reader personas built to react like your real target readers.</div>
+          <span class="component-lesson">Day 2 — Lesson 1</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="styleguide">
+        <div class="component-info">
+          <div class="component-name">6. Style Guide</div>
+          <div class="component-desc">Your bible of voice decisions, banned phrases, signature moves. Per pen name.</div>
+          <span class="component-lesson">Day 2 — Lesson 3</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+
+      <div class="component-row" data-component="codex">
+        <div class="component-info">
+          <div class="component-name">7. Codex</div>
+          <div class="component-desc">Character tracking, world tracking, timeline tracking. Built alongside the book.</div>
+          <span class="component-lesson">Foundations of Claude</span>
+        </div>
+        <div class="component-status">
+          <button class="cstatus" onclick="setComponentStatus(this,'done')">Done</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'progress')">In Progress</button>
+          <button class="cstatus" onclick="setComponentStatus(this,'not-started')">Not Started</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATION ENGINE -->
+  <div class="section">
+    <h2>Your Next Thing to Build</h2>
+    <p style="margin-bottom:1rem;">Based on your audit, here is the highest-leverage component to build next. The system updates as you change your answers above.</p>
+
+    <div class="recommendation">
+      <div class="label">Recommended next build</div>
+      <div class="rec-title" id="recTitle">Complete the audit above to see your recommendation</div>
+      <div class="rec-body" id="recBody"><span class="rec-empty">Mark each stage and component above. Your personalized next-build will appear here.</span></div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <label style="font-weight:bold; display:block; margin-bottom:0.4rem;">Your commitment — what will you build this week?</label>
+      <textarea style="width:100%;min-height:80px;border:2px solid var(--border);border-radius:6px;padding:0.75rem;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);" placeholder="The component I will build first, the deadline I am setting, and how I will know it is done..."></textarea>
+    </div>
+  </div>
+
+  <!-- THE BIG PICTURE -->
+  <div class="section">
+    <h2>The Compound Effect (Why This Matters)</h2>
+    <div class="ref-box">
+      <strong>Book 1 with the system:</strong> ~90 days. You are building the infrastructure as you write.<br><br>
+      <strong>Book 2 with the system:</strong> ~60 days. Infrastructure exists, you refine it.<br><br>
+      <strong>Book 5 with the system:</strong> ~30 days. Infrastructure does most of the work that used to be manual.<br><br>
+      <em>Jessica's receipt: 20 books pre-system (the hard way), 15 books post-system (the easy way). Same author. Same skill. Different system.</em>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+// Stage status tracker
+function setStageStatus(btn, status) {
+  const card = btn.closest('.stage-card');
+  const pills = card.querySelectorAll('.status-pill');
+  pills.forEach(p => {
+    p.classList.remove('selected', 'system', 'partial', 'winging');
+  });
+  btn.classList.add('selected', status);
+  card.classList.remove('has-system', 'partial', 'winging');
+  if (status === 'system') card.classList.add('has-system');
+  else if (status === 'partial') card.classList.add('partial');
+  else if (status === 'winging') card.classList.add('winging');
+  updateRecommendation();
+}
+
+// Component status tracker
+function setComponentStatus(btn, status) {
+  const row = btn.closest('.component-row');
+  const btns = row.querySelectorAll('.cstatus');
+  btns.forEach(b => {
+    b.classList.remove('selected', 'done', 'progress', 'not-started');
+  });
+  btn.classList.add('selected', status);
+  row.classList.remove('done', 'progress', 'not-started');
+  row.classList.add(status);
+  updateProgress();
+  updateRecommendation();
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.component-row').length;
+  const done = document.querySelectorAll('.component-row.done').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} of ${total} components complete`;
+}
+
+// Recommendation logic — finds the highest-leverage gap
+function updateRecommendation() {
+  const recommendations = {
+    planning: {
+      title: 'Build a planning artifact',
+      body: 'Without a plan, every other stage is guesswork. Start with the Fiction Planner Skill (Foundations of Claude) or sketch your own outline with premise, character arcs, and chapter beats. This is the foundation everything else sits on.'
+    },
+    penname: {
+      title: 'Build your pen name skill',
+      body: 'This is the single highest-leverage component for AI-assisted drafting. Your pen name skill captures voice, banned list, and signature moves. Without it, every chapter is reinventing the wheel. See Day 2 — Lesson 2.'
+    },
+    chapterprompt: {
+      title: 'Build a chapter prompt template',
+      body: 'A reusable chapter prompt template means every chapter you generate is grounded in plot, character state, and what needs to happen. No more vague "write chapter 5" requests. See Day 2 — Lesson 4 reference materials.'
+    },
+    elab: {
+      title: 'Implement the ELAB workflow',
+      body: 'You already own ELAB Day 1. If you are not running all 8 passes per chapter, that is the next gap. Pick the chapter you are working on right now and run the full sequence. The order matters.'
+    },
+    beta: {
+      title: 'Build your beta persona library',
+      body: 'Without test readers, you are publishing blind. The beta personas from Day 2 Lesson 1 give you reader-style feedback before you upload to Amazon. Build 2-3 personas this week.'
+    },
+    styleguide: {
+      title: 'Build your style guide',
+      body: 'A style guide per pen name turns your editing into a repeatable standard. Banned phrases. Voice rules. Signature moves. Every editing pass references it. See Day 2 — Lesson 3.'
+    },
+    codex: {
+      title: 'Build a codex',
+      body: 'Character tracking, world tracking, timeline tracking. Without a codex, your AI is making up details every chapter and creating continuity errors. Start simple — name, eye color, key history, current state. Grow from there.'
+    }
+  };
+
+  // Priority order: planning is foundational, then drafting infrastructure, then editing, then beta, then style/codex
+  const priority = ['planning', 'penname', 'chapterprompt', 'elab', 'beta', 'styleguide', 'codex'];
+
+  // Find first not-started, then first in-progress, then first stage that's "winging it"
+  let target = null;
+  for (const key of priority) {
+    const row = document.querySelector(`[data-component="${key}"]`);
+    if (row && row.classList.contains('not-started')) {
+      target = key;
+      break;
+    }
+  }
+  if (!target) {
+    for (const key of priority) {
+      const row = document.querySelector(`[data-component="${key}"]`);
+      if (row && row.classList.contains('progress')) {
+        target = key;
+        break;
+      }
+    }
+  }
+
+  // If still no target, check stages mapped to components
+  if (!target) {
+    const stageToComponent = {
+      'plan': 'planning',
+      'build': 'chapterprompt',
+      'draft': 'penname',
+      'edit': 'elab',
+      'beta': 'beta',
+      'final': 'styleguide'
+    };
+    for (const [stage, comp] of Object.entries(stageToComponent)) {
+      const card = document.querySelector(`[data-stage="${stage}"]`);
+      if (card && card.classList.contains('winging')) {
+        target = comp;
+        break;
+      }
+    }
+  }
+
+  const title = document.getElementById('recTitle');
+  const body = document.getElementById('recBody');
+
+  if (target && recommendations[target]) {
+    title.textContent = recommendations[target].title;
+    body.innerHTML = recommendations[target].body;
+  } else {
+    // All components done
+    const anyMarked = document.querySelectorAll('.component-row.done, .component-row.progress, .component-row.not-started').length > 0;
+    if (anyMarked) {
+      const allDone = document.querySelectorAll('.component-row.done').length === document.querySelectorAll('.component-row').length;
+      if (allDone) {
+        title.textContent = 'You have built the full system';
+        body.innerHTML = 'All 7 components are complete. Your next move is refinement — sharpen the pen name skill after each book, expand the codex, add new beta personas as you discover audience subgroups. The system compounds. Keep using it.';
+      } else {
+        title.textContent = 'Keep auditing';
+        body.innerHTML = 'Mark all 7 components above to see your specific recommendation.';
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>
