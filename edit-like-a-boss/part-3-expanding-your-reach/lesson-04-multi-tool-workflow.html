@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Week 3 — Lesson 4: The Multi-Tool Editing Workflow</title>
+<style>
+:root {
+  --coral:#E8735A;
+  --navy:#1B2A4A;
+  --cream:#FFF8F0;
+  --gold:#D4A853;
+  --sage:#7A9E7E;
+  --text:#2D2D2D;
+  --light-gray:#F0EDE8;
+  --border:#D4CFC7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;position:relative;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.header .final-tag{position:absolute;top:1rem;right:1rem;background:var(--gold);color:var(--navy);padding:0.3rem 0.7rem;border-radius:4px;font-size:0.7rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:950px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.05rem;margin-top:1rem;margin-bottom:0.6rem;}
+.help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+.help strong{color:var(--navy);font-style:normal;}
+
+/* Workflow planner table */
+.workflow-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.workflow-table th{background:var(--navy);color:white;padding:0.75rem;text-align:left;font-size:0.9rem;}
+.workflow-table td{padding:0.6rem 0.6rem;border-bottom:1px solid var(--border);font-size:0.9rem;vertical-align:top;}
+.workflow-table tr:nth-child(even) td{background:var(--cream);}
+.workflow-table .pass-num{font-weight:bold;color:var(--coral);width:50px;}
+.workflow-table .pass-name{font-weight:bold;color:var(--navy);width:170px;}
+.workflow-table .recommended{font-size:0.78rem;color:#777;font-style:italic;display:block;margin-top:0.1rem;}
+.workflow-table select{width:100%;padding:0.4rem;border:1px solid var(--border);border-radius:4px;font-family:'Georgia',serif;font-size:0.85rem;background:white;}
+.workflow-table input[type="text"]{width:100%;padding:0.4rem;border:1px solid var(--border);border-radius:4px;font-family:'Georgia',serif;font-size:0.85rem;background:white;}
+.workflow-table .human-row{background:#FDF3E3 !important;}
+.workflow-table .human-row td{font-weight:500;}
+
+/* Context inventory */
+.context-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem;}
+.context-card{background:var(--light-gray);border-radius:8px;padding:1rem;border-left:4px solid var(--sage);}
+.context-card h4{color:var(--navy);font-size:1rem;margin-bottom:0.6rem;}
+.context-card label{font-size:0.8rem;color:#666;display:block;margin-top:0.5rem;margin-bottom:0.2rem;font-weight:bold;}
+.context-card input,.context-card select{width:100%;padding:0.4rem;border:1px solid var(--border);border-radius:4px;font-family:'Georgia',serif;font-size:0.85rem;background:white;}
+
+/* Stack selector */
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem;}
+.stack-card{background:white;border:2px solid var(--border);border-radius:8px;padding:1.25rem;cursor:pointer;transition:all 0.2s;position:relative;}
+.stack-card:hover{border-color:var(--coral);transform:translateY(-2px);}
+.stack-card.selected{border-color:var(--coral);background:#FFF5F1;box-shadow:0 4px 12px rgba(232,115,90,0.2);}
+.stack-card.recommended{border-color:var(--gold);background:#FDF3E3;}
+.stack-card.recommended.selected{border-color:var(--coral);background:#FFF5F1;}
+.stack-card .badge{position:absolute;top:-8px;right:8px;background:var(--gold);color:var(--navy);padding:0.2rem 0.5rem;border-radius:3px;font-size:0.65rem;font-weight:bold;letter-spacing:0.5px;text-transform:uppercase;}
+.stack-card h4{color:var(--navy);font-size:1rem;margin-bottom:0.4rem;}
+.stack-card .stack-letter{display:inline-block;background:var(--navy);color:white;width:24px;height:24px;border-radius:50%;text-align:center;line-height:24px;font-size:0.8rem;font-weight:bold;margin-right:0.4rem;vertical-align:middle;}
+.stack-card .tools{font-size:0.85rem;color:var(--coral);font-weight:bold;margin-bottom:0.5rem;}
+.stack-card .desc{font-size:0.8rem;color:#555;line-height:1.4;margin-bottom:0.5rem;}
+.stack-card .pros-cons{font-size:0.75rem;}
+.stack-card .pros-cons strong{display:block;color:var(--sage);margin-top:0.4rem;}
+.stack-card .pros-cons .con strong{color:#999;}
+
+/* Decision framework */
+.decision-block{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1.25rem;margin-top:1rem;}
+.decision-block h4{color:var(--navy);margin-bottom:0.6rem;font-size:1rem;}
+.decision-q{display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0;border-bottom:1px dashed var(--border);}
+.decision-q:last-of-type{border-bottom:none;}
+.decision-q input{accent-color:var(--coral);width:18px;height:18px;margin-top:0.2rem;flex-shrink:0;}
+.decision-q label{font-size:0.9rem;color:var(--text);flex:1;cursor:pointer;font-weight:normal;}
+.decision-result{margin-top:0.8rem;padding:0.75rem;background:white;border-radius:6px;font-size:0.95rem;text-align:center;font-weight:bold;color:var(--navy);min-height:1.8rem;}
+
+/* Ops manual */
+.ops-manual{background:#FFF5F1;border:2px solid var(--coral);border-radius:8px;padding:1.5rem;margin-top:1rem;}
+.ops-manual h3{color:var(--navy);margin-bottom:0.5rem;font-size:1.1rem;}
+.ops-manual .ops-help{font-size:0.85rem;color:#666;font-style:italic;margin-bottom:1rem;}
+.ops-manual label{font-weight:bold;color:var(--navy);font-size:0.9rem;display:block;margin-top:0.8rem;margin-bottom:0.3rem;}
+.ops-manual input,.ops-manual textarea{width:100%;padding:0.5rem;border:2px solid var(--border);border-radius:5px;font-family:'Georgia',serif;font-size:0.9rem;background:white;}
+.ops-manual textarea{min-height:60px;resize:vertical;}
+
+/* Certificate */
+.certificate{background:linear-gradient(135deg, var(--cream) 0%, #FDF3E3 100%);border:3px double var(--gold);border-radius:12px;padding:2.5rem;text-align:center;margin-top:1rem;position:relative;}
+.certificate::before{content:"";position:absolute;top:8px;left:8px;right:8px;bottom:8px;border:1px solid var(--gold);border-radius:8px;pointer-events:none;}
+.certificate .seal{display:inline-block;background:var(--coral);color:white;width:60px;height:60px;border-radius:50%;line-height:60px;font-weight:bold;font-size:0.7rem;letter-spacing:1px;margin-bottom:1rem;}
+.certificate h3{color:var(--navy);font-size:1.5rem;margin-bottom:0.5rem;font-variant:small-caps;letter-spacing:2px;}
+.certificate .body-text{color:var(--text);font-size:0.95rem;margin:1rem auto;max-width:500px;line-height:1.7;}
+.certificate .name-line{margin:1.5rem auto;max-width:400px;}
+.certificate .name-line input{width:100%;padding:0.6rem;border:none;border-bottom:2px solid var(--navy);background:transparent;font-family:'Georgia',serif;font-size:1.2rem;text-align:center;font-style:italic;color:var(--navy);}
+.certificate .signed{margin-top:1rem;font-style:italic;color:var(--navy);font-size:0.85rem;}
+.certificate .program-line{color:var(--coral);font-weight:bold;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
+
+/* What's next */
+.next-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-top:1rem;}
+.next-card{background:white;border:2px solid var(--border);border-radius:8px;padding:0.9rem;}
+.next-card.featured{border-color:var(--coral);background:#FFF5F1;}
+.next-card .next-tag{display:inline-block;background:var(--coral);color:white;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.65rem;font-weight:bold;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.3rem;}
+.next-card .coming-tag{display:inline-block;background:var(--light-gray);color:#666;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.65rem;font-weight:bold;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.3rem;}
+.next-card h4{color:var(--navy);font-size:0.95rem;margin-bottom:0.25rem;}
+.next-card p{font-size:0.8rem;color:#555;margin:0;}
+
+.skool-cta{background:var(--sage);color:white;border-radius:8px;padding:1.25rem;margin-top:1rem;text-align:center;}
+.skool-cta strong{font-size:1.05rem;display:block;margin-bottom:0.4rem;}
+.skool-cta p{font-size:0.9rem;}
+
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.tip-box strong{color:var(--navy);}
+
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);}
+input[type="text"], textarea, select{font-family:'Georgia',serif;}
+
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+
+@media(max-width:700px){
+  .context-grid,.stack-grid,.next-grid{grid-template-columns:1fr;}
+  .container{padding:1rem;}
+  .section{padding:1.25rem;}
+  .workflow-table th,.workflow-table td{font-size:0.8rem;padding:0.5rem 0.4rem;}
+  .workflow-table .pass-name{width:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="final-tag">Final Lesson</div>
+  <h1>Edit Like a Boss — Week 3</h1>
+  <div class="subtitle">Lesson 4: The Multi-Tool Editing Workflow</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>What You'll Build in This Worksheet</h2>
+    <p>This is the final worksheet of Edit Like a Boss. By the end of it, you'll walk away with:</p>
+    <ul style="margin-left:1.5rem;margin-top:0.6rem;">
+      <li>A complete <strong>multi-tool workflow planner</strong> — tool assigned to every pass</li>
+      <li>A <strong>context document inventory</strong> — where your codex, style guide, character sheets, and timeline live</li>
+      <li>Your chosen <strong>stack pattern</strong> (Minimalist / Two-Tool / Full Stack)</li>
+      <li>A <strong>decision framework</strong> you can use any time you're tempted to add or drop a tool</li>
+      <li>Your <strong>production workflow operations manual</strong> — the one-page doc you'll reference every time you edit</li>
+      <li>Your <strong>ELAB completion certificate</strong></li>
+    </ul>
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>How to use this:</strong> Fill it out once. Print it or save the PDF. Tape it to your monitor. This is your editing operations manual from now on.
+    </div>
+  </div>
+
+  <!-- SECTION 1 — Workflow Planner -->
+  <div class="section">
+    <h2>1. Multi-Tool Workflow Planner</h2>
+    <p class="help">Assign a tool to each pass. The "Suggested" column is Jessica's default. Yours might be different. The goal is to <strong>decide and document</strong> — not to copy her stack exactly.</p>
+
+    <table class="workflow-table">
+      <thead>
+        <tr>
+          <th>Pass</th>
+          <th>Tool You'll Use</th>
+          <th>Why (one line)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="pass-num">1</span>
+            <span class="pass-name">Quality Check</span>
+            <span class="recommended">Suggested: ChatGPT GPT (speed)</span>
+          </td>
+          <td>
+            <select>
+              <option>Claude</option>
+              <option selected>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Fast iteration on multiple chapters"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">2</span>
+            <span class="pass-name">Plot Hole Checker</span>
+            <span class="recommended">Suggested: NotebookLM (cross-referencing)</span>
+          </td>
+          <td>
+            <select>
+              <option>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option selected>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Codex loaded as source — citations make catches easy to verify"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">3</span>
+            <span class="pass-name">Timeline Consistency</span>
+            <span class="recommended">Suggested: Wherever your timeline log lives</span>
+          </td>
+          <td>
+            <select>
+              <option>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option selected>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Timeline doc is in same NotebookLM project"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">4</span>
+            <span class="pass-name">Line Edit</span>
+            <span class="recommended">Suggested: Claude (voice preservation)</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Voice preservation matters most here"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">5</span>
+            <span class="pass-name">Dialogue Polish</span>
+            <span class="recommended">Suggested: Claude OR ChatGPT GPT</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Character voice profile loaded"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">6</span>
+            <span class="pass-name">Heat Scene Edit</span>
+            <span class="recommended">Suggested: Claude (or Grok for very dark content)</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Nuance and emotional through-line"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">7</span>
+            <span class="pass-name">Developmental Edit</span>
+            <span class="recommended">Suggested: Claude (long context + voice)</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Whole-chapter context needed"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">8</span>
+            <span class="pass-name">Voice Audit</span>
+            <span class="recommended">Suggested: Claude (period)</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Voice work is Claude's strongest lane"></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="pass-num">B</span>
+            <span class="pass-name">Beta Bestie Pass</span>
+            <span class="recommended">Suggested: Wherever your persona lives</span>
+          </td>
+          <td>
+            <select>
+              <option selected>Claude</option>
+              <option>ChatGPT Custom GPT</option>
+              <option>Gemini Gem</option>
+              <option>NotebookLM</option>
+              <option>Grok Agent</option>
+            </select>
+          </td>
+          <td><input type="text" placeholder="e.g. Built as Claude skill in Week 2"></td>
+        </tr>
+        <tr class="human-row">
+          <td>
+            <span class="pass-num">9</span>
+            <span class="pass-name">YOU</span>
+            <span class="recommended">Read aloud. Gut check. No AI.</span>
+          </td>
+          <td colspan="2" style="font-style:italic;color:var(--navy);">
+            No tool. This is the pass that makes the book yours.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2 — Context Document Inventory -->
+  <div class="section">
+    <h2>2. Context Document Inventory</h2>
+    <p class="help">Your context documents power every tool. Keep <strong>master copies in a cloud folder</strong> (Google Drive or Dropbox) so all tools can reference the same source of truth. Update the master, then copy to each platform.</p>
+
+    <label style="margin-top:0.5rem;">Your master cloud folder (where the source-of-truth files live):</label>
+    <input type="text" placeholder="e.g. Google Drive / Skyler Knight / Editing System / 2026" style="width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;background:white;font-family:Georgia,serif;font-size:0.95rem;margin-bottom:1rem;">
+
+    <div class="context-grid">
+      <div class="context-card">
+        <h4>Codex</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /codex/skyler-knight-codex.docx">
+        <label>Format:</label>
+        <select>
+          <option>Google Doc</option>
+          <option>Word .docx</option>
+          <option>Markdown</option>
+          <option>PDF</option>
+        </select>
+        <label>Loaded into:</label>
+        <input type="text" placeholder="e.g. Claude project, NotebookLM source, GPT knowledge file">
+      </div>
+
+      <div class="context-card">
+        <h4>Pen Name Style Guide</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /style-guide/skyler-knight-voice.md">
+        <label>Format:</label>
+        <select>
+          <option>Google Doc</option>
+          <option>Word .docx</option>
+          <option>Markdown</option>
+          <option>PDF</option>
+        </select>
+        <label>Loaded into:</label>
+        <input type="text" placeholder="e.g. Claude skill, GPT instructions, Gem prompt">
+      </div>
+
+      <div class="context-card">
+        <h4>Character Sheets</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /characters/book-12-cast.docx">
+        <label>Format:</label>
+        <select>
+          <option>Google Doc</option>
+          <option>Word .docx</option>
+          <option>Markdown</option>
+          <option>PDF</option>
+        </select>
+        <label>Loaded into:</label>
+        <input type="text" placeholder="e.g. NotebookLM source, GPT knowledge">
+      </div>
+
+      <div class="context-card">
+        <h4>Timeline Log</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /timeline/book-12-timeline.gsheet">
+        <label>Format:</label>
+        <select>
+          <option>Google Sheet</option>
+          <option>Google Doc</option>
+          <option>Word .docx</option>
+          <option>Markdown</option>
+        </select>
+        <label>Loaded into:</label>
+        <input type="text" placeholder="e.g. NotebookLM source for Pass 2 and 3">
+      </div>
+
+      <div class="context-card">
+        <h4>Beta Bestie Persona</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /personas/beta-bestie-prompt.md">
+        <label>Lives as:</label>
+        <select>
+          <option>Claude skill</option>
+          <option>ChatGPT Custom GPT</option>
+          <option>Gemini Gem</option>
+          <option>Grok Agent</option>
+          <option>Saved prompt only</option>
+        </select>
+        <label>Last updated:</label>
+        <input type="text" placeholder="YYYY-MM-DD">
+      </div>
+
+      <div class="context-card">
+        <h4>Other (synopsis, plot beats, etc.)</h4>
+        <label>Master file location:</label>
+        <input type="text" placeholder="e.g. /synopsis/book-12-synopsis.docx">
+        <label>Format:</label>
+        <select>
+          <option>Google Doc</option>
+          <option>Word .docx</option>
+          <option>Markdown</option>
+          <option>PDF</option>
+        </select>
+        <label>Loaded into:</label>
+        <input type="text" placeholder="e.g. NotebookLM source">
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>The portability rule:</strong> If a tool disappeared tomorrow, would you still have everything you need to keep editing? If yes — you've done this right. If no — move the missing files to your cloud folder today.
+    </div>
+  </div>
+
+  <!-- SECTION 3 — Stack Pattern Selector -->
+  <div class="section">
+    <h2>3. Choose Your Stack Pattern</h2>
+    <p class="help">Click the card that fits your situation. You can change this later. Most authors land in Pattern B.</p>
+
+    <div class="stack-grid">
+      <div class="stack-card" onclick="selectStack(this)">
+        <h4><span class="stack-letter">A</span>The Minimalist</h4>
+        <div class="tools">Claude only</div>
+        <div class="desc">Solo authors who don't want to manage multiple tools. All 8 passes in one place.</div>
+        <div class="pros-cons">
+          <strong>Pros</strong>
+          Simplest workflow. Voice preservation across every pass. One login.
+          <span class="con"><strong>Cons</strong></span>
+          No NotebookLM cross-referencing. No GPT knowledge files. No image gen.
+        </div>
+      </div>
+
+      <div class="stack-card recommended" onclick="selectStack(this)">
+        <div class="badge">Recommended</div>
+        <h4><span class="stack-letter">B</span>The Two-Tool Stack</h4>
+        <div class="tools">Claude + Gemini (NotebookLM)</div>
+        <div class="desc">Most authors' sweet spot. Claude for editing. NotebookLM for plot/timeline. Gemini Image for visuals.</div>
+        <div class="pros-cons">
+          <strong>Pros</strong>
+          Best voice + cross-referencing + image gen. Covers what most authors need.
+          <span class="con"><strong>Cons</strong></span>
+          Two paid subscriptions. Mild overhead.
+        </div>
+      </div>
+
+      <div class="stack-card" onclick="selectStack(this)">
+        <h4><span class="stack-letter">C</span>The Full Stack</h4>
+        <div class="tools">Claude + Gemini + ChatGPT (+ Grok)</div>
+        <div class="desc">High-volume authors. Multiple pen names. Multiple books in production at once.</div>
+        <div class="pros-cons">
+          <strong>Pros</strong>
+          Maximum flexibility. Redundancy across platforms.
+          <span class="con"><strong>Cons</strong></span>
+          ~$80-120/mo. Cognitive overhead. Time to maintain across four tools.
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label>My chosen stack:</label>
+      <input type="text" id="chosen-stack" placeholder="(Click a card above, or write your own custom stack here)" style="width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;background:white;font-family:Georgia,serif;">
+    </div>
+  </div>
+
+  <!-- SECTION 4 — Add / Drop Decision Framework -->
+  <div class="section">
+    <h2>4. Add or Drop a Tool — Decision Framework</h2>
+    <p class="help">Use this any time you're tempted to add a new platform — or any time you're wondering if a current one is paying for itself.</p>
+
+    <div class="decision-block">
+      <h4>ADD a tool — all four must be YES</h4>
+      <div class="decision-q">
+        <input type="checkbox" id="add1" onchange="updateAdd()">
+        <label for="add1">I'm regularly hitting a limit in my current tool (context window, content restrictions, missing feature).</label>
+      </div>
+      <div class="decision-q">
+        <input type="checkbox" id="add2" onchange="updateAdd()">
+        <label for="add2">The new tool's strength is something my workflow actually needs — not just "nice to have."</label>
+      </div>
+      <div class="decision-q">
+        <input type="checkbox" id="add3" onchange="updateAdd()">
+        <label for="add3">I can afford another monthly subscription on top of what I'm already paying.</label>
+      </div>
+      <div class="decision-q">
+        <input type="checkbox" id="add4" onchange="updateAdd()">
+        <label for="add4">I will actually use it weekly. Not "eventually." Weekly.</label>
+      </div>
+      <div class="decision-result" id="add-result">Check the boxes above to see the recommendation.</div>
+    </div>
+
+    <div class="decision-block" style="margin-top:1.25rem;">
+      <h4>DROP a tool — any ONE of these means drop</h4>
+      <div class="decision-q">
+        <input type="checkbox" id="drop1" onchange="updateDrop()">
+        <label for="drop1">I haven't used it in 4+ weeks.</label>
+      </div>
+      <div class="decision-q">
+        <input type="checkbox" id="drop2" onchange="updateDrop()">
+        <label for="drop2">Its unique strength is now matched by a tool I already use.</label>
+      </div>
+      <div class="decision-q">
+        <input type="checkbox" id="drop3" onchange="updateDrop()">
+        <label for="drop3">The subscription cost is more than the value I'm getting.</label>
+      </div>
+      <div class="decision-result" id="drop-result">Check the boxes above to see the recommendation.</div>
+    </div>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>Permission slip:</strong> Tool subscriptions are not commitments. Cancel without guilt. The platforms make it easy because they want you back.
+    </div>
+  </div>
+
+  <!-- SECTION 5 — Operations Manual -->
+  <div class="section">
+    <h2>5. Your Production Workflow Operations Manual</h2>
+    <p class="help">This is the deliverable from this lesson. <strong>One document.</strong> The thing you reference every time you edit. Print it. Tape it to your monitor. Hand it to anyone you're onboarding.</p>
+
+    <div class="ops-manual">
+      <h3>My Editing Operations Manual</h3>
+      <p class="ops-help">Fill this out. This is the doc.</p>
+
+      <label>Pen name / project this manual is for:</label>
+      <input type="text" placeholder="e.g. Skyler Knight — Contemporary Romance">
+
+      <label>My chosen stack (from Section 3):</label>
+      <input type="text" placeholder="e.g. Pattern B — Claude + Gemini/NotebookLM">
+
+      <label>Master cloud folder:</label>
+      <input type="text" placeholder="e.g. Google Drive / Skyler Knight / Editing System">
+
+      <label>Pass-by-pass tool assignment (paraphrase from Section 1):</label>
+      <textarea placeholder="e.g.
+Pass 1 (Quality Check) → ChatGPT GPT — speed
+Pass 2 (Plot Hole) → NotebookLM — codex as source
+Pass 3 (Timeline) → NotebookLM — same project
+Pass 4 (Line Edit) → Claude — voice
+Pass 5 (Dialogue) → Claude — character profile loaded
+Pass 6 (Heat) → Claude
+Pass 7 (Developmental) → Claude
+Pass 8 (Voice Audit) → Claude
+Beta Bestie → Claude skill
+Pass 9 → ME (read aloud)"></textarea>
+
+      <label>Where my skills / GPTs / Gems live (with links if useful):</label>
+      <textarea placeholder="e.g.
+ELAB Editor — Claude skill, in 'Skyler Knight' project
+Beta Bestie — Claude skill, in same project
+Quality Check GPT — ChatGPT (link)
+Plot Hole NotebookLM — Gemini account"></textarea>
+
+      <label>Where my knowledge files live:</label>
+      <textarea placeholder="e.g.
+Codex — master in Google Drive, copy in Claude project + NotebookLM source
+Style guide — master in Google Drive, copy in Claude skill + GPT instructions
+Timeline — Google Sheet, exported as PDF into NotebookLM each chapter"></textarea>
+
+      <label>Subscription cost per month (be honest with yourself):</label>
+      <input type="text" placeholder="e.g. Claude Pro $20 + Gemini Advanced $20 = $40/mo">
+
+      <label>Last reviewed (re-check this manual every quarter):</label>
+      <input type="text" placeholder="YYYY-MM-DD">
+    </div>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>Save this.</strong> Export the page as PDF, or copy the filled fields into your Google Drive. This document is what makes the system repeatable — and what makes it survive any single tool disappearing.
+    </div>
+  </div>
+
+  <!-- SECTION 6 — ELAB Completion Certificate -->
+  <div class="section">
+    <h2>6. You Finished ELAB</h2>
+    <p class="help">Three weeks. The 8-pass system, the supporting infrastructure, cross-LLM portability. You did the work.</p>
+
+    <div class="certificate">
+      <div class="seal">ELAB<br>COMPLETE</div>
+      <div class="program-line">Edit Like a Boss</div>
+      <h3>Certificate of Completion</h3>
+      <div class="body-text">
+        This acknowledges that
+      </div>
+      <div class="name-line">
+        <input type="text" placeholder="Your name">
+      </div>
+      <div class="body-text">
+        has completed all three weeks of <strong>Edit Like a Boss</strong> — the 8-pass editing system, the supporting infrastructure, and the cross-LLM multi-tool workflow. You now own a complete, portable, professional-grade fiction editing system. It travels with you across platforms, across pen names, across books.
+      </div>
+      <div class="signed">
+        Jessica Waldron · The Invisible Pen
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 — What's Next -->
+  <div class="section">
+    <h2>7. What's Next in the Like a Boss Family</h2>
+    <p class="help">You've finished the editing class. Here's what's around it.</p>
+
+    <div class="next-grid">
+      <div class="next-card featured">
+        <span class="next-tag">Next Up</span>
+        <h4>Launch Like a Boss</h4>
+        <p>Publishing the edited book. Pre-orders, launch day, the first 30 days. The natural next step.</p>
+      </div>
+      <div class="next-card">
+        <span class="coming-tag">Coming</span>
+        <h4>Plan Like a Boss</h4>
+        <p>Planning the next book — premise to outline to chapter prompts.</p>
+      </div>
+      <div class="next-card">
+        <span class="coming-tag">Coming</span>
+        <h4>Write Like a Boss</h4>
+        <p>Drafting — turning chapter prompts into prose with AI as co-writer.</p>
+      </div>
+      <div class="next-card">
+        <span class="coming-tag">Coming</span>
+        <h4>Swap Like a Boss</h4>
+        <p>Newsletter setup, list growth, and the swap economy.</p>
+      </div>
+      <div class="next-card">
+        <span class="coming-tag">Coming</span>
+        <h4>Market Like a Boss</h4>
+        <p>Paid marketing and ads — Amazon, Facebook, BookBub.</p>
+      </div>
+    </div>
+
+    <div class="skool-cta">
+      <strong>The Skool Community</strong>
+      <p>Ongoing support, live discussion, and the place to ask questions about your stack. If you've come this far through ELAB, you belong there.</p>
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="section" style="text-align:center;background:var(--navy);color:white;">
+    <h2 style="color:white;border-bottom-color:var(--gold);">You did the work. Now go edit your book.</h2>
+    <p style="margin-top:1rem;font-style:italic;color:var(--cream);">See you in Launch Like a Boss.</p>
+    <p style="margin-top:1rem;color:var(--gold);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Edit Like a Boss · Complete</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  The Invisible Pen · Edit Like a Boss · Week 3, Lesson 4 · The Multi-Tool Editing Workflow
+</div>
+
+<script>
+function selectStack(card) {
+  document.querySelectorAll('.stack-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const label = card.querySelector('h4').innerText.replace(/^[A-Z]\s*/, '');
+  const tools = card.querySelector('.tools').innerText;
+  document.getElementById('chosen-stack').value = label + ' — ' + tools;
+}
+
+function updateAdd() {
+  const checks = ['add1','add2','add3','add4'].map(id => document.getElementById(id).checked);
+  const result = document.getElementById('add-result');
+  const yesCount = checks.filter(Boolean).length;
+  if (yesCount === 4) {
+    result.style.color = 'var(--sage)';
+    result.innerText = 'All four YES → add the tool.';
+  } else if (yesCount === 0) {
+    result.style.color = 'var(--navy)';
+    result.innerText = 'Check the boxes above to see the recommendation.';
+  } else {
+    result.style.color = 'var(--coral)';
+    result.innerText = 'Not yet. Any "no" means wait. (' + yesCount + '/4 yes)';
+  }
+}
+
+function updateDrop() {
+  const checks = ['drop1','drop2','drop3'].map(id => document.getElementById(id).checked);
+  const result = document.getElementById('drop-result');
+  const yesCount = checks.filter(Boolean).length;
+  if (yesCount >= 1) {
+    result.style.color = 'var(--coral)';
+    result.innerText = 'Drop it. You can always come back. (' + yesCount + ' signal' + (yesCount > 1 ? 's' : '') + ' triggered)';
+  } else {
+    result.style.color = 'var(--navy)';
+    result.innerText = 'Check the boxes above to see the recommendation.';
+  }
+}
+</script>
+
+</body>
+</html>
