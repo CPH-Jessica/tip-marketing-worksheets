@@ -66,6 +66,7 @@ Located in `/edit-like-a-boss/part-3-expanding-your-reach/`
 
 | # | Worksheet | Topic |
 |---|---|---|
+| 1 | Lesson 1: What Each AI Does Best | Match the right AI tool to each editing task |
 | 2 | Lesson 2: Setting Up ChatGPT Custom GPTs | Build your own Custom GPTs for editing workflows |
 | 3 | Lesson 3: Setting Up Gemini Gems + Grok Agents | Create reusable AI agents in Gemini and Grok |
 | 4 | Lesson 4: The Multi-Tool Editing Workflow | Combine ChatGPT, Gemini, and Grok into one workflow |

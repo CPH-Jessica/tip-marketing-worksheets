@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Week 3 — Lesson 1: What Each AI Does Best</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:950px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem;}
+.tool-card{background:var(--light-gray);border-radius:8px;padding:1rem;border-left:4px solid var(--coral);}
+.tool-card.claude{border-left-color:#D97757;}
+.tool-card.chatgpt{border-left-color:#10A37F;}
+.tool-card.gemini{border-left-color:#4285F4;}
+.tool-card.grok{border-left-color:#000000;}
+.tool-card h3{color:var(--navy);font-size:1.1rem;margin-bottom:0.3rem;}
+.tool-card .maker{font-size:0.8rem;color:#666;font-style:italic;margin-bottom:0.5rem;}
+.tool-card .strengths{margin-top:0.5rem;}
+.tool-card .strengths strong, .tool-card .tradeoffs strong{display:block;font-size:0.8rem;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;margin-top:0.5rem;}
+.tool-card ul{margin-left:1.2rem;font-size:0.9rem;}
+.tool-card li{margin-bottom:0.2rem;}
+.tool-card .tradeoffs li{color:#666;}
+.matrix-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.matrix-table th{background:var(--navy);color:white;padding:0.75rem;text-align:left;font-size:0.9rem;}
+.matrix-table td{padding:0.6rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.9rem;}
+.matrix-table tr:nth-child(even) td{background:var(--cream);}
+.matrix-table .pass{font-weight:bold;color:var(--navy);}
+.matrix-table .tool-rec{font-weight:bold;}
+.matrix-table .tool-rec.claude{color:#D97757;}
+.matrix-table .tool-rec.any{color:#666;font-style:italic;}
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);}
+input[type="text"], input[type="number"], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);margin-bottom:1rem;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:80px;resize:vertical;}
+.stack-tier{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;position:relative;}
+.stack-tier.recommended{border-color:var(--gold);background:#FDF3E3;}
+.stack-tier .tier-num{display:inline-block;background:var(--coral);color:white;width:30px;height:30px;border-radius:50%;text-align:center;line-height:30px;font-weight:bold;margin-right:0.5rem;}
+.stack-tier.recommended .tier-num{background:var(--gold);}
+.stack-tier h3{display:inline-block;color:var(--navy);font-size:1.05rem;margin-bottom:0.5rem;}
+.stack-tier .desc{margin-top:0.3rem;font-size:0.9rem;color:#555;margin-bottom:0.75rem;}
+.checklist-item{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;}
+.checklist-item input{accent-color:var(--coral);width:18px;height:18px;}
+.budget-calc{background:var(--cream);border:2px dashed var(--coral);border-radius:8px;padding:1.25rem;margin-top:1rem;}
+.budget-result{font-size:1.3rem;font-weight:bold;color:var(--navy);text-align:center;margin-top:1rem;padding:0.75rem;background:white;border-radius:6px;}
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.tip-box strong{color:var(--navy);}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.tool-grid{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss — Week 3</h1>
+  <div class="subtitle">Lesson 1: What Each AI Does Best for Editing</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>What You'll Build in This Worksheet</h2>
+    <p>By the end of this lesson, you'll have:</p>
+    <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+      <li>A working comparison of Claude, ChatGPT, Gemini, and Grok for editing fiction</li>
+      <li>A personal tool stack plan based on your workflow and budget</li>
+      <li>The right-tool-for-right-pass matrix you can apply to every project</li>
+    </ul>
+    <p style="margin-top:0.5rem;">The next 3 lessons walk you through setting up each platform. This lesson is the strategic frame that decides which platforms you actually need.</p>
+  </div>
+
+  <!-- THE BIG FOUR -->
+  <div class="section">
+    <h2>The Big Four — Quick Reference</h2>
+    <p class="help">Each tool's strengths and tradeoffs for fiction editing.</p>
+
+    <div class="tool-grid">
+      <div class="tool-card claude">
+        <h3>Claude</h3>
+        <div class="maker">Anthropic</div>
+        <div class="strengths">
+          <strong>Strengths</strong>
+          <ul>
+            <li>Long context (20K+ words single session)</li>
+            <li>Best voice preservation</li>
+            <li>Skills as first-class features</li>
+            <li>Ethical handling of complex content</li>
+          </ul>
+        </div>
+        <div class="tradeoffs">
+          <strong>Tradeoffs</strong>
+          <ul>
+            <li>Higher cost per heavy use</li>
+            <li>Smaller free tier</li>
+            <li>Less image generation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card chatgpt">
+        <h3>ChatGPT</h3>
+        <div class="maker">OpenAI</div>
+        <div class="strengths">
+          <strong>Strengths</strong>
+          <ul>
+            <li>Custom GPTs with knowledge files</li>
+            <li>Fast iteration</li>
+            <li>Huge ecosystem and integrations</li>
+            <li>Image generation (DALL-E)</li>
+            <li>Significantly improved grounding with knowledge files</li>
+          </ul>
+        </div>
+        <div class="tradeoffs">
+          <strong>Tradeoffs</strong>
+          <ul>
+            <li>Shorter context than Claude</li>
+            <li>Voice smoothing tendency</li>
+            <li>Custom GPTs need Plus/Team subscription</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card gemini">
+        <h3>Gemini</h3>
+        <div class="maker">Google</div>
+        <div class="strengths">
+          <strong>Strengths</strong>
+          <ul>
+            <li>NotebookLM (killer feature for fiction)</li>
+            <li>Image gen with Imagen</li>
+            <li>Google ecosystem integration</li>
+            <li>Long context window</li>
+            <li>Generous free tier</li>
+          </ul>
+        </div>
+        <div class="tradeoffs">
+          <strong>Tradeoffs</strong>
+          <ul>
+            <li>Voice work less reliable than Claude</li>
+            <li>Gems simpler than Claude skills</li>
+            <li>Newer to authors — less fiction-specific community knowledge</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card grok">
+        <h3>Grok</h3>
+        <div class="maker">xAI</div>
+        <div class="strengths">
+          <strong>Strengths</strong>
+          <ul>
+            <li>Less restrictive on dark content</li>
+            <li>Fast iteration</li>
+            <li>Real-time information</li>
+            <li>Improving rapidly</li>
+          </ul>
+        </div>
+        <div class="tradeoffs">
+          <strong>Tradeoffs</strong>
+          <ul>
+            <li>Smaller ecosystem</li>
+            <li>Voice smoothing similar to ChatGPT/Gemini</li>
+            <li>Subscription required for most useful features</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE RIGHT TOOL MATRIX -->
+  <div class="section">
+    <h2>The Right Tool for the Right Pass</h2>
+    <p class="help">My opinionated matrix. Yours may differ based on your stack — that's fine. Use this as a starting framework.</p>
+
+    <table class="matrix-table">
+      <thead>
+        <tr><th>Editing Pass</th><th>Recommended Tool</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="pass">Pass 1 — Quality Check</td><td class="tool-rec any">Any</td><td>Structured rule-based pass</td></tr>
+        <tr><td class="pass">Pass 2 — Plot Hole Checker</td><td class="tool-rec">Claude or Gemini (NotebookLM)</td><td>Long-context cross-referencing</td></tr>
+        <tr><td class="pass">Pass 3 — Timeline Consistency</td><td class="tool-rec any">Any</td><td>Rule-based — wherever your log lives</td></tr>
+        <tr><td class="pass">Pass 4 — Line Edit</td><td class="tool-rec claude">Claude</td><td>Voice preservation</td></tr>
+        <tr><td class="pass">Pass 5 — Dialogue Polish</td><td class="tool-rec">Claude or ChatGPT</td><td>Either works with strong character voice profile</td></tr>
+        <tr><td class="pass">Pass 6 — Heat Scene Edit</td><td class="tool-rec">Claude or Grok</td><td>Claude for nuance; Grok for less restrictive dark content</td></tr>
+        <tr><td class="pass">Pass 7 — Developmental Edit</td><td class="tool-rec claude">Claude</td><td>Long context for load-bearing analysis</td></tr>
+        <tr><td class="pass">Pass 8 — Voice Audit</td><td class="tool-rec claude">Claude</td><td>Voice preservation matters most here</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOOL STACK BUILDER -->
+  <div class="section">
+    <h2>Your Personal Tool Stack</h2>
+    <p class="help">Decide how many tools you'll invest in. Three tiers, increasing in scope.</p>
+
+    <div class="stack-tier recommended">
+      <span class="tier-num">1</span><h3>If You Invest in ONE Tool — Recommended Starting Point</h3>
+      <div class="desc">Voice preservation alone makes Claude the right call for fiction editing. Cheapest path to a working system.</div>
+      <div class="checklist-item"><input type="checkbox"><label>Subscribe to Claude (Pro tier recommended for fiction work)</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Install your ELAB Skill + Beta Bestie + Pen Name Voice skill</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Run all 8 passes on Claude</label></div>
+    </div>
+
+    <div class="stack-tier">
+      <span class="tier-num">2</span><h3>If You Invest in TWO Tools</h3>
+      <div class="desc">Claude + Gemini. Claude for the editing system. Gemini for NotebookLM analysis and image work (covers, character viz, marketing visuals).</div>
+      <div class="checklist-item"><input type="checkbox"><label>Subscribe to Claude (or Pro)</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Use Gemini free tier OR Pro for NotebookLM access</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Build a Gem for Plot Hole Checker (Pass 2)</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Use Gemini for cover concept generation</label></div>
+    </div>
+
+    <div class="stack-tier">
+      <span class="tier-num">3</span><h3>If You Invest in THREE Tools</h3>
+      <div class="desc">Claude + Gemini + ChatGPT. Add ChatGPT for Custom GPTs (knowledge files) and ecosystem reach (Zapier, integrations).</div>
+      <div class="checklist-item"><input type="checkbox"><label>Subscribe to Claude</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Use Gemini for NotebookLM + image work</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Subscribe to ChatGPT Plus for Custom GPTs</label></div>
+      <div class="checklist-item"><input type="checkbox"><label>Build an ELAB Editor Custom GPT (Lesson 2)</label></div>
+    </div>
+
+    <div class="stack-tier">
+      <span class="tier-num">4</span><h3>If You Invest in ALL FOUR</h3>
+      <div class="desc">Add Grok for dark content work and real-time info. Only worth it if you write very dark content that other tools resist OR you need current information frequently.</div>
+      <div class="checklist-item"><input type="checkbox"><label>All of above + Grok subscription</label></div>
+    </div>
+  </div>
+
+  <!-- BUDGET CALCULATOR -->
+  <div class="section">
+    <h2>Monthly Budget Calculator</h2>
+    <p class="help">Rough monthly costs at current pricing. Adjust based on your usage tier.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+      <div>
+        <label>Claude Pro/Max ($20-200/mo):</label>
+        <input type="number" id="claudeCost" value="20" oninput="calcBudget()">
+      </div>
+      <div>
+        <label>ChatGPT Plus/Team ($20-30/mo):</label>
+        <input type="number" id="gptCost" value="0" oninput="calcBudget()">
+      </div>
+      <div>
+        <label>Gemini Advanced ($20/mo) or Free:</label>
+        <input type="number" id="geminiCost" value="0" oninput="calcBudget()">
+      </div>
+      <div>
+        <label>Grok ($30/mo) or skip:</label>
+        <input type="number" id="grokCost" value="0" oninput="calcBudget()">
+      </div>
+    </div>
+
+    <div class="budget-calc">
+      <div class="budget-result" id="totalCost">$20 / month</div>
+      <p style="text-align:center;margin-top:0.5rem;font-size:0.85rem;color:#666;" id="budgetNote">Current selection: Claude only (Tier 1 — recommended starting point)</p>
+    </div>
+  </div>
+
+  <!-- YOUR DECISION -->
+  <div class="section">
+    <h2>Your Decision</h2>
+
+    <label>Which tool stack are you committing to?</label>
+    <select>
+      <option>--</option>
+      <option>Tier 1: Claude only</option>
+      <option>Tier 2: Claude + Gemini</option>
+      <option>Tier 3: Claude + Gemini + ChatGPT</option>
+      <option>Tier 4: All four</option>
+      <option>Custom (different combination)</option>
+    </select>
+
+    <label>Which platforms do you already have set up?</label>
+    <div class="checklist-item"><input type="checkbox"><label>Claude (Pro/Max account active)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>ChatGPT (Plus/Team account active)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Gemini (Pro account or active free tier)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Grok (active subscription)</label></div>
+
+    <label style="margin-top:1rem;">Which platforms do you need to set up before Lessons 2-4?</label>
+    <textarea placeholder="e.g., I have Claude and Gemini. Need to subscribe to ChatGPT Plus for Lesson 2."></textarea>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>Reminder:</strong> You don't have to use ALL four. Pick what fits your workflow and budget. Lessons 2-4 cover setup for ChatGPT, Gemini, and Grok respectively — but you only need to follow the lessons for tools you'll actually use.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss — Week 3 &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function calcBudget() {
+  const claude = parseInt(document.getElementById('claudeCost').value) || 0;
+  const gpt = parseInt(document.getElementById('gptCost').value) || 0;
+  const gemini = parseInt(document.getElementById('geminiCost').value) || 0;
+  const grok = parseInt(document.getElementById('grokCost').value) || 0;
+  const total = claude + gpt + gemini + grok;
+  document.getElementById('totalCost').textContent = '$' + total + ' / month';
+
+  const note = document.getElementById('budgetNote');
+  let activeTools = [];
+  if (claude > 0) activeTools.push('Claude');
+  if (gpt > 0) activeTools.push('ChatGPT');
+  if (gemini > 0) activeTools.push('Gemini');
+  if (grok > 0) activeTools.push('Grok');
+
+  if (activeTools.length === 0) {
+    note.textContent = 'No paid tools selected. Free tiers can get you started, but plan for at least one paid subscription for serious fiction work.';
+  } else if (activeTools.length === 1) {
+    note.textContent = 'Tier 1: ' + activeTools[0] + ' only — recommended starting point if it\'s Claude.';
+  } else if (activeTools.length === 2) {
+    note.textContent = 'Tier 2: ' + activeTools.join(' + ') + ' — solid multi-tool setup.';
+  } else if (activeTools.length === 3) {
+    note.textContent = 'Tier 3: ' + activeTools.join(' + ') + ' — comprehensive coverage.';
+  } else {
+    note.textContent = 'Tier 4: All four tools active. Premium setup. Make sure your workflow uses each — don\'t pay for tools you don\'t use.';
+  }
+}
+calcBudget();
+</script>
+
+</body>
+</html>
