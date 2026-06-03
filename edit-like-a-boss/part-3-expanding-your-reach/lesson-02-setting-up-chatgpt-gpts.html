@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Week 3 — Lesson 2: Setting Up ChatGPT Custom GPTs</title>
+<style>
+:root {
+  --coral:#E8735A;
+  --navy:#1B2A4A;
+  --cream:#FFF8F0;
+  --gold:#D4A853;
+  --sage:#7A9E7E;
+  --text:#2D2D2D;
+  --light-gray:#F0EDE8;
+  --border:#D4CFC7;
+  --code-bg:#1A1F2E;
+  --code-text:#E8E4DA;
+  --code-accent:#D4A853;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:950px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.1rem;margin-top:1.25rem;margin-bottom:0.6rem;}
+.help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+.intro-list{margin-left:1.5rem;margin-top:0.5rem;}
+.intro-list li{margin-bottom:0.3rem;}
+
+/* Step cards */
+.step{display:flex;gap:1rem;background:var(--light-gray);border-radius:8px;padding:1rem 1.25rem;margin-bottom:0.75rem;border-left:4px solid var(--coral);}
+.step-num{flex-shrink:0;background:var(--coral);color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+.step-body{flex:1;}
+.step-body h4{color:var(--navy);font-size:1rem;margin-bottom:0.25rem;}
+.step-body p{font-size:0.92rem;color:#444;}
+.step-body .meta{font-size:0.8rem;color:#777;font-style:italic;margin-top:0.25rem;}
+.step.bestie{border-left-color:var(--sage);}
+.step.bestie .step-num{background:var(--sage);}
+
+/* Code block — for copy-paste templates */
+.code-box{background:var(--code-bg);color:var(--code-text);padding:1.25rem;border-radius:6px;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.55;white-space:pre-wrap;margin:0.75rem 0;border-left:4px solid var(--code-accent);overflow-x:auto;position:relative;}
+.code-box .label{display:block;color:var(--code-accent);text-transform:uppercase;font-size:0.7rem;letter-spacing:1px;margin-bottom:0.5rem;font-weight:bold;}
+.copy-btn{position:absolute;top:0.5rem;right:0.5rem;background:var(--gold);color:var(--navy);border:none;padding:0.3rem 0.6rem;border-radius:4px;font-size:0.7rem;cursor:pointer;font-weight:bold;font-family:'Georgia',serif;text-transform:uppercase;letter-spacing:0.5px;}
+.copy-btn:hover{background:var(--coral);color:white;}
+
+/* Checklist */
+.checklist-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.4rem 0;}
+.checklist-item input{accent-color:var(--coral);width:18px;height:18px;margin-top:0.2rem;flex-shrink:0;}
+.checklist-item label{flex:1;font-weight:normal;cursor:pointer;}
+.checklist-item label strong{color:var(--navy);display:block;font-size:0.95rem;margin-bottom:0.15rem;}
+.checklist-item label .sub{font-size:0.82rem;color:#666;font-style:italic;}
+
+/* Forms */
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);}
+input[type="text"], input[type="number"], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);margin-bottom:1rem;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:90px;resize:vertical;}
+
+/* Tip / callout */
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.tip-box strong{color:var(--navy);}
+.warn-box{background:#FBEDE9;border-left:4px solid var(--coral);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.warn-box strong{color:var(--navy);}
+
+/* Comparison reflection box */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;}
+.compare-col{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem;}
+.compare-col.chatgpt{border-color:#10A37F;}
+.compare-col.claude{border-color:#D97757;}
+.compare-col h4{color:var(--navy);font-size:1rem;margin-bottom:0.5rem;}
+.compare-col .tag{display:inline-block;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:4px;color:white;margin-bottom:0.5rem;letter-spacing:0.5px;text-transform:uppercase;font-weight:bold;}
+.compare-col.chatgpt .tag{background:#10A37F;}
+.compare-col.claude .tag{background:#D97757;}
+
+/* Test protocol table */
+.proto-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.proto-table th{background:var(--navy);color:white;padding:0.7rem;text-align:left;font-size:0.85rem;}
+.proto-table td{padding:0.6rem 0.7rem;border-bottom:1px solid var(--border);font-size:0.9rem;vertical-align:top;}
+.proto-table tr:nth-child(even) td{background:var(--cream);}
+.proto-table .pass{font-weight:bold;color:var(--navy);width:30%;}
+
+/* Knowledge files reference table */
+.kf-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.kf-table th{background:var(--navy);color:white;padding:0.7rem;text-align:left;font-size:0.85rem;}
+.kf-table td{padding:0.6rem 0.7rem;border-bottom:1px solid var(--border);font-size:0.88rem;vertical-align:top;}
+.kf-table tr:nth-child(even) td{background:var(--cream);}
+.kf-table .file{font-weight:bold;color:var(--navy);}
+
+/* Timeline */
+.timeline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;}
+.time-card{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem;text-align:center;}
+.time-card .num{font-size:1.4rem;color:var(--coral);font-weight:bold;display:block;margin-bottom:0.25rem;}
+.time-card .label{font-size:0.85rem;color:var(--navy);font-weight:bold;}
+.time-card.total{border-color:var(--gold);background:#FDF3E3;}
+.time-card.total .num{color:var(--gold);}
+
+/* Footer */
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+
+@media(max-width:700px){
+  .compare-grid{grid-template-columns:1fr;}
+  .timeline{grid-template-columns:1fr;}
+  .container{padding:1rem;}
+  .section{padding:1.25rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss — Week 3</h1>
+  <div class="subtitle">Lesson 2: Setting Up ChatGPT Custom GPTs for Editing</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>What You'll Build in This Worksheet</h2>
+    <p>By the end of this lesson, you'll have:</p>
+    <ul class="intro-list">
+      <li>An <strong>ELAB Editor</strong> Custom GPT that runs your 8-pass system with your codex and style guide loaded</li>
+      <li>A <strong>Beta Bestie</strong> Custom GPT that loads your named reader persona automatically</li>
+      <li>A knowledge files setup that grounds both GPTs in your project</li>
+      <li>A side-by-side comparison of ChatGPT vs. Claude output on the same chapter — so you can decide which passes belong on which tool</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Before you start:</strong> You need a ChatGPT Plus or Team subscription ($20-30/month). The free tier doesn't let you build Custom GPTs. If you're not subscribed yet, decide before blocking the 2-hour build time.
+    </div>
+  </div>
+
+  <!-- PRE-FLIGHT CHECK -->
+  <div class="section">
+    <h2>Pre-Flight Check</h2>
+    <p class="help">Confirm you have what you need before you start building.</p>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre1">
+      <label for="pre1"><strong>ChatGPT Plus or Team subscription is active</strong><span class="sub">Required for Custom GPTs. Sign up at chatgpt.com/pricing.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre2">
+      <label for="pre2"><strong>Your ELAB skill content is written out</strong><span class="sub">The 8-pass system, banned list, pen name calibration archetype. From Week 1 lessons. You'll paste it into the Instructions field.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre3">
+      <label for="pre3"><strong>Your codex / worldbuilding bible is in a PDF or .txt file</strong><span class="sub">Character sheets, locations, lore, established facts. Under 20MB per file.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre4">
+      <label for="pre4"><strong>Your pen name style guide is in a PDF or .txt file</strong><span class="sub">Voice rules, sentence rhythm, dialogue style, POV conventions.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre5">
+      <label for="pre5"><strong>Your banned word/phrase list is in a PDF or .txt file</strong><span class="sub">Words and clichés you've outlawed for this pen name.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre6">
+      <label for="pre6"><strong>One sample chapter from your strongest work is ready to upload</strong><span class="sub">Voice baseline for the GPT to compare against during audits.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre7">
+      <label for="pre7"><strong>Your Beta Bestie persona is named and written out</strong><span class="sub">Vibe, signature phrases, opinions, boundaries. From Week 2 Lesson 1.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="pre8">
+      <label for="pre8"><strong>2 hours blocked on your calendar</strong><span class="sub">45 min ELAB Editor + 20 min Beta Bestie + 30 min testing + buffer.</span></label>
+    </div>
+  </div>
+
+  <!-- BUILDER 1 - ELAB EDITOR -->
+  <div class="section">
+    <h2>Builder 1 — ELAB Editor GPT</h2>
+    <p class="help">Step-by-step. Check each box as you complete it. Setup time: 30-45 minutes.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Open the GPT builder</h4>
+        <p>Go to <strong>chatgpt.com/gpts</strong> and click <strong>Create</strong> (top right).</p>
+        <div class="meta">If you don't see the Create button, confirm your Plus/Team subscription is active.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Switch to the Configure tab</h4>
+        <p>Skip the chat-style builder. Click <strong>Configure</strong> for more control over each field.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Name your GPT</h4>
+        <p>Use "ELAB Editor" or "[Your Pen Name] Editor" — e.g., <em>Skyler Knight Editor</em>. Be specific. You'll have multiple GPTs and the name needs to be obvious at a glance.</p>
+        <label style="margin-top:0.5rem;font-size:0.85rem;">Your GPT name:</label>
+        <input type="text" placeholder="e.g., Skyler Knight Editor">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Write your one-line description</h4>
+        <p>This shows under the name in your GPT list. Copy/edit the template below.</p>
+        <label style="margin-top:0.5rem;font-size:0.85rem;">Your description:</label>
+        <input type="text" placeholder="Runs the 8-pass editing system on chapters. Quality Check, Plot Hole, Line Edit, Dialogue, Voice, Slash, Heat, Beta.">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Paste your Instructions (the persona + rules)</h4>
+        <p>This is the most important field. Paste your full ELAB skill content. Template below shows the structure — fill in your specifics.</p>
+      </div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <span class="label">Instructions Template — ELAB Editor</span>
+You are the ELAB Editor for [PEN NAME]. You run an 8-pass fiction editing system. Never run multiple passes in one response unless explicitly requested. Always ask which pass to run if the user doesn't specify.
+
+PASS 1 — QUALITY CHECK
+Scan for: repeated words within paragraphs, overused sentence starters, filter words (felt, saw, heard, noticed, realized), passive voice, telling-not-showing, weak verbs, banned phrases.
+
+PASS 2 — PLOT HOLE CHECKER
+Cross-reference the chapter against the codex (knowledge file). Flag contradictions in established facts, character details, timeline, world rules.
+
+PASS 3 — TIMELINE CONSISTENCY
+Verify scene timing, day/night, season, character ages, references to past events match the established timeline.
+
+PASS 4 — LINE EDIT
+Tighten prose without changing voice. Cut filler, sharpen verbs, vary sentence length. NEVER smooth unique phrasing into generic clean prose.
+
+PASS 5 — DIALOGUE POLISH
+Strengthen each character's distinct voice. Reference character voice profiles in knowledge files.
+
+PASS 6 — HEAT SCENE EDIT
+Calibrate heat level to [PEN NAME's heat level: e.g., 4/5 open door]. Maintain author voice. Use the banned list strictly.
+
+PASS 7 — DEVELOPMENTAL EDIT (SLASH)
+Flag bloat, redundant scenes, repeated emotional beats, weak chapter openings/endings.
+
+PASS 8 — VOICE AUDIT
+Compare against the voice baseline in knowledge files. Flag any line that doesn't sound like [PEN NAME].
+
+BANNED LIST: [paste your full banned list here]
+
+PEN NAME CALIBRATION:
+- Genre: [your genre]
+- Heat level: [your heat level]
+- POV: [your POV]
+- Tense: [your tense]
+- Tone archetype: [your archetype]
+
+RULES:
+- Always ask which pass before running.
+- Never run a pass without confirming the input chapter is loaded.
+- Preserve voice above all else.
+- When in doubt, flag don't fix.
+- Reference knowledge files actively — don't guess at codex facts.
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Upload your Knowledge Files</h4>
+        <p>Drag and drop in the Knowledge section. See the file checklist table below.</p>
+      </div>
+    </div>
+
+    <table class="kf-table">
+      <thead>
+        <tr><th>File</th><th>Format</th><th>Size limit</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="file">Codex / Worldbuilding Bible</td><td>PDF or .txt</td><td>&lt;20MB</td><td>Active reference for Plot Hole and Timeline passes</td></tr>
+        <tr><td class="file">Pen Name Style Guide</td><td>PDF or .txt</td><td>&lt;20MB</td><td>Voice rules, sentence rhythm, POV/tense conventions</td></tr>
+        <tr><td class="file">Banned List</td><td>PDF or .txt</td><td>&lt;5MB</td><td>Strict reference for Quality Check and Line Edit</td></tr>
+        <tr><td class="file">Sample Chapter (strongest work)</td><td>PDF or .txt</td><td>&lt;10MB</td><td>Voice baseline for Voice Audit pass</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <strong>Total knowledge across all files:</strong> stay under 512MB per GPT. If your codex is huge, split by category — World Rules, Character Sheets, Timeline — into separate files.
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Add Conversation Starters</h4>
+        <p>Three or four quick-launch prompts. Copy these or write your own.</p>
+      </div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <span class="label">Conversation Starters — ELAB Editor</span>
+Run Quality Check on this chapter
+Line edit this scene
+Voice audit this chapter
+Plot hole check using the codex
+    </div>
+
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <h4>Set Capabilities</h4>
+        <p><strong>Code Interpreter:</strong> ON (helps with file analysis). <strong>Web Browsing:</strong> OFF (don't want external info bleeding into fiction). <strong>Image Gen:</strong> OFF.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <h4>Save as Private</h4>
+        <p>Top right corner. Pick <strong>Only Me</strong>. Your knowledge files are not publicly visible even on shared GPTs, but Private is the safer default for editing tools that hold unpublished work.</p>
+      </div>
+    </div>
+
+    <div class="checklist-item" style="margin-top:1rem;background:#FDF3E3;padding:0.75rem;border-radius:6px;">
+      <input type="checkbox" id="elab-done">
+      <label for="elab-done"><strong>ELAB Editor GPT built and saved</strong></label>
+    </div>
+  </div>
+
+  <!-- BUILDER 2 - BETA BESTIE -->
+  <div class="section">
+    <h2>Builder 2 — Beta Bestie GPT</h2>
+    <p class="help">Same process. Shorter persona. Lighter knowledge files. Setup time: 15-20 minutes.</p>
+
+    <div class="step bestie">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Create a new GPT</h4>
+        <p>chatgpt.com/gpts → Create → Configure tab.</p>
+      </div>
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Name your beta persona</h4>
+        <p>Use the name you built in Week 2 Lesson 1. If you don't have a named beta persona yet, go back and build one — the named persona is what makes this work.</p>
+        <label style="margin-top:0.5rem;font-size:0.85rem;">Your Beta Bestie GPT name:</label>
+        <input type="text" placeholder="e.g., [Persona Name] — Beta Reader">
+      </div>
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Write the description</h4>
+        <p>Short. Punchy. Should sound like the persona.</p>
+        <label style="margin-top:0.5rem;font-size:0.85rem;">Your description:</label>
+        <input type="text" placeholder="e.g., Your sassy beta reader. Honest feedback on chapters. Will not protect your feelings.">
+      </div>
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Paste the full persona into Instructions</h4>
+        <p>Her vibe, signature phrases, opinions on tropes, boundaries, voice patterns, genre lens, whether she swears, whether she screams in caps. All of it. Template below.</p>
+      </div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <span class="label">Instructions Template — Beta Bestie</span>
+You are [PERSONA NAME]. You are a beta reader, not an editor. You react. You don't fix.
+
+VIBE:
+[3-5 lines describing her energy. e.g., "Late-30s, two cocktails in, lives for [genre]. Will scream in caps when something works. Will flat-out tell you when it doesn't."]
+
+GENRE LENS:
+You read [genre] specifically. Your standards come from [comp authors or comp tropes]. You compare new work against the best of the genre — not against beginner work.
+
+SIGNATURE PHRASES:
+- [phrase 1]
+- [phrase 2]
+- [phrase 3]
+- [phrase 4]
+
+WHAT MAKES YOU FAN OUT:
+[3-5 things that earn unprompted enthusiasm — specific tropes, specific craft moves, specific emotional beats]
+
+WHAT MAKES YOU DNF:
+[3-5 specific deal-breakers — pacing issues, trope mishandling, voice problems]
+
+BOUNDARIES:
+- You don't rewrite. You react.
+- You don't soften criticism to protect feelings.
+- You don't pretend to like something you don't.
+- You stay in character — never break to give "objective" editorial notes.
+- You stop reading when she'd stop reading. If a chapter loses you at page 4, you say so and stop.
+
+OUTPUT FORMAT:
+- React paragraph by paragraph or scene by scene.
+- Mark moments with reactions in brackets [SCREAMING], [whispered "oh no"], [closed the book], [had to put my drink down].
+- End with a verdict: KEEP READING / NEEDS WORK / WHERE DID THIS GO WRONG.
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Knowledge files (optional)</h4>
+        <p>You can upload a short genre reading list or sample chapters from comp authors. Gives her a comparison anchor. If you don't have comp material, skip — the persona alone works.</p>
+      </div>
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Conversation Starters</h4>
+      </div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <span class="label">Conversation Starters — Beta Bestie</span>
+Read this chapter
+Beta read this scene
+What would [persona name] say about this opening?
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Capabilities</h4>
+        <p><strong>Code Interpreter:</strong> ON. <strong>Web Browsing:</strong> OFF. <strong>Image Gen:</strong> OFF. She doesn't need to look anything up — she's reacting to your prose.</p>
+      </div>
+    </div>
+
+    <div class="step bestie">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <h4>Save as Private</h4>
+      </div>
+    </div>
+
+    <div class="checklist-item" style="margin-top:1rem;background:#FDF3E3;padding:0.75rem;border-radius:6px;">
+      <input type="checkbox" id="bestie-done">
+      <label for="bestie-done"><strong>Beta Bestie GPT built and saved</strong></label>
+    </div>
+  </div>
+
+  <!-- TESTING PROTOCOL -->
+  <div class="section">
+    <h2>Testing Protocol</h2>
+    <p class="help">Verify both GPTs are working before you trust them in production. Use ONE chapter for all tests.</p>
+
+    <table class="proto-table">
+      <thead>
+        <tr><th>Test</th><th>What to do</th><th>Pass if...</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="pass">1. Knowledge file recall</td><td>Open ELAB Editor. Ask: "What's in my codex about [a specific character or location]?"</td><td>The GPT pulls the answer accurately from the file — not from generic guessing.</td></tr>
+        <tr><td class="pass">2. Banned list enforcement</td><td>Paste a paragraph that includes a banned word. Run Quality Check.</td><td>The GPT flags the banned word specifically and references the banned list.</td></tr>
+        <tr><td class="pass">3. Voice baseline awareness</td><td>Run Voice Audit on a paragraph deliberately written off-voice.</td><td>The GPT flags the off-voice lines and references the sample chapter as the baseline.</td></tr>
+        <tr><td class="pass">4. Pass discipline</td><td>Ask: "Run all 8 passes at once."</td><td>The GPT pushes back or asks you to pick one. (If it tries to run all 8, your Instructions need a stronger discipline rule.)</td></tr>
+        <tr><td class="pass">5. Beta persona consistency</td><td>Open Beta Bestie. Paste a chapter opening. Ask "What do you think?"</td><td>The response sounds like the persona — uses her signature phrases, her vibe, her boundaries.</td></tr>
+        <tr><td class="pass">6. Beta persona DNF</td><td>Paste a deliberately weak chapter opening to the Beta Bestie.</td><td>She tells you it's not working, in her voice. She doesn't soften to be polite.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box">
+      <strong>If a test fails:</strong> go back to the Instructions field and tighten the rule that's not holding. Knowledge file misses usually mean the file format is messy — re-export as a clean PDF or .txt.
+    </div>
+  </div>
+
+  <!-- COMPARE TO CLAUDE -->
+  <div class="section">
+    <h2>Compare to Claude — Reflection Box</h2>
+    <p class="help">Run the SAME chapter through ChatGPT (your new GPT) and Claude (your existing skill). Fill this in honestly — the answer to "should I use ChatGPT for this pass" depends on YOUR comparison, not anyone's general advice.</p>
+
+    <label style="margin-top:0.5rem;">Pass tested (e.g., Quality Check):</label>
+    <input type="text" placeholder="Quality Check">
+
+    <div class="compare-grid">
+      <div class="compare-col chatgpt">
+        <span class="tag">ChatGPT GPT</span>
+        <h4>What did it catch?</h4>
+        <textarea placeholder="List the specific issues the ChatGPT GPT flagged..."></textarea>
+        <h4>What did it miss?</h4>
+        <textarea placeholder="List anything it should have caught but didn't..."></textarea>
+        <h4>How was the voice preservation?</h4>
+        <textarea placeholder="Did the GPT smooth your prose? Or hold the voice?"></textarea>
+        <h4>Speed?</h4>
+        <input type="text" placeholder="e.g., Took 45 seconds, output was fast.">
+      </div>
+      <div class="compare-col claude">
+        <span class="tag">Claude Skill</span>
+        <h4>What did it catch?</h4>
+        <textarea placeholder="List the specific issues Claude flagged..."></textarea>
+        <h4>What did it miss?</h4>
+        <textarea placeholder="List anything it should have caught but didn't..."></textarea>
+        <h4>How was the voice preservation?</h4>
+        <textarea placeholder="Did Claude smooth your prose? Or hold the voice?"></textarea>
+        <h4>Speed?</h4>
+        <input type="text" placeholder="e.g., Took 90 seconds, output was more detailed.">
+      </div>
+    </div>
+
+    <label style="margin-top:1.5rem;">Verdict — which tool will you use for THIS pass going forward?</label>
+    <select>
+      <option>--</option>
+      <option>ChatGPT GPT — clear winner for this pass</option>
+      <option>Claude — clear winner for this pass</option>
+      <option>Either — both worked, I'll pick based on context</option>
+      <option>Neither — need to tune one or both further</option>
+    </select>
+
+    <label>Why? (the reasoning matters more than the verdict)</label>
+    <textarea placeholder="e.g., ChatGPT was faster but smoothed voice on dialogue-heavy paragraphs. I'll use it for Quality Check (rule-based) but keep Voice Audit on Claude."></textarea>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <h2>Your Build Timeline</h2>
+    <p class="help">Realistic first-time setup. Future GPTs take 15-30 minutes each once you know the flow.</p>
+
+    <div class="timeline">
+      <div class="time-card">
+        <span class="num">30-45 min</span>
+        <span class="label">ELAB Editor GPT</span>
+      </div>
+      <div class="time-card">
+        <span class="num">15-20 min</span>
+        <span class="label">Beta Bestie GPT</span>
+      </div>
+      <div class="time-card">
+        <span class="num">30 min</span>
+        <span class="label">Test on one chapter</span>
+      </div>
+    </div>
+
+    <div class="time-card total" style="margin-top:1rem;">
+      <span class="num">~2 hours total</span>
+      <span class="label">First-time setup</span>
+    </div>
+  </div>
+
+  <!-- BEST PRACTICES RECAP -->
+  <div class="section">
+    <h2>ChatGPT-Specific Best Practices (Keep These Handy)</h2>
+
+    <div class="checklist-item">
+      <input type="checkbox" id="bp1">
+      <label for="bp1"><strong>Knowledge files under 20MB each, 512MB total per GPT</strong><span class="sub">Split large codex into categories if needed.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="bp2">
+      <label for="bp2"><strong>PDF or .txt format only</strong><span class="sub">Parses cleanest. Word OK. Spreadsheets don't parse well — export to PDF first.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="bp3">
+      <label for="bp3"><strong>Don't paste 15K+ word chapters</strong><span class="sub">Context window is tighter than Claude. Work in scenes or halves.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="bp4">
+      <label for="bp4"><strong>Fresh chat per chapter or per pass</strong><span class="sub">The GPT remembers within a conversation but not across. Long chats lose the thread.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="bp5">
+      <label for="bp5"><strong>Use separate GPTs per pass for complex workflows</strong><span class="sub">Better than chaining 4-5 passes in one conversation.</span></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="bp6">
+      <label for="bp6"><strong>Keep editing GPTs Private — knowledge files hold unpublished work</strong><span class="sub">Files aren't publicly downloadable even on public GPTs, but Private is the right default.</span></label>
+    </div>
+  </div>
+
+  <!-- WHERE GPTS SHINE / TRADEOFFS -->
+  <div class="section">
+    <h2>Where to Use Your New ChatGPT GPTs</h2>
+    <p class="help">Honest about strengths and tradeoffs. Same treatment as any other tool.</p>
+
+    <h3 style="color:var(--sage);">Strong fit for ChatGPT Custom GPTs</h3>
+    <ul class="intro-list">
+      <li><strong>Pass 1 — Quality Check.</strong> Fast iteration, structured ruleset, knowledge files give the GPT your specific quality bar.</li>
+      <li><strong>Pass 2 — Plot Hole Checker.</strong> Strong IF your codex is loaded as a knowledge file.</li>
+      <li><strong>Pass 5 — Dialogue Polish.</strong> Strong when detailed character voice profiles live in the Instructions field.</li>
+      <li><strong>Light voice work</strong> with very specific style guide knowledge.</li>
+    </ul>
+
+    <h3 style="color:var(--coral);">Where ChatGPT tradeoffs show</h3>
+    <ul class="intro-list">
+      <li><strong>Long context.</strong> Hits limits on 15K+ word chapters faster than Claude.</li>
+      <li><strong>Heavy voice work.</strong> Tends to smooth more than Claude. Fixable with strong style guide files, but it's the tendency.</li>
+      <li><strong>Multi-pass workflows in one chat.</strong> Loses the thread. Use separate GPTs per pass, or fresh chats per pass.</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>Bottom line:</strong> These tradeoffs aren't dealbreakers — they're the shape of the tool. Plan around them and your ChatGPT output is strong. The "right tool for the right pass" matrix from Lesson 1 tells you when ChatGPT is the better choice and when Claude is.
+    </div>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="section">
+    <h2>Your Action Items</h2>
+    <div class="checklist-item">
+      <input type="checkbox" id="next1">
+      <label for="next1"><strong>Subscribe to ChatGPT Plus/Team (if not already)</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next2">
+      <label for="next2"><strong>Block 2 hours on your calendar</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next3">
+      <label for="next3"><strong>Build ELAB Editor GPT (Builder 1 above)</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next4">
+      <label for="next4"><strong>Build Beta Bestie GPT (Builder 2 above)</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next5">
+      <label for="next5"><strong>Run the 6-test Testing Protocol</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next6">
+      <label for="next6"><strong>Fill in the Compare to Claude reflection box</strong></label>
+    </div>
+    <div class="checklist-item">
+      <input type="checkbox" id="next7">
+      <label for="next7"><strong>Decide: which passes will you run on ChatGPT? Which stay on Claude?</strong></label>
+    </div>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <strong>Next lesson:</strong> Setting up Gemini Gems + Grok agents. Same logic, different platforms — including the NotebookLM workflow that makes Gemini a real player for fiction.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss — Week 3 &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+<script>
+function copyCode(btn) {
+  const box = btn.parentElement;
+  // Get text excluding the button and label
+  let text = '';
+  for (const node of box.childNodes) {
+    if (node.nodeType === 3) {
+      text += node.textContent;
+    } else if (node.nodeType === 1 && node.tagName !== 'BUTTON' && !node.classList.contains('label')) {
+      text += node.textContent;
+    }
+  }
+  text = text.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#7A9E7E';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 1500);
+  }).catch(() => {
+    btn.textContent = 'Select text manually';
+  });
+}
+</script>
+
+</body>
+</html>

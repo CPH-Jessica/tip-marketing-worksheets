@@ -60,6 +60,14 @@ Located in `/edit-like-a-boss/part-2-building-your-team/`
 | 3 | Lesson 3: Pen Name Style Guide Builder | Lock in voice consistency per pen name |
 | 4 | Lesson 4: Writing System Audit | Evaluate and tune your end-to-end writing system |
 
+### Part 3: Expanding Your Reach
+
+Located in `/edit-like-a-boss/part-3-expanding-your-reach/`
+
+| # | Worksheet | Topic |
+|---|---|---|
+| 2 | Lesson 2: Setting Up ChatGPT Custom GPTs | Build your own Custom GPTs for editing workflows |
+
 ## Standalone Tools
 
 Located in `/tools/`
