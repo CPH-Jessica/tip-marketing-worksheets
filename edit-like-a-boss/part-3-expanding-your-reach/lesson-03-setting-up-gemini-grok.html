@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELAB Week 3 — Lesson 3: Setting Up Gemini Gems + Grok Agents</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; --gemini:#4285F4; --grok:#000000; --code-bg:#1B2A4A; --code-text:#F0EDE8; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.6;}
+.header{background:var(--navy);color:white;padding:2rem;text-align:center;}
+.header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+.header .subtitle{color:var(--coral);font-size:1rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.container{max-width:950px;margin:0 auto;padding:2rem;}
+.section{background:white;border-radius:8px;padding:1.5rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.05rem;margin:1rem 0 0.5rem;}
+.help{color:#666;font-size:0.9rem;font-style:italic;margin-bottom:1rem;}
+.part-banner{background:var(--navy);color:white;padding:1.25rem 2rem;border-radius:8px;margin-bottom:1.5rem;text-align:center;}
+.part-banner .part-label{color:var(--gold);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;}
+.part-banner .part-title{font-size:1.5rem;margin-top:0.3rem;}
+.part-banner.gemini{border-left:6px solid var(--gemini);}
+.part-banner.grok{border-left:6px solid var(--grok);}
+.step{display:flex;gap:0.85rem;margin-bottom:1rem;align-items:flex-start;}
+.step-num{flex-shrink:0;background:var(--coral);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:bold;font-size:0.95rem;}
+.step-body{flex:1;}
+.step-body strong{color:var(--navy);}
+.step-body .step-detail{font-size:0.9rem;color:#555;margin-top:0.2rem;}
+.code-box{background:var(--code-bg);color:var(--code-text);padding:1rem 1.25rem;border-radius:6px;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.5;margin:0.75rem 0;overflow-x:auto;border-left:4px solid var(--gold);white-space:pre-wrap;word-wrap:break-word;}
+.code-box .label{color:var(--gold);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:0.5rem;font-family:'Georgia',serif;}
+label{font-weight:bold;display:block;margin-bottom:0.4rem;color:var(--navy);font-size:0.95rem;}
+input[type="text"], input[type="number"], select, textarea{width:100%;padding:0.6rem;border:2px solid var(--border);border-radius:6px;font-family:'Georgia',serif;font-size:0.95rem;background:var(--cream);margin-bottom:1rem;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--coral);}
+textarea{min-height:80px;resize:vertical;}
+.checklist-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.4rem 0;}
+.checklist-item input{accent-color:var(--coral);width:18px;height:18px;margin-top:3px;flex-shrink:0;}
+.checklist-item label{margin-bottom:0;font-weight:normal;color:var(--text);font-size:0.95rem;}
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.tip-box strong{color:var(--navy);}
+.tip-box .tip-label{display:block;color:var(--gold);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.3rem;}
+.warning-box{background:#FBEAE5;border-left:4px solid var(--coral);padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;}
+.warning-box strong{color:var(--navy);}
+.warning-box .warn-label{display:block;color:var(--coral);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.3rem;}
+.compare-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.compare-table th{background:var(--navy);color:white;padding:0.75rem;text-align:left;font-size:0.9rem;}
+.compare-table td{padding:0.65rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.9rem;vertical-align:top;}
+.compare-table tr:nth-child(even) td{background:var(--cream);}
+.compare-table td.tool{font-weight:bold;color:var(--navy);width:30%;}
+.decision-grid{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-top:1rem;}
+.decision-row{display:grid;grid-template-columns:2fr 1fr;gap:1rem;align-items:center;background:var(--cream);padding:0.75rem 1rem;border-radius:6px;border-left:4px solid var(--coral);}
+.decision-row .task{font-size:0.92rem;color:var(--navy);}
+.decision-row select{margin-bottom:0;background:white;}
+.timeline-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.timeline-table th{background:var(--navy);color:white;padding:0.6rem 0.75rem;text-align:left;font-size:0.88rem;}
+.timeline-table td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.9rem;}
+.timeline-table tr:last-child td{background:#FDF3E3;font-weight:bold;color:var(--navy);}
+.files-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem;}
+.files-card{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem 1.25rem;}
+.files-card.gemini{border-left:6px solid var(--gemini);}
+.files-card.notebook{border-left:6px solid var(--sage);}
+.files-card.grok{border-left:6px solid var(--grok);}
+.files-card h3{color:var(--navy);font-size:1rem;margin-bottom:0.5rem;}
+.files-card .platform-label{font-size:0.75rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;}
+.tag{display:inline-block;background:var(--coral);color:white;padding:0.15rem 0.55rem;border-radius:12px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.4rem;vertical-align:middle;}
+.tag.free{background:var(--sage);}
+.tag.paid{background:var(--gold);color:var(--navy);}
+.tag.advanced{background:var(--navy);}
+.footer{text-align:center;padding:2rem;color:#888;font-size:0.85rem;}
+@media(max-width:600px){.files-grid{grid-template-columns:1fr;}.container{padding:1rem;}.decision-row{grid-template-columns:1fr;gap:0.5rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Edit Like a Boss — Week 3</h1>
+  <div class="subtitle">Lesson 3: Setting Up Gemini Gems + Grok Agents for Editing</div>
+  <div class="brand">The Invisible Pen</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section">
+    <h2>What You'll Build in This Worksheet</h2>
+    <p>By the end of this lesson, you'll have:</p>
+    <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+      <li>An <strong>ELAB Editor Gem</strong> on Gemini with your skill content and reference files</li>
+      <li>A <strong>fiction research notebook</strong> on NotebookLM for cross-referencing</li>
+      <li>A working <strong>Grok editing setup</strong> with reusable system prompts</li>
+      <li>A decision tool for <strong>which platform to reach for</strong> in different editing situations</li>
+    </ul>
+    <p style="margin-top:0.5rem;">Total time: ~2-2.5 hours. Block off an afternoon — don't try to do this in fifteen-minute pieces.</p>
+  </div>
+
+  <!-- PART 1 BANNER -->
+  <div class="part-banner gemini">
+    <div class="part-label">Part 1</div>
+    <div class="part-title">Gemini Gems + NotebookLM</div>
+  </div>
+
+  <!-- GEMINI GEM BUILDER -->
+  <div class="section">
+    <h2>Build Your ELAB Editor Gem <span class="tag free">Free Tier OK</span></h2>
+    <p class="help">Gemini's Custom GPT equivalent. Single Instructions field, attachable reference files. Free tier supports Gem creation.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Go to gemini.google.com/gems</strong>
+        <div class="step-detail">Sign in with your Google account. If you've used Gemini before, you're already signed in.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Click "+ New Gem"</strong>
+        <div class="step-detail">The button is in the Gems panel on the left side.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Name your Gem</strong>
+        <div class="step-detail">Use "ELAB Editor" for a generic version, or "[Your Pen Name] Editor" for a pen-name-specific version.</div>
+        <label style="margin-top:0.5rem;">Your Gem name:</label>
+        <input type="text" placeholder="e.g., ELAB Editor — Skyler Knight">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Paste your full ELAB skill content into the Instructions field</strong>
+        <div class="step-detail">Gemini accepts long content in this field — don't summarize. Include the full 8-pass system, banned list for the pen name, voice archetypes, and ask-for-inputs rules.</div>
+        <div class="code-box">
+<span class="label">Instructions field — paste structure</span>
+You are the ELAB Editor for [pen name]. You follow the 8-pass editing system:
+
+PASS 1 — Quality Check
+PASS 2 — Plot Hole Checker
+PASS 3 — Timeline Consistency
+PASS 4 — Line Edit
+PASS 5 — Dialogue Polish
+PASS 6 — Heat Scene Edit
+PASS 7 — Developmental Edit
+PASS 8 — Voice Audit
+
+BANNED WORDS / PHRASES: [paste list]
+VOICE ARCHETYPE: [paste profile]
+ASK-FOR-INPUTS RULES: [paste rules]
+
+Before starting any pass, ask which pass the author wants to run. Do not assume.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Upload your reference files</strong>
+        <div class="step-detail">Click the file upload button. Add your codex, style guide, and 1-2 sample chapters that show the voice working at its best.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <strong>Save and pin to sidebar</strong>
+        <div class="step-detail">Click Save. Then click the pin icon next to the Gem's name so it's always one click away.</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-label">Pro Tip</span>
+      <strong>Test it on a chapter you've already edited elsewhere.</strong> Compare Gemini's results to what Claude or ChatGPT gave you. You'll quickly learn where this tool is strong and where it isn't.
+    </div>
+
+    <h3>Gem Setup Checklist</h3>
+    <div class="checklist-item"><input type="checkbox"><label>Gem created and named</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Full ELAB skill content pasted into Instructions field</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Codex uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Style guide uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>1-2 sample chapters uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Gem saved and pinned to sidebar</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Tested on one chapter</label></div>
+  </div>
+
+  <!-- NOTEBOOKLM BUILDER -->
+  <div class="section">
+    <h2>Set Up Your NotebookLM Fiction Project <span class="tag free">Free</span></h2>
+    <p class="help">NotebookLM is separate from Gemini chat — it's Google's research notebook. Upload up to 50 sources per notebook. AI cites which file the info came from.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Go to notebooklm.google.com</strong>
+        <div class="step-detail">Sign in with the same Google account you use for Gemini.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Click "+ New notebook"</strong>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Name it for the scope</strong>
+        <div class="step-detail">Book-specific: "Skyler Knight Book 3 Research Notebook." Pen-name-wide: "Skyler Knight Brand Bible." Pick the scope that matches how you actually work.</div>
+        <label style="margin-top:0.5rem;">Your notebook name:</label>
+        <input type="text" placeholder="e.g., Skyler Knight Book 3 Research Notebook">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Upload your sources</strong>
+        <div class="step-detail">Drag and drop, or use the upload button. Accepts PDFs, Google Docs, text files, web pages, even YouTube transcripts.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Ask cross-referencing questions</strong>
+        <div class="step-detail">This is where you get value back. Try the examples below in your own notebook.</div>
+        <div class="code-box">
+<span class="label">Example questions to try</span>
+Does Chapter 14's character knowledge violate what was established in Chapter 7?
+
+What banned words appear in Chapter 12?
+
+List every time the protagonist mentions her sister. Note any inconsistencies in how she's described.
+
+In Chapter 7 the hero said he had never been to Paris. Does anything in later chapters contradict that?
+
+Summarize the rules of the magic system as established across all uploaded chapters. Flag any contradictions.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <strong>Generate the Audio Overview</strong>
+        <div class="step-detail">Click the audio overview button. Wait a few minutes. You'll get a 10-15 minute podcast-style discussion of your sources. Listen while you walk or drive. You'll hear things about your own book you forgot you wrote.</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-label">Why This Matters</span>
+      <strong>NotebookLM cites its sources.</strong> When it answers, it tells you which file the information came from. That makes it the strongest tool I've used for Pass 2 (Plot Hole Checker) and Pass 3 (Timeline Consistency).
+    </div>
+
+    <h3>NotebookLM Setup Checklist</h3>
+    <div class="checklist-item"><input type="checkbox"><label>Notebook created and named for project scope</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Codex uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Style guide uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Character sheets uploaded</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>World bible uploaded (if applicable)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Manuscript in progress uploaded (chapter by chapter)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Series bible uploaded (if applicable)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Asked at least 3 cross-referencing questions</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Generated and listened to Audio Overview</label></div>
+  </div>
+
+  <!-- GEMINI VS NOTEBOOKLM -->
+  <div class="section">
+    <h2>Gemini Chat vs NotebookLM — Use Each For Different Jobs</h2>
+    <p class="help">Don't try to make one do the other's job. They're built for different work.</p>
+    <table class="compare-table">
+      <thead><tr><th>Tool</th><th>Use For</th></tr></thead>
+      <tbody>
+        <tr><td class="tool">Gemini chat / Gems</td><td>Drafting, line edits, dialogue polish, quick iteration, single-conversation editing tasks</td></tr>
+        <tr><td class="tool">NotebookLM</td><td>Research, cross-referencing across many files, codex queries, "what's already established" questions, plot hole and timeline analysis</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PART 2 BANNER -->
+  <div class="part-banner grok">
+    <div class="part-label">Part 2</div>
+    <div class="part-title">Grok Setup</div>
+  </div>
+
+  <!-- GROK BUILDER -->
+  <div class="section">
+    <h2>Build Your Grok Editing Setup <span class="tag paid">Mostly Paid</span></h2>
+    <p class="help">Grok's custom assistant layer is less formalized than the other three platforms. You primarily work via system prompts you re-paste at the start of each chat.</p>
+
+    <h3>Non-Developer Path (Most Authors)</h3>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Subscribe to Grok</strong>
+        <div class="step-detail">Two options: X Premium+ ($30/mo, includes Grok), or directly via grok.com (SuperGrok, $30/mo standalone). Free tier exists but is limited.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Open a new chat</strong>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Paste your ELAB system prompt at the top of the chat</strong>
+        <div class="step-detail">Same content as your Gemini Gem instructions. Paste it before you do anything else — it sets the context for the whole session.</div>
+        <div class="code-box">
+<span class="label">Grok system prompt — paste at top of every chat</span>
+You are my ELAB Editor for [pen name].
+
+We're working through the 8-pass editing system. Before I share a chapter, ask which pass I want to run.
+
+PASS 1 — Quality Check
+PASS 2 — Plot Hole Checker
+PASS 3 — Timeline Consistency
+PASS 4 — Line Edit
+PASS 5 — Dialogue Polish
+PASS 6 — Heat Scene Edit
+PASS 7 — Developmental Edit
+PASS 8 — Voice Audit
+
+BANNED WORDS / PHRASES: [paste list]
+VOICE ARCHETYPE: [paste profile]
+ASK-FOR-INPUTS RULES: [paste rules]
+
+Acknowledge this prompt and ask which pass we're running. Do not begin editing until I tell you.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Save system prompts in a notes app for easy re-paste</strong>
+        <div class="step-detail">I keep mine in a single notes document on my desktop, with a section per pen name. Every new Grok session starts with a copy-paste.</div>
+        <label style="margin-top:0.5rem;">Where will you store your saved Grok system prompts?</label>
+        <input type="text" placeholder="e.g., Apple Notes, Obsidian, Google Doc named 'Grok Prompts'">
+      </div>
+    </div>
+
+    <h3>Advanced Path (Developers Only) <span class="tag advanced">Optional</span></h3>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>xAI API for persistent custom agents</strong>
+        <div class="step-detail">If you code (or work with a developer), the xAI API lets you build persistent Grok agents with baked-in system prompts and tool access. Outside the scope of this lesson, but it's there if you want it. Documentation at docs.x.ai.</div>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <span class="warn-label">Heads Up</span>
+      <strong>Grok doesn't have a persistent "Gem" or "GPT" you can pin.</strong> Every new chat starts blank. The system-prompt-and-paste workflow is the trade-off for using this tool. Build the habit early — it transfers to every AI tool, because every model accepts system prompts.
+    </div>
+
+    <h3>Grok Setup Checklist</h3>
+    <div class="checklist-item"><input type="checkbox"><label>Grok subscription active (or free tier accepted)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>ELAB system prompt drafted and saved to notes app</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Pen-name-specific banned list and voice archetype included in prompt</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Tested system prompt on one chapter</label></div>
+    <div class="checklist-item"><input type="checkbox"><label>Compared Grok's output to your Gemini Gem's output on the same chapter</label></div>
+  </div>
+
+  <!-- REFERENCE FILES CHECKLIST -->
+  <div class="section">
+    <h2>Reference Files Checklist — What to Upload Where</h2>
+    <p class="help">Each platform handles knowledge differently. Use this as your master upload list.</p>
+
+    <div class="files-grid">
+      <div class="files-card gemini">
+        <div class="platform-label">Gemini Gem</div>
+        <h3>What to attach</h3>
+        <div class="checklist-item"><input type="checkbox"><label>Codex</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Style guide</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>1-2 sample chapters (voice at its best)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Banned list (in Instructions field)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Voice archetype (in Instructions field)</label></div>
+      </div>
+
+      <div class="files-card notebook">
+        <div class="platform-label">NotebookLM</div>
+        <h3>What to upload (up to 50)</h3>
+        <div class="checklist-item"><input type="checkbox"><label>Codex</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Style guide</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Character sheets (one per named character)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>World bible (if applicable)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Manuscript in progress (chapter by chapter)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Earlier series books (sample chapters)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Series bible (if applicable)</label></div>
+      </div>
+
+      <div class="files-card grok">
+        <div class="platform-label">Grok</div>
+        <h3>What to paste in system prompt</h3>
+        <div class="checklist-item"><input type="checkbox"><label>8-pass system overview</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Banned list (full)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Voice archetype (full)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Ask-for-inputs rules</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Pen-name-specific notes</label></div>
+      </div>
+
+      <div class="files-card" style="border-left:6px solid var(--coral);">
+        <div class="platform-label">All Three</div>
+        <h3>Keep in a central folder</h3>
+        <div class="checklist-item"><input type="checkbox"><label>Master copy of codex (single source of truth)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Master copy of style guide</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>Master ELAB skill content (for paste-in)</label></div>
+        <div class="checklist-item"><input type="checkbox"><label>System prompts file (per pen name)</label></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-label">File Hygiene</span>
+      <strong>Update once, propagate everywhere.</strong> When you revise your codex, re-upload to your Gem AND your NotebookLM notebook. Stale knowledge files = wrong edits. Date-stamp your file versions (codex-2026-06-02.pdf) so you always know what's current.
+    </div>
+  </div>
+
+  <!-- DECISION TOOL -->
+  <div class="section">
+    <h2>Where I'll Use Which Tool — Decision Tool</h2>
+    <p class="help">For each editing task below, pick the tool you'll reach for. There's no single right answer — this is YOUR map.</p>
+
+    <div class="decision-grid">
+      <div class="decision-row">
+        <div class="task">Pass 1 — Quality Check (rule-based, mechanical)</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 2 — Plot Hole Checker (cross-reference across chapters)</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 3 — Timeline Consistency</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 4 — Line Edit</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 5 — Dialogue Polish</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 6 — Heat Scene Edit (especially if dark/edgy content)</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 7 — Developmental Edit (whole-chapter analysis)</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Pass 8 — Voice Audit</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Listening to my codex while walking/driving</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Quick brainstorm with current cultural/real-world references</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+      <div class="decision-row">
+        <div class="task">Second opinion on an edit another tool returned</div>
+        <select><option>--</option><option>Gemini Gem</option><option>NotebookLM</option><option>Grok</option><option>Other (Claude/ChatGPT)</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <h2>Your Realistic Setup Timeline</h2>
+    <p class="help">Block off an afternoon. Don't squeeze this into 15-minute pieces between other tasks.</p>
+    <table class="timeline-table">
+      <thead><tr><th>Task</th><th>Estimated Time</th><th>Done?</th></tr></thead>
+      <tbody>
+        <tr><td>Build ELAB Editor Gem (paste instructions, attach files, pin)</td><td>20-30 min</td><td><input type="checkbox"></td></tr>
+        <tr><td>Set up NotebookLM notebook (upload codex + sources, run questions)</td><td>30-45 min</td><td><input type="checkbox"></td></tr>
+        <tr><td>Generate and listen to NotebookLM Audio Overview</td><td>15 min</td><td><input type="checkbox"></td></tr>
+        <tr><td>Subscribe to Grok and draft/save ELAB system prompt</td><td>15-20 min</td><td><input type="checkbox"></td></tr>
+        <tr><td>Test all three on one chapter you've already edited</td><td>30-45 min</td><td><input type="checkbox"></td></tr>
+        <tr><td>Total Setup Time</td><td>~2-2.5 hours</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TEST CHAPTER COMPARISON -->
+  <div class="section">
+    <h2>Test Chapter Comparison Notes</h2>
+    <p class="help">Run the same chapter through all three new setups. Note what each one caught and what it missed. This is how you build real intuition for when to reach for which tool.</p>
+
+    <label>Which chapter did you test? (title, number, word count)</label>
+    <input type="text" placeholder="e.g., Skyler Knight Book 3, Ch 7, 3,400 words">
+
+    <label>What did the Gemini Gem catch well?</label>
+    <textarea placeholder="Strengths you noticed in the Gem's output..."></textarea>
+
+    <label>What did the Gemini Gem miss or get wrong?</label>
+    <textarea placeholder="Gaps, smoothing, voice drift, missed banned words..."></textarea>
+
+    <label>What did NotebookLM catch that the others didn't?</label>
+    <textarea placeholder="Cross-references, citations, continuity flags..."></textarea>
+
+    <label>What did Grok catch well?</label>
+    <textarea placeholder="Speed, less restrictive content, real-time references..."></textarea>
+
+    <label>What did Grok miss or get wrong?</label>
+    <textarea placeholder="Gaps, smoothing, lack of persistent context..."></textarea>
+
+    <label>Based on this test, which tool will be your primary for which pass?</label>
+    <textarea placeholder="e.g., NotebookLM for Pass 2 and 3. Gemini Gem for Pass 1 quick checks. Grok for Pass 6 when dark scenes get flagged elsewhere."></textarea>
+  </div>
+
+  <!-- HOMEWORK -->
+  <div class="section">
+    <h2>Homework Before Lesson 4</h2>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Build your ELAB Editor Gem</strong> — paste skill, attach files, pin it</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Set up one NotebookLM notebook</strong> for your active project (codex + style guide + 3 chapters minimum)</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Generate the Audio Overview</strong> and listen to it</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Save your Grok system prompt</strong> in your notes app</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Run one chapter through Grok</strong> and compare to the Gem's output</label></div>
+    <div class="checklist-item"><input type="checkbox"><label><strong>Fill out the decision tool</strong> above so you know which tool to reach for next time</label></div>
+
+    <div class="tip-box" style="margin-top:1rem;">
+      <span class="tip-label">Where This Leads</span>
+      <strong>Lesson 4 is the multi-tool workflow.</strong> We'll take one chapter and walk it through the full 8-pass system using different tools for different passes — Claude for voice work, NotebookLM for cross-referencing, ChatGPT for dialogue polish, Grok for the heat scene. That's the production workflow. That's what makes portability actually pay off.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Edit Like a Boss — Week 3, Lesson 3 &copy; The Invisible Pen | Clark Publishing House LLC
+</div>
+
+</body>
+</html>
