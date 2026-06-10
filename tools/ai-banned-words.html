@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Banned Words Tool · The Invisible Pen</title>
+<style>
+  :root{
+    --ink:#1d1b2e;
+    --paper:#faf7f2;
+    --card:#ffffff;
+    --accent:#6b4ea3;      /* TIP purple */
+    --accent-2:#a67fd6;
+    --gold:#c79a3b;
+    --line:#e7e0d6;
+    --red:#b23b4e;
+    --red-bg:#fbeef0;
+    --muted:#6f6a7d;
+    --green:#3f8a6e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Georgia","Iowan Old Style",serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px;}
+  header.masthead{
+    text-align:center;
+    padding:46px 20px 30px;
+    background:linear-gradient(160deg,#2a2342 0%,#4a3a73 60%,#6b4ea3 100%);
+    color:#fff;
+  }
+  .kicker{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    font-size:11px;
+    opacity:.85;
+    margin-bottom:14px;
+  }
+  header.masthead h1{
+    font-size:42px;
+    margin:0 0 10px;
+    line-height:1.05;
+    font-weight:700;
+  }
+  header.masthead p.sub{
+    font-size:16px;
+    max-width:640px;
+    margin:0 auto;
+    opacity:.92;
+    font-style:italic;
+  }
+  .brandline{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12px;
+    letter-spacing:.12em;
+    margin-top:18px;
+    opacity:.8;
+  }
+  /* Tabs */
+  nav.tabs{
+    position:sticky;top:0;z-index:20;
+    display:flex;flex-wrap:wrap;gap:0;
+    background:var(--paper);
+    border-bottom:2px solid var(--line);
+    margin-bottom:30px;
+    box-shadow:0 4px 14px -10px rgba(0,0,0,.35);
+  }
+  nav.tabs button{
+    flex:1 1 auto;
+    min-width:150px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:13px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:18px 12px;
+    background:none;border:none;cursor:pointer;
+    color:var(--muted);
+    border-bottom:3px solid transparent;
+    transition:.15s;
+  }
+  nav.tabs button:hover{color:var(--accent);}
+  nav.tabs button.active{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+    font-weight:700;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  h2.section-h{
+    font-size:13px;font-family:"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);
+    border-bottom:1px solid var(--line);
+    padding-bottom:8px;margin:38px 0 6px;
+  }
+  .section-sub{font-style:italic;color:var(--muted);font-size:15px;margin:0 0 14px;}
+
+  /* Search */
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:8px;}
+  .search{
+    flex:1 1 280px;position:relative;
+  }
+  .search input{
+    width:100%;font-family:inherit;font-size:17px;
+    padding:14px 16px 14px 44px;
+    border:1.5px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);
+  }
+  .search input:focus{outline:none;border-color:var(--accent);}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.5;}
+  .count-pill{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;
+    color:var(--muted);white-space:nowrap;
+  }
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;}
+  .filters button{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;
+    padding:7px 13px;border-radius:20px;cursor:pointer;
+    border:1.5px solid var(--line);background:var(--card);color:var(--muted);
+    transition:.15s;
+  }
+  .filters button:hover{border-color:var(--accent-2);}
+  .filters button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  table.ref{width:100%;border-collapse:collapse;margin:4px 0 10px;}
+  table.ref tr{border-bottom:1px solid var(--line);}
+  table.ref tr.hidden{display:none;}
+  table.ref td{padding:13px 12px;vertical-align:top;font-size:16px;}
+  table.ref td.term{width:34%;font-weight:700;}
+  table.ref td.fix{color:var(--muted);font-size:15px;}
+  .perma{
+    display:inline-block;font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:10px;letter-spacing:.08em;background:var(--red-bg);color:var(--red);
+    padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle;font-weight:700;
+  }
+  .copyword{
+    float:right;font-family:"Helvetica Neue",Arial,sans-serif;font-size:11px;
+    border:1px solid var(--line);background:none;border-radius:6px;
+    padding:3px 8px;cursor:pointer;color:var(--muted);opacity:0;transition:.15s;
+  }
+  tr:hover .copyword{opacity:1;}
+  .copyword:hover{border-color:var(--accent);color:var(--accent);}
+  .word-grid{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px;}
+  .word-grid .chip{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:14px;
+    background:var(--card);border:1.5px solid var(--line);border-radius:8px;
+    padding:8px 14px;cursor:pointer;transition:.15s;
+  }
+  .word-grid .chip:hover{border-color:var(--accent);color:var(--accent);}
+  .word-grid .chip.hidden{display:none;}
+
+  /* Checker */
+  .checker-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+  textarea#editor{
+    width:100%;min-height:280px;font-family:inherit;font-size:17px;line-height:1.7;
+    padding:18px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);
+    color:var(--ink);resize:vertical;
+  }
+  textarea#editor:focus{outline:none;border-color:var(--accent);}
+  .check-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:14px;}
+  button.primary{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:14px;font-weight:700;
+    letter-spacing:.04em;background:var(--accent);color:#fff;border:none;
+    padding:14px 26px;border-radius:10px;cursor:pointer;transition:.15s;
+  }
+  button.primary:hover{background:#583f8a;}
+  button.ghost{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:14px;
+    background:none;border:1.5px solid var(--line);color:var(--muted);
+    padding:13px 22px;border-radius:10px;cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .scorecard{
+    display:none;margin-top:24px;border:1.5px solid var(--line);border-radius:14px;
+    overflow:hidden;background:var(--card);
+  }
+  .scorecard.show{display:block;}
+  .score-head{
+    display:flex;flex-wrap:wrap;align-items:center;gap:20px;
+    padding:22px 24px;background:linear-gradient(120deg,#f3eefb,#fbf6ec);
+    border-bottom:1px solid var(--line);
+  }
+  .big-num{font-size:46px;font-weight:700;line-height:1;color:var(--accent);}
+  .score-head .label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;color:var(--muted);}
+  .verdict{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:15px;font-weight:700;
+    padding:8px 16px;border-radius:24px;margin-left:auto;
+  }
+  .v-clean{background:#e7f4ee;color:var(--green);}
+  .v-warn{background:#fbf3e2;color:var(--gold);}
+  .v-bad{background:var(--red-bg);color:var(--red);}
+  .preview{padding:22px 24px;border-bottom:1px solid var(--line);font-size:17px;line-height:1.85;}
+  mark.flag{background:#fbe3a8;border-radius:3px;padding:0 2px;cursor:help;}
+  mark.flag.perma{background:#f6c2cb;}
+  .hit-list{padding:8px 24px 22px;}
+  .hit{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;
+    padding:12px 0;border-bottom:1px dotted var(--line);
+  }
+  .hit:last-child{border-bottom:none;}
+  .hit .ht{font-weight:700;font-size:16px;}
+  .hit .hx{color:var(--muted);font-size:15px;flex:1 1 300px;}
+  .hit .hn{font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;color:var(--accent);white-space:nowrap;}
+  .empty-note{padding:40px 24px;text-align:center;color:var(--muted);font-style:italic;}
+
+  /* Prompt block */
+  .pb-controls{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px;}
+  .pb-controls label{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;
+    display:flex;align-items:center;gap:7px;background:var(--card);
+    border:1.5px solid var(--line);border-radius:8px;padding:9px 14px;cursor:pointer;
+  }
+  .pb-controls label:hover{border-color:var(--accent-2);}
+  .pb-controls input{accent-color:var(--accent);width:16px;height:16px;}
+  pre#promptOut{
+    background:#241f36;color:#ece7f7;border-radius:14px;padding:24px;
+    font-family:"SF Mono","Consolas",monospace;font-size:13.5px;line-height:1.6;
+    white-space:pre-wrap;word-wrap:break-word;max-height:440px;overflow:auto;
+  }
+  .toast{
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:14px;padding:13px 24px;border-radius:30px;opacity:0;pointer-events:none;
+    transition:.25s;z-index:60;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  footer{
+    text-align:center;font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;
+    color:var(--muted);padding:40px 20px 10px;border-top:1px solid var(--line);margin-top:50px;
+    letter-spacing:.05em;
+  }
+  .intro{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+    border-radius:10px;padding:20px 24px;margin-bottom:10px;font-size:16px;
+  }
+  @media(max-width:560px){
+    header.masthead h1{font-size:30px;}
+    table.ref td{font-size:15px;}
+    .big-num{font-size:36px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="kicker">The Invisible Pen · AI Writing Secrets</div>
+  <h1>The AI Banned Words Tool</h1>
+  <p class="sub">The words, phrases, and patterns that give away AI writing — searchable, checkable, and ready to drop into your prompts.</p>
+  <div class="brandline">Built from 35+ published books &amp; the Clark Publishing House pipeline · Jessica Waldron</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-panel="reference">📖 Reference</button>
+  <button class="tab-btn" data-panel="checker">🔍 Check My Text</button>
+  <button class="tab-btn" data-panel="prompt">⚡ Prompt Block</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ REFERENCE ============ -->
+  <section class="panel active" id="reference">
+    <div class="intro">
+      Your readers should never be able to tell AI helped write your book. Every entry below has been flagged because it shows up repeatedly in AI-generated fiction and breaks the illusion of a human voice. <strong>This isn't about never using these words</strong> — it's about frequency and clustering. More than three on a page? That paragraph needs another pass.
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="refSearch" placeholder="Search any word or phrase…" autocomplete="off">
+      </div>
+      <span class="count-pill" id="refCount"></span>
+    </div>
+    <div class="filters" id="refFilters"></div>
+
+    <div id="refBody"></div>
+  </section>
+
+  <!-- ============ CHECKER ============ -->
+  <section class="panel" id="checker">
+    <div class="intro">
+      Paste a chapter, scene, or paragraph. The checker scans it against the entire banned list and highlights every hit, with the fix for each. Think of it as the <strong>Ctrl+F method</strong> — automated.
+    </div>
+    <textarea id="editor" placeholder="Paste your manuscript text here…"></textarea>
+    <div class="check-actions">
+      <button class="primary" id="runCheck">Check my text</button>
+      <button class="ghost" id="clearCheck">Clear</button>
+      <span class="count-pill" id="wordCount">0 words</span>
+    </div>
+    <div class="scorecard" id="scorecard">
+      <div class="score-head">
+        <div>
+          <div class="big-num" id="hitNum">0</div>
+          <div class="label">flagged items</div>
+        </div>
+        <div>
+          <div class="big-num" id="permaNum" style="color:var(--red)">0</div>
+          <div class="label">permanently banned</div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+      <div class="preview" id="preview"></div>
+      <div class="hit-list" id="hitList"></div>
+    </div>
+  </section>
+
+  <!-- ============ PROMPT BLOCK ============ -->
+  <section class="panel" id="prompt">
+    <div class="intro">
+      Generate a ready-to-paste instruction block. Drop it into your Claude (or other AI) prompt so the model avoids these tells <em>while it drafts</em> — not after. Pick which sections to include.
+    </div>
+    <div class="pb-controls" id="pbControls"></div>
+    <div class="check-actions" style="margin-bottom:16px">
+      <button class="primary" id="copyPrompt">Copy prompt block</button>
+      <span class="count-pill" id="pbCount"></span>
+    </div>
+    <pre id="promptOut"></pre>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<footer>
+  THE INVISIBLE PEN · theinvisiblepen.com · AI Writing Secrets Podcast<br>
+  Want the full AI editing system? Take <strong>Edit Like a Boss</strong> — the multi-pass method that catches everything.
+</footer>
+
+<script>
+/* ============================================================
+   DATA — pulled verbatim from "THE AI BANNED WORDS GUIDE"
+   Nothing here is invented. category drives filters + prompt block.
+   perma = permanently banned (red). fix = what to do instead / why.
+   ============================================================ */
+const DATA = [
+  // ---- Section 1: Character first names ----
+  {c:"Names", t:"Lucian", f:"AI's #1 favorite brooding male name. Appears in nearly every dark romance AI draft."},
+  {c:"Names", t:"Marcus", f:"AI defaults to this for 'strong but sensitive' heroes. Overused to parody."},
+  {c:"Names", t:"Emma", f:"The AI equivalent of 'placeholder heroine.' Generic and instantly recognizable."},
+  {c:"Names", t:"Sebastian", f:"AI's go-to for aristocratic or wealthy heroes. Every Regency and billionaire draft."},
+  {c:"Names", t:"Nathaniel", f:"AI pairs this with brooding intellectuals. Predictable."},
+  {c:"Names", t:"Gabriel", f:"AI's angel/fallen angel name of choice. Every supernatural draft."},
+  {c:"Names", t:"Grayson", f:"Modern romance AI default. Lost all distinctiveness."},
+  {c:"Names", t:"Asher", f:"AI's 'cool guy' name. Overused in contemporary romance."},
+  {c:"Names", t:"Olivia", f:"AI's favorite 'everywoman' heroine name."},
+  {c:"Names", t:"Sophia", f:"Second most common AI heroine name after Emma."},
+  {c:"Names", t:"Sofia", f:"Second most common AI heroine name after Emma."},
+  {c:"Names", t:"Isabella", f:"AI defaults here for anything historical or passionate."},
+  {c:"Names", t:"Aurora", f:"AI's pick for fantasy/fairy tale heroines. Every. Single. Time."},
+  {c:"Names", t:"Violet", f:"AI's 'quirky but beautiful' heroine name."},
+  {c:"Names", t:"Lila", f:"AI's go-to for mysterious or artistic heroines."},
+  {c:"Names", t:"Cordelia", f:"AI defaults here for 'strong literary heroine' vibes."},
+  {c:"Names", t:"Nikolia", f:"AI-invented spelling that doesn't exist in real life."},
+  {c:"Names", t:"Mateo", f:"AI's default Latin lover name."},
+  {c:"Names", t:"Dante", f:"AI pairs with dark/dangerous heroes constantly."},
+  {c:"Names", t:"Ethan", f:"So overused by AI it's become invisible."},
+  // last names
+  {c:"Names", t:"Chen", f:"As a surname — AI's default 'diverse' surname. Tokenizing, not characterizing."},
+  {c:"Names", t:"Henderson", f:"AI's #1 generic American surname."},
+  {c:"Names", t:"Patterson", f:"AI's go-to for authority figures."},
+  {c:"Names", t:"Volkov", f:"Every AI Russian character gets this name."},
+  {c:"Names", t:"Blackwood", f:"AI's favorite gothic/dark surname."},
+  {c:"Names", t:"Thornwood", f:"See Blackwood. Same energy."},
+  {c:"Names", t:"Sterling", f:"AI's billionaire surname of choice."},
+  {c:"Names", t:"Hawthorne", f:"Literary AI crutch name."},
+  {c:"Names", t:"Ashworth", f:"AI loves -worth endings."},
+
+  // ---- Section 2: Filler & Vague ----
+  {c:"Filler", t:"a sense of", f:"Name the actual sensation. 'A sense of dread' → 'Her skin prickled.'"},
+  {c:"Filler", t:"couldn't help but", f:"Delete. Just have them do the thing."},
+  {c:"Filler", t:"it was as if", f:"Cut and write the comparison directly."},
+  {c:"Filler", t:"something about", f:"Be specific. What about them? Name it."},
+  {c:"Filler", t:"a mix of", f:"Pick the dominant emotion. You don't feel a mix."},
+  {c:"Filler", t:"mixture of", f:"Pick the dominant emotion. You don't feel a mix."},
+  {c:"Filler", t:"in a way that", f:"Rewrite the sentence without this phrase. It always works."},
+  {c:"Filler", t:"sort of", f:"Delete. Commit to the description."},
+  {c:"Filler", t:"kind of", f:"Delete. Commit to the description."},
+  {c:"Filler", t:"almost like", f:"Either it's like that thing or it isn't. Commit."},
+  {c:"Filler", t:"there was something", f:"What was the something? Say that instead."},
+  {c:"Filler", t:"for the first time", f:"Usually unnecessary. The reader can tell it's new."},
+  {c:"Filler", t:"by the time", f:"Often a pacing crutch. Cut and show the action."},
+  {c:"Filler", t:"figure it out", f:"AI's default 'I don't know what the character actually does here.'"},
+  {c:"Filler", t:"the space between us", f:"AI's favorite metaphor for emotional tension. Find your own."},
+  {c:"Filler", t:"the distance between us", f:"AI's favorite metaphor for emotional tension. Find your own."},
+
+  // ---- Section 2: Purple ----
+  {c:"Purple", t:"ethereal", f:"AI's favorite adjective for anything beautiful or otherworldly."},
+  {c:"Purple", t:"cascading", f:"Hair cascades. Emotions cascade. Light cascades. AI loves this word."},
+  {c:"Purple", t:"delicate", f:"AI uses for every feminine description. Hands, features, movements."},
+  {c:"Purple", t:"palpable", f:"'The tension was palpable.' AI writes this 10x per manuscript."},
+  {c:"Purple", t:"unbidden", f:"Tears, thoughts, memories 'come unbidden.' Delete all."},
+  {c:"Purple", t:"visceral", f:"AI thinks this makes prose feel deeper. It doesn't."},
+  {c:"Purple", t:"gossamer", f:"AI's go-to for anything wispy, light, or dreamy."},
+  {c:"Purple", t:"languid", f:"AI defaults here for anything slow or sensual."},
+  {c:"Purple", t:"tendrils of", f:"Tendrils of fear, smoke, hair, darkness — AI can't stop."},
+  {c:"Purple", t:"electricity coursing through", f:"AI's #1 description of physical attraction. Ban permanently.", perma:true},
+  {c:"Purple", t:"a smile tugging at", f:"This phrase appears in every AI draft ever generated. Kill it.", perma:true},
+  {c:"Purple", t:"smile tugging at", f:"This phrase appears in every AI draft ever generated. Kill it.", perma:true},
+
+  // ---- Section 2: Tell-not-show ----
+  {c:"Tell", t:"felt a wave of", f:"Delete 'she felt' and describe what the wave does to her body."},
+  {c:"Tell", t:"realized that", f:"Show the moment of realization through action or dialogue."},
+  {c:"Tell", t:"she noticed", f:"Cut and just describe what she's seeing."},
+  {c:"Tell", t:"he noticed", f:"Cut and just describe what he's seeing."},
+  {c:"Tell", t:"seemed to", f:"Either he did or he didn't. Commit."},
+  {c:"Tell", t:"thought to herself", f:"Who else would she think to? Cut 'to herself.'"},
+  {c:"Tell", t:"thought to himself", f:"Who else would he think to? Cut 'to himself.'"},
+  {c:"Tell", t:"wondered if", f:"Show the uncertainty through behavior, not internal narration."},
+  {c:"Tell", t:"was aware of", f:"Cut and describe what she's aware of directly."},
+  {c:"Tell", t:"it occurred to", f:"Show the thought landing, don't announce it."},
+  {c:"Tell", t:"couldn't shake the feeling", f:"Describe the feeling persisting through physical sensation."},
+  {c:"Tell", t:"something shifted", f:"AI's favorite way to avoid the actual emotional beat. What shifted? Write THAT."},
+  {c:"Tell", t:"didn't trust my voice", f:"AI uses this in every emotional confrontation scene."},
+  {c:"Tell", t:"a beat of silence", f:"AI's silence management. Find other ways to handle pauses."},
+  {c:"Tell", t:"broke the silence", f:"AI's silence management. Find other ways to handle pauses."},
+  {c:"Tell", t:"search my face", f:"AI defaults to eye contact as the only nonverbal communication."},
+  {c:"Tell", t:"meet my gaze", f:"AI defaults to eye contact as the only nonverbal communication."},
+  {c:"Tell", t:"hold my gaze", f:"AI defaults to eye contact as the only nonverbal communication."},
+  {c:"Tell", t:"the air between us", f:"AI's physical metaphor for emotional tension. Used constantly."},
+
+  // ---- Section 3: Single word kill list ----
+  ...["professional","chaos","tangled","hitched","unwavering","steady","navigate","shadows","glow",
+      "suddenly","slowly","quietly","incredibly","entirely","finally","slightly","completely",
+      "unreadable","precision","practiced","heavy","weight","tension","tense","flicker","something",
+      "clearly","exhales","inhales","humming","hum","buzz","maybe","lowering","tilting","rolling",
+      "grip","gripping","scent of","smell of","smells like"]
+      .map(w=>({c:"Kill List", t:w, f:"Overused by AI. Fine once — a tell if it appears more than once or twice per chapter."})),
+
+  // ---- Section 4: Physical actions ----
+  {c:"Actions", t:"arms crossed", f:"Try: hands in pockets, gripping the other wrist, shoulders turning away."},
+  {c:"Actions", t:"folded arms", f:"Try: hands in pockets, gripping the other wrist, shoulders turning away."},
+  {c:"Actions", t:"raised an eyebrow", f:"Try: tilted head, narrowed eyes, pressed lips, chin lifted."},
+  {c:"Actions", t:"raised a brow", f:"Try: tilted head, narrowed eyes, pressed lips, chin lifted."},
+  {c:"Actions", t:"bit her lip", f:"Try: caught her breath, swallowed hard, dug nails into palm."},
+  {c:"Actions", t:"bit his lip", f:"Try: caught his breath, swallowed hard, dug nails into palm."},
+  {c:"Actions", t:"let out a breath she didn't know she was holding", f:"DELETE. ALWAYS DELETE. The #1 AI tell in fiction.", perma:true},
+  {c:"Actions", t:"a breath she didn't know she was holding", f:"DELETE. ALWAYS DELETE. The #1 AI tell in fiction.", perma:true},
+  {c:"Actions", t:"breath he didn't know he was holding", f:"DELETE. ALWAYS DELETE. The #1 AI tell in fiction.", perma:true},
+  {c:"Actions", t:"clenched his jaw", f:"Try: ground his teeth, worked a muscle in his cheek, neck tendons standing out."},
+  {c:"Actions", t:"clenched her jaw", f:"Try: ground her teeth, worked a muscle in her cheek."},
+  {c:"Actions", t:"rolled her eyes", f:"Try: looked away, exhaled through nose, pressed tongue to cheek, head tilt back."},
+  {c:"Actions", t:"rolled his eyes", f:"Try: looked away, exhaled through nose, pressed tongue to cheek."},
+  {c:"Actions", t:"roll my eyes", f:"Try: looked away, exhaled through nose, head tilt back."},
+  {c:"Actions", t:"eyes rolled", f:"AI loves rolling eyes. Your characters need new moves."},
+  {c:"Actions", t:"heart hammered", f:"Try: pulse kicked, chest squeezed, blood rushed, ribs felt too tight."},
+  {c:"Actions", t:"heart pounded", f:"Try: pulse kicked, chest squeezed, blood rushed, ribs felt too tight."},
+  {c:"Actions", t:"heart raced", f:"Try: pulse kicked, chest squeezed, blood rushed, ribs felt too tight."},
+  {c:"Actions", t:"smirked", f:"Try: one corner of mouth lifted, lips twitched, fought a smile, mouth curved."},
+  {c:"Actions", t:"smirk", f:"Try: one corner of mouth lifted, lips twitched, mouth curved."},
+  {c:"Actions", t:"narrowed my eyes", f:"AI uses this for every suspicious or angry moment. Vary it."},
+  {c:"Actions", t:"narrowed her eyes", f:"AI uses this for every suspicious or angry moment. Vary it."},
+  {c:"Actions", t:"narrowed his eyes", f:"AI uses this for every suspicious or angry moment. Vary it."},
+  {c:"Actions", t:"shook my head", f:"Find the specific gesture — a slow shake, a quick jerk, chin dropping."},
+  {c:"Actions", t:"shook her head", f:"Find the specific gesture — a slow shake, a quick jerk, chin dropping."},
+  {c:"Actions", t:"shook his head", f:"Find the specific gesture — a slow shake, a quick jerk, chin dropping."},
+  {c:"Actions", t:"tilts his head", f:"AI's default 'curious' gesture. Dogs tilt heads. Humans do more."},
+  {c:"Actions", t:"tilts her head", f:"AI's default 'curious' gesture. Dogs tilt heads. Humans do more."},
+  {c:"Actions", t:"tilted his head", f:"AI's default 'curious' gesture. Vary it."},
+  {c:"Actions", t:"tilted her head", f:"AI's default 'curious' gesture. Vary it."},
+  {c:"Actions", t:"open my mouth to", f:"AI stalls with this before dialogue. Cut and go straight to the line."},
+  {c:"Actions", t:"cross my arms", f:"Same problem as 'arms crossed,' first person."},
+  {c:"Actions", t:"hands through hair", f:"AI's anxiety gesture. Find something specific to the character."},
+  {c:"Actions", t:"hand through his hair", f:"AI's anxiety gesture. Find something specific to the character."},
+  {c:"Actions", t:"hand through her hair", f:"AI's anxiety gesture. Find something specific to the character."},
+  {c:"Actions", t:"hand over face", f:"AI's anxiety gesture. Find something specific to the character."},
+
+  // ---- Section 5: Dialogue tags ----
+  {c:"Dialogue", t:"growled", f:"Not a human sound. Use 'said' + an action beat showing anger."},
+  {c:"Dialogue", t:"whispered", f:"AI whispers constantly. Reserve for actual whispering."},
+  {c:"Dialogue", t:"breathed", f:"People don't breathe words. Describe the breathlessness separately."},
+  {c:"Dialogue", t:"murmured", f:"AI's default 'soft' tag. Overused past meaning. Use 'said' or an action beat."},
+  {c:"Dialogue", t:"exclaimed", f:"Telling the reader it's exciting instead of writing exciting dialogue."},
+  {c:"Dialogue", t:"hissed", f:"You can't hiss words without sibilants. Just use 'said.'"},
+  {c:"Dialogue", t:"softly", f:"As a tag modifier — AI adds it to every tender moment. Let the words be soft."},
+
+  // ---- Section 6: Heat scene bans ----
+  {c:"Heat", t:"tangled sheets", f:"PERMANENTLY BANNED. AI's #1 post-sex image. Find literally anything else.", perma:true},
+  {c:"Heat", t:"slick folds", f:"PERMANENTLY BANNED. AI's default female anatomy description. Write better.", perma:true},
+  {c:"Heat", t:"claimed her lips", f:"AI's aggressive kiss default. Mouths don't get 'claimed.'"},
+  {c:"Heat", t:"their bodies moved as one", f:"AI's favorite post-intimacy line. Cliché beyond repair."},
+  {c:"Heat", t:"electricity shot through", f:"Even worse in heat scenes. See the Purple section."},
+  {c:"Heat", t:"every nerve ending", f:"AI describes arousal this way in every single scene."},
+  {c:"Heat", t:"white-hot pleasure", f:"AI's climax description default."},
+  {c:"Heat", t:"shattered", f:"AI loves characters 'shattering' at climax. Overused."},
+];
+
+const CATEGORY_INFO = {
+  "Names":    {label:"Character Names", desc:"AI recycles the same cast. These have become red flags for readers."},
+  "Filler":   {label:"Filler & Vague", desc:"AI uses these to avoid being specific. Word count without meaning."},
+  "Purple":   {label:"Purple & Overwritten", desc:"AI trying too hard to sound literary."},
+  "Tell":     {label:"Tell-Not-Show", desc:"AI tells emotion instead of showing it. The evidence."},
+  "Kill List":{label:"Single-Word Kill List", desc:"Not always wrong — but AI overuses them into tells. More than once per chapter? Check it."},
+  "Actions":  {label:"Physical Actions", desc:"AI has ~8 gestures and rotates them endlessly. Real humans have hundreds."},
+  "Dialogue": {label:"Dialogue Tags", desc:"'Said' is invisible. Everything else draws attention to itself."},
+  "Heat":     {label:"Heat-Scene Bans", desc:"AI writes intimacy from the same three templates. Dead giveaways."},
+};
+const CATEGORY_ORDER = ["Names","Filler","Purple","Tell","Kill List","Actions","Dialogue","Heat"];
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ============================================================
+   REFERENCE TAB
+   ============================================================ */
+let activeFilter = "All";
+const refBody = document.getElementById('refBody');
+const refFilters = document.getElementById('refFilters');
+
+// build filter chips
+const filterCats = ["All", ...CATEGORY_ORDER];
+filterCats.forEach(cat=>{
+  const b=document.createElement('button');
+  b.textContent = cat==="All" ? "All" : CATEGORY_INFO[cat].label;
+  if(cat==="All") b.classList.add('active');
+  b.addEventListener('click',()=>{
+    activeFilter=cat;
+    refFilters.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderReference();
+  });
+  refFilters.appendChild(b);
+});
+
+function renderReference(){
+  const q = document.getElementById('refSearch').value.trim().toLowerCase();
+  refBody.innerHTML='';
+  let shown=0;
+  CATEGORY_ORDER.forEach(cat=>{
+    if(activeFilter!=="All" && activeFilter!==cat) return;
+    const items = DATA.filter(d=>d.c===cat &&
+      (q==="" || d.t.toLowerCase().includes(q) || (d.f||"").toLowerCase().includes(q)));
+    if(items.length===0) return;
+    shown += items.length;
+    const h=document.createElement('h2'); h.className='section-h';
+    h.textContent=CATEGORY_INFO[cat].label;
+    refBody.appendChild(h);
+    const s=document.createElement('p'); s.className='section-sub';
+    s.textContent=CATEGORY_INFO[cat].desc;
+    refBody.appendChild(s);
+
+    if(cat==="Kill List"){
+      const grid=document.createElement('div'); grid.className='word-grid';
+      items.forEach(d=>{
+        const chip=document.createElement('div'); chip.className='chip';
+        chip.textContent=d.t;
+        chip.title="Click to copy";
+        chip.addEventListener('click',()=>copy(d.t));
+        grid.appendChild(chip);
+      });
+      refBody.appendChild(grid);
+    } else {
+      const tbl=document.createElement('table'); tbl.className='ref';
+      items.forEach(d=>{
+        const tr=document.createElement('tr');
+        const td1=document.createElement('td'); td1.className='term';
+        td1.innerHTML = escapeHtml(d.t) + (d.perma?'<span class="perma">PERMA-BAN</span>':'');
+        const cp=document.createElement('button'); cp.className='copyword'; cp.textContent='copy';
+        cp.addEventListener('click',e=>{e.stopPropagation();copy(d.t);});
+        td1.appendChild(cp);
+        const td2=document.createElement('td'); td2.className='fix';
+        td2.textContent=d.f;
+        tr.appendChild(td1); tr.appendChild(td2);
+        tbl.appendChild(tr);
+      });
+      refBody.appendChild(tbl);
+    }
+  });
+  document.getElementById('refCount').textContent =
+    shown + (shown===1?" entry":" entries") + (q?` matching “${q}”`:"");
+  if(shown===0){
+    refBody.innerHTML='<p class="empty-note">No entries match. Try a different word.</p>';
+  }
+}
+document.getElementById('refSearch').addEventListener('input',renderReference);
+
+/* ============================================================
+   CHECKER TAB
+   ============================================================ */
+// Build detection list, longest-first so phrases win over contained words.
+const DETECT = [...DATA].sort((a,b)=>b.t.length-a.t.length);
+
+const editor=document.getElementById('editor');
+editor.addEventListener('input',()=>{
+  const w=editor.value.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('wordCount').textContent = w + (w===1?" word":" words");
+});
+document.getElementById('clearCheck').addEventListener('click',()=>{
+  editor.value=''; document.getElementById('scorecard').classList.remove('show');
+  document.getElementById('wordCount').textContent='0 words';
+});
+
+document.getElementById('runCheck').addEventListener('click',runCheck);
+
+function runCheck(){
+  const text=editor.value;
+  if(!text.trim()){ flash("Paste some text first."); return; }
+  const lower=text.toLowerCase();
+  const taken=new Array(text.length).fill(false); // consumed char ranges
+  const hits=[]; // {start,end,data}
+
+  DETECT.forEach(d=>{
+    const term=d.t.toLowerCase();
+    let from=0, idx;
+    while((idx=lower.indexOf(term,from))!==-1){
+      const end=idx+term.length;
+      // word-boundary check for short single words to avoid 'hum' in 'human'
+      const before=text[idx-1], after=text[end];
+      const boundaryOk = !/[a-z]/i.test(before||" ") && !/[a-z]/i.test(after||" ");
+      const isPhrase = term.includes(" ");
+      let overlap=false;
+      for(let i=idx;i<end;i++){ if(taken[i]){overlap=true;break;} }
+      if(!overlap && (isPhrase || boundaryOk)){
+        for(let i=idx;i<end;i++) taken[i]=true;
+        hits.push({start:idx,end,data:d});
+      }
+      from=idx+term.length;
+    }
+  });
+
+  hits.sort((a,b)=>a.start-b.start);
+
+  // build highlighted preview
+  let html=''; let cursor=0;
+  hits.forEach(h=>{
+    html+=escapeHtml(text.slice(cursor,h.start));
+    const cls = h.data.perma ? 'flag perma' : 'flag';
+    html+=`<mark class="${cls}" title="${escapeAttr(h.data.f)}">${escapeHtml(text.slice(h.start,h.end))}</mark>`;
+    cursor=h.end;
+  });
+  html+=escapeHtml(text.slice(cursor));
+  document.getElementById('preview').innerHTML = html || '<span class="empty-note">No text.</span>';
+
+  const permaCount=hits.filter(h=>h.data.perma).length;
+  document.getElementById('hitNum').textContent=hits.length;
+  document.getElementById('permaNum').textContent=permaCount;
+
+  // verdict
+  const words=text.trim().split(/\s+/).filter(Boolean).length;
+  const per1k = words? (hits.length/words*1000):0;
+  const v=document.getElementById('verdict');
+  if(hits.length===0){ v.textContent="Clean ✓"; v.className="verdict v-clean"; }
+  else if(permaCount>0 || per1k>12){ v.textContent="Needs another pass"; v.className="verdict v-bad"; }
+  else { v.textContent="A few to tighten"; v.className="verdict v-warn"; }
+
+  // hit list — grouped & counted
+  const byTerm={};
+  hits.forEach(h=>{
+    const k=h.data.t.toLowerCase();
+    if(!byTerm[k]) byTerm[k]={data:h.data,n:0};
+    byTerm[k].n++;
+  });
+  const sorted=Object.values(byTerm).sort((a,b)=>b.n-a.n);
+  const hl=document.getElementById('hitList');
+  if(sorted.length===0){
+    hl.innerHTML='<div class="empty-note">No banned words found. Nicely done — that reads human.</div>';
+  } else {
+    hl.innerHTML='';
+    sorted.forEach(s=>{
+      const div=document.createElement('div'); div.className='hit';
+      div.innerHTML=`<span class="ht">${escapeHtml(s.data.t)}${s.data.perma?'<span class="perma">PERMA-BAN</span>':''}</span>`+
+        `<span class="hx">${escapeHtml(s.data.f)}</span>`+
+        `<span class="hn">${s.n}× · ${CATEGORY_INFO[s.data.c].label}</span>`;
+      hl.appendChild(div);
+    });
+  }
+  document.getElementById('scorecard').classList.add('show');
+  document.getElementById('scorecard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ============================================================
+   PROMPT BLOCK TAB
+   ============================================================ */
+const pbControls=document.getElementById('pbControls');
+const pbState={};
+CATEGORY_ORDER.forEach(cat=>{
+  pbState[cat]=true;
+  const lab=document.createElement('label');
+  const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true;
+  cb.addEventListener('change',()=>{pbState[cat]=cb.checked; buildPrompt();});
+  lab.appendChild(cb);
+  lab.appendChild(document.createTextNode(CATEGORY_INFO[cat].label));
+  pbControls.appendChild(lab);
+});
+
+function buildPrompt(){
+  let out="BANNED WORDS & PHRASES — do NOT use the following while drafting.\n";
+  out+="These are AI tells. If a banned item is the only natural choice, rewrite the sentence so it isn't needed.\n";
+  let total=0;
+  CATEGORY_ORDER.forEach(cat=>{
+    if(!pbState[cat]) return;
+    const items=DATA.filter(d=>d.c===cat);
+    if(!items.length) return;
+    // de-dupe identical terms (e.g., Sophia/Sofia stay separate, but dup phrases collapse)
+    const seen=new Set(); const terms=[];
+    items.forEach(d=>{ const k=d.t.toLowerCase(); if(!seen.has(k)){seen.add(k);terms.push(d.t);} });
+    total+=terms.length;
+    out+=`\n## ${CATEGORY_INFO[cat].label}\n`;
+    out+=terms.map(t=>`- ${t}`).join("\n")+"\n";
+  });
+  out+="\nRULE: Never let more than ONE of these appear on the same page. Show emotion through specific physical action, not named feelings. Use 'said'/'asked' for dialogue tags. — The Invisible Pen";
+  document.getElementById('promptOut').textContent=out;
+  document.getElementById('pbCount').textContent=total+" terms included";
+}
+document.getElementById('copyPrompt').addEventListener('click',()=>{
+  copy(document.getElementById('promptOut').textContent, "Prompt block copied!");
+});
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function escapeHtml(s){return (s||"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function escapeAttr(s){return escapeHtml(s).replace(/'/g,"&#39;");}
+function copy(txt,msg){
+  navigator.clipboard.writeText(txt).then(()=>flash(msg||`Copied “${txt}”`)).catch(()=>flash("Copy failed"));
+}
+function flash(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._tid); t._tid=setTimeout(()=>t.classList.remove('show'),1600);
+}
+
+// init
+renderReference();
+buildPrompt();
+</script>
+</body>
+</html>
