@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Story Studio — Your Book Dashboard</title>
+<title>Story Studio — Your Book Dashboard · The Invisible Pen</title>
 <style>
 :root { color-scheme: light; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,10 +58,13 @@ footer { margin-top: 34px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; 
 #newform .frow { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
 #newform input[type=text] { width: 100%; }
 .hint { font-size:11px; color:#a89; }
+.brand { font-family: Georgia, "Times New Roman", serif; color:#c79a4b; font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; margin-bottom:8px; }
+.brand-foot { margin-top:12px; font-family: Georgia, "Times New Roman", serif; color:#6d2b4e; font-weight:700; font-size:12px; letter-spacing:.05em; }
 </style>
 </head>
 <body>
 <div id="app">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
   <header>
     <h1>📚 Story Studio</h1>
     <span class="summary" id="summary"></span>
@@ -113,6 +116,7 @@ footer { margin-top: 34px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; 
   <footer>
     Your shelf saves automatically in this page. Use <b>⬇ Backup</b> to download a copy you can keep or move to another computer, and <b>⬆ Restore</b> to load it back.<br>
     <b>▶ Resume</b> sends the book to your Claude chat (or copies it to paste) so you can pick up right where you left off.
+    <div class="brand-foot">The Invisible Pen · Clark Publishing House LLC</div>
   </footer>
 </div>
 <div id="toast"></div>
