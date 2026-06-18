@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Brinley Reads — Ninety Days, Ch. 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bog:#7d1f2c;          /* cranberry bog — heat / accent */
+    --orchard:#3b5236;      /* orchard green — structure */
+    --orchard-soft:#6f8467;
+    --paper:#f3f0e6;        /* warm orchard paper */
+    --paper-2:#ebe6d6;
+    --ink:#241f1b;
+    --ink-soft:#5a5249;
+    --blush:#c75b6a;        /* rosé — Brinley */
+    --blush-bg:#f7e6e6;
+    --line:#d8d2c0;
+    --good:#3b5236;
+    --warn:#b7791f;
+    --hi:#7d1f2c;
+    --radius:14px;
+    --shadow:0 1px 0 rgba(0,0,0,.04), 0 12px 30px -18px rgba(36,31,27,.45);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px 90px;}
+
+  /* ---------- Masthead ---------- */
+  header.mast{
+    padding:46px 0 22px;border-bottom:2px solid var(--orchard);
+    margin-bottom:0;
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--orchard-soft);font-weight:600;margin:0 0 10px;
+  }
+  .who{
+    font-family:"Caveat",cursive;font-size:46px;line-height:.9;
+    color:var(--blush);margin:0 0 4px;font-weight:700;
+  }
+  h1{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(28px,5vw,44px);line-height:1.04;letter-spacing:-.01em;
+    margin:6px 0 6px;color:var(--ink);
+  }
+  .sub{color:var(--ink-soft);font-size:15px;margin:0;}
+  .slug{
+    margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;
+  }
+  .chip{
+    font-size:12px;font-weight:600;letter-spacing:.02em;
+    padding:5px 11px;border-radius:999px;border:1px solid var(--line);
+    background:var(--paper-2);color:var(--ink-soft);
+  }
+  .chip.hot{background:var(--bog);color:#fff;border-color:var(--bog);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    position:sticky;top:0;z-index:5;background:var(--paper);
+    display:flex;gap:4px;padding:14px 0 0;border-bottom:1px solid var(--line);
+    margin-bottom:30px;
+  }
+  .tab{
+    appearance:none;border:none;background:none;cursor:pointer;
+    font-family:"Inter",sans-serif;font-size:15px;font-weight:600;
+    color:var(--ink-soft);padding:12px 16px 14px;border-radius:10px 10px 0 0;
+    border-bottom:3px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .tab:hover{color:var(--ink);}
+  .tab[aria-selected="true"]{color:var(--bog);border-bottom-color:var(--bog);}
+  .tab:focus-visible{outline:3px solid var(--blush);outline-offset:2px;}
+  .panel{display:none;animation:fade .25s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* ---------- Brinley sections ---------- */
+  .sec{margin:0 0 30px;}
+  .sec-head{
+    display:flex;align-items:baseline;gap:12px;margin:0 0 12px;
+  }
+  .sec-num{
+    font-family:"Fraunces",serif;font-weight:600;font-size:14px;
+    color:var(--blush);background:var(--blush-bg);
+    border-radius:8px;padding:3px 9px;white-space:nowrap;
+  }
+  .sec h2{
+    font-family:"Fraunces",serif;font-weight:600;font-size:22px;
+    margin:0;letter-spacing:-.01em;
+  }
+  /* text-message bubble = Brinley's signature voice */
+  .bubble{
+    background:#fff;border:1px solid var(--line);border-radius:18px 18px 18px 4px;
+    padding:16px 18px;margin:0 0 12px;box-shadow:var(--shadow);
+    max-width:96%;
+  }
+  .bubble p{margin:0 0 11px;}
+  .bubble p:last-child{margin-bottom:0;}
+  .bubble strong{color:var(--bog);}
+  .caps{font-weight:700;letter-spacing:.01em;}
+  .bubble.note{background:var(--blush-bg);border-color:#e9c9cd;border-radius:18px;}
+
+  ul.hits{list-style:none;padding:0;margin:0;}
+  ul.hits li{
+    background:#fff;border:1px solid var(--line);border-left:4px solid var(--orchard-soft);
+    border-radius:10px;padding:11px 14px;margin:0 0 9px;font-size:15px;
+  }
+  ul.hits li b{color:var(--orchard);}
+  .pull{
+    font-family:"Fraunces",serif;font-style:italic;font-size:18px;
+    color:var(--ink);background:var(--paper-2);border-left:4px solid var(--bog);
+    padding:10px 16px;border-radius:0 10px 10px 0;margin:0 0 9px;
+  }
+
+  /* ---------- Verdict tab ---------- */
+  .ledger{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;margin:0 0 26px;box-shadow:var(--shadow);
+  }
+  .ledger h3,.score h3,.fixes h3{
+    font-family:"Fraunces",serif;font-weight:600;font-size:20px;margin:0 0 4px;
+  }
+  .ledger .lead{color:var(--ink-soft);font-size:14px;margin:0 0 16px;}
+  .gauge{display:flex;flex-wrap:wrap;gap:18px;}
+  .gauge .g{flex:1 1 150px;}
+  .gauge .glabel{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:600;margin:0 0 6px;}
+  .gauge .gval{font-family:"Fraunces",serif;font-size:30px;font-weight:600;color:var(--bog);line-height:1;}
+  .gauge .gval small{font-size:15px;color:var(--ink-soft);font-weight:500;}
+  .gauge .gnote{font-size:13px;color:var(--ink-soft);margin-top:5px;}
+
+  .score{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;margin:0 0 26px;box-shadow:var(--shadow);
+  }
+  .row{display:grid;grid-template-columns:160px 1fr 44px;align-items:center;gap:12px;margin:0 0 11px;}
+  .row .rl{font-size:14px;font-weight:600;color:var(--ink);}
+  .bar{height:9px;border-radius:99px;background:var(--paper-2);overflow:hidden;}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--orchard-soft),var(--orchard));}
+  .bar.hot i{background:linear-gradient(90deg,#d98a93,var(--bog));}
+  .rn{font-family:"Fraunces",serif;font-weight:600;font-size:15px;text-align:right;color:var(--ink-soft);}
+  .verdict-line{
+    margin-top:6px;padding-top:14px;border-top:1px dashed var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  .verdict-line b{color:var(--ink);}
+  .risk{display:inline-block;font-weight:700;font-size:12px;letter-spacing:.04em;padding:3px 9px;border-radius:6px;}
+  .risk.low{background:#e3ebe0;color:var(--orchard);}
+  .risk.med{background:#fbe6cf;color:var(--warn);}
+
+  .fixes{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow);
+  }
+  ol.fix{list-style:none;counter-reset:f;padding:0;margin:14px 0 0;}
+  ol.fix li{
+    counter-increment:f;position:relative;padding:0 0 16px 44px;margin:0;
+  }
+  ol.fix li::before{
+    content:counter(f);position:absolute;left:0;top:0;
+    width:30px;height:30px;border-radius:50%;
+    background:var(--orchard);color:#fff;font-family:"Fraunces",serif;font-weight:600;
+    display:flex;align-items:center;justify-content:center;font-size:15px;
+  }
+  ol.fix li:last-child{padding-bottom:0;}
+  .pri{font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:5px;margin-right:8px;vertical-align:1px;}
+  .pri.high{background:var(--bog);color:#fff;}
+  .pri.med{background:#fbe6cf;color:var(--warn);}
+  .pri.low{background:var(--paper-2);color:var(--ink-soft);}
+  .fix b{display:inline;}
+  .fix .ft{font-weight:600;}
+
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink-soft);}
+  @media(max-width:560px){
+    .row{grid-template-columns:120px 1fr 38px;}
+    .who{font-size:38px;}
+    .tab{padding:11px 11px 13px;font-size:14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">CPH Beta Read · Reader Persona</p>
+    <p class="who">Brinley Chase</p>
+    <h1>Ninety Days to Marry the Off-Grid Orchardist</h1>
+    <p class="sub">Constance Ruth Clark · New Beginnings · Chapter 1 · Draft v1 · POV: Elena</p>
+    <div class="slug">
+      <span class="chip">Romcom-style read</span>
+      <span class="chip hot">Calibrated to CRC 4/5 heat</span>
+      <span class="chip">Grumpy / spiky-sunshine</span>
+      <span class="chip">90-day marriage clock</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Beta report sections">
+    <button class="tab" id="tab-b" role="tab" aria-controls="p-b" aria-selected="true">Brinley's Read</button>
+    <button class="tab" id="tab-v" role="tab" aria-controls="p-v" aria-selected="false">The Verdict</button>
+  </nav>
+
+  <!-- ============ BRINLEY ============ -->
+  <section class="panel active" id="p-b" role="tabpanel" aria-labelledby="tab-b">
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">FIRST HIT</span><h2>Gut reaction</h2></div>
+      <div class="bubble">
+        <p>Okay. OKAY. Connie. I sat down braced for a quiet little farm thing, and within ONE PAGE a six-foot dinosaur bird had stolen the legal paperwork and I was already screaming into a throw pillow. I'm obsessed.</p>
+        <p>Our girl kicked off her heels and chased a felony emu through an orchard in bare feet, in a skirt, and <strong>won.</strong> That has guts. I read the whole thing in one sitting and immediately wanted Chapter 2, which is, like, the entire job of a Chapter 1. Job done.</p>
+        <p>The vibe I walked away with: spiky city chef versus a man-shaped brick wall, ninety-day clock already ticking, and I am SO ready to watch her crack him open. These are romcom bones, babe. Grumpy / sunshine, except the sunshine is a little feral and carries knives. I'm in.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">HEAT REPORT</span><h2>Priority one</h2></div>
+      <div class="bubble note">
+        <p>I have to be real with you because you told me this is a 4/5, and I'm holding you to it.</p>
+        <p>There's no heat on the page in Chapter 1, and that's <strong>completely correct.</strong> Nobody's getting naked in the gravel next to a goat pen. It's the meet. So I'm not grading heat, I'm grading the <strong>promise</strong>. Does this chapter make me trust the spice is coming?</p>
+        <p>Right now... mostly not yet. And it's a one-beat fix. Elena clocks Silas: broad shoulders, angles and stubble, green flecks in the eyes, the set jaw. Good details. But she reads him like she's sizing up a rival line cook, not like a single nerve in her body woke up. There's zero flicker of <span class="caps">want</span> under the antagonism.</p>
+        <p>For a 4/5, I need <strong>one beat</strong> in this chapter where she notices something about him and HATES that she noticed. The forearms. That voice "that didn't need volume to fill space" (that line is right there and doing nothing for me yet, push it). Half a second where she's mad her stomach did a thing. That single beat is the contract you sign with a heat reader. Plant it and I'll trust you for the whole ninety days. Leave it out and Chapter 1 reads clean, which is going to confuse the reader who bought it for the 4.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">WORKING</span><h2>Stuff that hit</h2></div>
+      <ul class="hits">
+        <li><b>The emu.</b> Beatrix. PERFECT name. "You are not getting paid for this shift" made me physically put my phone down. Screenshot. Group chat. Done.</li>
+        <li><b>Elena's voice.</b> "I don't quit on day one." "I have good hearing when people are trying to scare me off." Competent, spiky, doesn't fold. I'd follow her into battle. I'd follow her into a Costco.</li>
+        <li><b>The closing banter.</b> "Goats need moving. You'll want boots." / "I want a lot of things. Boots are a start." THAT is the romcom crackle. That's the engine. I want that energy threaded through everything.</li>
+        <li><b>"Maggie's idea." "The name landed and sat there. He didn't explain it."</b> I gasped. Who is Maggie?? That's a hook with teeth. Do not resolve it for ten chapters, I'm begging.</li>
+        <li><b>Silas talks in verdicts, not questions</b> ("You the chef."). Great character tic. He speaks in convictions. Keep that, it's doing a lot of quiet work.</li>
+      </ul>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">NEEDS WORK</span><h2>Where she lost me a little</h2></div>
+      <div class="bubble">
+        <p><strong>The heat-promise beat.</strong> Big one, see above. One sentence fixes it.</p>
+        <p><strong>Silas needs one hairline crack.</strong> The wall is correct, but I need to believe there's a person worth ninety days under the flannel. You already gave me the seed: "his mouth twitched. Not a smile. Something closer to surprise." THAT is the crack. Give me maybe one more flicker like it so the wall reads as a <em>locked door</em>, not a solid wall. Locked doors are sexy. Solid walls are just walls.</p>
+        <p><strong>Marlene's phone call.</strong> It does a lot of rules-explaining and stops the scene a touch to do it. The ninety-day setup HAS to land, so it earns its place, but right now it reads a little like a contract being read aloud (because it is). Let her personality carry more of it. She's already got it ("she likes shiny things and people who look like they don't belong"), so lean there and it'll feel like a character instead of a clause.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">MIGHT STING</span><h2>The real-talk part</h2></div>
+      <div class="bubble note">
+        <p>If I didn't already know this was Connie and a 4/5, I'd have guessed clean small-town. The writing's genuinely good and the voice is great, but the romance <em>temperature</em> in Chapter 1 reads sweet, not simmering.</p>
+        <p>And here's the thing: that's not a prose problem. It's a one-beat problem. The fix is NOT "add a sex scene to the meet" (god, no). The fix is to let Elena's body betray her exactly <strong>once.</strong> That's the whole difference between a reader thinking "aw, cute" and a reader thinking "oh, these two are going to be a PROBLEM for each other." Problem is what sells the four.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">HIGHLIGHTS</span><h2>Lines I'd reread</h2></div>
+      <div class="pull">"You are not getting paid for this shift." (to the emu) (I will never recover)</div>
+      <div class="pull">"your bird has boundary issues." / "Emu. Not mine. Maggie's idea."</div>
+      <div class="pull">"The car made it. The shoes didn't."</div>
+      <div class="pull">"a rent check I can't cover with rumors." (oof. real stakes. felt that one.)</div>
+      <div class="bubble">
+        <p>Also: she walks barefoot across gravel and just IGNORES the pain. Queen behavior. And now I need to know what the filthiest, coldest job on the place is, AND I need her to be weirdly, infuriatingly good at it. Give me competence-as-flirtation. That's free 4/5 fuel right there.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ VERDICT ============ -->
+  <section class="panel" id="p-v" role="tabpanel" aria-labelledby="tab-v">
+
+    <div class="ledger">
+      <h3>Heat Ledger · Chapter 1</h3>
+      <p class="lead">Grading the meet, not the payoff. The question is whether the simmer promises the 4/5.</p>
+      <div class="gauge">
+        <div class="g">
+          <p class="glabel">Heat on page</p>
+          <p class="gval">0<small>/5</small></p>
+          <p class="gnote">Correct. It's the meet-cute.</p>
+        </div>
+        <div class="g">
+          <p class="glabel">Heat promise / charge</p>
+          <p class="gval">1.5<small>/5</small></p>
+          <p class="gnote">Reads as conflict-tension, not want.</p>
+        </div>
+        <div class="g">
+          <p class="glabel">Ch.1 target for a 4/5</p>
+          <p class="gval">~2.5<small>/5</small></p>
+          <p class="gnote">One "she notices and hates it" beat closes the gap.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="score">
+      <h3>Brinley's Scorecard</h3>
+      <p class="lead" style="margin-bottom:18px;">1am-couch rubric. Reader feel, not line edits.</p>
+
+      <div class="row"><span class="rl">Hook / cold open</span><span class="bar"><i style="width:90%"></i></span><span class="rn">9</span></div>
+      <div class="row"><span class="rl">Heroine voice</span><span class="bar"><i style="width:90%"></i></span><span class="rn">9</span></div>
+      <div class="row"><span class="rl">Hero (so far)</span><span class="bar"><i style="width:65%"></i></span><span class="rn">6.5</span></div>
+      <div class="row"><span class="rl">Banter</span><span class="bar"><i style="width:80%"></i></span><span class="rn">8</span></div>
+      <div class="row"><span class="rl">Comedy</span><span class="bar"><i style="width:75%"></i></span><span class="rn">7.5</span></div>
+      <div class="row"><span class="rl">Heat promise</span><span class="bar hot"><i style="width:40%"></i></span><span class="rn">4</span></div>
+      <div class="row"><span class="rl">Want Chapter 2?</span><span class="bar"><i style="width:90%"></i></span><span class="rn">9</span></div>
+
+      <p class="verdict-line">
+        <b>DNF risk:</b> <span class="risk low">LOW</span> — she's hooked and wants the next chapter.
+        <br><b>Heat-reader confusion risk:</b> <span class="risk med">MEDIUM</span> — stays medium until the promise beat lands. A 4/5 buyer needs Ch.1 to whisper the spice is coming.
+      </p>
+    </div>
+
+    <div class="fixes">
+      <h3>Prioritized Fix List</h3>
+      <ol class="fix">
+        <li><span class="pri high">HIGH</span><span class="ft">Plant one heat-promise beat.</span> Before the chapter ends, give Elena a single moment where she notices Silas physically and is annoyed she did. One sentence. This is the 4/5 contract with the reader.</li>
+        <li><span class="pri med">MED</span><span class="ft">Add one more hairline crack in Silas.</span> Beyond the mouth-twitch, so the wall reads as a locked door, not a solid wall. Believability that he's worth ninety days.</li>
+        <li><span class="pri med">MED</span><span class="ft">Let Marlene's personality carry the contract.</span> Reframe some of the rules-exposition so the phone call feels like a character, not a clause being read aloud.</li>
+        <li><span class="pri low">LOW</span><span class="ft">Seed "the voice that didn't need volume to fill space" as a heat thread.</span> It's a great line sitting idle. Pay it off later as a recurring physical tell.</li>
+        <li><span class="pri low">LOW</span><span class="ft">Competence-as-flirtation.</span> Make Elena weirdly good at the filthiest, coldest job. Free charge for a heat-forward small-town book.</li>
+      </ol>
+    </div>
+
+  </section>
+
+  <footer>
+    Brinley Chase · CPH reader-persona beta · romcom-style read for Constance Ruth Clark, calibrated to the 4/5 heat lane.
+    Reader reaction only — not a line or copy edit.
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = {'tab-b':'p-b','tab-v':'p-v'};
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>select(t));
+    t.addEventListener('keydown',e=>{
+      const list=[...tabs];const i=list.indexOf(t);
+      if(e.key==='ArrowRight'){e.preventDefault();select(list[(i+1)%list.length],true);}
+      if(e.key==='ArrowLeft'){e.preventDefault();select(list[(i-1+list.length)%list.length],true);}
+    });
+  });
+  function select(tab,focus){
+    tabs.forEach(t=>{
+      const on = t===tab;
+      t.setAttribute('aria-selected',on);
+      document.getElementById(panels[t.id]).classList.toggle('active',on);
+    });
+    if(focus) tab.focus();
+  }
+</script>
+</body>
+</html>
