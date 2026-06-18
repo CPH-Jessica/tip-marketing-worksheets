@@ -9,9 +9,15 @@ this repo.
 ## Project Tracker Rule (read this when Jessica says "update the tracker")
 
 Jessica's single source of truth for every project across Claude Chat, Cowork,
-and Claude Code is **CPH-PROJECT-TRACKER.md**. It does NOT live in this repo. It
-lives in her private Google Drive, in the **CPH** folder, so her phone Drive app,
-Cowork, and Chat's Drive connector can all read it.
+Claude Code, and Grok is **CPH-PROJECT-TRACKER.md**. It does NOT live in this
+repo. It lives in her private Google Drive, in the **CPH** folder, so her phone
+Drive app, Cowork, and Chat's Drive connector can all read it.
+
+Surfaces: Chat / Cowork / Code / Grok. Cowork and Chat read and edit the Drive
+file directly. Grok cannot read her private Drive (no connector, and the file is
+intentionally not link-shared because it lists unreleased books and pen names),
+so Grok works paste-based: she pastes the project line, Grok hands back an
+updated block, and Cowork, Chat, or Code writes it back to the Drive file.
 
 Locations (use the Google Drive connector):
 - CPH folder: https://drive.google.com/drive/folders/1O5YZbYhaLlWQ5N5aoHeY6nm0o6C-vcS0
