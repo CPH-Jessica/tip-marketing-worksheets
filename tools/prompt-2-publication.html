@@ -72,6 +72,11 @@ button { font:inherit; cursor:pointer; border-radius:8px; border:none; }
 .callout.sage { border-left-color:var(--sage); }
 ul.tight { margin:.4rem 0 .4rem 1.2rem; } ul.tight li { margin:.2rem 0; font-size:.9rem; }
 
+.promptpicker { display:flex; flex-wrap:wrap; gap:.4rem; margin:.3rem 0 .5rem; }
+.pp-btn { background:#fff; color:var(--navy); border:1.5px solid var(--border); padding:.3rem .7rem; font-size:.78rem; font-weight:600; border-radius:999px; }
+.pp-btn:hover { border-color:var(--gold); }
+.pp-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+.pp-hint { font-size:.82rem; color:var(--muted); font-style:italic; margin:0 0 .5rem; }
 .promptbox { position:relative; background:var(--navy); color:#eef; border-radius:10px; padding:1rem 1rem .9rem; font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.8rem; line-height:1.55; white-space:pre-wrap; word-break:break-word; max-height:340px; overflow:auto; }
 .promptbar { display:flex; gap:.5rem; justify-content:flex-end; margin-top:.6rem; flex-wrap:wrap; }
 textarea.notes { width:100%; min-height:90px; resize:vertical; margin-top:.3rem; }
@@ -131,7 +136,7 @@ footer.foot { text-align:center; color:#999; font-size:.78rem; margin-top:2.5rem
       <div class="field"><label>Subgenre</label><input type="text" data-meta="genre" placeholder="e.g. small-town contemporary, dark mafia, fantasy"></div>
       <div class="field"><label>Heat level</label>
         <select data-meta="heat"><option value="">—</option><option>Sweet / clean</option><option>Behind closed doors</option><option>Steamy</option><option>Explicit / spicy</option></select></div>
-      <div class="field"><label>Series</label><input type="text" data-meta="series" placeholder="Series name + book #, or 'standalone'"></div>
+      <div class="field"><label>Series <span style="color:var(--coral)" title="Every book in the engine belongs to a series">*</span></label><input type="text" data-meta="series" placeholder="Series name + book # — e.g. Maple Harbor (Book 1)"></div>
       <div class="field"><label>Target length (words)</label><input type="number" data-meta="wordTarget" placeholder="e.g. 70000"></div>
       <div class="field" style="grid-column:1/-1"><label>Main tropes</label><input type="text" data-meta="tropes" placeholder="e.g. grumpy/sunshine, forced proximity, second chance"></div>
       <div class="field" style="grid-column:1/-1"><label>One-line premise (logline)</label><input type="text" data-meta="premise" placeholder="When ___ , ___ must ___ or risk ___."></div>
@@ -159,7 +164,7 @@ footer.foot { text-align:center; color:#999; font-size:.78rem; margin-top:2.5rem
    Prompt 2 Publication Engine — state + phase definitions
    ============================================================ */
 const LS_KEY = 'p2p-engine-v1';
-let state = null, current = null, activePhase = 1;
+let state = null, current = null, activePhase = 1, activePromptIdx = 0, promptForPhase = null;
 
 function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function uid(p){ return (p||'')+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
@@ -190,7 +195,7 @@ const PHASES = [
 {
   n:1, key:'series', group:'Plan the series', icon:'📚', name:'Series Builder',
   tagline:'Start with the series — bible, throughline, hand-offs.',
-  desc:`<p class="lead">We start at the top: the series itself. Lock the series promise, the world and recurring cast, and the through-line that pulls readers from book to book. Writing a standalone? Note that here and breeze through — the rest of the engine still works.</p>
+  desc:`<p class="lead">We start at the top: the series itself. Every book in this engine lives in a series — so before anything else, lock the series promise, the world and recurring cast, and the through-line that pulls readers from book to book.</p>
   <div class="callout"><b>Goal of this phase:</b> a Series Bible — promise, connective tissue, cast hand-offs, and continuity guardrails — that every book in the engine is checked against.</div>
   <h3>Run this in Claude</h3>`,
   prompt:b=>bookCtx(b)+
@@ -364,23 +369,104 @@ Number them in order. Keep each prompt tight enough to paste straight into a dra
 },
 {
   n:11, key:'ghostwriter', group:'Write & revise', icon:'✍️', name:'Ghostwriter Draft',
-  tagline:'Draft chapter by chapter in your voice.',
+  tagline:'Draft chapter by chapter in your voice — a full drafting toolkit.',
   desc:`<p class="lead">Now we write. Feed the chapter prompts from the previous phase to the ghostwriter, one at a time, using your style sheet and the character voices. Finished chapters land in the Compile phase when you're happy with them.</p>
-  <div class="callout"><span class="tipchip">Pair me with</span> &nbsp;Your <b>Style Sheet</b> and the <b>AI Banned Words</b> tool keep the prose sounding like you, not like AI.</div>
-  <h3>Run this in Claude</h3>`,
-  prompt:b=>bookCtx(b)+
-`Act as my ghostwriter for this romance. Draft ONE chapter at a time, using the chapter drafting prompt I paste in.
+  <div class="callout"><span class="tipchip">Before you draft</span> &nbsp;Paste your <b>Style Sheet</b> into the chat once at the start of a session so every chapter matches your voice. Keep the <b>Character Bible</b> handy for the voice cheat sheets, and run finished prose through the <b>AI Banned Words</b> tool.</div>
+  <h3>How to ghostwrite well (the short version)</h3>
+  <ul class="tight">
+    <li><b>One scene at a time.</b> Quality drops over long generations — draft a scene/chapter, review, then continue. Don't ask for whole books in one go.</li>
+    <li><b>Anchor every scene</b> in POV, goal, conflict, and the emotional shift from open to close. A scene with no shift is a scene to cut.</li>
+    <li><b>Interiority is the romance.</b> What the POV character notices, fears, and won't say is where readers fall in love. Push for it.</li>
+    <li><b>Earn it.</b> No insta-love, no conflict a single honest sentence would end. Make them work.</li>
+    <li><b>Kill the AI tells</b> as you go ("a testament to," "couldn't help but," "little did they know," over-tidy endings).</li>
+  </ul>
+  <h3>Pick the drafting prompt you need</h3>`,
+  prompts:[
+    { label:'Scene brief', hint:'Plan a scene before drafting it',
+      prompt:b=>bookCtx(b)+
+`Before we draft, help me build a tight SCENE BRIEF for the next scene/chapter. Ask me anything you need, then give me:
+
+• POV character (and why this POV serves the scene)
+• Scene GOAL — what the POV character wants in this scene
+• CONFLICT / obstacle in the way
+• The EMOTIONAL SHIFT — where the POV character is at the open vs. the close
+• 3–4 sensory anchors specific to the setting and mood
+• The HOOK or turn the scene must end on
+• Any continuity it must respect (character bible + series bible)
+
+Keep it to a half page. We'll draft from this brief next.` },
+    { label:'Draft a chapter', hint:'The main drafting prompt',
+      prompt:b=>bookCtx(b)+
+`Act as my ghostwriter for this romance. Draft ONE chapter, using the chapter drafting prompt / scene brief I paste in.
 
 Before writing, confirm you have: the beat, the POV character, the scene goal, and the emotional shift.
 
 Rules:
-• Write in MY voice — match the style sheet I provide (paste it in).
+• Write in MY voice — match the style sheet I pasted at the top of this chat.
 • Stay true to each character's voice cheat sheet from the Character Bible.
-• Hit the chapter's beat and end on a hook or turn.
-• Show, don't summarize, the emotional beats. Earn the romance — no insta-everything.
-• Avoid AI tells and filler ("a testament to," "couldn't help but," etc.).
+• Lead with interiority and subtext; show the emotional beats, don't summarize them.
+• Hit the chapter's beat and END on a hook or turn.
+• Earn the romance — no insta-everything, no conflict a single honest line would end.
+• Avoid AI tells and filler.
 
-I'll paste the first chapter prompt now. Write the chapter, then wait for the next.`
+Here's the chapter brief:
+[PASTE CHAPTER PROMPT / SCENE BRIEF]
+
+Draft the chapter, then stop and wait for my notes.` },
+    { label:'Continue from here', hint:'Keep drafting in the same voice',
+      prompt:b=>bookCtx(b)+
+`Continue drafting this scene from exactly where it stops, in the same voice and tense, without recapping or restarting.
+
+What's written so far:
+[PASTE THE LAST FEW PARAGRAPHS]
+
+Where it needs to go next:
+[ONE LINE: the next beat / what should happen]
+
+Keep the POV consistent, keep the interiority going, and carry the scene toward its hook. Don't wrap the chapter early unless I say so.` },
+    { label:'Deepen interiority', hint:'Add inner life & emotion',
+      prompt:b=>bookCtx(b)+
+`This scene is too external — it reads like stage directions. Revise it to deepen the POV character's INTERIORITY without changing what happens.
+
+The scene:
+[PASTE SCENE]
+
+Layer in: what the POV character notices and why, the feeling under the action, the thing they want but won't say, and one telling physical reaction. Keep my voice, keep the length similar, don't add new plot. Return the revised scene.` },
+    { label:'Raise the tension', hint:'Inject conflict & stakes',
+      prompt:b=>bookCtx(b)+
+`This scene is flat — the tension sags. Revise it to RAISE THE TENSION while keeping the same events and my voice.
+
+The scene:
+[PASTE SCENE]
+
+Tools to use: sharpen the conflicting goals, add subtext to the dialogue, raise the personal stakes, slow the key beat, and end on a stronger hook. Tell me in one line what you changed and why, then give me the revised scene.` },
+    { label:'Punch up dialogue', hint:'Distinct voices + subtext',
+      prompt:b=>bookCtx(b)+
+`Polish the DIALOGUE in this passage so each character sounds distinct and the lines carry subtext (people rarely say exactly what they mean).
+
+The passage:
+[PASTE PASSAGE]
+
+Use each character's voice cheat sheet from the Character Bible. Cut on-the-nose lines and filler tags, vary rhythm, and let some beats land in action or silence instead of speech. Keep my voice. Return the revised passage.` },
+    { label:'Write a heat scene', hint:'Intimacy at the promised level',
+      prompt:b=>bookCtx(b)+
+`Draft an intimate scene at MY promised heat level (see heat level above — do not exceed or undercut it).
+
+Scene brief:
+[PASTE: who, where, the emotional turn this scene must accomplish]
+
+Requirements: clear, ongoing enthusiastic consent; emotional escalation that mirrors the physical; stay in deep POV; keep both characters' voices and wounds present; end on an emotional beat, not just a physical one. Match my voice and vocabulary preferences. If "behind closed doors," fade at the right moment and carry the intimacy through implication.` },
+    { label:'Bridge / transition', hint:'Connect scenes, pass time',
+      prompt:b=>bookCtx(b)+
+`Write a short BRIDGE between these two scenes so the chapter flows and time passes cleanly.
+
+End of scene A:
+[PASTE]
+Start of scene B:
+[PASTE]
+
+Handle the time/location shift smoothly, keep momentum, and avoid a "meanwhile / later that day" info-dump. Match POV and voice. Keep it tight — just the connective tissue.` }
+  ]
 },
 {
   n:12, key:'drift', group:'Write & revise', icon:'🧭', name:'Drift Check',
@@ -596,11 +682,23 @@ function renderRail(){
 function renderPanel(){
   const p=PHASES.find(x=>x.n===activePhase);
   const panel=document.getElementById('panel');
+  // reset the active prompt when we land on a new phase
+  if(promptForPhase!==p.n){ activePromptIdx=0; promptForPhase=p.n; }
+  // normalize to a list of {label,prompt} so single- and multi-prompt phases share one path
+  const promptList = p.prompts ? p.prompts : (p.prompt ? [{label:'Prompt',prompt:p.prompt}] : []);
+  if(activePromptIdx>=promptList.length) activePromptIdx=0;
+
   let html='<div class="eyebrow">Phase '+p.n+' of '+PHASES.length+' · '+esc(p.tagline)+'</div>';
   html+='<h2>'+p.icon+' '+p.name+'</h2>';
   html+=p.desc;
-  if(p.prompt){
-    html+='<div class="promptbox" id="promptText">'+esc(p.prompt(current))+'</div>';
+  if(promptList.length){
+    if(promptList.length>1){
+      html+='<div class="promptpicker">'+promptList.map((pr,i)=>
+        '<button class="pp-btn'+(i===activePromptIdx?' active':'')+'" data-pp="'+i+'" title="'+esc(pr.hint||'')+'">'+esc(pr.label)+'</button>'
+      ).join('')+'</div>';
+      if(promptList[activePromptIdx].hint) html+='<div class="pp-hint">'+esc(promptList[activePromptIdx].hint)+'</div>';
+    }
+    html+='<div class="promptbox" id="promptText">'+esc(promptList[activePromptIdx].prompt(current))+'</div>';
     html+='<div class="promptbar"><button class="btn-coral" id="btnCopyPrompt">📋 Copy prompt</button><button class="btn-ghost" id="btnOpenClaude">↗ Open Claude</button></div>';
   }
   panel.innerHTML=html;
@@ -627,9 +725,13 @@ function renderPanel(){
     foot.appendChild(nx); }
   panel.appendChild(foot);
 
+  // wire prompt picker (multi-prompt phases)
+  panel.querySelectorAll('.pp-btn').forEach(btn=>{
+    btn.onclick=()=>{ activePromptIdx=parseInt(btn.dataset.pp,10); renderPanel(); };
+  });
   // wire prompt buttons
   const cp=document.getElementById('btnCopyPrompt');
-  if(cp) cp.onclick=()=>{ navigator.clipboard.writeText(p.prompt(current)).then(()=>toast('Prompt copied — paste it into Claude.'),()=>toast('Couldn\'t copy.')); };
+  if(cp) cp.onclick=()=>{ navigator.clipboard.writeText(promptList[activePromptIdx].prompt(current)).then(()=>toast('Prompt copied — paste it into Claude.'),()=>toast('Couldn\'t copy.')); };
   const oc=document.getElementById('btnOpenClaude');
   if(oc) oc.onclick=()=>window.open('https://claude.ai/new','_blank');
 }
