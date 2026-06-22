@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Voice Skill Builder — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 760px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4a574;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+
+        /* Progress Bar */
+        .progress-wrap {
+            background: #ece8e1;
+            border-radius: 20px;
+            height: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #d4a574, #c4956a);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .progress-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7a756e;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sections */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            font-size: 1.3rem;
+            color: #2d2a26;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ece8e1;
+        }
+        .section-num {
+            display: inline-block;
+            background: #d4a574;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .section p.desc {
+            color: #7a756e;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        /* Form Elements */
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            color: #2d2a26;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: #7a756e;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #ece8e1;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            color: #2d2a26;
+            background: #faf8f5;
+            margin-bottom: 1.2rem;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #d4a574;
+            background: #fff;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* Heat Level Slider */
+        .heat-wrap {
+            margin-bottom: 1.2rem;
+        }
+        .heat-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .heat-num {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4a574;
+        }
+        .heat-label {
+            font-size: 0.95rem;
+            color: #7a756e;
+        }
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #ece8e1, #d4a574, #c0392b);
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #d4a574;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Tag Input */
+        .tag-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: #faf8f5;
+            border: 1.5px solid #d4a574;
+            color: #2d2a26;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-family: 'Georgia', serif;
+        }
+        .tag .remove {
+            margin-left: 0.4rem;
+            cursor: pointer;
+            color: #c4956a;
+            font-weight: bold;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .tag .remove:hover { color: #c0392b; }
+        .tag-input-wrap {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .tag-input-wrap input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .tag-input-wrap button {
+            padding: 0.7rem 1.2rem;
+            background: #d4a574;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .tag-input-wrap button:hover { background: #c4956a; }
+
+        /* Tip Box */
+        .tip-box {
+            background: #fdf6ef;
+            border-left: 4px solid #d4a574;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #5c574f;
+        }
+        .tip-box strong { color: #d4a574; }
+
+        /* Checkbox Group */
+        .check-group {
+            margin-bottom: 1.2rem;
+        }
+        .check-group label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        .check-group input[type="checkbox"] {
+            margin-top: 0.3rem;
+            accent-color: #d4a574;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Output Preview */
+        .output-section {
+            background: #2d2a26;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .output-section h2 {
+            color: #d4a574;
+            border-bottom-color: #4a463f;
+            margin-bottom: 1rem;
+        }
+        .output-preview {
+            background: #1a1816;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #e8e4df;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .output-preview .yaml-key { color: #d4a574; }
+        .output-preview .yaml-val { color: #8fbc8f; }
+        .output-preview .comment { color: #7a756e; }
+        .output-preview .heading { color: #e8e4df; font-weight: bold; }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #d4a574;
+            color: #fff;
+        }
+        .btn-primary:hover { background: #c4956a; }
+        .btn-secondary {
+            background: transparent;
+            color: #d4a574;
+            border: 1.5px solid #d4a574;
+        }
+        .btn-secondary:hover { background: #fdf6ef; }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #2d2a26;
+            color: #d4a574;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            border-top: 1px solid #ece8e1;
+            font-size: 0.85rem;
+            color: #7a756e;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .section { padding: 1.5rem 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .btn-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen — Foundations of Claude</div>
+            <h1>Voice Skill Builder</h1>
+            <div class="subtitle">Lesson 6 — Build your pen name's writing voice from scratch</div>
+        </div>
+
+        <div class="progress-label"><span id="progressText">0 of 9 sections complete</span></div>
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Section 1: Pen Name & Genre -->
+        <div class="section" id="s1">
+            <h2><span class="section-num">1</span> Pen Name & Genre</h2>
+            <p class="desc">The basics — who is this voice for and where does it sit on the shelf?</p>
+
+            <label for="penName">Pen Name</label>
+            <div class="hint">The name on the book cover.</div>
+            <input type="text" id="penName" placeholder="e.g., Sarah Westbrook" oninput="updateProgress(); updatePreview();">
+
+            <label for="genre">Genre / Subgenre</label>
+            <div class="hint">Be specific. "Romance" is too broad. What kind?</div>
+            <input type="text" id="genre" placeholder="e.g., Small-town contemporary romance with humor" oninput="updateProgress(); updatePreview();">
+
+            <label for="series">Series Name (if applicable)</label>
+            <input type="text" id="series" placeholder="e.g., Copper Creek series" oninput="updatePreview();">
+
+            <div class="tip-box">
+                <strong>Tip:</strong> Think about where a reader would find your book in a store. "Paranormal rom-com with vampires" is better than "paranormal romance." The more specific your genre description, the better Claude matches reader expectations.
+            </div>
+        </div>
+
+        <!-- Section 2: Heat Level -->
+        <div class="section" id="s2">
+            <h2><span class="section-num">2</span> Heat Level</h2>
+            <p class="desc">How spicy does this pen name get? The number matters less than the description.</p>
+
+            <div class="heat-wrap">
+                <div class="heat-display">
+                    <span class="heat-num" id="heatNum">3</span>
+                    <span class="heat-label" id="heatLabel">Sensual — on-page but not explicit</span>
+                </div>
+                <input type="range" min="1" max="5" value="3" step="1" id="heatSlider" oninput="updateHeat(); updateProgress(); updatePreview();">
+            </div>
+
+            <label for="heatDesc">Describe YOUR heat level</label>
+            <div class="hint">What happens on-page? What stays behind closed doors? What words do you use or avoid?</div>
+            <textarea id="heatDesc" rows="3" placeholder="e.g., Intimate scenes happen on-page with sensory detail but no explicit anatomical language. Tension and emotion drive the scene, not mechanics. Fade-to-black for anything beyond PG-13." oninput="updateProgress(); updatePreview();"></textarea>
+
+            <div class="tip-box">
+                <strong>Tip:</strong> Your "3" is different from every other author's "3." The description is what Claude actually uses — the number is just a quick reference. Be honest about what your readers expect.
+            </div>
+        </div>
+
+        <!-- Section 3: Tone & Voice -->
+        <div class="section" id="s3">
+            <h2><span class="section-num">3</span> Tone & Voice Descriptors</h2>
+            <p class="desc">3–5 words that define how your writing feels. These become Claude's emotional compass.</p>
+
+            <div class="tag-area" id="toneTags"></div>
+            <div class="tag-input-wrap">
+                <input type="text" id="toneInput" placeholder="Type a descriptor and click Add (e.g., warm, witty, grounded)" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('tone')}">
+                <button onclick="addTag('tone')">Add</button>
+            </div>
+
+            <div class="tip-box">
+                <strong>Examples:</strong> Warm, witty, dark, lyrical, sparse, grounded, playful, intense, lush, sharp, cozy, atmospheric, irreverent, tender, raw, elegant, gritty, dreamy, deadpan, breezy
+            </div>
+        </div>
+
+        <!-- Section 4: Signature Moves -->
+        <div class="section" id="s4">
+            <h2><span class="section-num">4</span> Signature Moves</h2>
+            <p class="desc">The things a reader would recognize as yours even without your name on the cover.</p>
+
+            <label for="signatures">Your Signature Moves</label>
+            <div class="hint">One per line. What makes your prose distinctly yours?</div>
+            <textarea id="signatures" rows="5" placeholder="e.g.,&#10;Em-dashes for asides and interruptions&#10;Quick internal thoughts, never long monologues&#10;Dialogue does the heavy lifting&#10;Humor woven into even tense scenes&#10;Short paragraphs with varied sentence length" oninput="updateProgress(); updatePreview();"></textarea>
+
+            <div class="tip-box">
+                <strong>Not sure?</strong> Open your best-reviewed book. Read the passages readers highlighted or quoted in reviews. Those are your signature moves — the things that made someone stop and think "this is why I read this author."
+            </div>
+        </div>
+
+        <!-- Section 5: POV & Structure -->
+        <div class="section" id="s5">
+            <h2><span class="section-num">5</span> POV & Structure</h2>
+            <p class="desc">The structural rules Claude must follow — not creative choices, constraints.</p>
+
+            <label for="pov">Point of View</label>
+            <select id="pov" onchange="updateProgress(); updatePreview();">
+                <option value="">— Select —</option>
+                <option value="Third person limited, single POV per chapter">Third person limited — single POV per chapter</option>
+                <option value="Third person limited, dual POV (alternating chapters)">Third person limited — dual POV, alternating chapters</option>
+                <option value="First person, single narrator">First person — single narrator</option>
+                <option value="First person, dual POV (alternating chapters)">First person — dual POV, alternating chapters</option>
+                <option value="Third person omniscient">Third person omniscient</option>
+                <option value="Mixed (first person + third person)">Mixed — first + third person</option>
+            </select>
+
+            <label for="tense">Tense</label>
+            <select id="tense" onchange="updateProgress(); updatePreview();">
+                <option value="">— Select —</option>
+                <option value="Past tense">Past tense</option>
+                <option value="Present tense">Present tense</option>
+            </select>
+
+            <label for="chapLength">Typical Chapter Length</label>
+            <input type="text" id="chapLength" placeholder="e.g., 2,500–3,500 words" oninput="updatePreview();">
+
+            <label for="structNotes">Additional Structure Notes</label>
+            <div class="hint">Anything else about how your books are built — alternating timelines, epilogues, prologues, etc.</div>
+            <textarea id="structNotes" rows="3" placeholder="e.g., No prologues. Epilogue required — readers expect a glimpse of the couple's future. Chapters titled, not numbered." oninput="updatePreview();"></textarea>
+        </div>
+
+        <!-- Section 6: Dialogue Style -->
+        <div class="section" id="s6">
+            <h2><span class="section-num">6</span> Dialogue Style</h2>
+            <p class="desc">How your characters talk is where voice lives or dies.</p>
+
+            <label for="dialogue">Describe Your Dialogue Style</label>
+            <div class="hint">Fast or slow? Quippy or deliberate? Contractions? Dialect? Profanity?</div>
+            <textarea id="dialogue" rows="4" placeholder="e.g.,&#10;Fast, overlapping banter between leads&#10;Characters use contractions — no one sounds like a textbook&#10;Mild profanity (damn, hell, ass) but nothing stronger&#10;Subtext over direct confession — they show feelings through action, not speeches" oninput="updateProgress(); updatePreview();"></textarea>
+
+            <div class="tip-box">
+                <strong>Tip:</strong> Read your dialogue out loud. If it sounds like two people actually talking, you're in the right zone. If it sounds like narration wearing quotation marks, you need to loosen it up.
+            </div>
+        </div>
+
+        <!-- Section 7: What to Avoid -->
+        <div class="section" id="s7">
+            <h2><span class="section-num">7</span> What to Avoid</h2>
+            <p class="desc">Just as important as what to include. These are the guardrails that keep Claude on-brand.</p>
+
+            <label>Common Clichés to Ban</label>
+            <div class="hint">Check any that don't belong in your writing, then add your own.</div>
+
+            <div class="check-group" id="clicheChecks">
+                <label><input type="checkbox" value="&quot;Let out a breath she didn't know she was holding&quot;" onchange="updateProgress(); updatePreview();"> "Let out a breath she didn't know she was holding"</label>
+                <label><input type="checkbox" value="&quot;Tangled sheets&quot; or &quot;slick folds&quot;" onchange="updateProgress(); updatePreview();"> "Tangled sheets" or "slick folds"</label>
+                <label><input type="checkbox" value="Purple prose / overly poetic descriptions" onchange="updateProgress(); updatePreview();"> Purple prose / overly poetic descriptions</label>
+                <label><input type="checkbox" value="Philosophizing or internal lectures" onchange="updateProgress(); updatePreview();"> Philosophizing or internal lectures</label>
+                <label><input type="checkbox" value="Info-dumping / front-loaded backstory" onchange="updateProgress(); updatePreview();"> Info-dumping / front-loaded backstory</label>
+                <label><input type="checkbox" value="Head-hopping between characters mid-scene" onchange="updateProgress(); updatePreview();"> Head-hopping between characters mid-scene</label>
+                <label><input type="checkbox" value="&quot;Orbs&quot; for eyes" onchange="updateProgress(); updatePreview();"> "Orbs" for eyes</label>
+                <label><input type="checkbox" value="Love triangles" onchange="updateProgress(); updatePreview();"> Love triangles</label>
+            </div>
+
+            <label for="customAvoids">Your Custom Avoids</label>
+            <div class="hint">One per line. Anything else that's off-brand for this pen name.</div>
+            <textarea id="customAvoids" rows="3" placeholder="e.g.,&#10;No on-page violence against animals&#10;No &quot;smirked&quot; — overused in my genre&#10;No first-chapter dream sequences" oninput="updatePreview();"></textarea>
+
+            <label for="bannedNames">Banned Character Names</label>
+            <div class="hint">Names you never want Claude to use. Comma-separated.</div>
+            <input type="text" id="bannedNames" placeholder="e.g., Marcus, Emma, Lucian" oninput="updatePreview();">
+        </div>
+
+        <!-- Section 8: Chapter Rules -->
+        <div class="section" id="s8">
+            <h2><span class="section-num">8</span> Chapter Rules</h2>
+            <p class="desc">How chapters start, end, and flow. Consistency across a manuscript.</p>
+
+            <label for="chapterOpen">Chapter Openings</label>
+            <div class="hint">How should chapters start? What's required? What's banned?</div>
+            <textarea id="chapterOpen" rows="3" placeholder="e.g., Always start in the action — no setup paragraphs, no weather descriptions, no waking up. Drop the reader into something happening. Vary the opening style across chapters." oninput="updateProgress(); updatePreview();"></textarea>
+
+            <label for="chapterEnd">Chapter Endings</label>
+            <div class="hint">How should chapters end? What creates the right momentum?</div>
+            <textarea id="chapterEnd" rows="3" placeholder="e.g., End mid-scene with momentum — a question, a revelation, a collision. Never resolve the scene's tension. The reader should be unable to put the book down." oninput="updateProgress(); updatePreview();"></textarea>
+
+            <label for="chapterPacing">Pacing Notes</label>
+            <textarea id="chapterPacing" rows="2" placeholder="e.g., Scene-sequel pattern. Action scenes short and punchy. Emotional aftermath gets more space." oninput="updatePreview();"></textarea>
+        </div>
+
+        <!-- Section 9: Example Passage -->
+        <div class="section" id="s9">
+            <h2><span class="section-num">9</span> Example Passage <span style="font-size:0.85rem; color:#7a756e; font-weight:normal;">(Optional)</span></h2>
+            <p class="desc">A paragraph or two that perfectly captures your voice. Nothing teaches Claude faster than seeing it.</p>
+
+            <label for="examplePassage">Your Best Voice Sample</label>
+            <div class="hint">Paste a passage from your published work — or write one fresh — that says "this is what I sound like."</div>
+            <textarea id="examplePassage" rows="6" placeholder="Paste or write a passage that perfectly captures this pen name's voice..." oninput="updateProgress(); updatePreview();"></textarea>
+
+            <div class="tip-box">
+                <strong>Where to find it:</strong> Check your reader reviews for quoted passages. Look at your own highlights. Find the paragraph you're proudest of. That's your voice sample.
+            </div>
+        </div>
+
+        <!-- Live Output Preview -->
+        <div class="output-section">
+            <h2>Your Generated Skill File</h2>
+            <div class="output-preview" id="outputPreview">
+                <span class="comment"># Fill in the sections above to generate your skill file...</span>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="copyToClipboard()">Copy Skill File</button>
+                <button class="btn btn-secondary" onclick="downloadSkill()">Download as .md</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — Week 2, Lesson 6</p>
+            <p style="margin-top:0.3rem;">The Invisible Pen — AI for Authors Over 40</p>
+        </div>
+    </div>
+
+    <div class="copy-toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Tag management
+        const tags = { tone: [] };
+
+        function addTag(type) {
+            const input = document.getElementById(type + 'Input');
+            const val = input.value.trim();
+            if (!val || tags[type].includes(val)) { input.value = ''; return; }
+            if (tags[type].length >= 7) { input.value = ''; return; }
+            tags[type].push(val);
+            input.value = '';
+            renderTags(type);
+            updateProgress();
+            updatePreview();
+        }
+
+        function removeTag(type, idx) {
+            tags[type].splice(idx, 1);
+            renderTags(type);
+            updateProgress();
+            updatePreview();
+        }
+
+        function renderTags(type) {
+            const area = document.getElementById(type + 'Tags');
+            area.innerHTML = tags[type].map((t, i) =>
+                '<span class="tag">' + esc(t) + '<span class="remove" onclick="removeTag(\'' + type + '\',' + i + ')">&times;</span></span>'
+            ).join('');
+        }
+
+        // Heat level
+        const heatLabels = {
+            1: 'Sweet / Clean — no on-page intimacy',
+            2: 'Warm — kissing, tension, closed door',
+            3: 'Sensual — on-page but not explicit',
+            4: 'Steamy — explicit with emotional depth',
+            5: 'Scorching — explicit, detailed, unapologetic'
+        };
+
+        function updateHeat() {
+            const val = document.getElementById('heatSlider').value;
+            document.getElementById('heatNum').textContent = val;
+            document.getElementById('heatLabel').textContent = heatLabels[val];
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            let done = 0;
+            if (document.getElementById('penName').value.trim() && document.getElementById('genre').value.trim()) done++;
+            if (document.getElementById('heatDesc').value.trim()) done++;
+            if (tags.tone.length >= 3) done++;
+            if (document.getElementById('signatures').value.trim()) done++;
+            if (document.getElementById('pov').value && document.getElementById('tense').value) done++;
+            if (document.getElementById('dialogue').value.trim()) done++;
+            const checks = document.querySelectorAll('#clicheChecks input:checked');
+            if (checks.length > 0 || document.getElementById('customAvoids').value.trim()) done++;
+            if (document.getElementById('chapterOpen').value.trim() && document.getElementById('chapterEnd').value.trim()) done++;
+            if (document.getElementById('examplePassage').value.trim()) done++;
+
+            const pct = Math.round((done / 9) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = done + ' of 9 sections complete';
+        }
+
+        // Generate preview
+        function updatePreview() {
+            const pn = document.getElementById('penName').value.trim();
+            const genre = document.getElementById('genre').value.trim();
+            const series = document.getElementById('series').value.trim();
+            const heat = document.getElementById('heatSlider').value;
+            const heatDesc = document.getElementById('heatDesc').value.trim();
+            const toneList = tags.tone;
+            const sigs = document.getElementById('signatures').value.trim();
+            const pov = document.getElementById('pov').value;
+            const tense = document.getElementById('tense').value;
+            const chapLen = document.getElementById('chapLength').value.trim();
+            const structNotes = document.getElementById('structNotes').value.trim();
+            const dialogue = document.getElementById('dialogue').value.trim();
+            const checks = Array.from(document.querySelectorAll('#clicheChecks input:checked')).map(c => c.value);
+            const customAvoids = document.getElementById('customAvoids').value.trim();
+            const bannedNames = document.getElementById('bannedNames').value.trim();
+            const chapOpen = document.getElementById('chapterOpen').value.trim();
+            const chapEnd = document.getElementById('chapterEnd').value.trim();
+            const chapPacing = document.getElementById('chapterPacing').value.trim();
+            const example = document.getElementById('examplePassage').value.trim();
+
+            if (!pn && !genre) {
+                document.getElementById('outputPreview').innerHTML = '<span class="comment"># Fill in the sections above to generate your skill file...</span>';
+                return;
+            }
+
+            const slug = pn ? pn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') : 'pen-name';
+            let desc = genre ? ('Voice and style guide for ' + pn + '. Use when writing ' + genre) : ('Voice and style guide for ' + pn);
+            if (series) desc += ' (' + series + ')';
+            desc += '. Triggers on any ' + (pn || 'pen name') + ' writing request.';
+
+            let md = '';
+            md += s('yaml-key', '---') + '\n';
+            md += s('yaml-key', 'name: ') + s('yaml-val', slug) + '\n';
+            md += s('yaml-key', 'description: ') + s('yaml-val', '"' + esc(desc) + '"') + '\n';
+            md += s('yaml-key', '---') + '\n\n';
+            md += s('heading', '# ' + esc(pn || 'Pen Name') + ' — Voice & Style Guide') + '\n\n';
+
+            // Genre & Heat
+            md += s('heading', '## Genre & Heat Level') + '\n';
+            if (genre) md += '- Genre: ' + esc(genre) + '\n';
+            if (series) md += '- Series: ' + esc(series) + '\n';
+            md += '- Heat level: ' + heat + '/5 (' + esc(heatLabels[heat]) + ')\n';
+            if (heatDesc) md += '- Heat description: ' + esc(heatDesc) + '\n';
+            md += '\n';
+
+            // Voice
+            if (toneList.length) {
+                md += s('heading', '## Voice & Tone') + '\n';
+                md += '- Core tone: ' + toneList.map(t => esc(t)).join(', ') + '\n\n';
+            }
+
+            // Signatures
+            if (sigs) {
+                md += s('heading', '## Signature Moves') + '\n';
+                sigs.split('\n').filter(l => l.trim()).forEach(l => {
+                    md += '- ' + esc(l.trim()) + '\n';
+                });
+                md += '\n';
+            }
+
+            // POV & Structure
+            if (pov || tense || chapLen) {
+                md += s('heading', '## POV & Structure') + '\n';
+                if (pov) md += '- POV: ' + esc(pov) + '\n';
+                if (tense) md += '- Tense: ' + esc(tense) + '\n';
+                if (chapLen) md += '- Chapter length: ' + esc(chapLen) + '\n';
+                if (structNotes) {
+                    structNotes.split('\n').filter(l => l.trim()).forEach(l => {
+                        md += '- ' + esc(l.trim()) + '\n';
+                    });
+                }
+                md += '\n';
+            }
+
+            // Dialogue
+            if (dialogue) {
+                md += s('heading', '## Dialogue Style') + '\n';
+                dialogue.split('\n').filter(l => l.trim()).forEach(l => {
+                    md += '- ' + esc(l.trim()) + '\n';
+                });
+                md += '\n';
+            }
+
+            // Avoids
+            if (checks.length || customAvoids || bannedNames) {
+                md += s('heading', '## What to Avoid') + '\n';
+                checks.forEach(c => { md += '- ' + esc(c) + '\n'; });
+                if (customAvoids) {
+                    customAvoids.split('\n').filter(l => l.trim()).forEach(l => {
+                        md += '- ' + esc(l.trim()) + '\n';
+                    });
+                }
+                if (bannedNames) md += '- Banned character names: ' + esc(bannedNames) + '\n';
+                md += '\n';
+            }
+
+            // Chapter Rules
+            if (chapOpen || chapEnd || chapPacing) {
+                md += s('heading', '## Chapter Rules') + '\n';
+                if (chapOpen) md += '- Openings: ' + esc(chapOpen) + '\n';
+                if (chapEnd) md += '- Endings: ' + esc(chapEnd) + '\n';
+                if (chapPacing) md += '- Pacing: ' + esc(chapPacing) + '\n';
+                md += '\n';
+            }
+
+            // Example
+            if (example) {
+                md += s('heading', '## Voice Example') + '\n';
+                md += s('comment', '<!-- This passage represents the target voice -->') + '\n';
+                md += esc(example) + '\n';
+            }
+
+            document.getElementById('outputPreview').innerHTML = md;
+        }
+
+        function s(cls, text) {
+            return '<span class="' + cls + '">' + text + '</span>';
+        }
+
+        function esc(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Copy & Download
+        function copyToClipboard() {
+            const el = document.getElementById('outputPreview');
+            const text = el.textContent || el.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        function downloadSkill() {
+            const el = document.getElementById('outputPreview');
+            const text = el.textContent || el.innerText;
+            const pn = document.getElementById('penName').value.trim();
+            const slug = pn ? pn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') : 'voice-skill';
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = slug + '-voice-skill.md';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('Downloaded ' + a.download);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
