@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7: Beta Reader Builder — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 760px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: #d4a574; margin-bottom: 0.5rem; }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+
+        .progress-label { text-align: center; font-size: 0.85rem; color: #7a756e; margin-bottom: 0.5rem; }
+        .progress-wrap { background: #ece8e1; border-radius: 20px; height: 12px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #d4a574, #c4956a); border-radius: 20px; width: 0%; transition: width 0.5s ease; }
+
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 { font-size: 1.3rem; color: #2d2a26; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ece8e1; }
+        .section-num { display: inline-block; background: #d4a574; color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; font-weight: bold; margin-right: 0.5rem; }
+        .section p.desc { color: #7a756e; font-size: 0.95rem; margin-bottom: 1rem; font-style: italic; }
+
+        label { display: block; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.3rem; color: #2d2a26; }
+        .hint { font-size: 0.85rem; color: #7a756e; margin-bottom: 0.5rem; font-style: italic; }
+        input[type="text"], textarea, select {
+            width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid #ece8e1; border-radius: 8px;
+            font-family: 'Georgia', serif; font-size: 0.95rem; color: #2d2a26; background: #faf8f5; margin-bottom: 1.2rem; transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #d4a574; background: #fff; }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .tip-box { background: #fdf6ef; border-left: 4px solid #d4a574; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #5c574f; }
+        .tip-box strong { color: #d4a574; }
+
+        /* Personality Cards */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.2rem;
+        }
+        .persona-card {
+            border: 2px solid #ece8e1;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .persona-card:hover { border-color: #d4a574; background: #fdf6ef; }
+        .persona-card.selected { border-color: #d4a574; background: #fdf6ef; box-shadow: 0 2px 8px rgba(212,165,116,0.2); }
+        .persona-card .emoji { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .persona-card .name { font-weight: bold; font-size: 0.95rem; color: #2d2a26; }
+        .persona-card .vibe { font-size: 0.8rem; color: #7a756e; margin-top: 0.2rem; }
+
+        /* Focus checkboxes */
+        .focus-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .focus-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1.5px solid #ece8e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .focus-item:hover { border-color: #d4a574; }
+        .focus-item.checked { border-color: #d4a574; background: #fdf6ef; }
+        .focus-item input { accent-color: #d4a574; width: 16px; height: 16px; }
+
+        /* Feedback style slider */
+        .style-wrap { margin-bottom: 1.2rem; }
+        .style-display { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color: #7a756e; }
+        .style-current { text-align: center; font-weight: bold; color: #d4a574; font-size: 1rem; margin-bottom: 0.5rem; }
+        input[type="range"] {
+            width: 100%; -webkit-appearance: none; height: 8px; border-radius: 4px;
+            background: linear-gradient(90deg, #8fbc8f, #d4a574, #c0392b); outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+            background: #d4a574; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Red flag tags */
+        .tag-area { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .tag { display: inline-flex; align-items: center; background: #faf8f5; border: 1.5px solid #d4a574; color: #2d2a26; padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.85rem; font-family: 'Georgia', serif; }
+        .tag .remove { margin-left: 0.4rem; cursor: pointer; color: #c4956a; font-weight: bold; font-size: 1rem; line-height: 1; }
+        .tag .remove:hover { color: #c0392b; }
+        .tag-input-wrap { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+        .tag-input-wrap input { flex: 1; margin-bottom: 0; }
+        .tag-input-wrap button { padding: 0.7rem 1.2rem; background: #d4a574; color: #fff; border: none; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.9rem; cursor: pointer; }
+        .tag-input-wrap button:hover { background: #c4956a; }
+
+        /* Output */
+        .output-section { background: #2d2a26; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .output-section h2 { color: #d4a574; border-bottom-color: #4a463f; margin-bottom: 1rem; }
+        .output-preview {
+            background: #1a1816; border-radius: 8px; padding: 1.5rem; font-family: 'Courier New', monospace;
+            font-size: 0.85rem; line-height: 1.6; color: #e8e4df; white-space: pre-wrap; word-wrap: break-word;
+            max-height: 500px; overflow-y: auto; margin-bottom: 1rem;
+        }
+        .output-preview .yaml-key { color: #d4a574; }
+        .output-preview .yaml-val { color: #8fbc8f; }
+        .output-preview .comment { color: #7a756e; }
+        .output-preview .heading { color: #e8e4df; font-weight: bold; }
+
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #d4a574; color: #fff; }
+        .btn-primary:hover { background: #c4956a; }
+        .btn-secondary { background: transparent; color: #d4a574; border: 1.5px solid #d4a574; }
+        .btn-secondary:hover { background: #fdf6ef; }
+
+        .copy-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d2a26; color: #d4a574; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .footer { text-align: center; padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid #ece8e1; font-size: 0.85rem; color: #7a756e; }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .section { padding: 1.5rem 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .persona-grid { grid-template-columns: 1fr; }
+            .focus-grid { grid-template-columns: 1fr; }
+            .btn-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen — Foundations of Claude</div>
+            <h1>Beta Reader Builder</h1>
+            <div class="subtitle">Lesson 7 — Build the reader who tells you the truth</div>
+        </div>
+
+        <div class="progress-label"><span id="progressText">0 of 5 sections complete</span></div>
+        <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+        <!-- Section 1: Reader Identity -->
+        <div class="section">
+            <h2><span class="section-num">1</span> Reader Identity</h2>
+            <p class="desc">Give your beta reader a name and personality. This shapes how feedback is delivered.</p>
+
+            <label for="readerName">Reader's Name</label>
+            <div class="hint">Pick something that feels like a real person, not a bot.</div>
+            <input type="text" id="readerName" placeholder="e.g., Margot, Brin, Cecily" oninput="up()">
+
+            <label>Personality Type</label>
+            <div class="hint">Pick the closest match, then customize below.</div>
+            <div class="persona-grid" id="personaGrid">
+                <div class="persona-card" onclick="selectPersona(0)" data-idx="0">
+                    <div class="emoji">&#128483;</div>
+                    <div class="name">The Best Friend</div>
+                    <div class="vibe">Honest, warm, tells you when something isn't working but always has your back</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona(1)" data-idx="1">
+                    <div class="emoji">&#128293;</div>
+                    <div class="name">The Tough Love Reader</div>
+                    <div class="vibe">Blunt, no sugar-coating, catches every flaw, makes you better</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona(2)" data-idx="2">
+                    <div class="emoji">&#128214;</div>
+                    <div class="name">The Genre Expert</div>
+                    <div class="vibe">Reads 100+ books a year in your genre, knows exactly what works</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona(3)" data-idx="3">
+                    <div class="emoji">&#9997;</div>
+                    <div class="name">The Writer-Reader</div>
+                    <div class="vibe">Fellow author, gives craft-level feedback, notices technique</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona(4)" data-idx="4">
+                    <div class="emoji">&#128171;</div>
+                    <div class="name">The Superfan</div>
+                    <div class="vibe">Loves your work, catches continuity errors, knows your characters deeply</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona(5)" data-idx="5">
+                    <div class="emoji">&#128640;</div>
+                    <div class="name">Custom</div>
+                    <div class="vibe">Build from scratch — define every aspect yourself</div>
+                </div>
+            </div>
+
+            <label for="readerBio">Reader Bio</label>
+            <div class="hint">A few sentences about who this person is and how they read.</div>
+            <textarea id="readerBio" rows="3" placeholder="e.g., Margot reads 3-4 romance novels a week. She's picky about pacing and will DNF a book if the chemistry isn't there by chapter 3. She's your honest friend who loves your writing but will always tell you where she lost interest." oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 2: Genre Expectations -->
+        <div class="section">
+            <h2><span class="section-num">2</span> Genre Expectations</h2>
+            <p class="desc">What does a reader in your genre expect? These become the benchmarks.</p>
+
+            <label for="readerGenre">What Genre Does This Reader Know?</label>
+            <input type="text" id="readerGenre" placeholder="e.g., Small-town contemporary romance" oninput="up()">
+
+            <label for="genreExpect">Genre Expectations</label>
+            <div class="hint">One per line. What must a book in your genre deliver?</div>
+            <textarea id="genreExpect" rows="5" placeholder="e.g.,&#10;HEA or HFN required — no exceptions&#10;Chemistry visible by chapter 3&#10;Community/found family woven through the story&#10;Conflict must be internal, not manufactured miscommunication&#10;Heat scenes serve the emotional arc, not just the page count" oninput="up()"></textarea>
+
+            <div class="tip-box">
+                <strong>Think like a reviewer.</strong> What do the 1-star reviews in your genre complain about? Those complaints are your reader's expectations in reverse. If readers hate insta-love, your beta reader should flag when attraction moves too fast.
+            </div>
+        </div>
+
+        <!-- Section 3: Focus Areas -->
+        <div class="section">
+            <h2><span class="section-num">3</span> What They Pay Attention To</h2>
+            <p class="desc">Check the areas this reader should evaluate. Pick 4–6 for the best focus.</p>
+
+            <div class="focus-grid" id="focusGrid">
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Pacing — does the story move at the right speed?"> Pacing</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Chemistry — is the attraction believable and building?"> Chemistry</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Emotional beats — do the feelings land?"> Emotional beats</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Dialogue — does it sound natural and distinct?"> Dialogue</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Character motivation — do actions make sense?"> Character motivation</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Plot holes and logic gaps"> Plot holes</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="World-building — is the setting immersive?"> World-building</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Tension and stakes — is there enough at risk?"> Tension & stakes</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Heat calibration — does the spice match the brand?"> Heat calibration</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Voice consistency — does this sound like the pen name?"> Voice consistency</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Opening hook — does the first page grab you?"> Opening hook</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Chapter endings — do they create page-turning momentum?"> Chapter endings</div>
+            </div>
+
+            <label for="customFocus">Custom Focus Areas</label>
+            <div class="hint">Anything specific to your genre or writing. One per line.</div>
+            <textarea id="customFocus" rows="2" placeholder="e.g.,&#10;Humor — does it land without undercutting tension?" oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 4: Feedback Style -->
+        <div class="section">
+            <h2><span class="section-num">4</span> Feedback Style</h2>
+            <p class="desc">How should the feedback sound? This controls the tone of every note you get.</p>
+
+            <div class="style-wrap">
+                <div class="style-current" id="styleLabel">Balanced — honest and constructive</div>
+                <input type="range" min="1" max="5" value="3" id="styleSlider" oninput="updateStyle(); up();">
+                <div class="style-display">
+                    <span>Gentle & encouraging</span>
+                    <span>Brutally honest</span>
+                </div>
+            </div>
+
+            <label for="feedbackFormat">Feedback Format</label>
+            <select id="feedbackFormat" onchange="up()">
+                <option value="">— Select —</option>
+                <option value="Reader reaction style — 'At this point I felt...' 'This is where I got bored...'">Reader reaction — "At this point I felt..."</option>
+                <option value="Structured analysis — separate sections for strengths, weaknesses, and recommendations">Structured analysis — strengths, weaknesses, recommendations</option>
+                <option value="Inline notes — paragraph-by-paragraph reactions">Inline notes — paragraph-by-paragraph</option>
+                <option value="Letter format — written as a personal letter from the reader">Letter format — personal note from your reader</option>
+                <option value="Scorecard — rated categories with comments">Scorecard — rated categories with comments</option>
+            </select>
+
+            <label for="feedbackExtras">Additional Feedback Instructions</label>
+            <textarea id="feedbackExtras" rows="3" placeholder="e.g., Always start with what's working before discussing problems. Flag the single biggest issue that needs fixing first. Use specific line references when possible." oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 5: Red Flags -->
+        <div class="section">
+            <h2><span class="section-num">5</span> Red Flags — Always Catch These</h2>
+            <p class="desc">The things your beta reader should flag every single time, no exceptions.</p>
+
+            <div class="tag-area" id="flagTags"></div>
+            <div class="tag-input-wrap">
+                <input type="text" id="flagInput" placeholder="Type a red flag and click Add" onkeydown="if(event.key==='Enter'){event.preventDefault();addFlag()}">
+                <button onclick="addFlag()">Add</button>
+            </div>
+
+            <div class="tip-box">
+                <strong>Common red flags to consider:</strong> Pacing that stalls in the middle third, heroes/heroines who are too perfect, manufactured conflict (miscommunication that one conversation would fix), head-hopping, dialogue that sounds like narration, telling instead of showing emotional reactions, inconsistent character behavior, stakes that feel too low
+            </div>
+
+            <label for="dealbreakers">Absolute Dealbreakers</label>
+            <div class="hint">What would make this reader DNF? These are the harshest flags.</div>
+            <textarea id="dealbreakers" rows="3" placeholder="e.g.,&#10;No chemistry between the leads by chapter 5&#10;Protagonist is passive — things happen TO them, never BY them&#10;Big Misunderstanding trope with no real stakes" oninput="up()"></textarea>
+        </div>
+
+        <!-- Output -->
+        <div class="output-section">
+            <h2>Your Generated Beta Reader Skill</h2>
+            <div class="output-preview" id="outputPreview">
+                <span class="comment"># Fill in the sections above to generate your beta reader skill...</span>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="copyToClipboard()">Copy Skill File</button>
+                <button class="btn btn-secondary" onclick="downloadSkill()">Download as .md</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — Week 2, Lesson 7</p>
+            <p style="margin-top:0.3rem;">The Invisible Pen — AI for Authors Over 40</p>
+        </div>
+    </div>
+
+    <div class="copy-toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        let selectedPersona = -1;
+        const personaDefaults = [
+            "Warm, supportive, but always honest. Tells you what's working before pointing out problems. Talks like a close friend giving notes over coffee.",
+            "No sugar-coating. Points out every weakness directly. Uses strong language when something isn't working. Makes you uncomfortable but makes your writing better.",
+            "Deep knowledge of genre conventions. Evaluates against market expectations. Notices when tropes are used well vs. falling flat. Compares to published comps.",
+            "Gives craft-level feedback — POV consistency, sentence rhythm, scene structure. Notices technique choices and whether they serve the story.",
+            "Deeply invested in your characters and world. Catches continuity errors, timeline issues, and character inconsistencies. Remembers details across chapters.",
+            ""
+        ];
+        const flags = [];
+
+        function selectPersona(idx) {
+            selectedPersona = idx;
+            document.querySelectorAll('.persona-card').forEach((c, i) => {
+                c.classList.toggle('selected', i === idx);
+            });
+            if (personaDefaults[idx]) {
+                document.getElementById('readerBio').value = personaDefaults[idx];
+            }
+            up();
+        }
+
+        function toggleFocus(el) {
+            const cb = el.querySelector('input');
+            cb.checked = !cb.checked;
+            el.classList.toggle('checked', cb.checked);
+            up();
+        }
+
+        function addFlag() {
+            const input = document.getElementById('flagInput');
+            const val = input.value.trim();
+            if (!val || flags.includes(val)) { input.value = ''; return; }
+            flags.push(val);
+            input.value = '';
+            renderFlags();
+            up();
+        }
+
+        function removeFlag(idx) {
+            flags.splice(idx, 1);
+            renderFlags();
+            up();
+        }
+
+        function renderFlags() {
+            document.getElementById('flagTags').innerHTML = flags.map((f, i) =>
+                '<span class="tag">' + esc(f) + '<span class="remove" onclick="removeFlag(' + i + ')">&times;</span></span>'
+            ).join('');
+        }
+
+        const styleLabels = {
+            1: 'Very gentle — encouraging, focuses on positives',
+            2: 'Mostly encouraging — notes issues softly',
+            3: 'Balanced — honest and constructive',
+            4: 'Direct — doesn\'t soften the truth',
+            5: 'Brutally honest — holds nothing back'
+        };
+
+        function updateStyle() {
+            document.getElementById('styleLabel').textContent = styleLabels[document.getElementById('styleSlider').value];
+        }
+
+        function up() {
+            updateProgress();
+            updatePreview();
+        }
+
+        function updateProgress() {
+            let done = 0;
+            if (document.getElementById('readerName').value.trim() && document.getElementById('readerBio').value.trim()) done++;
+            if (document.getElementById('readerGenre').value.trim() && document.getElementById('genreExpect').value.trim()) done++;
+            const focusChecked = document.querySelectorAll('#focusGrid input:checked').length;
+            if (focusChecked >= 3) done++;
+            if (document.getElementById('feedbackFormat').value) done++;
+            if (flags.length >= 2 || document.getElementById('dealbreakers').value.trim()) done++;
+            document.getElementById('progressBar').style.width = (done / 5 * 100) + '%';
+            document.getElementById('progressText').textContent = done + ' of 5 sections complete';
+        }
+
+        function updatePreview() {
+            const name = document.getElementById('readerName').value.trim();
+            const bio = document.getElementById('readerBio').value.trim();
+            const genre = document.getElementById('readerGenre').value.trim();
+            const expectations = document.getElementById('genreExpect').value.trim();
+            const focusItems = Array.from(document.querySelectorAll('#focusGrid input:checked')).map(c => c.value);
+            const customFocus = document.getElementById('customFocus').value.trim();
+            const style = styleLabels[document.getElementById('styleSlider').value];
+            const format = document.getElementById('feedbackFormat').value;
+            const extras = document.getElementById('feedbackExtras').value.trim();
+            const dealbreakers = document.getElementById('dealbreakers').value.trim();
+
+            if (!name && !genre) {
+                document.getElementById('outputPreview').innerHTML = '<span class="comment"># Fill in the sections above to generate your beta reader skill...</span>';
+                return;
+            }
+
+            const slug = name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') + '-beta-reader' : 'beta-reader';
+            let desc = name + ' is your ' + (genre || 'fiction') + ' beta reader.';
+            desc += ' Use when you want honest reader-level feedback on chapters, scenes, or full manuscripts.';
+            desc += " Triggers on beta read requests, 'what would a reader think,' feedback requests, or '" + (name || 'beta') + " read.'";
+
+            let md = '';
+            md += s('yaml-key', '---') + '\n';
+            md += s('yaml-key', 'name: ') + s('yaml-val', slug) + '\n';
+            md += s('yaml-key', 'description: ') + s('yaml-val', '"' + esc(desc) + '"') + '\n';
+            md += s('yaml-key', '---') + '\n\n';
+            md += s('heading', '# ' + esc(name || 'Beta Reader') + ' — Beta Reader Profile') + '\n\n';
+
+            // Identity
+            md += s('heading', '## Who Is ' + esc(name || 'This Reader') + '?') + '\n';
+            if (bio) md += esc(bio) + '\n';
+            md += '\n';
+
+            // Genre
+            if (genre || expectations) {
+                md += s('heading', '## Genre & Reader Expectations') + '\n';
+                if (genre) md += '- Genre: ' + esc(genre) + '\n';
+                if (expectations) {
+                    expectations.split('\n').filter(l => l.trim()).forEach(l => {
+                        md += '- ' + esc(l.trim()) + '\n';
+                    });
+                }
+                md += '\n';
+            }
+
+            // Focus
+            if (focusItems.length || customFocus) {
+                md += s('heading', '## What ' + esc(name || 'This Reader') + ' Pays Attention To') + '\n';
+                focusItems.forEach(f => { md += '- ' + esc(f) + '\n'; });
+                if (customFocus) {
+                    customFocus.split('\n').filter(l => l.trim()).forEach(l => {
+                        md += '- ' + esc(l.trim()) + '\n';
+                    });
+                }
+                md += '\n';
+            }
+
+            // Feedback style
+            md += s('heading', '## Feedback Style') + '\n';
+            md += '- Tone: ' + esc(style) + '\n';
+            if (format) md += '- Format: ' + esc(format) + '\n';
+            if (extras) {
+                extras.split('\n').filter(l => l.trim()).forEach(l => {
+                    md += '- ' + esc(l.trim()) + '\n';
+                });
+            }
+            md += '\n';
+
+            // Red flags
+            if (flags.length || dealbreakers) {
+                md += s('heading', '## Red Flags — Always Catch These') + '\n';
+                flags.forEach(f => { md += '- ' + esc(f) + '\n'; });
+                if (dealbreakers) {
+                    md += '\n' + s('heading', '### Dealbreakers') + '\n';
+                    dealbreakers.split('\n').filter(l => l.trim()).forEach(l => {
+                        md += '- ' + esc(l.trim()) + '\n';
+                    });
+                }
+            }
+
+            document.getElementById('outputPreview').innerHTML = md;
+        }
+
+        function s(cls, text) { return '<span class="' + cls + '">' + text + '</span>'; }
+        function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+        function copyToClipboard() {
+            const text = (document.getElementById('outputPreview').textContent || '');
+            navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!')).catch(() => {
+                const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copied to clipboard!');
+            });
+        }
+
+        function downloadSkill() {
+            const text = document.getElementById('outputPreview').textContent || '';
+            const name = document.getElementById('readerName').value.trim();
+            const slug = name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') + '-beta-reader' : 'beta-reader';
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = slug + '.md'; a.click();
+            URL.revokeObjectURL(a.href); showToast('Downloaded ' + a.download);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
