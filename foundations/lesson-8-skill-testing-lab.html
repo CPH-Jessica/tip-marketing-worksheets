@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8: Skill Testing Lab — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 760px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: #d4a574; margin-bottom: 0.5rem; }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+
+        /* Master Progress */
+        .master-progress {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .master-progress h3 { font-size: 1.1rem; color: #2d2a26; margin-bottom: 0.5rem; }
+        .master-bar-wrap { background: #ece8e1; border-radius: 20px; height: 14px; overflow: hidden; margin-bottom: 0.5rem; }
+        .master-bar { height: 100%; background: linear-gradient(90deg, #d4a574, #8fbc8f); border-radius: 20px; width: 0%; transition: width 0.5s ease; }
+        .master-label { font-size: 0.9rem; color: #7a756e; }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 2px solid #ece8e1;
+        }
+        .tab {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-size: 0.9rem;
+            color: #7a756e;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+        .tab:hover { color: #d4a574; }
+        .tab.active { color: #d4a574; border-bottom-color: #d4a574; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .section {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section.standalone {
+            border-radius: 12px;
+        }
+        .section h2 { font-size: 1.3rem; color: #2d2a26; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ece8e1; }
+        .section p.desc { color: #7a756e; font-size: 0.95rem; margin-bottom: 1rem; font-style: italic; }
+
+        /* Test Cards */
+        .test-card {
+            border: 2px solid #ece8e1;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .test-card.pass { border-color: #8fbc8f; background: #f5faf5; }
+        .test-card.fail { border-color: #e8a87c; background: #fdf6ef; }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .test-title { font-size: 1.1rem; font-weight: bold; color: #2d2a26; }
+        .test-badge {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .test-badge.pending { background: #ece8e1; color: #7a756e; }
+        .test-badge.pass { background: #8fbc8f; color: #fff; }
+        .test-badge.fail { background: #e8a87c; color: #fff; }
+
+        .test-prompt {
+            background: #2d2a26;
+            color: #e8e4df;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            cursor: pointer;
+            position: relative;
+        }
+        .test-prompt:hover { background: #3d3a36; }
+        .test-prompt .copy-hint {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            color: #d4a574;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .test-prompt:hover .copy-hint { opacity: 1; }
+
+        .test-checklist { margin-bottom: 1rem; }
+        .test-checklist label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .test-checklist input { margin-top: 0.25rem; accent-color: #d4a574; width: 16px; height: 16px; }
+
+        label.field-label { display: block; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .hint { font-size: 0.85rem; color: #7a756e; margin-bottom: 0.5rem; font-style: italic; }
+        textarea {
+            width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid #ece8e1; border-radius: 8px;
+            font-family: 'Georgia', serif; font-size: 0.95rem; color: #2d2a26; background: #faf8f5;
+            margin-bottom: 1rem; transition: border-color 0.3s; resize: vertical; min-height: 70px;
+        }
+        textarea:focus { outline: none; border-color: #d4a574; background: #fff; }
+
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .score-label { font-weight: bold; font-size: 0.95rem; min-width: 80px; }
+        .score-stars {
+            display: flex;
+            gap: 0.25rem;
+        }
+        .star {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            line-height: 28px;
+            text-align: center;
+            color: #ece8e1;
+            transition: color 0.2s;
+        }
+        .star.filled { color: #d4a574; }
+        .star:hover { color: #c4956a; }
+
+        .pass-fail-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .pf-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid #ece8e1;
+            border-radius: 8px;
+            background: #fff;
+            font-family: 'Georgia', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .pf-btn:hover { border-color: #d4a574; }
+        .pf-btn.selected-pass { border-color: #8fbc8f; background: #f5faf5; color: #2d6a2d; font-weight: bold; }
+        .pf-btn.selected-fail { border-color: #e8a87c; background: #fdf6ef; color: #a0522d; font-weight: bold; }
+
+        .tip-box { background: #fdf6ef; border-left: 4px solid #d4a574; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #5c574f; }
+        .tip-box strong { color: #d4a574; }
+
+        /* Refinement Tracker */
+        .refine-entry {
+            border: 1.5px solid #ece8e1;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #faf8f5;
+        }
+        .refine-entry .refine-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #d4a574;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Summary */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .summary-card {
+            background: #faf8f5;
+            border: 2px solid #ece8e1;
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+        .summary-card .big-num { font-size: 2rem; font-weight: bold; color: #d4a574; }
+        .summary-card .big-label { font-size: 0.85rem; color: #7a756e; margin-top: 0.25rem; }
+
+        .btn { padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #d4a574; color: #fff; }
+        .btn-primary:hover { background: #c4956a; }
+
+        .copy-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d2a26; color: #d4a574; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .footer { text-align: center; padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid #ece8e1; font-size: 0.85rem; color: #7a756e; }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .section { padding: 1.5rem 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .tabs { flex-wrap: wrap; }
+            .tab { font-size: 0.8rem; padding: 0.6rem 0.5rem; }
+            .summary-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen — Foundations of Claude</div>
+            <h1>Skill Testing Lab</h1>
+            <div class="subtitle">Lesson 8 — Test everything, fix what's off, trust your skills</div>
+        </div>
+
+        <div class="master-progress">
+            <h3>Overall Testing Progress</h3>
+            <div class="master-bar-wrap"><div class="master-bar" id="masterBar"></div></div>
+            <div class="master-label" id="masterLabel">0 of 6 tests completed</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('voice')">Voice Skill Tests</button>
+            <button class="tab" onclick="switchTab('beta')">Beta Reader Tests</button>
+            <button class="tab" onclick="switchTab('refine')">Refinement Log</button>
+            <button class="tab" onclick="switchTab('summary')">Summary</button>
+        </div>
+
+        <!-- VOICE SKILL TESTS -->
+        <div class="tab-content active" id="tab-voice">
+            <div class="section">
+                <h2>Voice Skill — Three Tests</h2>
+                <p class="desc">Run each test, evaluate the output, then score it. Fix what needs fixing before moving on.</p>
+
+                <!-- Test V1: Cold Open -->
+                <div class="test-card" id="v1-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 1: The Cold Open</span>
+                        <span class="test-badge pending" id="v1-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Ask Claude to write an opening paragraph using only your pen name. No plot, no characters, no setup.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        Write the opening paragraph of a new chapter for [YOUR PEN NAME]. Don't ask me for details — just write it. Use the voice skill to match the brand.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Tone matches my brand descriptors</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Sentence rhythm feels like my writing</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> No banned clichés or phrases appeared</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Opens in action, not setup</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> I'd be comfortable putting my name on this</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="What worked? What felt off? Be specific."></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('v1','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('v1','fail',this)">Needs Work</button>
+                    </div>
+                </div>
+
+                <!-- Test V2: Dialogue -->
+                <div class="test-card" id="v2-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 2: The Dialogue Check</span>
+                        <span class="test-badge pending" id="v2-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Ask Claude to write a tense conversation between two characters who disagree.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        Write a scene with two characters in a heated disagreement for [YOUR PEN NAME]. Make the dialogue carry the tension — minimal narration. Use the voice skill.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Characters sound distinct from each other</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Dialogue flows naturally, not stiff</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> My dialogue style rules were followed</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Subtext is present — not everything said directly</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> No banned phrases or clichés in dialogue</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="What worked? What felt off?"></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('v2','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('v2','fail',this)">Needs Work</button>
+                    </div>
+                </div>
+
+                <!-- Test V3: Heat -->
+                <div class="test-card" id="v3-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 3: The Heat Calibration</span>
+                        <span class="test-badge pending" id="v3-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Ask Claude to write an intimate scene at your pen name's heat level. Skip this if your pen name is clean/sweet.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        Write an intimate scene for [YOUR PEN NAME] that matches the heat level in the voice skill. The emotional connection matters as much as the physical — make both land.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Heat level matches my specification</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Emotional connection is present, not just physical</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Language matches my heat description</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> No banned terms or clichés used</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> My readers would find this on-brand</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="Too hot? Too tame? What specific language needs adjusting?"></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('v3','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('v3','fail',this)">Needs Work</button>
+                        <button class="pf-btn" onclick="setResult('v3','skip',this)" style="flex:0.5;">N/A</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BETA READER TESTS -->
+        <div class="tab-content" id="tab-beta">
+            <div class="section">
+                <h2>Beta Reader Skill — Three Tests</h2>
+                <p class="desc">Paste real chapters and see if your beta reader gives useful, in-character feedback.</p>
+
+                <!-- Test B1: Good Chapter -->
+                <div class="test-card" id="b1-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 1: The Good Chapter</span>
+                        <span class="test-badge pending" id="b1-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Give your beta reader a chapter you're proud of. The feedback should be specific — not generic praise.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        [Paste your chapter, then add:]
+
+Read this chapter as [BETA READER NAME]. Give me your honest feedback using your full evaluation criteria. Don't be gentle just because it's good — find the areas that could be stronger.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Feedback references specific moments in the chapter</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Genre expectations were used as evaluation criteria</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Reader personality came through in the feedback</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Feedback format matches what I specified</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Got at least one insight I didn't expect</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="Was the feedback useful? Too generic? Too harsh? Too soft?"></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('b1','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('b1','fail',this)">Needs Work</button>
+                    </div>
+                </div>
+
+                <!-- Test B2: Problem Chapter -->
+                <div class="test-card" id="b2-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 2: The Problem Chapter</span>
+                        <span class="test-badge pending" id="b2-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Give your beta reader a chapter you know has issues. See if it catches the problems.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        [Paste a chapter with known issues, then add:]
+
+Read this as [BETA READER NAME]. Be thorough — I know something's off but I want to see if you catch it. Full evaluation, hold nothing back.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Caught the problems I already knew about</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Identified something I didn't notice</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Feedback tone matches the style I defined</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Suggestions were actionable, not vague</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Would actually help me fix the chapter</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="Did it find the real problems? Were suggestions useful?"></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('b2','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('b2','fail',this)">Needs Work</button>
+                    </div>
+                </div>
+
+                <!-- Test B3: Red Flag -->
+                <div class="test-card" id="b3-card">
+                    <div class="test-header">
+                        <span class="test-title">Test 3: The Red Flag Test</span>
+                        <span class="test-badge pending" id="b3-badge">Not tested</span>
+                    </div>
+                    <p style="margin-bottom:0.75rem; color:#4a463f;">Give your beta reader something that violates one of your red flags. It should catch it immediately.</p>
+                    <div class="test-prompt" onclick="copyPrompt(this)">
+                        [Paste a scene that deliberately triggers a red flag, then add:]
+
+Read this as [BETA READER NAME]. Full evaluation — especially watch for the things you're supposed to always flag.
+                        <span class="copy-hint">Click to copy</span>
+                    </div>
+                    <div class="test-checklist">
+                        <label><input type="checkbox" onchange="updateMaster()"> Red flag was caught and called out</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Explanation of why it's a problem was clear</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Suggestion for fixing it was included</label>
+                        <label><input type="checkbox" onchange="updateMaster()"> Reader personality was consistent</label>
+                    </div>
+                    <label class="field-label">Notes</label>
+                    <textarea placeholder="Did the red flag system work?"></textarea>
+                    <div class="pass-fail-row">
+                        <button class="pf-btn" onclick="setResult('b3','pass',this)">Pass</button>
+                        <button class="pf-btn" onclick="setResult('b3','fail',this)">Needs Work</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFINEMENT LOG -->
+        <div class="tab-content" id="tab-refine">
+            <div class="section standalone">
+                <h2>Refinement Log</h2>
+                <p class="desc">Track every change you make to your skills. Small, targeted edits beat rewrites.</p>
+
+                <div class="tip-box">
+                    <strong>The three fixes:</strong> Most skill problems come down to (1) adding specificity, (2) adding examples, or (3) adding constraints. Identify which type of fix you need before editing.
+                </div>
+
+                <div id="refineLog">
+                    <div class="refine-entry">
+                        <div class="refine-label">Change #1</div>
+                        <label class="field-label">Which skill?</label>
+                        <select style="width:100%; padding:0.5rem; border:1.5px solid #ece8e1; border-radius:8px; font-family:'Georgia',serif; margin-bottom:0.75rem; background:#fff;">
+                            <option value="">— Select —</option>
+                            <option>Voice Skill</option>
+                            <option>Beta Reader Skill</option>
+                        </select>
+                        <label class="field-label">What failed?</label>
+                        <textarea rows="2" placeholder="e.g., Dialogue was too formal — characters sounded like narration"></textarea>
+                        <label class="field-label">What did you change?</label>
+                        <textarea rows="2" placeholder="e.g., Added to Dialogue Style: 'Characters use contractions. No one sounds like a textbook. Banter is fast, overlapping.'"></textarea>
+                        <label class="field-label">Fix type</label>
+                        <select style="width:100%; padding:0.5rem; border:1.5px solid #ece8e1; border-radius:8px; font-family:'Georgia',serif; margin-bottom:0.5rem; background:#fff;">
+                            <option value="">— Select —</option>
+                            <option>Added specificity</option>
+                            <option>Added examples</option>
+                            <option>Added constraints</option>
+                            <option>Removed something</option>
+                            <option>Restructured</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="addRefineEntry()" style="margin-top:0.5rem;">+ Add Another Change</button>
+            </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="tab-content" id="tab-summary">
+            <div class="section standalone">
+                <h2>Testing Summary</h2>
+                <p class="desc">Your scorecard for Week 2. Green means your skills are ready for production.</p>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="big-num" id="sumPassed">0</div>
+                        <div class="big-label">Tests Passed</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-num" id="sumNeeds">0</div>
+                        <div class="big-label">Need Work</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-num" id="sumChecks">0</div>
+                        <div class="big-label">Checklist Items Hit</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="big-num" id="sumRefines">0</div>
+                        <div class="big-label">Refinements Made</div>
+                    </div>
+                </div>
+
+                <div class="tip-box" id="summaryTip">
+                    <strong>Status:</strong> Complete your tests to see your summary.
+                </div>
+
+                <label class="field-label">Final Notes — What I Learned This Week</label>
+                <textarea rows="5" placeholder="What surprised you? What was harder than expected? What will you do differently next time?"></textarea>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — Week 2, Lesson 8</p>
+            <p style="margin-top:0.3rem;">The Invisible Pen — AI for Authors Over 40</p>
+        </div>
+    </div>
+
+    <div class="copy-toast" id="toast">Copied!</div>
+
+    <script>
+        const results = {};
+        let refineCount = 1;
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + id).classList.add('active');
+            if (id === 'summary') updateSummary();
+        }
+
+        function setResult(testId, result, btn) {
+            const card = document.getElementById(testId + '-card');
+            const badge = document.getElementById(testId + '-badge');
+            const row = btn.parentElement;
+
+            row.querySelectorAll('.pf-btn').forEach(b => {
+                b.classList.remove('selected-pass', 'selected-fail');
+            });
+
+            card.classList.remove('pass', 'fail');
+
+            if (result === 'pass') {
+                btn.classList.add('selected-pass');
+                card.classList.add('pass');
+                badge.className = 'test-badge pass';
+                badge.textContent = 'Passed';
+                results[testId] = 'pass';
+            } else if (result === 'fail') {
+                btn.classList.add('selected-fail');
+                card.classList.add('fail');
+                badge.className = 'test-badge fail';
+                badge.textContent = 'Needs work';
+                results[testId] = 'fail';
+            } else if (result === 'skip') {
+                btn.classList.add('selected-pass');
+                card.classList.add('pass');
+                badge.className = 'test-badge pass';
+                badge.textContent = 'Skipped (N/A)';
+                results[testId] = 'skip';
+            }
+            updateMaster();
+        }
+
+        function updateMaster() {
+            const total = 6;
+            const done = Object.keys(results).length;
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('masterBar').style.width = pct + '%';
+            document.getElementById('masterLabel').textContent = done + ' of ' + total + ' tests completed';
+        }
+
+        function updateSummary() {
+            const vals = Object.values(results);
+            const passed = vals.filter(v => v === 'pass' || v === 'skip').length;
+            const needs = vals.filter(v => v === 'fail').length;
+            const checks = document.querySelectorAll('.test-checklist input:checked').length;
+            const refines = document.querySelectorAll('.refine-entry').length;
+
+            document.getElementById('sumPassed').textContent = passed;
+            document.getElementById('sumNeeds').textContent = needs;
+            document.getElementById('sumChecks').textContent = checks;
+            document.getElementById('sumRefines').textContent = refines;
+
+            const tip = document.getElementById('summaryTip');
+            if (vals.length === 0) {
+                tip.innerHTML = '<strong>Status:</strong> Complete your tests to see your summary.';
+            } else if (needs === 0 && passed >= 5) {
+                tip.innerHTML = '<strong>Status: Ready for production.</strong> Your skills passed testing. You can trust them for real writing projects. Nice work — Week 2 is complete.';
+            } else if (needs <= 2) {
+                tip.innerHTML = '<strong>Status: Almost there.</strong> A few tests need refinement. Check your Refinement Log, make targeted edits, and re-test the ones that failed.';
+            } else {
+                tip.innerHTML = '<strong>Status: More work needed.</strong> Several tests need attention. Focus on the voice skill first — everything else depends on it. Re-read Lesson 6 for guidance.';
+            }
+        }
+
+        function addRefineEntry() {
+            refineCount++;
+            const log = document.getElementById('refineLog');
+            const entry = document.createElement('div');
+            entry.className = 'refine-entry';
+            entry.innerHTML = '<div class="refine-label">Change #' + refineCount + '</div>' +
+                '<label class="field-label">Which skill?</label>' +
+                '<select style="width:100%;padding:0.5rem;border:1.5px solid #ece8e1;border-radius:8px;font-family:Georgia,serif;margin-bottom:0.75rem;background:#fff;"><option value="">— Select —</option><option>Voice Skill</option><option>Beta Reader Skill</option></select>' +
+                '<label class="field-label">What failed?</label><textarea rows="2" placeholder="Describe what went wrong"></textarea>' +
+                '<label class="field-label">What did you change?</label><textarea rows="2" placeholder="Describe the edit you made"></textarea>' +
+                '<label class="field-label">Fix type</label>' +
+                '<select style="width:100%;padding:0.5rem;border:1.5px solid #ece8e1;border-radius:8px;font-family:Georgia,serif;margin-bottom:0.5rem;background:#fff;"><option value="">— Select —</option><option>Added specificity</option><option>Added examples</option><option>Added constraints</option><option>Removed something</option><option>Restructured</option></select>';
+            log.appendChild(entry);
+        }
+
+        function copyPrompt(el) {
+            const text = el.textContent.replace('Click to copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => showToast('Prompt copied!')).catch(() => {
+                const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Prompt copied!');
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
