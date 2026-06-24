@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fiction Architect — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 760px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: #d4a574; margin-bottom: 0.5rem; }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+
+        .intro {
+            background: #fdf6ef;
+            border-left: 4px solid #d4a574;
+            padding: 1.2rem 1.4rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: #5c574f;
+        }
+        .intro strong { color: #2d2a26; }
+
+        .progress-label { text-align: center; font-size: 0.85rem; color: #7a756e; margin-bottom: 0.5rem; }
+        .progress-wrap { background: #ece8e1; border-radius: 20px; height: 12px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #d4a574, #c4956a); border-radius: 20px; width: 0%; transition: width 0.5s ease; }
+
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 { font-size: 1.3rem; color: #2d2a26; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ece8e1; }
+        .section-num { display: inline-block; background: #d4a574; color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; font-weight: bold; margin-right: 0.5rem; }
+        .section p.desc { color: #7a756e; font-size: 0.95rem; margin-bottom: 1rem; font-style: italic; }
+
+        label { display: block; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.3rem; color: #2d2a26; }
+        .hint { font-size: 0.85rem; color: #7a756e; margin-bottom: 0.5rem; font-style: italic; }
+        input[type="text"], textarea, select {
+            width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid #ece8e1; border-radius: 8px;
+            font-family: 'Georgia', serif; font-size: 0.95rem; color: #2d2a26; background: #faf8f5; margin-bottom: 1.2rem; transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #d4a574; background: #fff; }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .tip-box { background: #fdf6ef; border-left: 4px solid #d4a574; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #5c574f; }
+        .tip-box strong { color: #d4a574; }
+
+        /* Mode cards */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.2rem;
+        }
+        .persona-card {
+            border: 2px solid #ece8e1;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .persona-card:hover { border-color: #d4a574; background: #fdf6ef; }
+        .persona-card.selected { border-color: #d4a574; background: #fdf6ef; box-shadow: 0 2px 8px rgba(212,165,116,0.2); }
+        .persona-card .emoji { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .persona-card .name { font-weight: bold; font-size: 0.95rem; color: #2d2a26; }
+        .persona-card .vibe { font-size: 0.8rem; color: #7a756e; margin-top: 0.2rem; }
+
+        /* Checkbox grids */
+        .focus-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .focus-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1.5px solid #ece8e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .focus-item:hover { border-color: #d4a574; }
+        .focus-item.checked { border-color: #d4a574; background: #fdf6ef; }
+        .focus-item input { accent-color: #d4a574; width: 16px; height: 16px; }
+
+        /* Slider */
+        .style-wrap { margin-bottom: 1.2rem; }
+        .style-display { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color: #7a756e; }
+        .style-current { text-align: center; font-weight: bold; color: #d4a574; font-size: 1rem; margin-bottom: 0.5rem; }
+        input[type="range"] {
+            width: 100%; -webkit-appearance: none; height: 8px; border-radius: 4px;
+            background: linear-gradient(90deg, #8fbc8f, #d4a574, #c0392b); outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+            background: #d4a574; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Tags */
+        .tag-area { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .tag { display: inline-flex; align-items: center; background: #faf8f5; border: 1.5px solid #d4a574; color: #2d2a26; padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.85rem; font-family: 'Georgia', serif; }
+        .tag .remove { margin-left: 0.4rem; cursor: pointer; color: #c4956a; font-weight: bold; font-size: 1rem; line-height: 1; }
+        .tag .remove:hover { color: #c0392b; }
+        .tag-input-wrap { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+        .tag-input-wrap input { flex: 1; margin-bottom: 0; }
+        .tag-input-wrap button { padding: 0.7rem 1.2rem; background: #d4a574; color: #fff; border: none; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.9rem; cursor: pointer; }
+        .tag-input-wrap button:hover { background: #c4956a; }
+
+        /* Output */
+        .output-section { background: #2d2a26; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .output-section h2 { color: #d4a574; border-bottom-color: #4a463f; margin-bottom: 1rem; }
+        .output-preview {
+            background: #1a1816; border-radius: 8px; padding: 1.5rem; font-family: 'Courier New', monospace;
+            font-size: 0.85rem; line-height: 1.6; color: #e8e4df; white-space: pre-wrap; word-wrap: break-word;
+            max-height: 540px; overflow-y: auto; margin-bottom: 1rem;
+        }
+        .output-preview .yaml-key { color: #d4a574; }
+        .output-preview .yaml-val { color: #8fbc8f; }
+        .output-preview .comment { color: #7a756e; }
+        .output-preview .heading { color: #e8e4df; font-weight: bold; }
+
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #d4a574; color: #fff; }
+        .btn-primary:hover { background: #c4956a; }
+        .btn-secondary { background: transparent; color: #d4a574; border: 1.5px solid #d4a574; }
+        .btn-secondary:hover { background: #fdf6ef; }
+
+        /* How-to steps */
+        .howto { background: #fff; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .howto h2 { font-size: 1.3rem; color: #2d2a26; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ece8e1; }
+        .howto ol { margin: 0 0 0 1.2rem; }
+        .howto li { margin-bottom: 0.7rem; font-size: 0.95rem; }
+        .howto code { background: #faf8f5; border: 1px solid #ece8e1; border-radius: 4px; padding: 0.1rem 0.4rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #a0522d; }
+
+        .copy-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d2a26; color: #d4a574; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Georgia', serif; font-size: 0.95rem; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .footer { text-align: center; padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid #ece8e1; font-size: 0.85rem; color: #7a756e; }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .section, .howto { padding: 1.5rem 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .persona-grid { grid-template-columns: 1fr; }
+            .focus-grid { grid-template-columns: 1fr; }
+            .btn-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen — Foundations of Claude</div>
+            <h1>Interactive Fiction Architect</h1>
+            <div class="subtitle">Build your own choose-your-own-adventure engine inside Claude Code</div>
+        </div>
+
+        <div class="intro">
+            <strong>What this builds.</strong> Fill in the sections below and this worksheet writes a complete Claude <em>skill</em> — a small instruction file you drop into your project. Once installed, you can say <em>"start the story"</em> and Claude becomes the engine: it narrates a scene, offers you choices, remembers what you picked, tracks your stats and inventory, and branches toward different endings. Same method as the Romance Architect — you're not coding the game, you're <strong>teaching Claude to run it</strong>.
+        </div>
+
+        <div class="progress-label"><span id="progressText">0 of 6 sections complete</span></div>
+        <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+        <!-- Section 1: Story Identity -->
+        <div class="section">
+            <h2><span class="section-num">1</span> Story Identity</h2>
+            <p class="desc">The bones of your interactive story — what it is and what it's about.</p>
+
+            <label for="storyTitle">Story Title</label>
+            <div class="hint">The name of your interactive fiction.</div>
+            <input type="text" id="storyTitle" placeholder="e.g., The Lighthouse at Hollow Bay" oninput="up()">
+
+            <label for="storyGenre">Genre &amp; Sub-genre</label>
+            <input type="text" id="storyGenre" placeholder="e.g., Gothic romance mystery / cozy fantasy / sci-fi thriller" oninput="up()">
+
+            <label for="storyPremise">Premise — The Hook</label>
+            <div class="hint">2–4 sentences. Who is the reader, where do they wake up, and what's the central question?</div>
+            <textarea id="storyPremise" rows="4" placeholder="e.g., You inherit your estranged grandmother's lighthouse and arrive to find the previous keeper vanished mid-sentence in his logbook. Every night the lamp lights itself. You have one week before the storm season seals the bay. Find out what he saw — or become the next entry in the log." oninput="up()"></textarea>
+
+            <label for="storyTone">Tone &amp; Mood</label>
+            <input type="text" id="storyTone" placeholder="e.g., Atmospheric and slow-burn dread, with dry humor and moments of warmth" oninput="up()">
+        </div>
+
+        <!-- Section 2: The Reader's Role -->
+        <div class="section">
+            <h2><span class="section-num">2</span> The Reader's Role</h2>
+            <p class="desc">In interactive fiction the reader IS the protagonist. Decide who they get to be.</p>
+
+            <label>Point of View</label>
+            <div class="hint">Second person ("You") is the classic interactive default — but pick what fits.</div>
+            <div class="persona-grid" id="povGrid">
+                <div class="persona-card" onclick="selectPov(0)" data-idx="0">
+                    <div class="emoji">&#128100;</div>
+                    <div class="name">Second Person — Blank Slate</div>
+                    <div class="vibe">"You" with no fixed identity — the reader projects themselves in</div>
+                </div>
+                <div class="persona-card" onclick="selectPov(1)" data-idx="1">
+                    <div class="emoji">&#127917;</div>
+                    <div class="name">Second Person — Defined Character</div>
+                    <div class="vibe">"You" but you ARE a specific named character with a backstory</div>
+                </div>
+                <div class="persona-card" onclick="selectPov(2)" data-idx="2">
+                    <div class="emoji">&#9000;</div>
+                    <div class="name">First Person Diary</div>
+                    <div class="vibe">"I" — reads like the protagonist's journal as it unfolds</div>
+                </div>
+                <div class="persona-card" onclick="selectPov(3)" data-idx="3">
+                    <div class="emoji">&#127909;</div>
+                    <div class="name">Close Third Person</div>
+                    <div class="vibe">"She/he/they" — cinematic, but reader still drives the choices</div>
+                </div>
+            </div>
+
+            <label for="protagonist">Who Is the Protagonist?</label>
+            <div class="hint">Their starting situation, role, or defining trait. Leave loose for a blank-slate story.</div>
+            <textarea id="protagonist" rows="3" placeholder="e.g., You're a 34-year-old former investigative journalist who quit after a story went wrong. You're sharp, stubborn, and you notice details other people miss — which is exactly the problem." oninput="up()"></textarea>
+
+            <label for="readerAgency">What Can the Reader Control?</label>
+            <div class="hint">The kinds of decisions they get to make. One per line.</div>
+            <textarea id="readerAgency" rows="3" placeholder="e.g.,&#10;Where to go and what to investigate&#10;What to say in conversations (and how honest to be)&#10;Who to trust and who to push away&#10;When to take risks vs. play it safe" oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 3: Branching Structure -->
+        <div class="section">
+            <h2><span class="section-num">3</span> Branching &amp; Choices</h2>
+            <p class="desc">How the story forks. This controls how the engine offers and handles decisions.</p>
+
+            <label for="choiceCount">Choices Per Turn</label>
+            <div class="hint">How many options to present at each decision point.</div>
+            <select id="choiceCount" onchange="up()">
+                <option value="">— Select —</option>
+                <option value="2 clear options (fast, high-stakes, binary-feeling)">2 options — fast and high-stakes</option>
+                <option value="3 options (the classic sweet spot)">3 options — the classic sweet spot</option>
+                <option value="3-4 options, plus an always-available 'do something else' free-text option">3–4 options + an open "do something else"</option>
+                <option value="Open-ended — always invite the reader to type any action they imagine">Fully open — reader types any action</option>
+            </select>
+
+            <div class="style-wrap">
+                <label>Story Shape</label>
+                <div class="hint">How much can the reader's choices actually change the path?</div>
+                <div class="style-current" id="shapeLabel">Branch &amp; rejoin — meaningful detours, shared spine</div>
+                <input type="range" min="1" max="5" value="3" id="shapeSlider" oninput="updateShape(); up();">
+                <div class="style-display">
+                    <span>Mostly linear</span>
+                    <span>Wildly branching</span>
+                </div>
+            </div>
+
+            <label>How Should Choices Be Presented?</label>
+            <div class="focus-grid" id="presentGrid">
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Number each choice (1, 2, 3) so the reader can reply with just a number"> Numbered list</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Hint at tone/risk of each choice without spoiling the outcome"> Hint at the risk</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Never reveal where a choice leads — preserve genuine suspense"> Keep outcomes hidden</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Always allow a free-text custom action beyond the listed choices"> Allow custom actions</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Some choices are gated by stats, items, or earlier decisions"> Gated choices</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Occasionally offer a risky 'long shot' option with a big payoff or cost"> Long-shot options</div>
+            </div>
+
+            <label for="endings">Endings</label>
+            <div class="hint">How many, and what kinds? One per line — name them.</div>
+            <textarea id="endings" rows="4" placeholder="e.g.,&#10;The Keeper's Fate — you uncover the truth but can't leave&#10;Safe Harbor — you escape before the storm, questions unanswered&#10;The Lamp Lighter — you take up the post willingly (true ending)&#10;Lost to the Bay — a bad ending if you ignore the warnings" oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 4: State Tracking -->
+        <div class="section">
+            <h2><span class="section-num">4</span> State &amp; Consequences</h2>
+            <p class="desc">What the engine remembers between turns. This is what makes choices <em>matter</em>.</p>
+
+            <label>What Should Claude Track?</label>
+            <div class="hint">Check what your story needs. Pick 2–5 to keep it manageable.</div>
+            <div class="focus-grid" id="trackGrid">
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Inventory — items the reader picks up, uses, and loses"> Inventory</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Relationships — how key characters feel about the reader (trust, suspicion, affection)"> Relationships</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Stats — numeric or descriptive traits (health, nerve, reputation, sanity)"> Stats / meters</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Clues — what the reader has discovered or deduced so far"> Clues / knowledge</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Flags — key decisions and events that lock or unlock later content"> Decision flags</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Location — where the reader is and where they can go"> Location / map</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Time — day/night, days remaining, or a countdown toward a deadline"> Time / countdown</div>
+                <div class="focus-item" onclick="toggleFocus(this)"><input type="checkbox" value="Word/scene budget — keep scenes a consistent length and pace"> Pacing budget</div>
+            </div>
+
+            <label for="statDetails">Define Your Stats / Meters</label>
+            <div class="hint">If you track stats, name them and their range. One per line.</div>
+            <textarea id="statDetails" rows="3" placeholder="e.g.,&#10;Nerve (0–10) — drains when you face danger, refills when you rest&#10;Trust with Eli (0–10) — rises when you're honest with him&#10;Days Until the Storm (starts at 7, counts down)" oninput="up()"></textarea>
+
+            <label for="statusBlock">Status Readout</label>
+            <div class="hint">Should the engine show a little status block? Describe what it looks like.</div>
+            <textarea id="statusBlock" rows="2" placeholder="e.g., After each scene, show a short italic line: 'Day 5 · Nerve 6/10 · Carrying: lantern, brass key · Eli trusts you.'" oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 5: Voice & Boundaries -->
+        <div class="section">
+            <h2><span class="section-num">5</span> Voice, Length &amp; Boundaries</h2>
+            <p class="desc">How each beat reads, how long it runs, and the lines the story won't cross.</p>
+
+            <label for="sceneLength">Scene Length Per Turn</label>
+            <select id="sceneLength" onchange="up()">
+                <option value="">— Select —</option>
+                <option value="Short — 1 to 2 punchy paragraphs, then the choices. Fast and snappy.">Short — 1–2 paragraphs, then choices</option>
+                <option value="Medium — 2 to 4 paragraphs of immersive scene before the choices.">Medium — 2–4 paragraphs (recommended)</option>
+                <option value="Long — a full rich scene of 4 to 6 paragraphs, novelistic depth, then choices.">Long — 4–6 paragraphs, novelistic</option>
+            </select>
+
+            <label for="proseStyle">Prose Style Notes</label>
+            <div class="hint">Sentence rhythm, sensory focus, dialogue density, any author voice to imitate.</div>
+            <textarea id="proseStyle" rows="3" placeholder="e.g., Sensory and grounded — lean on sound and smell. Short sentences when tension spikes. Let dialogue carry character. Never purple; one strong image beats three weak ones." oninput="up()"></textarea>
+
+            <div class="style-wrap">
+                <label>Heat / Intensity Level</label>
+                <div class="hint">Sets how far the story goes with romance, violence, and dark content.</div>
+                <div class="style-current" id="heatLabel">PG-13 — tension and fade-to-black</div>
+                <input type="range" min="1" max="5" value="2" id="heatSlider" oninput="updateHeat(); up();">
+                <div class="style-display">
+                    <span>Clean / cozy</span>
+                    <span>Explicit / dark</span>
+                </div>
+            </div>
+
+            <label for="contentBoundaries">Content Boundaries</label>
+            <div class="hint">Topics to avoid, handle with care, or keep off the page entirely. One per line.</div>
+            <textarea id="contentBoundaries" rows="3" placeholder="e.g.,&#10;No harm to children or animals on the page&#10;Violence can be tense but not gratuitous&#10;Fade to black before explicit content" oninput="up()"></textarea>
+        </div>
+
+        <!-- Section 6: Engine Rules -->
+        <div class="section">
+            <h2><span class="section-num">6</span> Engine Rules — The Guardrails</h2>
+            <p class="desc">The non-negotiable rules the engine follows every single turn. This is what keeps the game consistent.</p>
+
+            <div class="tag-area" id="ruleTags"></div>
+            <div class="tag-input-wrap">
+                <input type="text" id="ruleInput" placeholder="Type a rule and click Add" onkeydown="if(event.key==='Enter'){event.preventDefault();addRule()}">
+                <button onclick="addRule()">Add</button>
+            </div>
+
+            <div class="tip-box">
+                <strong>Good engine rules to consider:</strong> Always end a turn by presenting the choices. Never decide for the reader. Stay consistent with tracked state — don't forget an item the reader is carrying. Don't skip ahead or summarize away a choice. Keep the reader's name and traits consistent. If the reader types something off-menu, improvise a sensible result instead of refusing. End scenes on a hook.
+            </div>
+
+            <label for="startCommand">Start &amp; Control Commands</label>
+            <div class="hint">Phrases the reader can use to drive the engine. One per line.</div>
+            <textarea id="startCommand" rows="3" placeholder="e.g.,&#10;'Start the story' — begin a new playthrough from scene one&#10;'Status' — show my current stats and inventory&#10;'Recap' — summarize the story so far&#10;'Save point' — output a summary I can paste back later to resume" oninput="up()"></textarea>
+
+            <label for="openingLine">Opening Beat</label>
+            <div class="hint">Optional. The exact first scene or line the story should open on.</div>
+            <textarea id="openingLine" rows="3" placeholder="e.g., Open on the reader stepping off the last ferry of the season onto Hollow Bay's slick dock, the lighthouse dark against the dusk, a single light flickering on in a window that should be empty." oninput="up()"></textarea>
+        </div>
+
+        <!-- Output -->
+        <div class="output-section">
+            <h2>Your Generated Interactive Fiction Skill</h2>
+            <div class="output-preview" id="outputPreview">
+                <span class="comment"># Fill in the sections above to generate your interactive fiction engine skill...</span>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="copyToClipboard()">Copy Skill File</button>
+                <button class="btn btn-secondary" onclick="downloadSkill()">Download as .md</button>
+            </div>
+        </div>
+
+        <!-- How to use -->
+        <div class="howto">
+            <h2>How to Install &amp; Play</h2>
+            <ol>
+                <li><strong>Download or copy</strong> the skill file above.</li>
+                <li>In your book's project folder, find (or make) a <code>.claude/skills/</code> folder.</li>
+                <li>Save the file inside it as <code>SKILL.md</code> in its own folder — e.g. <code>.claude/skills/interactive-fiction/SKILL.md</code>.</li>
+                <li>Open Claude Code in that project and type <strong>"start the story"</strong> (or whatever start command you set in Section 6).</li>
+                <li>Claude reads the scene, you reply with a choice number or a custom action, and the story unfolds. Use your <strong>Save point</strong> command before you close — paste the summary back next time to pick up where you left off.</li>
+            </ol>
+            <div class="tip-box" style="margin-top:1rem;">
+                <strong>Pro move:</strong> Run a few turns, notice what feels off — too short, forgets your inventory, choices too obvious — then come back here, adjust the matching section, and regenerate. Iterating the skill is how you tune the game. (That's exactly what the Skill Testing Lab in Lesson 8 is for.)
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — Build Your Own Tools</p>
+            <p style="margin-top:0.3rem;">The Invisible Pen — AI for Authors Over 40</p>
+        </div>
+    </div>
+
+    <div class="copy-toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        let selectedPov = -1;
+        const povLabels = [
+            "Second person (\"you\"), blank slate — the reader projects themselves into the role; avoid pinning down their appearance, gender, or backstory unless they establish it through choices.",
+            "Second person (\"you\") as a defined character — the reader IS a specific person with a fixed name, history, and traits described below.",
+            "First person (\"I\") diary style — the story reads like the protagonist's journal unfolding in real time.",
+            "Close third person — narrate with she/he/they, cinematic and immersive, but the reader still makes every choice."
+        ];
+
+        const rules = [];
+
+        function selectPov(idx) {
+            selectedPov = idx;
+            document.querySelectorAll('#povGrid .persona-card').forEach((c, i) => {
+                c.classList.toggle('selected', i === idx);
+            });
+            up();
+        }
+
+        function toggleFocus(el) {
+            const cb = el.querySelector('input');
+            cb.checked = !cb.checked;
+            el.classList.toggle('checked', cb.checked);
+            up();
+        }
+
+        function addRule() {
+            const input = document.getElementById('ruleInput');
+            const val = input.value.trim();
+            if (!val || rules.includes(val)) { input.value = ''; return; }
+            rules.push(val);
+            input.value = '';
+            renderRules();
+            up();
+        }
+
+        function removeRule(idx) {
+            rules.splice(idx, 1);
+            renderRules();
+            up();
+        }
+
+        function renderRules() {
+            document.getElementById('ruleTags').innerHTML = rules.map((f, i) =>
+                '<span class="tag">' + esc(f) + '<span class="remove" onclick="removeRule(' + i + ')">&times;</span></span>'
+            ).join('');
+        }
+
+        const shapeLabels = {
+            1: 'Mostly linear — choices flavor the journey, one main path',
+            2: 'Guided — small forks that color the story, one destination',
+            3: 'Branch & rejoin — meaningful detours, shared spine',
+            4: 'Truly branching — choices open and close whole storylines',
+            5: 'Wildly branching — the reader can end up almost anywhere'
+        };
+        function updateShape() {
+            document.getElementById('shapeLabel').textContent = shapeLabels[document.getElementById('shapeSlider').value];
+        }
+
+        const heatLabels = {
+            1: 'Clean / cozy — no explicit content, gentle stakes',
+            2: 'PG-13 — tension and fade-to-black',
+            3: 'Mature — on-page heat and real danger, tasteful',
+            4: 'Explicit — open-door romance and intense scenes',
+            5: 'Explicit / dark — no fade-outs, heavy themes on the page'
+        };
+        function updateHeat() {
+            document.getElementById('heatLabel').textContent = heatLabels[document.getElementById('heatSlider').value];
+        }
+
+        function up() {
+            updateProgress();
+            updatePreview();
+        }
+
+        function val(id) { return (document.getElementById(id).value || '').trim(); }
+        function checkedVals(grid) { return Array.from(document.querySelectorAll('#' + grid + ' input:checked')).map(c => c.value); }
+
+        function updateProgress() {
+            let done = 0;
+            if (val('storyTitle') && val('storyPremise')) done++;
+            if (selectedPov >= 0 && val('protagonist')) done++;
+            if (val('choiceCount') && val('endings')) done++;
+            if (checkedVals('trackGrid').length >= 1) done++;
+            if (val('sceneLength')) done++;
+            if (rules.length >= 1 || val('startCommand')) done++;
+            document.getElementById('progressBar').style.width = (done / 6 * 100) + '%';
+            document.getElementById('progressText').textContent = done + ' of 6 sections complete';
+        }
+
+        function bullets(text) {
+            let md = '';
+            text.split('\n').filter(l => l.trim()).forEach(l => { md += '- ' + esc(l.trim().replace(/^[-*]\s*/, '')) + '\n'; });
+            return md;
+        }
+
+        function updatePreview() {
+            const title = val('storyTitle');
+            const genre = val('storyGenre');
+            const premise = val('storyPremise');
+            const tone = val('storyTone');
+            const protagonist = val('protagonist');
+            const agency = val('readerAgency');
+            const choiceCount = val('choiceCount');
+            const shape = shapeLabels[document.getElementById('shapeSlider').value];
+            const present = checkedVals('presentGrid');
+            const endings = val('endings');
+            const track = checkedVals('trackGrid');
+            const statDetails = val('statDetails');
+            const statusBlock = val('statusBlock');
+            const sceneLength = val('sceneLength');
+            const proseStyle = val('proseStyle');
+            const heat = heatLabels[document.getElementById('heatSlider').value];
+            const boundaries = val('contentBoundaries');
+            const startCommand = val('startCommand');
+            const openingLine = val('openingLine');
+
+            if (!title && !premise) {
+                document.getElementById('outputPreview').innerHTML = '<span class="comment"># Fill in the sections above to generate your interactive fiction engine skill...</span>';
+                return;
+            }
+
+            const slug = title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : 'interactive-fiction';
+            let desc = 'Runs "' + (title || 'an interactive story') + '"';
+            if (genre) desc += ', a ' + genre + ' interactive fiction';
+            desc += ' as a playable choose-your-own-adventure. Use when the reader wants to play, continue, or run the story.';
+            desc += " Triggers on 'start the story,' 'continue,' 'play " + (title || 'the game') + ",' choice replies, and status/recap/save commands.";
+
+            let md = '';
+            md += s('yaml-key', '---') + '\n';
+            md += s('yaml-key', 'name: ') + s('yaml-val', slug) + '\n';
+            md += s('yaml-key', 'description: ') + s('yaml-val', '"' + esc(desc) + '"') + '\n';
+            md += s('yaml-key', '---') + '\n\n';
+
+            md += s('heading', '# ' + esc(title || 'Interactive Fiction') + ' — Story Engine') + '\n\n';
+            md += 'You are the engine for an interactive, choice-driven story. Narrate a scene, then stop and let the reader choose what happens next. The reader is the protagonist — never decide their choices for them.\n\n';
+
+            // 1. Premise
+            md += s('heading', '## The Story') + '\n';
+            if (genre) md += '- **Genre:** ' + esc(genre) + '\n';
+            if (tone) md += '- **Tone:** ' + esc(tone) + '\n';
+            if (premise) md += '\n' + esc(premise) + '\n';
+            md += '\n';
+
+            // 2. Reader role
+            md += s('heading', '## The Reader\'s Role') + '\n';
+            if (selectedPov >= 0) md += '- **Point of view:** ' + esc(povLabels[selectedPov]) + '\n';
+            if (protagonist) md += '- **The protagonist:** ' + esc(protagonist) + '\n';
+            if (agency) {
+                md += '- **The reader decides:**\n';
+                agency.split('\n').filter(l => l.trim()).forEach(l => { md += '  - ' + esc(l.trim().replace(/^[-*]\s*/, '')) + '\n'; });
+            }
+            md += '\n';
+
+            // 3. Choices
+            md += s('heading', '## How Choices Work') + '\n';
+            if (choiceCount) md += '- **Choices per turn:** ' + esc(choiceCount) + '\n';
+            md += '- **Story shape:** ' + esc(shape) + '\n';
+            if (present.length) {
+                md += '- **Presenting choices:**\n';
+                present.forEach(p => { md += '  - ' + esc(p) + '\n'; });
+            }
+            md += '\n';
+            if (endings) {
+                md += s('heading', '### Possible Endings') + '\n';
+                md += 'Steer the story toward one of these. Don\'t announce them — let the reader earn the ending their choices lead to.\n';
+                md += bullets(endings) + '\n';
+            }
+
+            // 4. State
+            if (track.length || statDetails || statusBlock) {
+                md += s('heading', '## State to Track') + '\n';
+                md += 'Hold this in mind across the whole playthrough and stay consistent with it every turn.\n';
+                track.forEach(t => { md += '- ' + esc(t) + '\n'; });
+                if (statDetails) {
+                    md += '\n' + s('heading', '### Stats / Meters') + '\n';
+                    md += bullets(statDetails);
+                }
+                if (statusBlock) {
+                    md += '\n' + s('heading', '### Status Readout') + '\n';
+                    md += esc(statusBlock) + '\n';
+                }
+                md += '\n';
+            }
+
+            // 5. Voice
+            md += s('heading', '## Voice & Boundaries') + '\n';
+            if (sceneLength) md += '- **Scene length:** ' + esc(sceneLength) + '\n';
+            md += '- **Heat / intensity:** ' + esc(heat) + '\n';
+            if (proseStyle) md += '- **Prose style:** ' + esc(proseStyle) + '\n';
+            if (boundaries) {
+                md += '- **Content boundaries (always respect):**\n';
+                boundaries.split('\n').filter(l => l.trim()).forEach(l => { md += '  - ' + esc(l.trim().replace(/^[-*]\s*/, '')) + '\n'; });
+            }
+            md += '\n';
+
+            // 6. Engine rules
+            md += s('heading', '## Engine Rules (every turn)') + '\n';
+            md += '1. Narrate the current scene in the style above, then **stop**.\n';
+            md += '2. Present the reader\'s choices and wait — never pick for them or skip ahead.\n';
+            md += '3. Apply the consequences of their choice to the tracked state before narrating the next beat.\n';
+            md += '4. Stay consistent — never forget an item, relationship, or decision already established.\n';
+            md += '5. If the reader acts off-menu, improvise a believable result rather than refusing.\n';
+            md += '6. End each scene on a hook or a fresh decision.\n';
+            if (rules.length) {
+                rules.forEach((r, i) => { md += (i + 7) + '. ' + esc(r) + '\n'; });
+            }
+            md += '\n';
+
+            // Commands
+            if (startCommand) {
+                md += s('heading', '## Commands') + '\n';
+                md += bullets(startCommand) + '\n';
+            }
+
+            // Opening
+            if (openingLine) {
+                md += s('heading', '## Opening Beat') + '\n';
+                md += 'When the reader starts a new story, open here:\n\n';
+                md += '> ' + esc(openingLine) + '\n';
+            }
+
+            document.getElementById('outputPreview').innerHTML = md;
+        }
+
+        function s(cls, text) { return '<span class="' + cls + '">' + text + '</span>'; }
+        function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+        function copyToClipboard() {
+            const text = (document.getElementById('outputPreview').textContent || '');
+            navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!')).catch(() => {
+                const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copied to clipboard!');
+            });
+        }
+
+        function downloadSkill() {
+            const text = document.getElementById('outputPreview').textContent || '';
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'SKILL.md'; a.click();
+            URL.revokeObjectURL(a.href); showToast('Downloaded SKILL.md');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
