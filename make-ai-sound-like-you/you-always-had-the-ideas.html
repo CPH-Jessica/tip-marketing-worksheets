@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Always Had the Ideas — A Class by Jessica Waldron</title>
+<style>
+  :root{
+    --ink:#2a2320; --paper:#fbf7f1; --card:#ffffff;
+    --plum:#6b3f5b; --plum-soft:#9c6a87; --gold:#c08a2d; --sage:#5f7a5a;
+    --rule:#e7ddd0; --shadow:0 6px 24px rgba(70,45,40,.09);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:"Trebuchet MS","Segoe UI",sans-serif;line-height:1.2}
+  header.hero{background:linear-gradient(135deg,#6b3f5b,#9c6a87 70%);color:#fff;padding:70px 0 60px;text-align:center}
+  .hero .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.78rem;opacity:.9;font-family:"Trebuchet MS",sans-serif}
+  .hero h1{font-size:2.7rem;margin:.3em 0 .2em}
+  .hero p.sub{font-size:1.15rem;max-width:680px;margin:.5em auto 0;opacity:.96}
+  .butterfly{font-size:1.4rem}
+  .badge{display:inline-block;margin-top:24px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.42);padding:8px 18px;border-radius:30px;font-family:"Trebuchet MS",sans-serif;font-size:.82rem}
+  section{padding:48px 0;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:"Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--gold);font-weight:bold}
+  h2{font-size:1.8rem;color:var(--plum);margin:.25em 0 .55em}
+  h3{font-size:1.18rem;color:var(--ink);margin:1.3em 0 .3em}
+  p{margin:.7em 0}
+  .lead{font-size:1.14rem}
+  .myth{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
+  .myth .col{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:22px}
+  .myth .m{border-top:4px solid #b9b0a3}
+  .myth .t{border-top:4px solid var(--sage)}
+  .myth h3{margin-top:0}
+  /* timeline */
+  .tl{margin-top:18px}
+  .stage{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px;margin:16px 0;border-left:6px solid var(--plum)}
+  .stage.s1{border-left-color:#b9b0a3}
+  .stage.s2{border-left-color:var(--gold)}
+  .stage.s3{border-left-color:var(--sage)}
+  .stage .tag{font-family:"Trebuchet MS",sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:bold}
+  .stage.s1 .tag{color:#8a8275}.stage.s2 .tag{color:var(--gold)}.stage.s3 .tag{color:var(--sage)}
+  .stage h3{margin:.2em 0 .3em;font-size:1.3rem;color:var(--plum)}
+  .stage .who{font-family:"Trebuchet MS",sans-serif;font-size:.85rem;color:var(--plum-soft);margin-bottom:.5em}
+  .stage ul{margin:.4em 0 0;padding-left:20px}
+  .stage li{margin:.4em 0}
+  .arrow{text-align:center;font-size:1.5rem;color:var(--plum-soft);margin:-4px 0}
+  .quote{font-style:italic;background:#f6efe6;border-radius:8px;padding:12px 16px;margin:10px 0;border-left:3px solid var(--plum-soft)}
+  .pull{background:linear-gradient(135deg,#5f7a5a,#7c9a76);color:#fff;border-radius:12px;padding:26px 28px;box-shadow:var(--shadow);font-size:1.15rem}
+  .pull b{font-weight:bold}
+  .reviews{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .rev{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:16px 18px;font-size:.95rem}
+  .rev .stars{color:var(--gold);font-family:"Trebuchet MS",sans-serif;font-weight:bold;font-size:.8rem}
+  .rev .who{font-family:"Trebuchet MS",sans-serif;font-size:.8rem;color:var(--plum-soft);margin-top:6px}
+  .seg{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:14px 20px;margin:10px 0;display:flex;gap:16px;align-items:baseline}
+  .seg .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Trebuchet MS",sans-serif;font-weight:bold}
+  .seg .w b{color:var(--plum)}
+  .for{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:20px 24px;margin-top:14px}
+  .for ul{margin:.4em 0;padding-left:20px}.for li{margin:.5em 0}
+  .closing{background:#3a2a34;color:#f3e9ef;text-align:center;padding:54px 0}
+  .closing h2{color:#fff}
+  .closing p{max-width:640px;margin-left:auto;margin-right:auto}
+  .closing .sign{font-style:italic;font-size:1.18rem;margin-top:16px}
+  footer{font-family:"Trebuchet MS",sans-serif;font-size:.76rem;color:var(--plum-soft);text-align:center;padding:22px}
+  @media(max-width:680px){.myth,.reviews{grid-template-columns:1fr}.hero h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">The Invisible Pen &nbsp;•&nbsp; A Class for Writers Over 40</div>
+    <h1>You Always Had the Ideas</h1>
+    <p class="sub">How I used AI to finally finish the book I'd carried for a decade — and became a better storyteller doing it. Using AI doesn't make you less of an author. It might be the thing that lets you become one. <span class="butterfly">🦋</span></p>
+    <div class="badge">Built around the true, three-draft evolution of one of my own books</div>
+  </div>
+</header>
+
+<!-- PROMISE -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">What this class is</div>
+    <h2>The book was always good. I just couldn't finish it.</h2>
+    <p class="lead">I wrote a romance in 2011. I published it. And I always knew it wasn't the book it could be. I knew exactly what was wrong with it. I even fixed a lot of it, twice, on my own. What I couldn't do — for years — was sit still long enough to finish the hardest rewrite.</p>
+    <p>This class is the proof of what changed when I stopped fighting that and let AI take over the part I struggle with. I'll show you all three versions of the same book, side by side, so you can see the evolution with your own eyes — and decide for yourself whether the woman who directed that rebuild is any less the author.</p>
+    <p>Spoiler: she's not. And neither are you.</p>
+  </div>
+</section>
+
+<!-- THE MYTH -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The thing holding you back</div>
+    <h2>Let's kill the myth first</h2>
+    <div class="myth">
+      <div class="col m">
+        <h3>The myth</h3>
+        <p>"If you use AI, you're not really a writer. The AI wrote it. You just pushed a button. Real authors do it themselves."</p>
+        <p>It's the fear that keeps so many of us — especially over 40 and 50 — standing at the edge of this, afraid to even try.</p>
+      </div>
+      <div class="col t">
+        <h3>The truth</h3>
+        <p>The words were never the work. The <b>story</b> is the work. The judgment, the taste, the knowing what a reader needs and when — that's the author. That's you.</p>
+        <p>AI can put words on a page. It cannot know your reader, your voice, or what your book is supposed to feel like. Only you know that.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CENTERPIECE: EVOLUTION -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The proof — one book, three drafts, eleven years</div>
+    <h2>Watch a book (and a writer) grow up</h2>
+    <p>Same love story every time: teenage sweethearts torn apart by a betrayal, a pregnant woman in danger, the detective who never stopped loving her, and a serial killer. Here's how it evolved.</p>
+
+    <div class="tl">
+      <div class="stage s1">
+        <div class="tag">Stage 1 — written by me, 2011</div>
+        <h3>Unexpected Destinies</h3>
+        <div class="who">My debut era. All me, no AI.</div>
+        <ul>
+          <li>Opens on a <b>goddess prologue</b> — literal gods run the plot from a magic viewing pool.</li>
+          <li>The exciting part (a woman running for her life) is buried, then cut to a flashback.</li>
+          <li>Head-hopping, telling instead of showing, the love story driven by divine meddling instead of the characters.</li>
+        </ul>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="stage s2">
+        <div class="tag">Stage 2 — revised by me, pre-AI</div>
+        <h3>Forgiven Destinies</h3>
+        <div class="who">Years later. Still all me. Still no AI.</div>
+        <ul>
+          <li>I moved the hook — cut the gods from the opening, started on the detective at a crime scene.</li>
+          <li>I fixed the head-hopping: one point of view per chapter.</li>
+          <li>I polished the prose and sharpened the comedy. <b>This is the receipt that the craft was always mine.</b></li>
+          <li>But I couldn't finish the hardest cuts — the gods stayed in, the book stayed unfocused. Not for lack of knowing. For lack of finishing.</li>
+        </ul>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="stage s3">
+        <div class="tag">Stage 3 — directed by me, written with Claude, 2025</div>
+        <h3>Model Behavior &nbsp;<span style="font-weight:normal;font-size:.8rem;color:var(--sage)">— published</span></h3>
+        <div class="who">I made every call. AI executed them to my standard.</div>
+        <ul>
+          <li>Cut the gods entirely — the characters finally drive their own story.</li>
+          <li>Repositioned the heroine into a self-made billionaire CEO; gave the hero real stature to match.</li>
+          <li><b>Unified the plot</b> — the old betrayal and the present-day killer became one decade-long obsession. The early drafts never connected those threads. This one does.</li>
+          <li>Removed a scene that no longer held up, and replaced the whole secret-baby setup with a haunting recurring nightmare that pays off in the ending.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pull" style="margin-top:18px">
+      Three drafts. A decade apart. One unmistakable storyteller. The ideas, the diagnosis, the standard — mine the whole way. The tool didn't make me a writer. It helped me <b>finish</b> becoming the one I already was.
+    </div>
+  </div>
+</section>
+
+<!-- THE REAL BARRIER -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The honest part</div>
+    <h2>It was never a talent problem. It was a finishing problem.</h2>
+    <p class="lead">Here's what I don't usually say out loud: my brain runs a hundred miles an hour. I can map a whole series in an afternoon. I have more ideas than I'll ever live to write. What I struggle with — what my ADD makes genuinely hard — is sitting still long enough to grind out the finish.</p>
+    <p>For years I blamed myself for that. Called myself lazy, undisciplined, a starter who couldn't finish. Maybe you've called yourself those things too.</p>
+    <p>We were wrong. It's not a character flaw. It's wiring. And the right tool doesn't fix your wiring — it works <em>with</em> it. I bring the vision and the judgment. Claude brings the focus and the follow-through I can't always summon. I'm not handing over my book. I'm handing over the bottleneck.</p>
+    <h3>The reframe that changes everything:</h3>
+    <p style="font-size:1.1rem"><strong>AI isn't a ghostwriter. It's a finisher you direct.</strong> For an idea-rich, focus-poor writer, that's not cheating. That's the assistive tool that finally lets the book out of your head.</p>
+  </div>
+</section>
+
+<!-- YOU'RE STILL THE AUTHOR -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">And the readers? They have no idea — they just love it</div>
+    <h2>You're still the storyteller. The reviews prove it.</h2>
+    <p>Model Behavior — the AI-assisted, author-directed version — went out to real readers. Here's what they said.</p>
+    <div class="reviews">
+      <div class="rev"><div class="stars">★★★★★</div>"I love the characters that Nick and Jayne turned into… Jayne has huge business capabilities… The work of trying to find who has targeted her is well thought-out and not just glib."<div class="who">— Dina</div></div>
+      <div class="rev"><div class="stars">★★★★★</div>"An emotionally gripping story of love, loss, mistrust, betrayal and second chances… a book I could not put down."<div class="who">— Turtle Mom1</div></div>
+      <div class="rev"><div class="stars">★★★★☆</div>"My perfect blend of mystery and love story. The characters were well-defined, the plot suitably twisty."<div class="who">— Deb Sampson</div></div>
+      <div class="rev"><div class="stars">★★★★☆</div>"Brought back together after a misunderstanding that tore them apart… a threat is moving closer and Nick is willing to do whatever it takes to protect her."<div class="who">— Amazon Customer</div></div>
+    </div>
+    <p style="margin-top:16px">Not one of them is grading the prose for "AI smell." They're moved. They're invested. They want the next book. Because what they're responding to is the <em>story</em> — and the story was always mine.</p>
+    <p style="font-size:.95rem;color:var(--plum-soft)"><strong>The honest note I teach anyway:</strong> a couple of readers said it's "slow to start." That's real, and it's useful. It shows the craft is still growing — and it's exactly the kind of thing you and your tool tighten on the next book. Honesty like that is what makes you trustworthy to your readers.</p>
+  </div>
+</section>
+
+<!-- FOR YOU -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Who this is for</div>
+    <h2>If this is you, this class is for you</h2>
+    <div class="for">
+      <ul>
+        <li>You're over 40 or over 50, and you've been told (or you've told yourself) that this technology isn't for you.</li>
+        <li>You have a drawer — or a hard drive — full of started books you never finished.</li>
+        <li>You're <em>full</em> of ideas. Sitting down to write them is the wall.</li>
+        <li>You want to use AI but you're scared it means you're not a "real" author.</li>
+        <li>You've got decades of life and story instinct that younger writers simply don't have yet — and you're ready to stop letting it go to waste.</li>
+      </ul>
+    </div>
+    <p style="margin-top:16px">Your experience is the asset. Your instinct is the asset. The tool is the team you never had. You bring the story. It helps you finish.</p>
+  </div>
+</section>
+
+<!-- CLASS FLOW -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">How I'll teach it</div>
+    <h2>The class flow</h2>
+    <div class="seg"><div class="n">1</div><div class="w"><b>The myth, and the permission.</b> Name the fear out loud and dismantle it. You are the author. Settle that before anything else.</div></div>
+    <div class="seg"><div class="n">2</div><div class="w"><b>The evolution, live.</b> Walk all three versions of my own book — the gods, the cleanup, the rebuild — so they <em>see</em> the storyteller growing across a decade.</div></div>
+    <div class="seg"><div class="n">3</div><div class="w"><b>The finishing problem.</b> The ADD/executive-function reframe. Why "I can't finish" isn't a flaw, and how a directed tool changes it.</div></div>
+    <div class="seg"><div class="n">4</div><div class="w"><b>Director, not typist.</b> What it actually means to direct AI — making the calls, keeping or cutting every line, holding the standard.</div></div>
+    <div class="seg"><div class="n">5</div><div class="w"><b>Your turn.</b> Each writer takes one of their own unfinished books and maps the single change that would make it work — the first call a director makes.</div></div>
+    <div class="seg"><div class="n">6</div><div class="w"><b>The close.</b> Send them off knowing the thing in the drawer isn't a failure. It's raw material waiting for the day they can finally finish it.</div></div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="wrap">
+    <h2>You're not too late. And you're not less-than.</h2>
+    <p>I carried that book for over a decade thinking I'd failed it. I hadn't. I just hadn't found the way to finish. If you've got a story in you and a drawer full of almosts, hear me: the ideas were always the hard part, and you already have those. The finishing is the part we can solve.</p>
+    <p>Using AI didn't make me less of an author. It made me a finished one. It can do the same for you.</p>
+    <p class="sign">Keep the Dream Alive. I'm pulling for you — we're all in this together. <span class="butterfly">🦋</span></p>
+  </div>
+</div>
+
+<footer>
+  The Invisible Pen · Clark Publishing House LLC · A class by Jessica Waldron. Built on the real three-draft evolution of Unexpected Destinies → Forgiven Destinies → Model Behavior. Draft for review.
+</footer>
+
+</body>
+</html>
