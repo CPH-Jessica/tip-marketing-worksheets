@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make AI Sound Like You — A Class by Jessica Waldron</title>
+<style>
+  :root{--ink:#2a2320;--paper:#fbf7f1;--card:#ffffff;--plum:#6b3f5b;--plum-soft:#9c6a87;--gold:#c08a2d;--sage:#5f7a5a;--rule:#e7ddd0;--shadow:0 6px 24px rgba(70,45,40,.09)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:"Trebuchet MS","Segoe UI",sans-serif;line-height:1.2}
+  header.hero{background:linear-gradient(135deg,#6b3f5b,#9c6a87 70%);color:#fff;padding:70px 0 58px;text-align:center}
+  .hero .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.78rem;opacity:.9;font-family:"Trebuchet MS",sans-serif}
+  .hero h1{font-size:2.7rem;margin:.3em 0 .2em}
+  .hero p.sub{font-size:1.15rem;max-width:680px;margin:.5em auto 0;opacity:.96}
+  .butterfly{font-size:1.4rem}
+  .badge{display:inline-block;margin-top:24px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.42);padding:8px 18px;border-radius:30px;font-family:"Trebuchet MS",sans-serif;font-size:.82rem}
+  /* Buy button */
+  .buy{display:inline-block;background:var(--gold);color:#fff;font-family:"Trebuchet MS","Segoe UI",sans-serif;font-weight:bold;text-decoration:none;padding:15px 36px;border-radius:32px;font-size:1.08rem;box-shadow:0 6px 18px rgba(70,45,40,.18);transition:transform .15s,background .2s;border:none;cursor:pointer}
+  .buy:hover{background:#a9761f;transform:translateY(-2px)}
+  .buy.light{background:#fff;color:var(--plum)}
+  .buy.light:hover{background:#f3e9ef}
+  .cta-row{margin-top:26px}
+  .price-note{font-family:"Trebuchet MS",sans-serif;font-size:.86rem;opacity:.85;margin-top:12px}
+  section{padding:46px 0;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:"Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--gold);font-weight:bold}
+  h2{font-size:1.8rem;color:var(--plum);margin:.25em 0 .55em}
+  p{margin:.7em 0}.lead{font-size:1.14rem}
+  .outcome{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 26px;border-left:6px solid var(--sage)}
+  .outcome ul{margin:.5em 0 0;padding-left:20px}.outcome li{margin:.5em 0}
+  .proof{background:#f6efe6;border-radius:10px;padding:16px 20px;margin-top:14px;font-size:.98rem}
+  .proof b{color:var(--plum)}
+  .mod{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px;margin:16px 0;border-left:6px solid var(--plum)}
+  .mod .num{font-family:"Trebuchet MS",sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:bold}
+  .mod h3{font-size:1.32rem;color:var(--plum);margin:.15em 0 .15em}
+  .mod .tease{font-style:italic;color:var(--plum-soft);margin:0 0 .6em}
+  .mod .row{margin:.55em 0}
+  .mod .k{font-family:"Trebuchet MS",sans-serif;font-weight:bold;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;color:var(--sage)}
+  .mod .do{background:#f6efe6;border-radius:8px;padding:10px 14px;margin-top:8px}
+  .kit{background:linear-gradient(135deg,#5f7a5a,#7c9a76);color:#fff;border-radius:12px;padding:24px 28px;box-shadow:var(--shadow)}
+  .kit h2{color:#fff;margin-top:0}
+  .kit ol{margin:.4em 0 0;padding-left:22px}.kit li{margin:.45em 0}
+  .test{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:20px 24px}
+  .test .big{font-size:1.15rem;color:var(--plum);font-weight:bold;font-family:"Trebuchet MS",sans-serif}
+  .enroll{text-align:center;background:#f6efe6;border-radius:12px;padding:34px 24px}
+  .enroll h2{margin-top:0}
+  .closing{background:#3a2a34;color:#f3e9ef;text-align:center;padding:52px 0}
+  .closing h2{color:#fff}.closing p{max-width:640px;margin:.6em auto 0}
+  .closing .sign{font-style:italic;font-size:1.18rem;margin-top:16px}
+  footer{font-family:"Trebuchet MS",sans-serif;font-size:.76rem;color:var(--plum-soft);text-align:center;padding:22px}
+  @media(max-width:680px){.hero h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">The Invisible Pen &nbsp;•&nbsp; A Do-It-With-Me Class</div>
+    <h1>Make AI Sound Like You</h1>
+    <p class="sub">Stop fighting the robot voice. By the end, you'll have a repeatable system that makes AI write in YOUR voice — on your books, your emails, your posts — and a Voice Kit you keep forever. <span class="butterfly">🦋</span></p>
+    <div class="cta-row"><a class="buy" href="#enroll">Enroll in the class →</a></div>
+    <div class="price-note">Self-paced · Lifetime access · Includes your interactive Voice Kit Builder</div>
+  </div>
+</header>
+
+<!-- OUTCOME FIRST -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">What you walk out with</div>
+    <h2>This isn't theory. It's a result you keep.</h2>
+    <div class="outcome">
+      <p style="margin-top:0"><strong>By the end of this class you will be able to:</strong></p>
+      <ul>
+        <li>Get AI to draft in <em>your</em> voice instead of generic "AI smell" — reliably, not by luck.</li>
+        <li>Spot and strip the dead giveaways that scream "a robot wrote this."</li>
+        <li>Hand the AI the exact inputs that make it sound like you — and know why they work.</li>
+        <li>Run the keep-it-or-cut-it loop like a director, so every line that ships is yours.</li>
+      </ul>
+      <p><strong>And you'll leave holding a reusable Voice Kit</strong> — the actual files you paste into any AI to make it sound like you on day one. (Details at the bottom.)</p>
+    </div>
+    <div class="proof">
+      <b>The 60-second proof I open with:</b> I took a romance I wrote in 2011, directed AI to rebuild it, and published it. Real readers reviewed it — "couldn't put it down," "well thought-out, not just glib" — and not one of them caught a whiff of AI. Because it sounds like me. That's not magic. It's a method, and it's exactly what I'm about to teach you. <em>(Read the full story in the companion article, <a href="you-always-had-the-ideas.html" style="color:var(--plum);font-weight:bold">"You Always Had the Ideas."</a>)</em>
+    </div>
+  </div>
+</section>
+
+<!-- THE METHOD -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The method — do each step with me, leave with the artifact</div>
+    <h2>How to make AI sound like you</h2>
+
+    <div class="mod">
+      <div class="num">Module 1</div>
+      <h3>Mine your voice</h3>
+      <p class="tease">You can't tell AI to sound like you until you know what "you" actually sounds like.</p>
+      <div class="row"><span class="k">The move:</span> Pull 3–5 samples of your own real writing you're proud of. We find your patterns — sentence rhythm, the moves you make, your humor, the words you reach for, the things you'd never say.</div>
+      <div class="do"><b>Do this:</b> Paste your samples into Claude and ask it to describe your voice back to you as a set of rules. You react: "yes, that's me / no, that's not." <b>You'll have:</b> a first draft of your Voice Profile.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 2</div>
+      <h3>Feed receipts, not adjectives</h3>
+      <p class="tease">"Write it warm and funny" gets you everyone's warm and funny. Specifics get you YOURS.</p>
+      <div class="row"><span class="k">The move:</span> Generic inputs make generic output. The fix is your real, lived, specific material — the details only you have. That's what makes a page unmistakably you and impossible for a generic AI writer to fake.</div>
+      <div class="do"><b>Do this:</b> Build a Receipts Bank — your real stories, phrases, failures, references, the things that actually happened. <b>You'll have:</b> a file of specifics you drop in so the AI writes from your life, not the internet's average.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 3</div>
+      <h3>Build your banned list</h3>
+      <p class="tease">Half of sounding like you is refusing to sound like the robot.</p>
+      <div class="row"><span class="k">The move:</span> Name the AI tells and kill them on sight — the em-dash overload, the "it's not X, it's Y" reflex, the dramatic three-word triplets, the tidy 5-point listicle skeleton, the fortune-cookie endings. Plus the words and phrases that simply aren't <em>you</em>.</div>
+      <div class="do"><b>Do this:</b> We build your personal banned list together. <b>You'll have:</b> a Banned List you paste in every time so the AI stops defaulting to wallpaper.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 4</div>
+      <h3>Pick your register before you write</h3>
+      <p class="tease">You don't have one voice — you have a few. Choose on purpose.</p>
+      <div class="row"><span class="k">The move:</span> Are you the expert who knows, or the friend who gets it? Teaching voice and personal-story voice are different instruments. The biggest mistake is blending them. We learn to pick first, then write.</div>
+      <div class="do"><b>Do this:</b> Define your 2 main registers and when each one comes out. <b>You'll have:</b> a one-line "which voice, when" rule.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 5</div>
+      <h3>Direct, don't accept</h3>
+      <p class="tease">This is the whole game. You're the director, not the typist.</p>
+      <div class="row"><span class="k">The move:</span> You make the calls — the hook, the angle, the structure, the standard. The AI drafts to your direction. Then you run the keep-it-or-cut-it loop on every line. Generic? Back. Wrong? Gone. Nothing ships that isn't yours.</div>
+      <div class="do"><b>Do this:</b> Take one AI draft and we redirect it live until it sounds like you. <b>You'll have:</b> the director's loop as muscle memory.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 6</div>
+      <h3>Protect the trust (don't let it lie for you)</h3>
+      <p class="tease">Sounding like you is worthless if it makes things up in your name.</p>
+      <div class="row"><span class="k">The move:</span> AI will hand you a confident, beautiful, completely fabricated detail and not blink. We set the rule: the boring true version beats the sharp invented one, every time. How to catch fabrication before it ships under your name.</div>
+      <div class="do"><b>Do this:</b> Learn the verify-before-you-publish pass. <b>You'll have:</b> a short pre-publish checklist that keeps your reader trust intact.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Module 7</div>
+      <h3>Use the right tool for the job</h3>
+      <p class="tease">No single AI is best at everything. Knowing the difference is part of the craft.</p>
+      <div class="row"><span class="k">The move:</span> I'll show you my actual stack and when I reach for which tool, so you build instinct for matching the job to the right model instead of forcing one to do everything.</div>
+      <div class="do"><b>Do this:</b> Map your own tasks to tools. <b>You'll have:</b> a simple routing cheat sheet.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE TEST -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The standard we hold the whole class</div>
+    <h2>The one test that decides everything</h2>
+    <div class="test">
+      <p class="big">"Could a stranger tell whether I wrote this, or the AI did?"</p>
+      <p>If they couldn't tell — it's working. Ship it. If it reads clean, smooth, tidy, and generic — that's the robot, and it goes back. Every technique in this class exists to pass that one test. We run it on your real writing until passing it is automatic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THE KIT -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The result you keep</div>
+    <div class="kit">
+      <h2>Your Voice Kit</h2>
+      <p>You don't leave with notes. You leave with a working toolkit you paste into any AI to make it sound like you from the first prompt:</p>
+      <ol>
+        <li><b>Your Voice Profile</b> — your patterns and rules, written down.</li>
+        <li><b>Your Receipts Bank</b> — the specifics only you have.</li>
+        <li><b>Your Banned List</b> — the AI tells and not-you words you kill on sight.</li>
+        <li><b>Your Register Rule</b> — which voice comes out, when.</li>
+        <li><b>Your Pre-Publish Checklist</b> — so nothing fabricated ships in your name.</li>
+        <li><b>Your Routing Cheat Sheet</b> — the right tool for each job.</li>
+      </ol>
+      <p style="margin-bottom:0">That kit is the result. Bring it to your next book, newsletter, or post and the AI sounds like you on day one. <strong>The class includes the interactive Voice Kit Builder that assembles all six pieces for you.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section id="enroll">
+  <div class="wrap">
+    <div class="enroll">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Make AI sound like you — for good.</h2>
+      <p>Self-paced. Lifetime access. The full seven-module class, the interactive Voice Kit Builder, and printable templates — yours to keep and reuse on every book and every post.</p>
+      <div class="cta-row"><a class="buy" href="#">Enroll now →</a></div>
+      <div class="price-note" style="color:var(--plum-soft)">Secure checkout through Payhip · Instant access</div>
+    </div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="wrap">
+    <h2>This is the thing I actually do — and now you will too.</h2>
+    <p>I'm not going to teach you to push a button and hope. I'm going to teach you the exact system I use to make AI sound like me on every pen name I write — and we'll build yours together, live, so you walk out able to do it on your own.</p>
+    <p>You bring the voice. I'll show you how to make the tool speak it.</p>
+    <div class="cta-row"><a class="buy light" href="#enroll">Get the class →</a></div>
+    <p class="sign">Keep the Dream Alive. I'm pulling for you — we're all in this together. <span class="butterfly">🦋</span></p>
+  </div>
+</div>
+
+<footer>
+  The Invisible Pen · Clark Publishing House LLC · "Make AI Sound Like You" — a do-it-with-me class by Jessica Waldron. Pairs with the article "You Always Had the Ideas."
+</footer>
+
+<!-- ============================================================= -->
+<!--  PAYHIP LINK: paste your Payhip product/checkout URL between   -->
+<!--  the quotes below. Every "Enroll / Get the class" button       -->
+<!--  updates automatically. (The two "#enroll" buttons just scroll -->
+<!--  down to the Enroll section, which holds the real buy button.) -->
+<!-- ============================================================= -->
+<script>
+  var PAYHIP_URL = "";
+  if (PAYHIP_URL) {
+    document.querySelectorAll('a.buy').forEach(function(a){
+      if (a.getAttribute('href') === '#') a.href = PAYHIP_URL;
+    });
+  }
+</script>
+</body>
+</html>
