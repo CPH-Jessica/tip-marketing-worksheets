@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Here — The Invisible Pen</title>
+<style>
+  :root{
+    --ink:#21302f; --muted:#5c6a6a; --bg:#fbfaf7; --card:#fff; --line:#dde6e5;
+    --teal:#0f6e6e; --teal-d:#0c5654; --gold:#b9831f;
+    --l1:#2e8b57; --l1s:#e7f3ec; --l2:#0f6e6e; --l2s:#e2f1f0;
+    --l3:#b9831f; --l3s:#f7eed9; --l4:#8a2d54; --l4s:#f6e6ed;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.6;}
+  .wrap{max-width:920px;margin:0 auto;padding:26px 20px 70px;}
+  .builder{background:#fff4e0;border:1.5px dashed #d9b15e;border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13.5px;color:#6b4e16;}
+  .builder b{color:#9a6b14;}
+  .builder ul{margin:6px 0 0;padding-left:20px;}
+  header.h{text-align:center;margin-bottom:8px;}
+  .bf{font-size:34px;line-height:1;}
+  h1{margin:6px 0 6px;font-size:34px;color:var(--teal);letter-spacing:-.01em;}
+  .tagline{color:var(--muted);font-size:16px;max-width:620px;margin:0 auto;}
+  .welcome{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:22px 0 10px;font-size:16px;}
+  .welcome p{margin:0 0 12px;} .welcome p:last-child{margin-bottom:0;}
+  .welcome .big{font-size:17px;}
+  .how{font-size:15px;color:var(--muted);text-align:center;margin:20px auto 6px;max-width:680px;}
+  .pick{font-weight:800;color:var(--teal);text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:26px 0 12px;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:720px){.cards{grid-template-columns:1fr;}}
+  .pickcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px 18px;cursor:pointer;transition:.15s;}
+  .pickcard:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
+  .pickcard .lv{display:inline-block;font-weight:800;font-size:13px;color:#fff;border-radius:7px;padding:2px 10px;margin-bottom:8px;}
+  .pickcard h3{margin:0 0 4px;font-size:18px;}
+  .pickcard p{margin:0;font-size:14px;color:var(--muted);}
+  .pl1 .lv{background:var(--l1);} .pl2 .lv{background:var(--l2);} .pl3 .lv{background:var(--l3);} .pl4 .lv{background:var(--l4);}
+  .detail{display:none;border-radius:16px;padding:0;overflow:hidden;margin-top:24px;border:1px solid var(--line);scroll-margin-top:14px;}
+  .detail.open{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .detail .top{padding:16px 22px;color:#fff;}
+  .detail .top .lv{font-weight:800;font-size:13px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:7px;padding:2px 10px;}
+  .detail .top h2{margin:8px 0 2px;font-size:22px;}
+  .detail .top .who{font-size:14.5px;opacity:.95;}
+  .detail .body{background:#fff;padding:18px 22px 22px;}
+  .d1 .top{background:var(--l1);} .d2 .top{background:var(--l2);} .d3 .top{background:var(--l3);} .d4 .top{background:var(--l4);}
+  .lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin:6px 0 8px;color:var(--muted);}
+  ol.steps{margin:0;padding-left:0;list-style:none;counter-reset:s;}
+  ol.steps li{counter-increment:s;position:relative;padding:10px 0 10px 46px;border-bottom:1px dashed var(--line);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
+  .d1 ol.steps li::before{background:var(--l1);} .d2 ol.steps li::before{background:var(--l2);}
+  .d3 ol.steps li::before{background:var(--l3);} .d4 ol.steps li::before{background:var(--l4);}
+  ol.steps b{font-size:15.5px;}
+  ol.steps .cls{display:inline-block;font-weight:700;}
+  ol.steps small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px;}
+  .ready{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:14.5px;}
+  .d1 .ready{background:var(--l1s);} .d2 .ready{background:var(--l2s);} .d3 .ready{background:var(--l3s);} .d4 .ready{background:var(--l4s);}
+  .ready b{text-transform:uppercase;font-size:11px;letter-spacing:.06em;display:block;margin-bottom:3px;}
+  .unsure{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:26px;font-size:15px;}
+  .unsure b{color:var(--teal);}
+  .close{text-align:center;margin-top:30px;font-size:16px;color:var(--ink);}
+  .close .sig{font-weight:700;color:var(--teal);}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+
+  <header class="h">
+    <div class="bf">🦋</div>
+    <h1>Start Here</h1>
+    <p class="tagline">Welcome to The Invisible Pen. Don't drink from the firehose — let's find <i>your</i> starting point.</p>
+  </header>
+
+  <div class="welcome">
+    <p class="big">You found us. Good.</p>
+    <p>The Invisible Pen is for authors over 40 who want to use AI as a writing <i>partner</i> — not a replacement. No hype. No fear-mongering. No “get rich quick.” Just real, practical help learning to write and publish with AI without losing your voice.</p>
+    <p>There's a lot in here, and I built it that way on purpose. But I know that can feel like walking into a library with no signs. So forget the rest of the classroom for one minute. You only need to answer one question: <b>which of these four sounds the most like you, right now?</b></p>
+    <p>Pick that one. Do the three steps. Come back when you're ready to level up. That's the whole plan.</p>
+  </div>
+
+  <p class="how">Not sure you're in the “right” level? Nobody is, at first. Pick the one that feels closest — you can always reach up or drop back. There's no wrong door here.</p>
+
+  <div class="pick">👇 Which one is you?</div>
+  <div class="cards">
+    <div class="pickcard pl1" onclick="openLvl('l1')">
+      <span class="lv">L1</span><h3>Beginner Writer</h3>
+      <p>Haven't published yet. New to all of it. “Where do I even begin?”</p>
+    </div>
+    <div class="pickcard pl2" onclick="openLvl('l2')">
+      <span class="lv">L2</span><h3>Newly Published</h3>
+      <p>One book out. New to drafting with AI. Marketing's a mystery — and you half-wonder if AI is cheating.</p>
+    </div>
+    <div class="pickcard pl3" onclick="openLvl('l3')">
+      <span class="lv">L3</span><h3>Established &amp; AI-Curious</h3>
+      <p>A few books in. Using AI but it doesn't sound like <i>you</i> yet — and you'd like to keep this quiet for now.</p>
+    </div>
+    <div class="pickcard pl4" onclick="openLvl('l4')">
+      <span class="lv">L4</span><h3>Competent &amp; Optimizing</h3>
+      <p>You run the whole pipeline. Now you want to sharpen, scale, and stay ahead.</p>
+    </div>
+  </div>
+
+  <!-- L1 -->
+  <div class="detail d1" id="l1">
+    <div class="top"><span class="lv">L1 · Beginner Writer</span><h2>Let's build your foundation</h2>
+      <div class="who">You haven't published yet, the words <i>trope</i> and <i>blurb</i> are fuzzy, and you've dabbled with AI but nothing serious. Perfect. You're exactly who this was built for.</div></div>
+    <div class="body">
+      <div class="lbl">Your first three steps</div>
+      <ol class="steps">
+        <li><b><span class="cls">Watch the Live Call Replays.</span></b><small>Get the lay of the land — my background, the “AI as partner” philosophy, and the 5-Phase Author Roadmap so you can see the whole journey before you start walking it.</small></li>
+        <li><b><span class="cls">Take “L1 Class: Understanding Tropes.”</span></b><small>Before you write a single word, learn to speak reader language. This is the difference between a book that sells and one that sits.</small></li>
+        <li><b><span class="cls">Start “Pen Name Launcher — The Complete System.”</span></b><small>Six lessons that walk you from naming your pen name all the way to launch week — newsletter, reader magnet, cover, KDP, the works.</small></li>
+      </ol>
+      <div class="ready"><b>You're ready for L2 when…</b> you've drafted (or nearly) your first book and the basic pieces — pen name, newsletter, cover, blurb — aren't scary anymore, even if they're rough.</div>
+    </div>
+  </div>
+
+  <!-- L2 -->
+  <div class="detail d2" id="l2">
+    <div class="top"><span class="lv">L2 · Newly Published</span><h2>Make AI yours — and learn to sell the book</h2>
+      <div class="who">You've got a book out, you're new to actually drafting with AI, you have a few tools but aren't sure how to use them, and marketing feels like a foreign language. Let's fix all three.</div></div>
+    <div class="body">
+      <div class="lbl">Your first three steps</div>
+      <ol class="steps">
+        <li><b><span class="cls">Set up your Claude: “Foundations of Claude — Before You Prompt,” then Part 1.</span></b><small>The fastest way to stop wondering if AI is “cheating” is to make it sound like YOU. That starts with teaching it who you are.</small></li>
+        <li><b><span class="cls">Grab the Free Resources + “How to Build Custom Gems for Blurbs.”</span></b><small>The Banned List, the blurb checkers, and the Gems guide give you a real handle on keywords, blurbs, and the marketing that actually moves books.</small></li>
+        <li><b><span class="cls">Watch “How I Use AI Tools to Edit” and try the Beta Reader Bestie skill.</span></b><small>See the whole process — brainstorm to edit — and put a brutally honest beta reader to work on your pages.</small></li>
+      </ol>
+      <div class="ready"><b>You're ready for L3 when…</b> you've made peace that AI is a real partner, you can use your core tools, and you've got a basic marketing handle on your published book.</div>
+    </div>
+  </div>
+
+  <!-- L3 -->
+  <div class="detail d3" id="l3">
+    <div class="top"><span class="lv">L3 · Established &amp; AI-Curious</span><h2>Get it to sound like YOU</h2>
+      <div class="who">You've got a backlist, you're folding AI into a process that already works, and you may not want readers or peers knowing yet. The headline goal here is simple: make the words sound unmistakably like you.</div></div>
+    <div class="body">
+      <div class="lbl">Your first three steps</div>
+      <ol class="steps">
+        <li><b><span class="cls">Take “How to Give Claude a Brain.”</span></b><small>Claude Projects — Instructions, Knowledge, Conversations. This is the efficiency unlock most established authors have backwards, and it changes everything.</small></li>
+        <li><b><span class="cls">Build your voice: “Foundations Part 2 — Building Skills” + the Fiction Ghostwriter Skill Builder.</span></b><small>This is the “sound like me” work. You build it once, and Claude carries your voice into every session after.</small></li>
+        <li><b><span class="cls">Run “Edit Like a Boss” (the 9-pass system).</span></b><small>Edits that protect your voice instead of flattening it. Add the Slasher Editor skill when you're ready to cut hard.</small></li>
+      </ol>
+      <div class="ready"><b>You're ready for L4 when…</b> AI is woven into your workflow (projects, instructions, a dialed-in voice skill) and you trust the output is genuinely your voice.</div>
+    </div>
+  </div>
+
+  <!-- L4 -->
+  <div class="detail d4" id="l4">
+    <div class="top"><span class="lv">L4 · Competent &amp; Optimizing</span><h2>Sharpen, scale, stay ahead</h2>
+      <div class="who">You can run the whole pipeline. Now it's about refining your systems, scaling across pen names, and keeping pace as the tools change. (This is where I live, too.)</div></div>
+    <div class="body">
+      <div class="lbl">Where to point your energy</div>
+      <ol class="steps">
+        <li><b><span class="cls">“Writing Spicy with AI” + the heat workflow.</span></b><small>The thing most tools won't help you with — and one of our real differentiators. Lean in.</small></li>
+        <li><b><span class="cls">Scale with the Premium Skill Packs + Story Studio.</span></b><small>Series Architect, Market Compass, Plot Engine, and a dashboard to keep every pen name straight without losing your mind.</small></li>
+        <li><b><span class="cls">Go advanced: multi-LLM, the Translator, and the live cohort calls.</span></b><small>Route work across tools, open new markets, and bring your real problems to the calls — that's where the best stuff happens.</small></li>
+      </ol>
+      <div class="ready"><b>This is the mastery tier.</b> The goal isn't to “finish” — it's to keep getting sharper. If you want direct time with me, the Penthouse cohort is where that lives.</div>
+    </div>
+  </div>
+
+  <div class="unsure">
+    <b>Honestly not sure?</b> Start at <b>L1</b> — nobody will judge you, and you'll only move faster for having the basics solid. Or watch <b>“Meet Your Co-Writer: Claude Cowork”</b> for the no-hype overview, then come back and pick.
+  </div>
+
+  <div class="close">
+    You're not behind, and you're not too late. Pick your level, take the first step, and I'll be right here.<br>
+    I'm pulling for you — we're all in this together. 🦋<br>
+    <span class="sig">— Jessica</span>
+  </div>
+
+  <footer>The Invisible Pen · Start Here — Onboarding Path · routes to your live classroom classes by level</footer>
+
+</div>
+
+<script>
+  function openLvl(id){
+    document.querySelectorAll('.detail').forEach(function(d){d.classList.remove('open');});
+    var el=document.getElementById(id);
+    el.classList.add('open');
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+</script>
+</body>
+</html>
