@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Spark — Plan Your Book &amp; Pick Your Tropes · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 780px; margin: 0 auto; }
+h1, h2, h3, .serif { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 16px; }
+h1 { font-size: 28px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; }
+
+/* progress */
+.steps { display: flex; gap: 5px; margin: 18px 0 6px; }
+.steps span { flex: 1; height: 8px; border-radius: 4px; background: #eee3d4; transition: background .25s; }
+.steps span.done { background: #d6b3c4; }
+.steps span.cur { background: #6d2b4e; }
+.steplabel { text-align: center; font-size: 12px; color: #9a8674; margin-bottom: 18px; letter-spacing: .03em; }
+
+/* cards / panels */
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); display: none; }
+.panel.active { display: block; animation: fade .3s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.panel h2 { font-size: 21px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 14px; margin-bottom: 18px; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 16px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], textarea, select {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 64px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px){ .two { grid-template-columns: 1fr; } }
+
+/* chips (heat / ending vibe) */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+
+/* trope library */
+.trope-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.trope-tools input[type=text] { flex: 1; min-width: 160px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+.suggested-bar b { color: #6d2b4e; }
+.cat { margin-top: 16px; }
+.cat h3 { font-size: 14px; color: #c79a4b; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; border-bottom: 1px solid #ecdfd0; padding-bottom: 4px; }
+.trope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 560px){ .trope-grid { grid-template-columns: 1fr; } }
+.trope { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 9px 11px; cursor: pointer; transition: all .15s; position: relative; }
+.trope:hover { border-color: #c79a4b; background: #fffaf0; }
+.trope.on { border-color: #6d2b4e; background: #f6ecf1; box-shadow: 0 1px 4px rgba(109,43,78,.12); }
+.trope .tn { font-weight: 700; font-size: 13.5px; color: #4a3a2c; }
+.trope.on .tn { color: #6d2b4e; }
+.trope .tb { font-size: 11.5px; color: #9a8674; margin-top: 2px; }
+.trope .star { position: absolute; top: 7px; right: 9px; font-size: 11px; color: #c79a4b; display: none; }
+.trope.suggested .star { display: inline; }
+.selected-summary { margin-top: 16px; font-size: 13px; color: #6d2b4e; min-height: 20px; }
+.selected-summary .pill { display: inline-block; background: #6d2b4e; color: #fff; border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 3px 4px 0 0; }
+
+/* Loki */
+.loki-head { display: flex; align-items: center; gap: 12px; background: linear-gradient(110deg,#2c2440,#3c2f55); color: #f3ecdb; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; }
+.loki-head .ico { font-size: 30px; }
+.loki-head h2 { color: #e9c97a; margin: 0; font-size: 19px; }
+.loki-head p { color: #c9bedd; font-size: 12.5px; margin: 0; }
+.whatif { background: #fffdf9; border: 1px solid #ecdfd0; border-left: 3px solid #6d2b4e; border-radius: 0 10px 10px 0; padding: 11px 14px; margin-bottom: 10px; }
+.whatif .q { font-weight: 700; color: #4a3a2c; font-size: 13.5px; margin-bottom: 5px; }
+.whatif textarea { min-height: 44px; font-size: 13px; }
+.loki-prompt { background: #2c2440; color: #e8e1f0; border-radius: 10px; padding: 14px 16px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 230px; overflow-y: auto; margin: 6px 0 10px; }
+
+/* blueprint output */
+.blueprint { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 460px; overflow-y: auto; margin-bottom: 14px; }
+
+/* buttons / nav */
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-primary { background: #6d2b4e; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-primary:hover { background: #58213f; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 10px 18px; font-weight: 700; font-size: 13.5px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-ghost:disabled { opacity: .4; cursor: not-allowed; }
+.nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 22px; }
+.nav .right { display: flex; gap: 10px; flex-wrap: wrap; }
+.savestamp { font-size: 12px; color: #b0a08e; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+.welcome-list { list-style: none; margin: 4px 0 0; }
+.welcome-list li { padding: 7px 0 7px 30px; position: relative; font-size: 14px; color: #5a4636; }
+.welcome-list li b { color: #6d2b4e; }
+.welcome-list li::before { content: attr(data-n); position: absolute; left: 0; top: 6px; width: 22px; height: 22px; background: #6d2b4e; color: #fff; border-radius: 50%; font-size: 12px; font-weight: 700; text-align: center; line-height: 22px; font-family: Georgia, serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header>
+    <h1>✨ Story Spark</h1>
+    <div class="tagline">Answer a few questions, pick your tropes, brainstorm the twists — then send it all to Story Studio.</div>
+  </header>
+
+  <div class="steps" id="steps"></div>
+  <div class="steplabel" id="steplabel"></div>
+
+  <!-- STEP 0: Welcome -->
+  <div class="panel" data-step="0">
+    <h2>Let's plan your book</h2>
+    <p class="lead">This is the very first step — before the outline, before the draft. We'll turn a fuzzy idea into a clear concept you can build on.</p>
+    <ol class="welcome-list">
+      <li data-n="1"><b>The basics & the story</b> — a handful of quick questions about your premise, world, and stakes.</li>
+      <li data-n="2"><b>Your cast</b> — who's at the heart of it, what they want, and what's in their way.</li>
+      <li data-n="3"><b>Pick your tropes</b> — choose from a curated library; we'll suggest ones that fit your answers.</li>
+      <li data-n="4"><b>Brainstorm with Loki</b> — "what if?" questions that twist and deepen your story.</li>
+      <li data-n="5"><b>Your Blueprint</b> — a tidy concept brief you can copy or send straight into <b>Story Studio</b>.</li>
+    </ol>
+    <p class="lead" style="margin-top:16px;">Nothing here is locked in. Skip anything that doesn't apply — a rough answer is better than a blank. Everything saves automatically in this page as you go.</p>
+    <div class="nav">
+      <span class="savestamp" id="save0"></span>
+      <div class="right"><button class="btn-primary" onclick="go(1)">Start planning →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Basics + Story -->
+  <div class="panel" data-step="1">
+    <h2>📖 The basics &amp; the story</h2>
+    <p class="lead">Don't overthink it. Working answers are fine — you're sketching, not carving stone.</p>
+
+    <div class="two">
+      <div>
+        <label for="f_title">Working title <span class="opt">(optional)</span></label>
+        <input type="text" id="f_title" placeholder="A placeholder is fine">
+      </div>
+      <div>
+        <label for="f_pen">Author / pen name <span class="opt">(optional)</span></label>
+        <input type="text" id="f_pen" placeholder="Whose book is this?">
+      </div>
+    </div>
+
+    <div class="two">
+      <div>
+        <label for="f_genre">Genre / subgenre</label>
+        <select id="f_genre" onchange="renderTropes()"></select>
+      </div>
+      <div>
+        <label for="f_format">Format / length <span class="opt">(optional)</span></label>
+        <input type="text" id="f_format" placeholder="e.g. standalone novel, Book 2 of a series, novella">
+      </div>
+    </div>
+
+    <label>Heat / intensity level <span class="opt">(optional)</span></label>
+    <div class="hint">Sets the tone — clean comfort read, or claws-out?</div>
+    <div class="chips" id="heatChips"></div>
+
+    <label for="f_premise">Premise in a sentence or two</label>
+    <div class="hint">The "what's this book about?" answer. Who, what happens, and the hook.</div>
+    <textarea id="f_premise" placeholder="e.g. A grumpy small-town baker is forced to share her kitchen with the celebrity chef who once humiliated her on national TV."></textarea>
+
+    <label for="f_setting">Setting / world <span class="opt">(optional)</span></label>
+    <div class="hint">Where and when does this live? The vibe of the place matters as much as the map.</div>
+    <textarea id="f_setting" placeholder="e.g. A sleepy coastal town in present-day Maine, off-season, everything a little faded and salt-worn."></textarea>
+
+    <label for="f_conflict">Central conflict</label>
+    <div class="hint">What's the engine of the story — the thing standing between your character and what they want?</div>
+    <textarea id="f_conflict" placeholder="e.g. They both need to win the bakery, but only one can."></textarea>
+
+    <label for="f_stakes">Stakes <span class="opt">(optional)</span></label>
+    <div class="hint">What happens if it all goes wrong? Why should we worry?</div>
+    <textarea id="f_stakes" placeholder="e.g. She loses the bakery her grandmother left her — and the only home she's ever felt safe in."></textarea>
+
+    <div class="two">
+      <div>
+        <label for="f_theme">Theme / what it's really about <span class="opt">(optional)</span></label>
+        <input type="text" id="f_theme" placeholder="e.g. learning to trust again">
+      </div>
+      <div>
+        <label>Ending vibe <span class="opt">(optional)</span></label>
+        <div class="chips" id="endChips"></div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn-ghost" onclick="go(0)">← Back</button>
+      <div class="right"><span class="savestamp" id="save1"></span><button class="btn-primary" onclick="go(2)">Next: your cast →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Characters -->
+  <div class="panel" data-step="2">
+    <h2>👥 Your cast</h2>
+    <p class="lead">Characters are where tropes come alive. A few lines each is plenty for now.</p>
+
+    <label for="f_protName">Main character — name &amp; role</label>
+    <input type="text" id="f_protName" placeholder="e.g. Maeve, the baker">
+    <div class="two">
+      <div>
+        <label for="f_protWant">What they <i>want</i> (the goal)</label>
+        <textarea id="f_protWant" placeholder="The thing they're chasing on the surface."></textarea>
+      </div>
+      <div>
+        <label for="f_protNeed">What they <i>need</i> / their flaw <span class="opt">(optional)</span></label>
+        <textarea id="f_protNeed" placeholder="The deeper lesson, wound, or blind spot."></textarea>
+      </div>
+    </div>
+
+    <label for="f_second">Second lead / love interest <span class="opt">(optional)</span></label>
+    <div class="hint">Name, role, and what makes them the perfect match — or perfect problem.</div>
+    <textarea id="f_second" placeholder="e.g. Theo, the celebrity chef — arrogant on camera, quietly grieving off it."></textarea>
+
+    <label for="f_antag">Antagonist / opposing force <span class="opt">(optional)</span></label>
+    <div class="hint">A person, a rival, the clock, the town, their own past — whatever pushes back hardest.</div>
+    <textarea id="f_antag" placeholder="e.g. The developer who wants to buy the block and bulldoze it."></textarea>
+
+    <label for="f_rels">Key relationships / supporting cast <span class="opt">(optional)</span></label>
+    <textarea id="f_rels" placeholder="e.g. Maeve's sharp-tongued grandmother (ghost? memory?), Theo's loyal sous-chef, the meddling town book club."></textarea>
+
+    <div class="nav">
+      <button class="btn-ghost" onclick="go(1)">← Back</button>
+      <div class="right"><span class="savestamp" id="save2"></span><button class="btn-primary" onclick="go(3)">Next: pick tropes →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Tropes -->
+  <div class="panel" data-step="3">
+    <h2>🎭 Pick your tropes</h2>
+    <p class="lead">Tropes are the promises you make to readers. Pick the ones that excite you — 3 to 6 is a sweet spot. Starred (★) ones look like a fit for what you've told me.</p>
+
+    <div class="trope-tools">
+      <input type="text" id="tropeSearch" placeholder="🔍 Search tropes…" oninput="renderTropes()">
+      <select id="tropeGenreFilter" onchange="renderTropes()"></select>
+    </div>
+    <div class="suggested-bar" id="suggestBar"></div>
+    <div id="tropeList"></div>
+
+    <label for="f_customTrope" style="margin-top:18px;">Add your own trope <span class="opt">(optional)</span></label>
+    <div class="trope-tools">
+      <input type="text" id="f_customTrope" placeholder="Type a trope and press Add" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomTrope();}">
+      <button class="btn-ghost" onclick="addCustomTrope()">+ Add</button>
+    </div>
+
+    <div class="selected-summary" id="selSummary"></div>
+
+    <div class="nav">
+      <button class="btn-ghost" onclick="go(2)">← Back</button>
+      <div class="right"><span class="savestamp" id="save3"></span><button class="btn-primary" onclick="go(4)">Next: brainstorm →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Loki what-ifs -->
+  <div class="panel" data-step="4">
+    <div class="loki-head">
+      <div class="ico">🐺</div>
+      <div>
+        <h2>Brainstorm with Loki</h2>
+        <p>Loki's job: ask "what if?" until your story gets sharper, stranger, and harder to put down.</p>
+      </div>
+    </div>
+    <p class="lead">Here are some what-ifs to get you started, built from your answers. Jot down any sparks — or hit <b>regenerate</b> for a fresh batch. Then copy the brainstorm prompt, <b>load your Loki skill in Claude</b>, and let Loki run wild with it.</p>
+
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button class="btn-ghost" onclick="genWhatIfs(true)">🎲 Regenerate what-ifs</button>
+      <button class="btn-ghost" onclick="copyLokiPrompt()">📋 Copy brainstorm prompt for Loki</button>
+    </div>
+
+    <div id="whatifList"></div>
+
+    <label style="margin-top:18px;">Loki's brainstorm prompt <span class="opt">(load the Loki skill, then paste)</span></label>
+    <div class="hint">In Claude, load your Loki skill, then paste this so Loki can riff on the twists with full context.</div>
+    <div class="loki-prompt" id="lokiPrompt"></div>
+
+    <label for="f_twistNotes">Twists &amp; ideas worth keeping <span class="opt">(optional)</span></label>
+    <textarea id="f_twistNotes" placeholder="Anything from the what-ifs (or your own head) you want baked into the book."></textarea>
+
+    <div class="nav">
+      <button class="btn-ghost" onclick="go(3)">← Back</button>
+      <div class="right"><span class="savestamp" id="save4"></span><button class="btn-primary" onclick="go(5)">See my blueprint →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Blueprint / handoff -->
+  <div class="panel" data-step="5">
+    <h2>🗺️ Your Story Blueprint</h2>
+    <p class="lead">Here's everything in one place. Send it to <b>Story Studio</b> to start tracking the book, copy it for your notes, or take it straight to Claude.</p>
+
+    <div class="suggested-bar" id="pickNote" style="display:block;"></div>
+    <div class="blueprint" id="blueprint"></div>
+
+    <div class="btn-row">
+      <button class="btn-gold" onclick="sendToStudio()">📚 Send to Story Studio</button>
+      <button class="btn-ghost" onclick="copyBlueprint()">📋 Copy blueprint</button>
+      <button class="btn-ghost" onclick="downloadBlueprint()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+    </div>
+    <div class="hint" id="studioMsg" style="margin-top:12px;"></div>
+
+    <div class="nav">
+      <button class="btn-ghost" onclick="go(4)">← Back</button>
+      <div class="right"><button class="btn-ghost" onclick="resetAll()">↻ Start a new book</button></div>
+    </div>
+  </div>
+
+  <footer>
+    Story Spark saves your work automatically in this page. It feeds into <b>Story Studio</b>, your book dashboard, so your idea picks up exactly where it leaves off.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ---------------- config ---------------- */
+const LS_KEY = 'story-spark-v1';
+const STUDIO_KEY = 'story-studio-student-v1';            // shared with Story Studio
+const STUDIO_STAGES = ['Setup','Concept & Tropes','Characters','Story Bible','Outline','Chapter Plan','Draft','Edit','Beta & Publish'];
+const STEP_LABELS = ['Welcome','Story','Cast','Tropes','Loki','Blueprint'];
+const TOTAL_STEPS = 6;
+
+const GENRES = [
+  'Contemporary Romance','Romantasy / Fantasy Romance','Paranormal Romance','Romantic Suspense',
+  'Historical Romance','Small-Town / Cozy Romance','Fantasy','Science Fiction','Mystery / Thriller',
+  'Cozy Mystery','Women\'s Fiction','Young Adult','Horror','Literary / Upmarket','Other'
+];
+
+const HEAT_LEVELS = ['Sweet / clean','Behind closed doors','Warm','Steamy','Scorching','N/A — not a romance'];
+const ENDINGS = ['HEA (happy ever after)','HFN (happy for now)','Bittersweet','Hopeful','Gut-punch','Twist ending'];
+
+/* Trope library. g = genre tags ('all' shows everywhere); k = keywords for auto-suggest. */
+const TROPES = [
+  // ROMANCE — relationship dynamics
+  {n:'Enemies to Lovers', c:'Romance Dynamics', g:['rom'], b:'Sworn foes who can\'t stop circling each other.', k:['enemy','enemies','rival','hate','humiliat','foe','nemesis']},
+  {n:'Friends to Lovers', c:'Romance Dynamics', g:['rom'], b:'The love that was there all along.', k:['friend','childhood','best friend','known each other']},
+  {n:'Second Chance Romance', c:'Romance Dynamics', g:['rom'], b:'Old flames, older wounds, one more try.', k:['ex','again','reunite','old flame','years ago','past','returns','comes back']},
+  {n:'Fake Dating / Marriage of Convenience', c:'Romance Dynamics', g:['rom'], b:'Pretend now, catch real feelings later.', k:['fake','pretend','convenience','arranged','contract','pretend to']},
+  {n:'Forbidden Love', c:'Romance Dynamics', g:['rom'], b:'Everything (and everyone) says no.', k:['forbidden','off limits','can\'t','secret','boss','brother','sister']},
+  {n:'Grumpy / Sunshine', c:'Romance Dynamics', g:['rom'], b:'One scowls, one beams, both melt.', k:['grumpy','grump','sunshine','cold','warm','cheerful','brooding']},
+  {n:'Slow Burn', c:'Romance Dynamics', g:['rom'], b:'Tension wound tight, release earned.', k:['slow','tension','simmer','yearning']},
+  {n:'Forced Proximity', c:'Romance Dynamics', g:['rom'], b:'One cabin, one bed, no escape.', k:['stuck','snowed','trapped','share','one bed','roommate','stranded','kitchen']},
+  {n:'Workplace Romance', c:'Romance Dynamics', g:['rom'], b:'Mixing business with very bad ideas.', k:['boss','coworker','office','colleague','work','rival','chef','company']},
+  {n:'Brother\'s Best Friend', c:'Romance Dynamics', g:['rom'], b:'Off-limits and impossible to resist.', k:['brother','friend','sibling']},
+  {n:'Marriage in Trouble', c:'Romance Dynamics', g:['rom'], b:'Already wed, falling apart, fighting back.', k:['married','husband','wife','divorce','marriage']},
+  {n:'Opposites Attract', c:'Romance Dynamics', g:['rom'], b:'Wrong on paper, right in every way.', k:['opposite','different','clash','uptight','free']},
+  {n:'Love Triangle', c:'Romance Dynamics', g:['rom'], b:'Two hearts pulling one in half.', k:['triangle','two men','two women','choose between','torn']},
+  {n:'Single Parent', c:'Romance Dynamics', g:['rom'], b:'Falling for someone — and their whole world.', k:['kid','child','daughter','son','single mom','single dad','parent']},
+  {n:'Secret Baby', c:'Romance Dynamics', g:['rom'], b:'Surprise — you\'re a parent.', k:['baby','pregnan','child','secret']},
+  {n:'Bodyguard / Protector', c:'Romance Dynamics', g:['rom','sus'], b:'Paid to guard the body, doomed to want it.', k:['bodyguard','protect','guard','danger','threat']},
+
+  // CHARACTER ARCHETYPES
+  {n:'Cinnamon Roll Hero', c:'Character Types', g:['rom'], b:'Too good, too pure, must protect.', k:['gentle','kind','sweet','good guy']},
+  {n:'Morally Grey / Anti-Hero', c:'Character Types', g:['rom','fan','thr'], b:'Does the wrong things for the right people.', k:['morally','grey','gray','anti','villain','dark','ruthless','assassin']},
+  {n:'Touch-Her-and-Die', c:'Character Types', g:['rom','fan'], b:'Possessive devotion turned up to eleven.', k:['possessive','protective','obsess','mine']},
+  {n:'Ice Queen / Cold Heroine', c:'Character Types', g:['rom'], b:'Walls up until the right person climbs over.', k:['cold','guarded','ice','walls','closed off']},
+  {n:'Chosen One', c:'Character Types', g:['fan','sci','ya'], b:'Destiny picked them, ready or not.', k:['chosen','destiny','prophecy','fate','special','only one']},
+  {n:'Reluctant Hero', c:'Character Types', g:['fan','sci','thr','ya'], b:'Wants no part of it — gets dragged in anyway.', k:['reluctant','ordinary','forced','dragged','wants nothing']},
+  {n:'Fish Out of Water', c:'Character Types', g:['all'], b:'Wrong person, wrong place, fascinating mess.', k:['new','stranger','outsider','arrives','city','small town','moves']},
+
+  // PLOT / STRUCTURE
+  {n:'Quest / Journey', c:'Plot Engines', g:['fan','sci','ya'], b:'A goal far away and everything between.', k:['journey','quest','travel','find','search','road']},
+  {n:'Hidden Identity', c:'Plot Engines', g:['all'], b:'Nobody is quite who they say.', k:['secret','disguise','hidden','pretend','identity','undercover','royal']},
+  {n:'Redemption Arc', c:'Plot Engines', g:['all'], b:'A bad past, a hard road back.', k:['redemption','past','guilt','make up','atone','forgive']},
+  {n:'Fish-or-Cut-Bait Deadline', c:'Plot Engines', g:['all'], b:'A ticking clock forcing the choice.', k:['deadline','time','clock','days','before','race','win']},
+  {n:'Found Family', c:'Plot Engines', g:['all'], b:'The people you choose become home.', k:['family','crew','team','belong','together','misfits','town']},
+  {n:'Fortune Reversal', c:'Plot Engines', g:['all'], b:'Riches to ruin, or ruin to riches.', k:['lose','inherit','bankrupt','fortune','money','rich','poor','bakery','shop']},
+  {n:'Secret Revealed', c:'Plot Engines', g:['all'], b:'The truth that changes everything.', k:['secret','lie','truth','hidden','reveal','discover']},
+  {n:'Competition / Rivalry', c:'Plot Engines', g:['all'], b:'May the best one win — and lose their heart.', k:['compet','contest','rival','win','beat','tournament','prize','bake-off']},
+
+  // FANTASY / ROMANTASY / SFF
+  {n:'Fae / Court Intrigue', c:'Fantasy & SFF', g:['fan'], b:'Beautiful, deadly, never to be trusted.', k:['fae','fairy','court','king','queen','magic','realm']},
+  {n:'Bonded / Fated Mates', c:'Fantasy & SFF', g:['fan','par'], b:'The universe already decided.', k:['mate','fated','bond','soulmate','destiny','marked']},
+  {n:'Magic System / Powers', c:'Fantasy & SFF', g:['fan','sci','ya'], b:'Power with rules — and a cost.', k:['magic','power','spell','witch','ability','gift']},
+  {n:'Dark Academia / Magic School', c:'Fantasy & SFF', g:['fan','ya'], b:'Secrets, ambition, and dangerous lessons.', k:['school','academy','student','train','class','university']},
+  {n:'Dragons / Beasts', c:'Fantasy & SFF', g:['fan'], b:'Fire, scales, and forbidden bonds.', k:['dragon','beast','creature','monster']},
+  {n:'Dystopia / Rebellion', c:'Fantasy & SFF', g:['sci','ya'], b:'A broken world worth burning down.', k:['dystop','rebel','government','regime','uprising','resistance','war']},
+  {n:'Time Travel / Loop', c:'Fantasy & SFF', g:['sci','fan'], b:'The same moment, the wrong outcome.', k:['time','loop','travel','past','future','repeat']},
+
+  // MYSTERY / THRILLER
+  {n:'Whodunit', c:'Mystery & Suspense', g:['mys','thr'], b:'A body, a list of suspects, one truth.', k:['murder','body','killer','suspect','crime','dead','detective']},
+  {n:'Amateur Sleuth', c:'Mystery & Suspense', g:['mys'], b:'Not their job — but they can\'t let it go.', k:['solve','investigate','clue','amateur','nosy','baker','librarian']},
+  {n:'Unreliable Narrator', c:'Mystery & Suspense', g:['thr','lit'], b:'Trust them at your peril.', k:['unreliable','memory','lie','perspective','truth','blackout']},
+  {n:'Twist / Gaslight', c:'Mystery & Suspense', g:['thr'], b:'The rug, pulled out from under you.', k:['twist','gaslight','manipulat','betray','trust','not what']},
+  {n:'Race Against Time', c:'Mystery & Suspense', g:['thr','sus'], b:'Stop it before the clock runs out.', k:['time','bomb','before','race','clock','save','deadline']},
+  {n:'Locked Room', c:'Mystery & Suspense', g:['mys'], b:'No way in, no way out — yet here we are.', k:['locked','isolated','island','storm','trapped','closed','snowed']},
+
+  // TONE / EXTRA
+  {n:'Comedy of Errors', c:'Tone & Texture', g:['all'], b:'Everything that can go wrong, hilariously does.', k:['funny','comedy','humor','mishap','chaos','disaster']},
+  {n:'Cozy / Comfort', c:'Tone & Texture', g:['all'], b:'A warm blanket of a book.', k:['cozy','warm','comfort','small town','gentle','quiet']},
+  {n:'Coming of Age', c:'Tone & Texture', g:['ya','lit'], b:'Growing up, all at once.', k:['young','grow','age','teen','first','school']},
+  {n:'Slow Unraveling', c:'Tone & Texture', g:['lit','thr'], b:'A life coming quietly apart.', k:['unravel','breakdown','falling apart','spiral','grief','loss']}
+];
+
+const GENRE_TO_TAG = {
+  'Contemporary Romance':'rom','Romantasy / Fantasy Romance':'fan','Paranormal Romance':'par',
+  'Romantic Suspense':'sus','Historical Romance':'rom','Small-Town / Cozy Romance':'rom',
+  'Fantasy':'fan','Science Fiction':'sci','Mystery / Thriller':'thr','Cozy Mystery':'mys',
+  "Women's Fiction":'lit','Young Adult':'ya','Horror':'thr','Literary / Upmarket':'lit','Other':'all'
+};
+
+/* ---------------- state ---------------- */
+let state = null;
+let step = 0;
+
+const FIELDS = ['f_title','f_pen','f_genre','f_format','f_premise','f_setting','f_conflict','f_stakes','f_theme',
+  'f_protName','f_protWant','f_protNeed','f_second','f_antag','f_rels','f_twistNotes'];
+
+function blank(){
+  return { v:1, fields:{}, heat:'', ending:'', tropes:[], customTropes:[], whatifs:[], whatifAnswers:{}, step:0 };
+}
+
+function load(){
+  try { state = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e){ state=null; }
+  if(!state || !state.fields){ state = blank(); }
+  step = state.step || 0;
+}
+function save(stampId){
+  state.step = step;
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){}
+  if(stampId){ const el=document.getElementById(stampId); if(el) el.textContent='Saved'; }
+  const s=document.getElementById('save'+step); if(s) s.textContent='Saved ✓';
+}
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+
+/* ---------------- init ---------------- */
+function init(){
+  load();
+  // genre select
+  const gsel=document.getElementById('f_genre');
+  GENRES.forEach(g=>{ const o=document.createElement('option'); o.value=g; o.textContent=g; gsel.appendChild(o); });
+  // trope genre filter
+  const gf=document.getElementById('tropeGenreFilter');
+  const allOpt=document.createElement('option'); allOpt.value=''; allOpt.textContent='All genres'; gf.appendChild(allOpt);
+  GENRES.forEach(g=>{ const o=document.createElement('option'); o.value=g; o.textContent=g; gf.appendChild(o); });
+  // heat + ending chips
+  buildChips('heatChips', HEAT_LEVELS, 'heat');
+  buildChips('endChips', ENDINGS, 'ending');
+  // wire fields
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(state.fields[id]!=null) el.value=state.fields[id];
+    el.addEventListener('input', ()=>{ state.fields[id]=el.value; save(); });
+  });
+  if(state.fields.f_genre) document.getElementById('f_genre').value=state.fields.f_genre;
+  buildSteps();
+  renderTropes();
+  if(!state.whatifs.length) genWhatIfs(false);
+  go(step, true);
+}
+
+function buildChips(containerId, items, key){
+  const c=document.getElementById(containerId); c.innerHTML='';
+  items.forEach(label=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state[key]===label?' on':''); ch.textContent=label;
+    ch.onclick=()=>{ state[key]=(state[key]===label?'':label); buildChips(containerId,items,key); save(); };
+    c.appendChild(ch);
+  });
+}
+
+/* ---------------- steps ---------------- */
+function buildSteps(){
+  const s=document.getElementById('steps'); s.innerHTML='';
+  for(let i=0;i<TOTAL_STEPS;i++){ const sp=document.createElement('span'); s.appendChild(sp); }
+}
+function go(n, silent){
+  if(n>step && !silent){ /* allow free navigation; nothing required */ }
+  step=n;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', +p.dataset.step===n));
+  const spans=document.querySelectorAll('#steps span');
+  spans.forEach((sp,i)=>{ sp.className=''; if(i<n) sp.classList.add('done'); if(i===n) sp.classList.add('cur'); });
+  document.getElementById('steplabel').textContent='Step '+(n)+' of '+(TOTAL_STEPS-1)+' · '+STEP_LABELS[n];
+  if(n===3) renderTropes();
+  if(n===4){ if(!state.whatifs.length) genWhatIfs(false); renderWhatIfs(); }
+  if(n===5) renderBlueprint();
+  window.scrollTo({top:0, behavior:'smooth'});
+  save();
+}
+
+/* ---------------- tropes ---------------- */
+function haystack(){
+  return ['f_premise','f_setting','f_conflict','f_stakes','f_theme','f_protName','f_protWant','f_protNeed','f_second','f_antag','f_rels']
+    .map(id=>state.fields[id]||'').join(' ').toLowerCase();
+}
+function isSuggested(t){
+  const h=haystack(); if(!h.trim()) return false;
+  return (t.k||[]).some(k=>h.includes(k));
+}
+function genreTag(){ return GENRE_TO_TAG[state.fields.f_genre]||'all'; }
+function tropeMatchesGenre(t, filterGenre){
+  if(filterGenre){ const tag=GENRE_TO_TAG[filterGenre]||'all'; return t.g.includes('all')||t.g.includes(tag); }
+  // no explicit filter: show all, but used only for ordering
+  return true;
+}
+function renderTropes(){
+  const list=document.getElementById('tropeList'); if(!list) return;
+  const search=(document.getElementById('tropeSearch').value||'').toLowerCase().trim();
+  const filterGenre=document.getElementById('tropeGenreFilter').value;
+  // default the filter to the chosen book genre the first time
+  if(!filterGenre && state.fields.f_genre && !document.getElementById('tropeGenreFilter').dataset.touched){
+    // leave as All; suggestions handle relevance
+  }
+  // suggested bar
+  const sugg=TROPES.filter(isSuggested).map(t=>t.n);
+  const bar=document.getElementById('suggestBar');
+  if(sugg.length){ bar.style.display='block'; bar.innerHTML='✨ Based on your story, these might fit: <b>'+sugg.slice(0,8).join('</b>, <b>')+'</b>. They\'re starred below.'; }
+  else { bar.style.display='none'; }
+
+  // group by category
+  const cats={};
+  TROPES.forEach(t=>{
+    if(search && !(t.n.toLowerCase().includes(search)||t.b.toLowerCase().includes(search))) return;
+    if(!tropeMatchesGenre(t, filterGenre)) return;
+    (cats[t.c]=cats[t.c]||[]).push(t);
+  });
+  list.innerHTML='';
+  Object.keys(cats).forEach(cat=>{
+    const cd=document.createElement('div'); cd.className='cat';
+    const h=document.createElement('h3'); h.textContent=cat; cd.appendChild(h);
+    const grid=document.createElement('div'); grid.className='trope-grid';
+    cats[cat].forEach(t=>{
+      const on=state.tropes.includes(t.n);
+      const sg=isSuggested(t);
+      const d=document.createElement('div'); d.className='trope'+(on?' on':'')+(sg?' suggested':'');
+      d.innerHTML='<span class="star">★ suggested</span><div class="tn">'+t.n+'</div><div class="tb">'+t.b+'</div>';
+      d.onclick=()=>toggleTrope(t.n);
+      grid.appendChild(d);
+    });
+    cd.appendChild(grid); list.appendChild(cd);
+  });
+  renderSelSummary();
+}
+function toggleTrope(name){
+  const i=state.tropes.indexOf(name);
+  if(i>=0) state.tropes.splice(i,1); else state.tropes.push(name);
+  save(); renderTropes();
+}
+function addCustomTrope(){
+  const el=document.getElementById('f_customTrope'); const v=el.value.trim();
+  if(!v) return;
+  if(!state.customTropes.includes(v)) state.customTropes.push(v);
+  if(!state.tropes.includes(v)) state.tropes.push(v);
+  el.value=''; save(); renderSelSummary(); toast('Added "'+v+'"');
+}
+function renderSelSummary(){
+  const el=document.getElementById('selSummary'); if(!el) return;
+  const all=state.tropes.slice();
+  if(!all.length){ el.innerHTML='<i style="color:#9a8674;">No tropes picked yet — tap the ones that make you want to write the book.</i>'; return; }
+  el.innerHTML='<b>'+all.length+' picked:</b> '+all.map(t=>'<span class="pill" onclick="toggleTrope(\''+t.replace(/'/g,"\\'")+'\')" title="click to remove">'+t+' ✕</span>').join('');
+}
+
+/* ---------------- Loki what-ifs ---------------- */
+function pick(arr, seed){ return arr[Math.abs(seed)%arr.length]; }
+function firstName(s){ if(!s) return ''; return s.split(/[,—-]/)[0].trim(); }
+
+function genWhatIfs(reshuffle){
+  const f=state.fields;
+  const prot=firstName(f.f_protName)||'your hero';
+  const second=firstName(f.f_second)||'the love interest';
+  const antag=firstName(f.f_antag)||'the antagonist';
+  const setting=(f.f_setting||'the world of the story').replace(/\.$/,'');
+  const want=(f.f_protWant||'what they want most').replace(/\.$/,'');
+  const flaw=(f.f_protNeed||'their greatest flaw').replace(/\.$/,'');
+  const conflict=(f.f_conflict||'the central conflict').replace(/\.$/,'');
+  const stakes=(f.f_stakes||'everything they care about').replace(/\.$/,'');
+  const theme=f.f_theme||'what the book is really about';
+  const trope=state.tropes.length?state.tropes[Math.floor((reshuffle?Date.now():0)+state.tropes.length)%state.tropes.length]:'one of your tropes';
+
+  const bank=[
+    `What if ${prot} and ${antag} secretly want the exact same thing — and that's the real reason they collide?`,
+    `What if the thing ${prot} wants most (${want}) is the very thing that would destroy them if they got it?`,
+    `What if ${prot}'s flaw — ${flaw} — is what causes the darkest moment, not bad luck or the villain?`,
+    `What if ${second} is hiding a secret tied directly to ${conflict}?`,
+    `What if ${setting} itself turned against them at the midpoint — the place stops being safe?`,
+    `What if you raised the stakes past ${stakes}? What's the worst thing that could happen, and then what's worse than that?`,
+    `What if "${trope}" were subverted instead of played straight — readers expect one thing, you give them the truer, stranger version?`,
+    `What if the person ${prot} trusts most is quietly working against them — for a reason ${prot} would actually understand?`,
+    `What if ${prot} gets exactly what they wanted halfway through — and it's a disaster?`,
+    `What if the story is really about ${theme}, and every scene had to earn that theme or get cut?`,
+    `What if ${antag} is right about something important, and ${prot} has to admit it?`,
+    `What if you opened the book one beat later than feels comfortable — straight into the trouble?`,
+    `What if ${prot} and ${second} were forced to cooperate against ${antag} before they're ready to trust each other?`,
+    `What if there's a ticking clock you haven't used yet — a date, a deadline, a thing that's running out?`,
+    `What if the happy ending costs ${prot} something they swore they'd never give up?`
+  ];
+
+  // choose 6, deterministic unless reshuffling
+  const seedBase = reshuffle ? (Date.now()%9973) : 7;
+  const idxs=[]; let i=0;
+  while(idxs.length<6 && idxs.length<bank.length){
+    const idx=(seedBase + i*5 + i*i) % bank.length;
+    if(!idxs.includes(idx)) idxs.push(idx);
+    i++; if(i>200) break;
+  }
+  state.whatifs = idxs.map(ix=>bank[ix]);
+  save();
+  renderWhatIfs();
+  if(reshuffle) toast('Fresh what-ifs from Loki 🐺');
+}
+
+function renderWhatIfs(){
+  const list=document.getElementById('whatifList'); if(!list) return;
+  list.innerHTML='';
+  state.whatifs.forEach((q,i)=>{
+    const w=document.createElement('div'); w.className='whatif';
+    const qd=document.createElement('div'); qd.className='q'; qd.textContent='🐺 '+q;
+    const ta=document.createElement('textarea'); ta.placeholder='Your spark (optional)…';
+    ta.value=state.whatifAnswers[q]||'';
+    ta.addEventListener('input',()=>{ state.whatifAnswers[q]=ta.value; save(); });
+    w.appendChild(qd); w.appendChild(ta); list.appendChild(w);
+  });
+  renderLokiPrompt();
+}
+function renderLokiPrompt(){
+  const el=document.getElementById('lokiPrompt'); if(!el) return;
+  el.textContent=buildLokiPrompt();
+}
+function buildLokiPrompt(){
+  const f=state.fields;
+  let p='Loki — I\'m planning a new book and I want your "what if?" treatment. Push it further with bold questions and unexpected twists, be playful and specific, and don\'t let me off easy.\n\n';
+  p+='HERE\'S THE BOOK SO FAR:\n';
+  if(f.f_title) p+='Title: '+f.f_title+'\n';
+  if(f.f_genre) p+='Genre: '+f.f_genre+(state.heat?' · '+state.heat:'')+'\n';
+  if(f.f_premise) p+='Premise: '+f.f_premise+'\n';
+  if(f.f_conflict) p+='Central conflict: '+f.f_conflict+'\n';
+  if(f.f_protName) p+='Main character: '+f.f_protName+(f.f_protWant?(' — wants: '+f.f_protWant):'')+'\n';
+  if(f.f_second) p+='Second lead: '+f.f_second+'\n';
+  if(f.f_antag) p+='Opposing force: '+f.f_antag+'\n';
+  if(state.tropes.length) p+='Tropes: '+state.tropes.join(', ')+'\n';
+  p+='\nWHAT-IFS I\'M CHEWING ON:\n'+state.whatifs.map((q,i)=>(i+1)+'. '+q).join('\n');
+  p+='\n\nGive me 5 more "what if?" questions I haven\'t thought of, then pick the single twist you think would make this book unputdownable and tell me why.';
+  return p;
+}
+function copyLokiPrompt(){ copyText(buildLokiPrompt(),'Loki brainstorm prompt copied — paste it to Claude.'); }
+
+/* ---------------- blueprint ---------------- */
+const PICK = '⟨ Claude, pick this for me ⟩';
+function countPicks(brief){ return (brief.match(/⟨ Claude/g)||[]).length; }
+function buildBrief(){
+  const f=state.fields;
+  // creative field: use the answer, or a Claude-pick marker if left blank
+  const c=(v, what)=> (v && (''+v).trim()) ? (''+v).trim() : (what?'⟨ Claude, '+what+' ⟩':PICK);
+  // genre comes from a select that always has a value
+  const genre=(f.f_genre||(document.getElementById('f_genre')&&document.getElementById('f_genre').value)||'').trim();
+
+  const L=[];
+  L.push('# STORY BLUEPRINT: '+c(f.f_title,'suggest a working title'));
+  if(f.f_pen && f.f_pen.trim()) L.push('Pen name: '+f.f_pen.trim());
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — that\'s your call to make. Fill each one in so it fits the rest of the blueprint and the chosen tropes, then list what you picked so I can tweak anything.');
+  L.push('');
+  L.push('## Concept');
+  L.push('- Genre: '+(genre||PICK));
+  L.push('- Heat / intensity: '+c(state.heat));
+  if(f.f_format && f.f_format.trim()) L.push('- Format: '+f.f_format.trim());
+  L.push('- Ending vibe: '+c(state.ending));
+  L.push('- Premise: '+c(f.f_premise));
+  L.push('- Setting: '+c(f.f_setting));
+  L.push('- Central conflict: '+c(f.f_conflict));
+  L.push('- Stakes: '+c(f.f_stakes));
+  L.push('- Theme: '+c(f.f_theme));
+  L.push('');
+  L.push('## Tropes');
+  if(state.tropes.length){ state.tropes.forEach(t=>L.push('- '+t)); }
+  else { L.push('- ⟨ Claude, suggest 3–6 tropes that fit this story ⟩'); }
+  L.push('');
+  L.push('## Cast');
+  L.push('- Main character: '+c(f.f_protName));
+  L.push('  - Wants: '+c(f.f_protWant));
+  L.push('  - Needs / flaw: '+c(f.f_protNeed));
+  L.push('- Second lead / love interest: '+c(f.f_second));
+  L.push('- Antagonist / opposing force: '+c(f.f_antag));
+  if(f.f_rels && f.f_rels.trim()) L.push('- Supporting cast: '+f.f_rels.trim());
+  L.push('');
+  L.push('## Loki\'s what-ifs');
+  state.whatifs.forEach(q=>{
+    L.push('- '+q);
+    if(state.whatifAnswers[q] && state.whatifAnswers[q].trim()) L.push('  → '+state.whatifAnswers[q].trim());
+  });
+  if(f.f_twistNotes && f.f_twistNotes.trim()){ L.push(''); L.push('## Twists & ideas to keep'); L.push(f.f_twistNotes.trim()); }
+  return L.join('\n');
+}
+function renderBlueprint(){
+  const brief=buildBrief();
+  document.getElementById('blueprint').textContent=brief;
+  const n=countPicks(brief);
+  const note=document.getElementById('pickNote');
+  if(note){
+    note.innerHTML = n
+      ? '✍️ You left <b>'+n+'</b> '+(n===1?'spot':'spots')+' blank — '+(n===1?'it shows':'they show')+' up as <code>⟨ Claude, pick this for me ⟩</code> below. Claude fills '+(n===1?'it':'those')+' in when you hand the blueprint over. Want to answer '+(n===1?'it':'them')+' yourself? Just step back.'
+      : '✅ Every spot is filled in — nothing left for Claude to guess.';
+  }
+}
+function copyBlueprint(){ copyText(buildBrief(),'Blueprint copied to clipboard.'); }
+function downloadBlueprint(){
+  const name=(state.fields.f_title||'story-blueprint').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'story-blueprint';
+  const blob=new Blob([buildBrief()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name+'.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded '+name+'.md');
+}
+function copyClaude(){
+  const f=state.fields;
+  const msg='I\'m planning a new book and I\'ve worked out the concept, tropes, and some twists in Story Spark. First, fill in anything marked ⟨ Claude, … ⟩ so it fits the rest, and tell me what you chose. Then help me move into building the story bible and outline. Here\'s the blueprint:\n\n'+buildBrief();
+  copyText(msg,'Prompt copied — paste it into Claude to keep building.');
+}
+
+/* ---------------- Story Studio handoff ---------------- */
+function sendToStudio(){
+  const f=state.fields;
+  const title=(f.f_title||'').trim()||'Untitled book';
+  let studio;
+  try { studio=JSON.parse(localStorage.getItem(STUDIO_KEY)); } catch(e){ studio=null; }
+  if(!studio || !studio.books){ studio={ version:1, books:[] }; }
+
+  const today=(function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+  const nextAction='Concept, tropes & cast are drafted in Story Spark. Fill in anything marked ⟨ Claude, … ⟩ so it fits, then let\'s build the Story Bible and outline from this blueprint:\n\n'+buildBrief();
+
+  // avoid duplicate: update if a Story Spark book with same title exists
+  const existing=studio.books.find(b=>b.fromSpark && b.title===title);
+  if(existing){
+    existing.penName=(f.f_pen||'').trim()||existing.penName||'Unassigned';
+    existing.format=(f.f_format||'').trim()||existing.format||'';
+    existing.nextAction=nextAction;
+    existing.updated=today;
+    existing.sparkBrief=buildBrief();
+  } else {
+    studio.books.unshift({
+      id: title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Date.now().toString(36),
+      title: title,
+      penName:(f.f_pen||'').trim()||'Unassigned',
+      format:(f.f_format||'').trim()||'',
+      stage:2,                       // Concept & Tropes — lands them right where Story Spark finishes
+      status:'production',
+      nextAction:nextAction,
+      project:'Story Spark',
+      fromSpark:true,
+      sparkBrief:buildBrief(),
+      updated:today
+    });
+  }
+  try { localStorage.setItem(STUDIO_KEY, JSON.stringify(studio)); }
+  catch(e){ document.getElementById('studioMsg').innerHTML='⚠ Couldn\'t save to Story Studio in this browser. Use <b>Copy blueprint</b> instead.'; return; }
+
+  const msg=document.getElementById('studioMsg');
+  msg.innerHTML='✅ Sent <b>"'+title+'"</b> to Story Studio at Stage 2 (Concept &amp; Tropes). '+
+    '<a href="story-studio.html" style="color:#6d2b4e;font-weight:700;">Open Story Studio →</a>';
+  toast('Sent to Story Studio 📚');
+}
+
+/* ---------------- utils ---------------- */
+function copyText(txt, okMsg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'), ()=>fallbackCopy(txt,okMsg));
+  } else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt, okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select and copy manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start a brand-new book? This clears Story Spark (your books already in Story Studio are kept).')) return;
+  state=blank(); step=0;
+  FIELDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  buildChips('heatChips',HEAT_LEVELS,'heat'); buildChips('endChips',ENDINGS,'ending');
+  genWhatIfs(false); renderTropes(); save(); go(0); toast('Fresh start — let\'s plan a new book.');
+}
+
+document.getElementById('tropeGenreFilter') && document.getElementById('tropeGenreFilter').addEventListener('change', e=>{ e.target.dataset.touched='1'; });
+
+init();
+</script>
+</body>
+</html>
