@@ -294,6 +294,7 @@ footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e
     <h2>🗺️ Your Story Blueprint</h2>
     <p class="lead">Here's everything in one place. Send it to <b>Story Studio</b> to start tracking the book, copy it for your notes, or take it straight to Claude.</p>
 
+    <div class="suggested-bar" id="pickNote" style="display:block;"></div>
     <div class="blueprint" id="blueprint"></div>
 
     <div class="btn-row">
@@ -640,43 +641,63 @@ function buildLokiPrompt(){
 function copyLokiPrompt(){ copyText(buildLokiPrompt(),'Loki brainstorm prompt copied — paste it to Claude.'); }
 
 /* ---------------- blueprint ---------------- */
+const PICK = '⟨ Claude, pick this for me ⟩';
+function countPicks(brief){ return (brief.match(/⟨ Claude/g)||[]).length; }
 function buildBrief(){
   const f=state.fields;
+  // creative field: use the answer, or a Claude-pick marker if left blank
+  const c=(v, what)=> (v && (''+v).trim()) ? (''+v).trim() : (what?'⟨ Claude, '+what+' ⟩':PICK);
+  // genre comes from a select that always has a value
+  const genre=(f.f_genre||(document.getElementById('f_genre')&&document.getElementById('f_genre').value)||'').trim();
+
   const L=[];
-  L.push('# STORY BLUEPRINT'+(f.f_title?': '+f.f_title:''));
-  if(f.f_pen) L.push('Pen name: '+f.f_pen);
+  L.push('# STORY BLUEPRINT: '+c(f.f_title,'suggest a working title'));
+  if(f.f_pen && f.f_pen.trim()) L.push('Pen name: '+f.f_pen.trim());
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — that\'s your call to make. Fill each one in so it fits the rest of the blueprint and the chosen tropes, then list what you picked so I can tweak anything.');
   L.push('');
   L.push('## Concept');
-  if(f.f_genre) L.push('- Genre: '+f.f_genre);
-  if(state.heat) L.push('- Heat / intensity: '+state.heat);
-  if(f.f_format) L.push('- Format: '+f.f_format);
-  if(state.ending) L.push('- Ending vibe: '+state.ending);
-  if(f.f_premise) L.push('- Premise: '+f.f_premise);
-  if(f.f_setting) L.push('- Setting: '+f.f_setting);
-  if(f.f_conflict) L.push('- Central conflict: '+f.f_conflict);
-  if(f.f_stakes) L.push('- Stakes: '+f.f_stakes);
-  if(f.f_theme) L.push('- Theme: '+f.f_theme);
+  L.push('- Genre: '+(genre||PICK));
+  L.push('- Heat / intensity: '+c(state.heat));
+  if(f.f_format && f.f_format.trim()) L.push('- Format: '+f.f_format.trim());
+  L.push('- Ending vibe: '+c(state.ending));
+  L.push('- Premise: '+c(f.f_premise));
+  L.push('- Setting: '+c(f.f_setting));
+  L.push('- Central conflict: '+c(f.f_conflict));
+  L.push('- Stakes: '+c(f.f_stakes));
+  L.push('- Theme: '+c(f.f_theme));
   L.push('');
   L.push('## Tropes');
-  if(state.tropes.length){ state.tropes.forEach(t=>L.push('- '+t)); } else { L.push('- (none picked yet)'); }
+  if(state.tropes.length){ state.tropes.forEach(t=>L.push('- '+t)); }
+  else { L.push('- ⟨ Claude, suggest 3–6 tropes that fit this story ⟩'); }
   L.push('');
   L.push('## Cast');
-  if(f.f_protName) L.push('- Main character: '+f.f_protName);
-  if(f.f_protWant) L.push('  - Wants: '+f.f_protWant);
-  if(f.f_protNeed) L.push('  - Needs / flaw: '+f.f_protNeed);
-  if(f.f_second) L.push('- Second lead / love interest: '+f.f_second);
-  if(f.f_antag) L.push('- Antagonist / opposing force: '+f.f_antag);
-  if(f.f_rels) L.push('- Supporting cast: '+f.f_rels);
+  L.push('- Main character: '+c(f.f_protName));
+  L.push('  - Wants: '+c(f.f_protWant));
+  L.push('  - Needs / flaw: '+c(f.f_protNeed));
+  L.push('- Second lead / love interest: '+c(f.f_second));
+  L.push('- Antagonist / opposing force: '+c(f.f_antag));
+  if(f.f_rels && f.f_rels.trim()) L.push('- Supporting cast: '+f.f_rels.trim());
   L.push('');
   L.push('## Loki\'s what-ifs');
   state.whatifs.forEach(q=>{
     L.push('- '+q);
     if(state.whatifAnswers[q] && state.whatifAnswers[q].trim()) L.push('  → '+state.whatifAnswers[q].trim());
   });
-  if(f.f_twistNotes){ L.push(''); L.push('## Twists & ideas to keep'); L.push(f.f_twistNotes); }
+  if(f.f_twistNotes && f.f_twistNotes.trim()){ L.push(''); L.push('## Twists & ideas to keep'); L.push(f.f_twistNotes.trim()); }
   return L.join('\n');
 }
-function renderBlueprint(){ document.getElementById('blueprint').textContent=buildBrief(); }
+function renderBlueprint(){
+  const brief=buildBrief();
+  document.getElementById('blueprint').textContent=brief;
+  const n=countPicks(brief);
+  const note=document.getElementById('pickNote');
+  if(note){
+    note.innerHTML = n
+      ? '✍️ You left <b>'+n+'</b> '+(n===1?'spot':'spots')+' blank — '+(n===1?'it shows':'they show')+' up as <code>⟨ Claude, pick this for me ⟩</code> below. Claude fills '+(n===1?'it':'those')+' in when you hand the blueprint over. Want to answer '+(n===1?'it':'them')+' yourself? Just step back.'
+      : '✅ Every spot is filled in — nothing left for Claude to guess.';
+  }
+}
 function copyBlueprint(){ copyText(buildBrief(),'Blueprint copied to clipboard.'); }
 function downloadBlueprint(){
   const name=(state.fields.f_title||'story-blueprint').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'story-blueprint';
@@ -686,7 +707,7 @@ function downloadBlueprint(){
 }
 function copyClaude(){
   const f=state.fields;
-  const msg='I\'m planning a new book and I\'ve worked out the concept, tropes, and some twists in Story Spark. Help me move into building the story bible and outline. Here\'s the blueprint:\n\n'+buildBrief();
+  const msg='I\'m planning a new book and I\'ve worked out the concept, tropes, and some twists in Story Spark. First, fill in anything marked ⟨ Claude, … ⟩ so it fits the rest, and tell me what you chose. Then help me move into building the story bible and outline. Here\'s the blueprint:\n\n'+buildBrief();
   copyText(msg,'Prompt copied — paste it into Claude to keep building.');
 }
 
@@ -699,7 +720,7 @@ function sendToStudio(){
   if(!studio || !studio.books){ studio={ version:1, books:[] }; }
 
   const today=(function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
-  const nextAction='Concept, tropes & cast are drafted in Story Spark — let\'s build the Story Bible and outline from this blueprint:\n\n'+buildBrief();
+  const nextAction='Concept, tropes & cast are drafted in Story Spark. Fill in anything marked ⟨ Claude, … ⟩ so it fits, then let\'s build the Story Bible and outline from this blueprint:\n\n'+buildBrief();
 
   // avoid duplicate: update if a Story Spark book with same title exists
   const existing=studio.books.find(b=>b.fromSpark && b.title===title);
