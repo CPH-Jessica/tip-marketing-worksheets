@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Agent Playbook for Your Business — The Invisible Pen</title>
+<style>
+:root { --coral:#E8735A; --navy:#1B2A4A; --cream:#FFF8F0; --gold:#D4A853; --sage:#7A9E7E; --text:#2D2D2D; --light-gray:#F0EDE8; --border:#D4CFC7; --green:#2E7D52; --red:#C0492F; --amber:#B8860B; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.65;}
+.header{background:var(--navy);color:white;padding:3rem 2rem 2.5rem;text-align:center;}
+.header h1{font-size:2.2rem;margin-bottom:0.6rem;line-height:1.2;}
+.header .subtitle{color:var(--coral);font-size:1.15rem;font-style:italic;}
+.header .brand{color:var(--gold);font-size:0.85rem;margin-top:0.9rem;letter-spacing:2px;text-transform:uppercase;}
+.header .meta{color:#9fb0c9;font-size:0.8rem;margin-top:0.5rem;}
+.layout{max-width:1180px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:230px 1fr;gap:2rem;align-items:start;}
+/* Table of contents */
+.toc{position:sticky;top:1rem;background:white;border-radius:10px;padding:1.25rem 1rem;box-shadow:0 2px 10px rgba(0,0,0,0.07);font-size:0.85rem;}
+.toc h3{color:var(--navy);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;border-bottom:2px solid var(--coral);padding-bottom:0.4rem;}
+.toc a{display:block;color:var(--text);text-decoration:none;padding:0.3rem 0.4rem;border-radius:5px;border-left:3px solid transparent;}
+.toc a:hover{background:var(--light-gray);border-left-color:var(--coral);color:var(--navy);}
+.toc a.sub{padding-left:1rem;font-size:0.8rem;color:#666;}
+.content{min-width:0;}
+.section{background:white;border-radius:10px;padding:1.75rem 2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.section h2{color:var(--navy);font-size:1.5rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--coral);}
+.section h3{color:var(--navy);font-size:1.15rem;margin:1.4rem 0 0.6rem;}
+.section h4{color:var(--coral);font-size:1rem;margin:1rem 0 0.4rem;text-transform:uppercase;letter-spacing:0.5px;}
+.section p{margin-bottom:0.8rem;}
+.section ul,.section ol{margin:0.4rem 0 0.9rem 1.4rem;}
+.section li{margin-bottom:0.35rem;}
+.lead{font-size:1.05rem;color:#444;}
+.eyebrow{display:inline-block;background:var(--coral);color:white;font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;padding:0.25rem 0.7rem;border-radius:20px;margin-bottom:0.8rem;}
+strong{color:var(--navy);}
+a{color:var(--coral);}
+/* callout boxes */
+.tip-box{background:#FDF3E3;border-left:4px solid var(--gold);padding:1rem 1.25rem;margin:1.1rem 0;border-radius:0 8px 8px 0;}
+.tip-box strong{color:var(--navy);}
+.warn-box{background:#FBEDE9;border-left:4px solid var(--red);padding:1rem 1.25rem;margin:1.1rem 0;border-radius:0 8px 8px 0;}
+.win-box{background:#EAF4EE;border-left:4px solid var(--green);padding:1rem 1.25rem;margin:1.1rem 0;border-radius:0 8px 8px 0;}
+.callout-label{display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;font-weight:bold;margin-bottom:0.3rem;}
+.warn-box .callout-label{color:var(--red);}
+.win-box .callout-label{color:var(--green);}
+.tip-box .callout-label{color:var(--amber);}
+/* tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.9rem;}
+th{background:var(--navy);color:white;padding:0.7rem;text-align:left;font-size:0.85rem;vertical-align:top;}
+td{padding:0.65rem 0.7rem;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:nth-child(even) td{background:var(--cream);}
+.tag{display:inline-block;font-size:0.72rem;font-weight:bold;padding:0.15rem 0.55rem;border-radius:20px;white-space:nowrap;}
+.tag.yes{background:#D7EDE0;color:var(--green);}
+.tag.no{background:#F3D9D2;color:var(--red);}
+.tag.partial{background:#F7EACD;color:var(--amber);}
+.pri{font-weight:bold;text-transform:uppercase;font-size:0.78rem;letter-spacing:0.5px;}
+.pri.core{color:var(--coral);}
+.pri.useful{color:var(--sage);}
+.pri.later{color:#999;}
+/* connected tools grid */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;margin:1rem 0;}
+.tool-chip{background:var(--light-gray);border-radius:8px;padding:0.7rem 0.8rem;border-left:4px solid var(--sage);font-size:0.85rem;}
+.tool-chip b{display:block;color:var(--navy);font-size:0.95rem;}
+.tool-chip span{color:#666;font-size:0.78rem;}
+/* step cards */
+.day-card{background:var(--cream);border:2px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-bottom:0.9rem;}
+.day-card .daynum{display:inline-block;background:var(--coral);color:white;font-size:0.75rem;font-weight:bold;padding:0.2rem 0.7rem;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;}
+.day-card h4{color:var(--navy);margin:0.2rem 0 0.4rem;text-transform:none;letter-spacing:0;font-size:1.05rem;}
+/* function header bar */
+.fn-bar{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:0.3rem;}
+.fn-bar .pri{padding:0.2rem 0.7rem;border-radius:20px;}
+.fn-bar .pri.core{background:#FBE4DD;}
+.fn-bar .pri.useful{background:#E5EFE7;}
+.fn-bar .pri.later{background:#EEE;}
+.mini{font-size:0.82rem;color:#666;font-style:italic;}
+.footer{text-align:center;padding:2.5rem 1rem;color:#888;font-size:0.85rem;}
+.footer strong{color:var(--navy);}
+.scorecard{display:grid;grid-template-columns:auto 1fr;gap:0.4rem 1rem;font-size:0.9rem;margin:0.8rem 0;}
+.scorecard dt{font-weight:bold;color:var(--coral);text-transform:uppercase;font-size:0.75rem;letter-spacing:0.5px;padding-top:0.15rem;}
+.scorecard dd{margin:0;}
+@media print{.toc{display:none;}.layout{grid-template-columns:1fr;}.section{box-shadow:none;border:1px solid var(--border);}}
+@media(max-width:850px){.layout{grid-template-columns:1fr;}.toc{position:static;margin-bottom:1rem;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>The AI Agent Playbook for Your Business</h1>
+  <div class="subtitle">How to actually use &amp; build AI agents to write, research, design, sell, and market — without becoming a programmer</div>
+  <div class="brand">The Invisible Pen &middot; Prepared for Jessica Waldron</div>
+  <div class="meta">Research-backed field guide &middot; June 2026</div>
+</div>
+
+<div class="layout">
+
+  <!-- ============ TOC ============ -->
+  <nav class="toc">
+    <h3>Contents</h3>
+    <a href="#start-here">Start Here (TL;DR)</a>
+    <a href="#what-is-agent">1. What Is an Agent?</a>
+    <a href="#already-have">2. What You Already Have</a>
+    <a href="#priority-map">3. Your Priority Map</a>
+    <a href="#writing" class="sub">→ Writing</a>
+    <a href="#research" class="sub">→ Research</a>
+    <a href="#graphics" class="sub">→ Graphics &amp; Design</a>
+    <a href="#email" class="sub">→ Email Marketing</a>
+    <a href="#social" class="sub">→ Facebook &amp; LinkedIn</a>
+    <a href="#payhip" class="sub">→ Payhip (Selling)</a>
+    <a href="#substack" class="sub">→ Substack</a>
+    <a href="#decide">4. Chat vs Build vs Automate</a>
+    <a href="#stack">5. Your Tool Stack &amp; Budget</a>
+    <a href="#reality">6. Reality Checks</a>
+    <a href="#plan">7. Your 5-Day Starter Plan</a>
+  </nav>
+
+  <div class="content">
+
+  <!-- ============ START HERE ============ -->
+  <section class="section" id="start-here">
+    <span class="eyebrow">Read this first</span>
+    <h2>The Whole Thing in One Page</h2>
+    <p class="lead">You've been told you "can build agents" but nobody showed you how to direct it. Here is the honest version, top to bottom.</p>
+
+    <p><strong>An "agent" is just an AI you give a goal and a set of tools, so it can do multi-step work for you</strong> — not just answer a question, but actually <em>do</em> the task: research it, write it, make the graphic, draft the email, and tee it up for your approval. You don't need code. You need to know which tool to point at which job.</p>
+
+    <div class="win-box">
+      <span class="callout-label">The surprise in your favor</span>
+      You're closer than you think. The workspace this report was built in <strong>already has your business tools wired into an AI agent</strong> — Canva, MailerLite, Stripe, Notion, Google Drive, Gmail, Calendar, an AI image/video generator (Pixa), Make, Airtable, and more. That means an assistant can already draft a newsletter in MailerLite, build an on-brand graphic in Canva, and look up a sale in Stripe — <em>when you ask it to.</em> See <a href="#already-have">Section 2</a>.
+    </div>
+
+    <h4>The five things to actually do</h4>
+    <ol>
+      <li><strong>Build ONE reusable "voice" assistant first</strong> (a Claude Project or a Custom GPT loaded with your style guide). Everything else gets easier once your AI sounds like you.</li>
+      <li><strong>Let an agent draft &amp; schedule your email</strong> in MailerLite — you approve every send. This is your single highest-leverage automation.</li>
+      <li><strong>Use Canva (Brand Kit + templates) as your graphics hub.</strong> An agent can generate and export on-brand graphics at scale; only the <em>posting</em> stays semi-manual.</li>
+      <li><strong>For Facebook &amp; LinkedIn, draft with AI, publish with a scheduler</strong> (Buffer/Publer). Important truth: you <em>cannot</em> legally auto-post to a personal Facebook profile or Facebook Groups — run a Facebook <em>Page</em> instead.</li>
+      <li><strong>Accept the manual steps that are genuinely manual.</strong> Uploading products to Payhip and publishing on Substack are best done by hand — the time-saver is having AI <em>prepare</em> everything, not click the final button.</li>
+    </ol>
+
+    <p class="mini">The rest of this report explains each of these, with the exact tools, what's automatable vs. not, costs, and a day-by-day starter plan at the end.</p>
+  </section>
+
+  <!-- ============ 1. WHAT IS AN AGENT ============ -->
+  <section class="section" id="what-is-agent">
+    <span class="eyebrow">Demystifying the buzzword</span>
+    <h2>1. Chatbot vs. Agent vs. Automation</h2>
+    <p>Three words get thrown around as if they're the same thing. They're not, and knowing the difference is what lets you "direct everything."</p>
+
+    <table>
+      <thead>
+        <tr><th style="width:18%;">Type</th><th>What it is</th><th>Example for your business</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Chatbot</strong><br><span class="mini">You ask → it answers</span></td>
+          <td>A smart conversation. It reads and responds. It doesn't <em>do</em> anything outside the chat.</td>
+          <td>"Give me 10 subject line ideas for my launch email." You copy the answer out yourself.</td>
+        </tr>
+        <tr>
+          <td><strong>Agent</strong><br><span class="mini">You give a goal → it plans &amp; acts</span></td>
+          <td>An AI with <em>tools</em>. You give it an outcome; it breaks it into steps and carries them out across your apps — then reports back.</td>
+          <td>"Draft this week's newsletter for my engaged readers, make a header graphic, and set it up in MailerLite for me to approve." It writes, designs, builds the draft, and waits for your sign-off.</td>
+        </tr>
+        <tr>
+          <td><strong>Automation</strong><br><span class="mini">When X happens → do Y</span></td>
+          <td>A fixed rule that runs without you. No judgment — just reliable plumbing.</td>
+          <td>"Every time someone buys on Payhip, add them to a Google Sheet and tag them in MailerLite." Runs forever, untouched.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <span class="callout-label">The mental model</span>
+      <strong>A chatbot reads. An agent reads, decides, and acts. An automation is a tripwire.</strong> The magic of 2025–2026 is that agents can now act <em>across your real tools</em> (thanks to something called MCP — see below), so one instruction can touch Canva, MailerLite, and Stripe in a single run.
+    </div>
+
+    <h3>What is "MCP" and why does it matter to you?</h3>
+    <p>MCP (Model Context Protocol) is the open standard — created by Anthropic in late 2024, now adopted across the industry — that lets an AI assistant safely <em>plug into</em> your business tools. Think of it as a <strong>USB-C dock for your AI</strong>: once you plug in Gmail, Canva, MailerLite, Notion, and Stripe, the assistant can read and write in those tools instead of you copying things back and forth.</p>
+    <p>You don't build MCP. You just <em>connect</em> it (a few clicks and a login), and suddenly your assistant can "see" and operate that tool. That is the single biggest reason building agents got realistic for non-coders.</p>
+  </section>
+
+  <!-- ============ 2. WHAT YOU ALREADY HAVE ============ -->
+  <section class="section" id="already-have">
+    <span class="eyebrow">Your starting position</span>
+    <h2>2. You Already Have an Agent Workbench</h2>
+    <p>This is the part most people never get to. The environment this report was produced in has the following business tools <strong>already connected to an AI agent via MCP</strong>. An assistant here can operate every one of these on your behalf:</p>
+
+    <div class="tools-grid">
+      <div class="tool-chip"><b>Canva</b><span>Design, autofill templates, export — verified live</span></div>
+      <div class="tool-chip"><b>MailerLite</b><span>Draft, segment &amp; schedule email — verified live</span></div>
+      <div class="tool-chip"><b>Pixa</b><span>AI image &amp; video generation</span></div>
+      <div class="tool-chip"><b>Stripe</b><span>Look up sales, customers, revenue</span></div>
+      <div class="tool-chip"><b>Notion</b><span>Content calendar, databases, docs</span></div>
+      <div class="tool-chip"><b>Google Drive</b><span>Read/write docs &amp; files</span></div>
+      <div class="tool-chip"><b>Gmail</b><span>Read &amp; draft emails</span></div>
+      <div class="tool-chip"><b>Google Calendar</b><span>Schedule &amp; check availability</span></div>
+      <div class="tool-chip"><b>Make.com</b><span>Build automations between apps</span></div>
+      <div class="tool-chip"><b>Airtable</b><span>Spreadsheet-database for tracking</span></div>
+      <div class="tool-chip"><b>Asana</b><span>Tasks &amp; project tracking</span></div>
+      <div class="tool-chip"><b>AgentMail / GitHub</b><span>Email inboxes for agents; file hosting</span></div>
+    </div>
+
+    <div class="win-box">
+      <span class="callout-label">What this means in practice</span>
+      You do not need to go build infrastructure. Your "first agent" can be as simple as opening this kind of assistant and saying: <em>"Pull my last 30 days of sales from Stripe, draft a thank-you email to buyers in MailerLite, and make a matching graphic in Canva."</em> The connections already exist. Your job is learning to <strong>direct</strong> it — which is what the rest of this guide teaches.
+    </div>
+
+    <p class="mini">Two specifics worth knowing, because they're verified, not theoretical: the <strong>MailerLite</strong> connection exposes the full create → draft → segment → schedule loop (you keep the "send" approval), and the <strong>Canva</strong> connection can create, autofill brand templates, edit, resize and export designs — everything <em>except</em> the actual social scheduling.</p>
+  </section>
+
+  <!-- ============ 3. PRIORITY MAP ============ -->
+  <section class="section" id="priority-map">
+    <span class="eyebrow">Tabulated for your business</span>
+    <h2>3. Your Priority Map</h2>
+    <p>You asked for this to be sorted by <strong>what's important, what's useful, and how an agent helps</strong>. Here's the master table. Each row links to its full section below.</p>
+
+    <table>
+      <thead>
+        <tr><th style="width:15%;">Function</th><th style="width:12%;">Priority</th><th>How an agent helps</th><th style="width:16%;">Realistic today?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#email"><strong>Email Marketing</strong></a></td>
+          <td><span class="pri core">Do first</span></td>
+          <td>Agent drafts campaigns &amp; subject lines, builds segments, schedules sends — you approve. <em>Already connected here.</em></td>
+          <td><span class="tag yes">Yes — strong</span></td>
+        </tr>
+        <tr>
+          <td><a href="#writing"><strong>Writing</strong></a></td>
+          <td><span class="pri core">Do first</span></td>
+          <td>Reusable "voice" assistant for editing, marketing copy, newsletters, sales pages. Foundation for everything else.</td>
+          <td><span class="tag yes">Yes — strong</span></td>
+        </tr>
+        <tr>
+          <td><a href="#graphics"><strong>Graphics &amp; Design</strong></a></td>
+          <td><span class="pri core">Do first</span></td>
+          <td>Agent generates on-brand social graphics, quote cards, ad variants at scale via Canva + AI image tools. Posting stays semi-manual.</td>
+          <td><span class="tag yes">Yes — strong</span></td>
+        </tr>
+        <tr>
+          <td><a href="#research"><strong>Research</strong></a></td>
+          <td><span class="pri useful">High value</span></td>
+          <td>Deep-research agents for competitor/comp titles, audience &amp; review mining, keyword ideation, weekly trend briefs.</td>
+          <td><span class="tag partial">Yes — verify outputs</span></td>
+        </tr>
+        <tr>
+          <td><a href="#social"><strong>Facebook &amp; LinkedIn</strong></a></td>
+          <td><span class="pri useful">High value</span></td>
+          <td>AI drafts &amp; repurposes posts; a scheduler publishes. Caveat: FB <em>Page</em> + LinkedIn only — not personal FB profile or Groups.</td>
+          <td><span class="tag partial">Draft = yes, post = via scheduler</span></td>
+        </tr>
+        <tr>
+          <td><a href="#payhip"><strong>Payhip (selling)</strong></a></td>
+          <td><span class="pri later">Assist, not automate</span></td>
+          <td>Agent prepares product copy/metadata/pricing &amp; post-sale automations. <em>Product upload itself is manual.</em></td>
+          <td><span class="tag no">Upload = manual</span></td>
+        </tr>
+        <tr>
+          <td><a href="#substack"><strong>Substack</strong></a></td>
+          <td><span class="pri later">Assist, not automate</span></td>
+          <td>Agent drafts &amp; repurposes posts; you paste &amp; publish. RSS can auto-feed your other channels.</td>
+          <td><span class="tag no">Publish = manual</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="mini">"Do first" = highest return for least friction and already enabled in your workbench. "Assist, not automate" = AI saves you real time on prep, but a human still does the final action (by platform design, not a tooling gap).</p>
+
+    <!-- ===== WRITING ===== -->
+    <h2 id="writing" style="margin-top:2rem;">✍️ Writing</h2>
+    <div class="fn-bar"><span class="pri core">Priority: Do first</span> <span class="mini">Build the foundation everything else stands on</span></div>
+    <p>This is your home turf — you already teach a 9-pass AI editing system. The upgrade is moving from <em>one-off prompts</em> to <em>reusable assistants</em> that already know your voice, so you stop re-explaining yourself every session.</p>
+
+    <h4>The four "containers" for a reusable writing assistant</h4>
+    <table>
+      <thead><tr><th>Container</th><th>Best for</th><th>Voice capacity</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Claude Project</strong></td><td>"Always sees my whole style guide." A workspace with shared instructions + up to ~200K tokens of reference docs.</td><td>Highest reliability — knowledge is always loaded</td></tr>
+        <tr><td><strong>Claude Skill</strong> <span class="tag yes">most powerful</span></td><td>Turning each editing pass into a reusable "specialist" that loads only when needed. Bundle an entire style bible at zero cost until used.</td><td>Effectively unlimited; auto-invoked &amp; composable</td></tr>
+        <tr><td><strong>ChatGPT Custom GPT</strong></td><td>A shareable branded assistant + a big swipe-file library (up to 20 files).</td><td>Good, but uploaded files are relevance-gated — may not read your <em>full</em> guide every time</td></tr>
+        <tr><td><strong>Gemini Gem</strong></td><td>Quick personal assistants inside the Google ecosystem.</td><td>Lighter; instruction-driven</td></tr>
+      </tbody>
+    </table>
+    <div class="tip-box"><span class="callout-label">The big idea you haven't used yet</span>
+      <strong>Claude Skills.</strong> A Skill is a <em>folder</em> (instructions + examples + checklists + even scripts), not a chat setting. Picture a <em>Project as a room</em> you walk into that already has your reference shelf, and a <em>Skill as a specialist you hired</em> who shows up only when the job calls for it and brings their own toolkit. You could make your 9 editing passes into 9 composable Skills that Claude loads automatically based on the task.</div>
+
+    <h4>How to lock in your voice (what actually works)</h4>
+    <ul>
+      <li><strong>Write voice as a <em>persona</em>, not a rulebook.</strong> This is the single biggest fix, and almost nobody teaches it. A list of prohibitions ("no em-dashes, avoid 'delve,' short sentences") produces mechanical, monotone output. Instead, direct it like casting an actor: <em>Who is this writer? What do they sound like confident vs. hedging? What's their signature move — how do they open, how do they close?</em> You're a character director, not a style-guide author.</li>
+      <li><strong>Show, don't tell.</strong> Examples beat instructions roughly 10-to-1 for tone. 3–5 <em>before→after</em> pairs plus one negative example ("here's what is NOT my voice — too corporate") teach more than pages of rules. Upload 5–10 real samples and let the model extract your patterns.</li>
+      <li><strong>Have the AI write your style guide,</strong> then reuse it: "Analyze these samples and produce a reusable system prompt that captures my voice."</li>
+      <li><strong>Keep one "de-sameness" pass.</strong> Over-editing flattens text back toward generic AI voice. Build a pass that <em>restores</em> your idiosyncrasy, not just polishes.</li>
+      <li><strong>Re-audit every 6–8 weeks</strong> against your last 5 published pieces — voice is a living document. (Both of these — the persona method and the audit habit — are differentiated modules you could teach.)</li>
+    </ul>
+    <p class="mini"><strong>Tools beyond Claude/ChatGPT:</strong> Sudowrite (fiction-first, "Story Bible" + a model tuned on novels) and NovelCrafter (bring-your-own-model, strong story management) for drafting; Jasper if you ever need multi-channel brand-governed marketing copy — though a good Claude Project usually replaces it for a solo operator.</p>
+    <div class="warn-box"><span class="callout-label">Pitfalls</span>The "AI fingerprint" is real — overused em-dashes, words like <em>delve/leverage/tapestry</em>, and a tidy uniform rhythm. Readers spot it. Always finish with a human pass, and never auto-publish marketing claims or stats without verifying them.</div>
+
+    <!-- ===== RESEARCH ===== -->
+    <h2 id="research" style="margin-top:2rem;">🔎 Research</h2>
+    <div class="fn-bar"><span class="pri useful">Priority: High value</span> <span class="mini">Powerful — but verify every number</span></div>
+    <p>"Research agents" take a goal, autonomously run dozens of web searches, read sources, and hand you a cited report. Use them for competitor/comp-title work, audience research, keyword ideation, and recurring trend briefs.</p>
+
+    <table>
+      <thead><tr><th>Tool</th><th>Strength</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Claude Research</strong></td><td>Highest citation accuracy in head-to-head tests (~94%); can run deep multi-source sweeps.</td><td>Best when trust matters. Paid plans.</td></tr>
+        <tr><td><strong>Gemini Deep Research</strong></td><td>Shows you an <em>editable research plan first</em>; exports to Google Docs.</td><td>Most controllable. $20/mo Pro tier.</td></tr>
+        <tr><td><strong>ChatGPT Deep Research</strong></td><td>Thorough long reports; integrates your files.</td><td>~78% citation accuracy — verify.</td></tr>
+        <tr><td><strong>Perplexity</strong></td><td>Fast, sourced answers with visible citations.</td><td>Generous free tier for quick lookups.</td></tr>
+        <tr><td><strong>NotebookLM</strong> <span class="tag yes">anti-hallucination</span></td><td>Only answers from sources <em>you</em> upload — refuses to guess. Ideal for mining reviews you paste in.</td><td>Free. Your safest research surface.</td></tr>
+      </tbody>
+    </table>
+
+    <h4>The highest-ROI research move for a book marketer</h4>
+    <p><strong>Review mining.</strong> Paste the top, 3-star, and critical reviews of 5–10 comparable books into NotebookLM or Claude and ask it to extract what readers loved, what frustrated them (the gap your book fills), and the <em>exact phrases</em> they use. Those phrases become your blurbs, ad copy, and subject lines — in your readers' own words.</p>
+    <div class="warn-box"><span class="callout-label">The one rule</span>
+      Use AI to <strong>generate and organize</strong>; use NotebookLM + your own pasted sources to <strong>ground</strong>; use <strong>Publisher Rocket</strong> (or live Amazon) to <strong>verify the numbers</strong>. AI fabricates plausible-looking sales ranks, royalties, review counts, and even citations — 1 in 4–5 citations can be wrong even on the best tools. Click every link and confirm every number before it ships.</div>
+    <p class="mini"><strong>Make it repeatable:</strong> store your reader avatar, comp list, and brand voice in a Project/Space so every research chat inherits the context — then add a weekly "scheduled task" that emails you a fresh trend brief.</p>
+
+    <!-- ===== GRAPHICS ===== -->
+    <h2 id="graphics" style="margin-top:2rem;">🎨 Graphics &amp; Design</h2>
+    <div class="fn-bar"><span class="pri core">Priority: Do first</span> <span class="mini">Canva is your hub — and it's already connected</span></div>
+    <p>Make <strong>Canva</strong> the center of gravity. With a Brand Kit (locked fonts/colors/logo) + Brand Templates, a non-designer gets reliably on-brand output, and the connected Canva agent can drive the whole create → autofill → edit → resize → export pipeline.</p>
+
+    <div class="scorecard">
+      <dt>Automatable</dt><dd>Social graphics, quote cards, ad-variant testing, carousel images, resizing one design to every platform, exporting, foldering.</dd>
+      <dt>Manual</dt><dd>Final book covers, anything where typography must be perfect, and the actual social <em>posting</em> (Canva's agent can't schedule).</dd>
+    </div>
+
+    <h4>Pick the right image tool for the job</h4>
+    <table>
+      <thead><tr><th>Job</th><th>Best tool</th></tr></thead>
+      <tbody>
+        <tr><td>Text <em>on</em> the image (posters, headline graphics, titles)</td><td><strong>Ideogram</strong> — ~90–95% text accuracy (others mangle text)</td></tr>
+        <tr><td>Cover art / mood / illustration <em>ideation</em></td><td><strong>Midjourney</strong> or Google's <strong>Nano Banana</strong> (great character consistency)</td></tr>
+        <tr><td>High-volume automated images via API</td><td><strong>OpenAI gpt-image</strong> (~$0.005–0.03/image) or <strong>Pixa</strong> (already connected here)</td></tr>
+        <tr><td>Legally-safe / indemnified imagery</td><td><strong>Adobe Firefly</strong> (licensed training data)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box"><span class="callout-label">Two things you must know</span>
+      <strong>1. AI book covers carry real stigma</strong> and pure-AI output generally isn't copyrightable in the US — treat AI as a <em>moodboard</em> you hand to a human cover designer, not the final art.
+      <br><strong>2. Amazon KDP requires you to disclose AI-generated images</strong> (covers and interior) at publish time. It's an internal disclosure, but non-disclosure risks delisting. Bake it into your checklist.</div>
+    <p class="mini"><strong>Reliable "graphics at scale" loop:</strong> a spreadsheet of quotes/tips → Canva Bulk Create (or the agent looping a brand template per row) → export PNG → schedule. Because the text lives in your template, not in a diffusion model, output stays on-brand and correctly spelled.</p>
+
+    <!-- ===== EMAIL ===== -->
+    <h2 id="email" style="margin-top:2rem;">📧 Email Marketing</h2>
+    <div class="fn-bar"><span class="pri core">Priority: Do first</span> <span class="mini">Your single highest-leverage automation — already wired up</span></div>
+    <p>Email subscribers convert to buyers at roughly <strong>3–5× the rate of social followers</strong>, which is why this is your top automation. And <strong>MailerLite is already connected to your agent workbench</strong>, exposing the full create → draft → segment → schedule loop. (It's free up to 1,000 subscribers and has solid built-in AI.)</p>
+
+    <h4>A realistic agent loop (you keep the "send" button)</h4>
+    <ol>
+      <li>You brief: <em>"Draft this week's newsletter about X for my engaged-readers segment."</em></li>
+      <li>Agent drafts the body and generates 4–5 subject-line options.</li>
+      <li>Agent builds the draft campaign aimed at the right segment — <strong>but does not send.</strong></li>
+      <li>You review in MailerLite, tweak the voice, pick the subject line / set an A/B test.</li>
+      <li>On your approval, the agent schedules it; afterward it reports opens/clicks and proposes the next test.</li>
+    </ol>
+
+    <div class="scorecard">
+      <dt>Automate</dt><dd>Drafting, subject-line variants, building segments, scheduling, A/B test setup, reporting, welcome/launch sequence scaffolding.</dd>
+      <dt>Stay human</dt><dd>The final "send" decision, brand voice, deliverability setup, and legal compliance.</dd>
+    </div>
+
+    <div class="warn-box"><span class="callout-label">Non-negotiable setup</span>
+      Before scaling automated sending, <strong>authenticate your sending domain</strong> in MailerLite (add the SPF/DKIM/DMARC records it gives you). Gmail/Yahoo now reject non-compliant bulk mail. And never let an agent ship raw AI copy — generic AI email gets deprioritized by inbox filters. Always rewrite in your voice.</div>
+    <p class="mini"><strong>Alternatives:</strong> Kit (ConvertKit) also has an agent connection and mature author automations; Beehiiv has the best in-editor AI + built-in A/B and a growth network. But MailerLite is the one already connected for you.</p>
+
+    <!-- ===== SOCIAL ===== -->
+    <h2 id="social" style="margin-top:2rem;">📣 Facebook &amp; LinkedIn</h2>
+    <div class="fn-bar"><span class="pri useful">Priority: High value</span> <span class="mini">AI drafts; a scheduler publishes — within real platform limits</span></div>
+    <p>This is the area with the most marketing hype and the most hard walls. Here's the unvarnished truth so you don't waste money on tools that promise the impossible.</p>
+
+    <table>
+      <thead><tr><th>Surface</th><th>Can an agent/tool auto-post?</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Facebook Page</strong></td><td><span class="tag yes">Yes</span></td><td>Run an author/brand <em>Page</em>. Every scheduler supports it.</td></tr>
+        <tr><td><strong>Facebook personal profile</strong></td><td><span class="tag no">No</span></td><td>Impossible since 2018 — no compliant tool can. Post manually, or move your presence to a Page.</td></tr>
+        <tr><td><strong>Facebook Groups</strong></td><td><span class="tag no">No</span></td><td>Meta killed the Groups API in 2024. Manual only (or Facebook's own native group scheduler if you're admin).</td></tr>
+        <tr><td><strong>LinkedIn profile</strong></td><td><span class="tag yes">Yes</span></td><td>Schedule via a tool (where authors get the most reach).</td></tr>
+        <tr><td><strong>LinkedIn Company Page</strong></td><td><span class="tag yes">Yes</span></td><td>Schedule via a tool. Don't try to build your own LinkedIn app — approval is for registered companies and impractical solo.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box"><span class="callout-label">The compliant workflow</span>
+      <strong>AI drafts &amp; makes the image → you approve → a scheduler publishes via official APIs.</strong> The scheduler (Buffer, Publer, Metricool) already holds the platform approvals, so you just connect your accounts with a few clicks. That human approval step is a feature — it keeps your voice authentic.</div>
+
+    <h4>Which scheduler?</h4>
+    <ul>
+      <li><strong>Buffer</strong> — simplest; free for 3 channels, then ~$5/channel/mo. Built-in AI assistant.</li>
+      <li><strong>Publer</strong> — best value/features (content recycling, bulk CSV upload, watermarking).</li>
+      <li><strong>Metricool</strong> — best free analytics if you care about metrics.</li>
+      <li><strong>Canva Content Planner</strong> — if you already design in Canva, schedule FB Page + LinkedIn from there (one platform per design).</li>
+    </ul>
+    <p class="mini"><strong>Monthly rhythm (~1–2 hrs):</strong> Once a month, have AI batch ~20–30 post drafts + a calendar → pair each with a Canva/AI image → bulk-load into Buffer/Publer → quick review → schedule. Then just reply to comments and post in Groups manually through the month.</p>
+    <div class="warn-box"><span class="callout-label">Avoid</span>Any tool promising to auto-post to your personal FB profile or FB Groups (impossible/against the rules), and any "fully autonomous poster" that drives a browser/solves CAPTCHAs on your real accounts — that risks bans.</div>
+
+    <!-- ===== PAYHIP ===== -->
+    <h2 id="payhip" style="margin-top:2rem;">🛒 Payhip (Selling Your Products)</h2>
+    <div class="fn-bar"><span class="pri later">Priority: Assist, not automate</span> <span class="mini">AI preps everything; you do the upload</span></div>
+    <p>Honest answer to "can an agent constantly upload my products to Payhip?": <strong>No — not reliably or safely.</strong> Here's why, and what to do instead.</p>
+    <ul>
+      <li>Payhip's API only covers coupons, license keys, and read/webhook events. <strong>There is no way to create or upload a product through the API</strong> — product creation only exists in the web dashboard.</li>
+      <li>Its Zapier/Make integration is <em>trigger-only</em> (New Sale, Refund, New Subscription, New Product) — it can <em>start</em> automations but can't <em>receive</em> "create product" commands.</li>
+      <li>Driving the dashboard with a browser bot violates Payhip's Terms (they can delete your store) and reliably chokes on the file-upload step anyway.</li>
+    </ul>
+    <div class="win-box"><span class="callout-label">What an agent SHOULD do for Payhip</span>
+      Automate the <em>around</em>, not the upload: <strong>(1)</strong> AI prepares the full product kit offline — title, description/blurb, pricing, tags, thumbnail — so your manual upload is a 5-minute paste. <strong>(2)</strong> Post-sale automations via the Payhip → Zapier/Make trigger: log each sale to a sheet, tag the buyer in MailerLite, send a thank-you/onboarding email, update your revenue dashboard. <strong>(3)</strong> Generate <em>launch coupons</em> — discount codes are the <em>one</em> thing Payhip's API lets an agent write directly, so an agent can mint a unique code for a promo and drop it into your email/social copy.</div>
+    <div class="tip-box"><span class="callout-label">Already-automatic, don't rebuild it</span>Payhip natively delivers the file and emails the buyer a unique download link the instant they pay, and runs its affiliate program in-house (free, even on the free plan). Turn affiliates on and leave them — no automation needed.</div>
+    <p class="mini">If you ever scale to dozens of new products a month and automation becomes essential, the clean path is a platform <em>with</em> a product API (Gumroad, Lemon Squeezy, Shopify) — not bot-driving Payhip.</p>
+
+    <!-- ===== SUBSTACK ===== -->
+    <h2 id="substack" style="margin-top:2rem;">📰 Substack</h2>
+    <div class="fn-bar"><span class="pri later">Priority: Assist, not automate</span> <span class="mini">Draft with AI, publish by hand, auto-distribute after</span></div>
+    <p>Substack has <strong>no official public API for publishing</strong>, so an agent can't post for you. But it gives you a clean automation hook on the way <em>out</em>: every publication has an <strong>RSS feed</strong> (<code>yourname.substack.com/feed</code>).</p>
+    <div class="scorecard">
+      <dt>AI helps</dt><dd>Drafting posts in your voice, repurposing one post into a newsletter + social variants, researching topics, mining your own analytics for what resonates.</dd>
+      <dt>You do</dt><dd>Paste the draft into Substack and hit publish (it's a fast, frictionless editor by design).</dd>
+      <dt>Then automate</dt><dd>Use the RSS feed in Zapier/Make → push each new post to Buffer (social) or your email — so publishing once quietly feeds every other channel.</dd>
+    </div>
+    <p class="mini">Treat Substack as a <em>distribution &amp; discovery channel</em> (its Notes network is the growth engine), not an automation platform. The leverage is AI doing the writing prep and RSS doing the cross-posting.</p>
+  </section>
+
+  <!-- ============ 4. DECIDE ============ -->
+  <section class="section" id="decide">
+    <span class="eyebrow">The framework that ends the confusion</span>
+    <h2>4. Chat vs. Build vs. Automate</h2>
+    <p>When you're unsure how to "direct everything," run the task through these questions:</p>
+    <table>
+      <thead><tr><th>If the task is…</th><th>Use…</th></tr></thead>
+      <tbody>
+        <tr><td>One-time, conversational ("brainstorm 20 titles")</td><td><strong>Just chat</strong> with Claude/ChatGPT</td></tr>
+        <tr><td>Something you'll do again &amp; needs your voice ("turn outlines into emails")</td><td><strong>Build a reusable</strong> Claude Project / Skill / Custom GPT</td></tr>
+        <tr><td>Multi-step across your tools ("research, write, make graphic, draft in MailerLite")</td><td><strong>An agent</strong> with MCP connections (your workbench)</td></tr>
+        <tr><td>"Every time X happens, do Y" with no judgment needed</td><td><strong>An automation</strong> in Make or Zapier</td></tr>
+        <tr><td>High-stakes (money, publishing, a public claim)</td><td><strong>Human-in-the-loop</strong> — agent does 90%, you approve the last 10%</td></tr>
+      </tbody>
+    </table>
+    <div class="tip-box"><span class="callout-label">Three quick gut-checks</span>
+      <strong>How often?</strong> One-time → chat. Weekly → automation. <strong>How many tools?</strong> Text only → Project. Multiple apps → agent. <strong>Cost of error?</strong> Low → automate freely. High → keep your hand on it.</div>
+  </section>
+
+  <!-- ============ 5. STACK & BUDGET ============ -->
+  <section class="section" id="stack">
+    <span class="eyebrow">What to actually pay for</span>
+    <h2>5. Your Tool Stack &amp; Budget</h2>
+    <p>You do not need all of these. Build up in tiers.</p>
+
+    <h4>Tier 1 — The essentials (~$20–35/mo)</h4>
+    <ul>
+      <li><strong>Claude Pro ($20/mo)</strong> — your writing/editing/research brain + Projects &amp; Skills + the MCP agent workbench.</li>
+      <li><strong>MailerLite (free to 1,000 subs)</strong> — email, already agent-connected.</li>
+      <li><strong>Canva Pro (~$15/mo)</strong> — Brand Kit, templates, Magic Studio, content planner.</li>
+    </ul>
+    <h4>Tier 2 — Add as you grow (~$10–25/mo more)</h4>
+    <ul>
+      <li><strong>A scheduler — Buffer (~$5/channel) or Publer</strong> — for FB Page + LinkedIn.</li>
+      <li><strong>One deep-research sub</strong> — Gemini AI Pro ($20, editable plans + Docs export) or rely on Claude Pro's research; <strong>NotebookLM + Perplexity free</strong> alongside.</li>
+      <li><strong>Make.com (free–$10/mo)</strong> — the automation glue (Payhip sales → sheet/email; Substack RSS → social).</li>
+    </ul>
+    <h4>Tier 3 — Specialist, only if needed</h4>
+    <ul>
+      <li><strong>Publisher Rocket (one-time ~$199)</strong> — the verified data layer for KDP keywords/categories/competition.</li>
+      <li><strong>Sudowrite / NovelCrafter</strong> — if you want dedicated fiction drafting + story management.</li>
+      <li><strong>Ideogram</strong> — when you need correct text rendered inside images.</li>
+    </ul>
+    <div class="win-box"><span class="callout-label">Recommended starting point</span>
+      Claude Pro + Canva Pro + free MailerLite ≈ <strong>$35/month</strong> gets you a writing brain, a design hub, and an email engine — all agent-connected. Add a $5 scheduler when you're ready to be consistent on social. That's a complete, real system for under $45/month.</div>
+  </section>
+
+  <!-- ============ 6. REALITY ============ -->
+  <section class="section" id="reality">
+    <span class="eyebrow">So you're not disappointed</span>
+    <h2>6. Reality Checks — What Agents Can't Do (Yet)</h2>
+    <ul>
+      <li><strong>They are not "set and forget."</strong> Best practice today is <em>human-in-the-loop</em>: the agent does the heavy lifting; you approve sends, posts, and anything public. That's not a limitation to fix — it's how you keep quality and voice.</li>
+      <li><strong>They hallucinate.</strong> Confident, fluent, and sometimes wrong — especially on numbers, citations, stats, and quotes. Verify anything you'll publish.</li>
+      <li><strong>Some walls are the platform's, not the AI's.</strong> No tool can auto-post to personal Facebook or Groups, upload products to Payhip, or publish to Substack via API. When you hit these, the move is "let AI prepare it, you do the final click" — not a fancier bot.</li>
+      <li><strong>Connections aren't autonomy.</strong> MCP lets your assistant <em>operate</em> tools when you ask; it doesn't make it run your business unattended. You're the director.</li>
+      <li><strong>Generic AI output is penalized.</strong> Inbox filters and readers both detect it. The human finishing pass is what makes it work.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 7. PLAN ============ -->
+  <section class="section" id="plan">
+    <span class="eyebrow">Stop reading, start building</span>
+    <h2>7. Your 5-Day Starter Plan</h2>
+
+    <div class="day-card">
+      <span class="daynum">Day 1 · Monday</span>
+      <h4>Build your voice assistant</h4>
+      <p>In Claude, create a Project called "The Invisible Pen." Add custom instructions (who you serve, your tone) and upload 5–10 of your best writing samples + a style guide. Test it: <em>"Draft a 3-email welcome sequence for a new author subscriber in my voice."</em> <span class="mini">~30 min. This is the foundation for everything below.</span></p>
+    </div>
+    <div class="day-card">
+      <span class="daynum">Day 2 · Tuesday</span>
+      <h4>Run your first real agent task</h4>
+      <p>Open your connected workbench and try a multi-tool request: <em>"Draft this week's newsletter in MailerLite for my engaged readers and make a matching header in Canva — set it up for my approval, don't send."</em> Review what it produces. <span class="mini">You'll feel the difference between a chatbot and an agent.</span></p>
+    </div>
+    <div class="day-card">
+      <span class="daynum">Day 3 · Wednesday</span>
+      <h4>Mine your audience</h4>
+      <p>Open NotebookLM (free). Paste in 30–40 reviews from 5 comparable books. Ask it for the phrases readers repeat, what they love, and what frustrates them. Save the output — it's your new blurb/ad/subject-line raw material. <span class="mini">Highest-ROI hour in the whole plan.</span></p>
+    </div>
+    <div class="day-card">
+      <span class="daynum">Day 4 · Thursday</span>
+      <h4>Set up consistent social</h4>
+      <p>Make sure you have a Facebook <em>Page</em> (not just your profile) + your LinkedIn. Sign up for Buffer (free). Have your voice assistant batch 10 post drafts; pair each with a Canva graphic; load them into Buffer and schedule the week. <span class="mini">Reply to comments manually — that part should stay human.</span></p>
+    </div>
+    <div class="day-card">
+      <span class="daynum">Day 5 · Friday</span>
+      <h4>Wire one automation &amp; plan</h4>
+      <p>In Make.com (free), build one simple flow: <em>Payhip New Sale → add row to a Google Sheet → tag buyer in MailerLite.</em> Then review the week: which tool saved the most time? Do more of that next month. <span class="mini">You now have a writing brain, an agent workflow, audience research, scheduled social, and a live automation.</span></p>
+    </div>
+
+    <div class="tip-box"><span class="callout-label">After week one</span>
+      Turn your 9 editing passes into reusable <strong>Claude Skills</strong>, add a weekly research brief as a scheduled task, and graduate one more manual chore to an automation each month. Small, compounding. You don't need to build it all at once — you need to start directing it.</div>
+  </section>
+
+  <div class="footer">
+    <p><strong>The AI Agent Playbook</strong> &middot; Prepared for Jessica Waldron, The Invisible Pen</p>
+    <p class="mini">Research-backed, June 2026. Tool prices and features change frequently — confirm current pricing on each vendor's page before subscribing. The structural facts (what each platform's API does and doesn't allow) are stable and verified against current documentation.</p>
+    <p>&copy; Clark Publishing House LLC</p>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /layout -->
+
+</body>
+</html>
