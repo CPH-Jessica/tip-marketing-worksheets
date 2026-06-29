@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>My Master Library (Private) — The Invisible Pen</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --plum: #6d2b4e;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+.header { background: var(--navy); color: white; padding: 2.5rem 2rem; text-align: center; }
+.header h1 { font-size: 2rem; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
+.header .subtitle { color: var(--coral); font-size: 1.05rem; font-style: italic; }
+.header .brand { color: var(--gold); font-size: 0.8rem; margin-top: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
+.private-ribbon { background: var(--plum); color: #fff; text-align: center; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.5rem; font-family: -apple-system, "Segoe UI", sans-serif; font-weight: bold; }
+.container { max-width: 900px; margin: 0 auto; padding: 2.25rem 2rem 4rem; }
+.intro-box { background: #fff; border-left: 4px solid var(--plum); padding: 1.25rem 1.5rem; margin-bottom: 2.25rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 0.95rem; }
+.intro-box strong { color: var(--plum); }
+.intro-box .warn { display: block; margin-top: 0.6rem; font-size: 0.85rem; color: #8a5; color: #9a7b3c; font-style: italic; }
+.section { background: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-bottom: 1.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section.paid { border: 1.5px solid var(--gold); }
+.section > h2 { color: var(--navy); font-size: 1.4rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
+.section.paid > h2 { border-bottom-color: var(--gold); }
+.section .section-note { font-style: italic; color: #6b6b6b; font-size: 0.92rem; margin: 0.5rem 0 1rem; }
+.part-label { color: var(--sage); font-size: 0.78rem; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.3rem 0 0.4rem; }
+ol.lessons, ul.lessons { list-style: none; }
+.lessons li { border-bottom: 1px solid var(--light-gray); }
+.lessons li:last-child { border-bottom: none; }
+.lessons a { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.65rem 0.25rem; text-decoration: none; color: var(--text); transition: background 0.15s, padding-left 0.15s; }
+.lessons a:hover { background: var(--cream); padding-left: 0.75rem; color: var(--navy); }
+.lessons .num { color: var(--coral); font-weight: bold; min-width: 1.6rem; text-align: right; }
+.lessons .title { flex: 1; }
+.lessons a:hover .title { text-decoration: underline; }
+.badge { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.12rem 0.45rem; border-radius: 999px; vertical-align: middle; white-space: nowrap; }
+.badge.paid { background: #faf0d8; color: #9a7b1c; border: 1px solid var(--gold); }
+.badge.hidden { background: #f3e6ee; color: var(--plum); border: 1px solid #d6b3c4; }
+.badge.ext { background: #e9f0ea; color: #4d6b50; border: 1px solid #b9cdbb; }
+.badge.new { background: var(--plum); color: #fff; }
+.toc { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+.toc a { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; text-decoration: none; color: var(--navy); background: #fff; border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.85rem; transition: all 0.15s; }
+.toc a:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.footer { text-align: center; color: #888; font-size: 0.85rem; padding: 2rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--coral); }
+</style>
+</head>
+<body>
+<div class="private-ribbon">🔒 Private · For you only · Not linked anywhere public</div>
+<div class="header">
+  <h1>My Master Library</h1>
+  <div class="subtitle">Every tool, lesson &amp; link in one place — public and paid</div>
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <strong>This is your private index — your single source of truth.</strong> It lists everything: the member-facing tools <em>and</em> the paid/hidden ones that don't appear on the public library.
+    Badges tell you what's what: <span class="badge paid">Paid</span> sold via Payhip · <span class="badge hidden">Hidden</span> off the public site · <span class="badge ext">tip-tools</span> lives on the other repo · <span class="badge new">New</span> just added.
+    <span class="warn">⚠ Keep this URL to yourself. It's hidden from search engines (noindex), but anyone with the link can open it — don't post it where members can see.</span>
+  </div>
+
+  <div class="toc">
+    <a href="#manage">Manage</a>
+    <a href="#tools">Tools</a>
+    <a href="#voice">Make AI Sound Like You</a>
+    <a href="#foundations">Foundations</a>
+    <a href="#pen-launcher">Pen Name Launcher</a>
+    <a href="#edit">Edit Like a Boss</a>
+    <a href="#ads">Amazon Ads</a>
+    <a href="#marketing">Book Marketing</a>
+    <a href="#beta">Beta Reads</a>
+  </div>
+
+  <!-- MANAGE -->
+  <div class="section" id="manage">
+    <h2>Manage &amp; Share</h2>
+    <p class="section-note">The pages you hand out — and this private one.</p>
+    <ul class="lessons">
+      <li><a href="index.html"><span class="num">★</span><span class="title">Public Library</span> <span class="badge ext" style="background:#eef;color:#33566b;border-color:#bcd;">Member-facing</span></a></li>
+      <li><a href="start-here.html"><span class="num">★</span><span class="title">Start Here — onboarding / routing page</span></a></li>
+      <li><a href="my-library.html"><span class="num">★</span><span class="title">My Master Library (this page)</span> <span class="badge hidden">Hidden</span></a></li>
+    </ul>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section" id="tools">
+    <h2>Tools</h2>
+    <p class="section-note">The interactive builders and dashboards.</p>
+    <ul class="lessons">
+      <li><a href="tools/story-spark.html"><span class="num">★</span><span class="title">Story Spark — Plan Your Book &amp; Pick Your Tropes</span> <span class="badge new">New</span></a></li>
+      <li><a href="tools/story-studio.html"><span class="num">★</span><span class="title">Story Studio — Your Book Dashboard</span></a></li>
+      <li><a href="tools/series-read-through-calculator.html"><span class="num">★</span><span class="title">Series Read-Through Calculator</span></a></li>
+      <li><a href="tools/your-style-sheet.html"><span class="num">★</span><span class="title">Your Style Sheet — Make AI Sound Like You</span></a></li>
+      <li><a href="tools/ai-banned-words.html"><span class="num">★</span><span class="title">The AI Banned Words Tool</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/quarterly-day-planner.html"><span class="num">★</span><span class="title">Author Day Planner</span> <span class="badge ext">tip-tools</span></a></li>
+      <li><a href="tools/copyright-page-template.html"><span class="num">★</span><span class="title">Copyright Page Template</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAKE AI SOUND LIKE YOU (funnel + paid) -->
+  <div class="section paid" id="voice">
+    <h2>Make AI Sound Like You</h2>
+    <p class="section-note">The voice funnel: free article → sales page → paid class &amp; Voice Kit (Payhip).</p>
+    <ul class="lessons">
+      <li><a href="make-ai-sound-like-you/you-always-had-the-ideas.html"><span class="num">›</span><span class="title">“You Always Had the Ideas” — free companion article (funnel top)</span></a></li>
+      <li><a href="make-ai-sound-like-you/class.html"><span class="num">›</span><span class="title">Make AI Sound Like You — sales / enroll page</span> <span class="badge hidden">Public sales page</span></a></li>
+      <li><a href="make-ai-sound-like-you/class.html"><span class="num">🔒</span><span class="title">The Class itself + Voice Kit Builder — paid deliverable</span> <span class="badge paid">Paid · Payhip</span></a></li>
+    </ul>
+    <p class="section-note" style="margin-top:0.8rem;">Note: the paid <strong>Class</strong> and <strong>Voice Kit Builder</strong> were moved out of this repo into the Payhip course, so there's no live page here — buyers get them through Payhip. Drop your Payhip product link into <code>make-ai-sound-like-you/class.html</code> (the <code>PAYHIP_URL</code> variable) to wire the buy buttons.</p>
+  </div>
+
+  <!-- FOUNDATIONS -->
+  <div class="section" id="foundations">
+    <h2>Foundations of Claude</h2>
+    <p class="section-note">The interactive class worksheets. Lessons 5, 9–16 and the companion tools live on the <span class="badge ext">tip-tools</span> repo.</p>
+
+    <div class="part-label">Lesson 5</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/worksheets/lesson-5-skill-anatomy-explorer.html"><span class="num">›</span><span class="title">Skill Anatomy Explorer</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 6</div>
+    <ul class="lessons">
+      <li><a href="foundations/lesson-6-voice-skill-builder.html"><span class="num">›</span><span class="title">Voice Skill Builder</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-6-skill-loading/skill-builder.html"><span class="num">›</span><span class="title">Skill Builder — Beta Reader &amp; Editor Edition</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 7</div>
+    <ul class="lessons">
+      <li><a href="foundations/lesson-7-beta-reader-builder.html"><span class="num">›</span><span class="title">Beta Reader Builder</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 8</div>
+    <ul class="lessons">
+      <li><a href="foundations/lesson-8-skill-testing-lab.html"><span class="num">›</span><span class="title">Skill Testing Lab</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 9</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-9-project-architecture-explorer.html"><span class="num">›</span><span class="title">Project Architecture Explorer</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 10</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-10-project-instructions-builder.html"><span class="num">›</span><span class="title">Project Instructions Builder</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 11</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-11-single-book-project-setup.html"><span class="num">›</span><span class="title">Single Book Project Setup</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 12</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-12-series-project-planner.html"><span class="num">›</span><span class="title">Series Project Planner</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 13</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-13-five-core-elements.html"><span class="num">›</span><span class="title">The 5 Core Elements &amp; Story Promise</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 14</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-14-premise-and-codex.html"><span class="num">›</span><span class="title">Premise &amp; Codex Builder</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 15</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-15-outline-builder.html"><span class="num">›</span><span class="title">Outline Builder</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Lesson 16</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/lesson-16-plot-hole-and-chapter-prompts.html"><span class="num">›</span><span class="title">Plot Hole Check &amp; Chapter Prompts</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+    <div class="part-label">Companion Tools</div>
+    <ul class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/character-tracker.html"><span class="num">★</span><span class="title">Character Tracker</span> <span class="badge ext">tip-tools</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-skill-builder.html"><span class="num">★</span><span class="title">Pen Name Skill Builder</span> <span class="badge ext">tip-tools</span></a></li>
+    </ul>
+  </div>
+
+  <!-- PEN NAME LAUNCHER -->
+  <div class="section" id="pen-launcher">
+    <h2>Pen Name Launcher</h2>
+    <p class="section-note">The self-paced class for launching a new pen name. <span class="badge ext">tip-tools</span></p>
+    <ol class="lessons">
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-1-worksheet.html"><span class="num">1</span><span class="title">Building Your Pen Name Identity</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-2-worksheet.html"><span class="num">2</span><span class="title">Your Newsletter From Scratch</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-3-worksheet.html"><span class="num">3</span><span class="title">Writing Your Reader Magnet</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-4-worksheet.html"><span class="num">4</span><span class="title">Cover Creation on a Budget</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-5-worksheet.html"><span class="num">5</span><span class="title">Publishing on KDP &amp; Going Wide</span></a></li>
+      <li><a href="https://cph-jessica.github.io/tip-tools/pen-name-launcher/self-paced-class/lesson-6-worksheet.html"><span class="num">6</span><span class="title">Launch Week &amp; Beyond</span></a></li>
+    </ol>
+  </div>
+
+  <!-- EDIT LIKE A BOSS -->
+  <div class="section" id="edit">
+    <h2>Edit Like a Boss</h2>
+    <p class="section-note">The complete self-paced editing course.</p>
+    <div class="part-label">Part 1 — The Editing System</div>
+    <ol class="lessons">
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-01-intro.html"><span class="num">1</span><span class="title">Editing Readiness Checklist</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-02-quality-check.html"><span class="num">2</span><span class="title">Quality Check Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-03-plot-holes.html"><span class="num">3</span><span class="title">Pass 2 — Plot Hole Checker</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-04-timeline.html"><span class="num">4</span><span class="title">Pass 3 — Timeline Consistency</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-05-line-edit.html"><span class="num">5</span><span class="title">Line Edit Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-06-dialogue.html"><span class="num">6</span><span class="title">Dialogue Polish Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-07-heat-scene.html"><span class="num">7</span><span class="title">Heat Scene Edit Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-08-dev-edit.html"><span class="num">8</span><span class="title">Developmental Edit (Slash Editor) Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-09-voice-audit.html"><span class="num">9</span><span class="title">Voice Audit Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-10-conclusion.html"><span class="num">10</span><span class="title">Full Manuscript Audit Tracker</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-11-human-pass.html"><span class="num">11</span><span class="title">Pass 9 — The Human Pass</span></a></li>
+    </ol>
+    <div class="part-label">Part 2 — Building Your Team</div>
+    <ol class="lessons">
+      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-01-beta-bestie.html"><span class="num">1</span><span class="title">Beta Bestie Builder</span></a></li>
+      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-02-creating-skills.html"><span class="num">2</span><span class="title">Creating Your Own Skills</span></a></li>
+      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-03-style-guide.html"><span class="num">3</span><span class="title">Pen Name Style Guide Builder</span></a></li>
+      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-04-writing-system.html"><span class="num">4</span><span class="title">Writing System Audit</span></a></li>
+    </ol>
+    <div class="part-label">Part 3 — Expanding Your Reach</div>
+    <ol class="lessons">
+      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-01-what-each-ai-does-best.html"><span class="num">1</span><span class="title">What Each AI Does Best</span></a></li>
+      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-02-setting-up-chatgpt-gpts.html"><span class="num">2</span><span class="title">Setting Up ChatGPT Custom GPTs</span></a></li>
+      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-03-setting-up-gemini-grok.html"><span class="num">3</span><span class="title">Setting Up Gemini Gems + Grok Agents</span></a></li>
+      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-04-multi-tool-workflow.html"><span class="num">4</span><span class="title">The Multi-Tool Editing Workflow</span></a></li>
+    </ol>
+  </div>
+
+  <!-- AMAZON ADS -->
+  <div class="section" id="ads">
+    <h2>Amazon Ads for Authors</h2>
+    <ol class="lessons">
+      <li><a href="amazon-ads/01-ads-readiness-checklist.html"><span class="num">1</span><span class="title">Ads Readiness Checklist</span></a></li>
+      <li><a href="amazon-ads/02-keyword-research-workbook.html"><span class="num">2</span><span class="title">Keyword Research Workbook</span></a></li>
+      <li><a href="amazon-ads/03-campaign-builder.html"><span class="num">3</span><span class="title">Campaign Builder Worksheet</span></a></li>
+      <li><a href="amazon-ads/04-ad-performance-tracker.html"><span class="num">4</span><span class="title">Ad Performance Tracker</span></a></li>
+    </ol>
+  </div>
+
+  <!-- BOOK MARKETING -->
+  <div class="section" id="marketing">
+    <h2>Book Marketing</h2>
+    <ol class="lessons">
+      <li><a href="book-marketing/01-marketing-channel-audit.html"><span class="num">1</span><span class="title">Marketing Channel Audit</span></a></li>
+      <li><a href="book-marketing/02-promo-site-planner.html"><span class="num">2</span><span class="title">Promo Site Planner</span></a></li>
+      <li><a href="book-marketing/03-swap-strategy-builder.html"><span class="num">3</span><span class="title">Swap Strategy Builder</span></a></li>
+      <li><a href="book-marketing/04-review-launch-planner.html"><span class="num">4</span><span class="title">Review Launch Planner — Beyond BookBub</span></a></li>
+      <li><a href="book-marketing/05-content-marketing-calendar.html"><span class="num">5</span><span class="title">Content Marketing Calendar</span></a></li>
+    </ol>
+  </div>
+
+  <!-- BETA READS -->
+  <div class="section" id="beta">
+    <h2>Beta Reads</h2>
+    <p class="section-note">Reader reports from the beta-reader personas. <span class="badge hidden">noindex / hidden from search</span></p>
+    <ul class="lessons">
+      <li><a href="beta-reads/ninety-days-ch1-brinley.html"><span class="num">★</span><span class="title">Brinley Reads — Ninety Days, Ch. 1</span></a></li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">
+  The Invisible Pen · Clark Publishing House LLC — private master index<br>
+  Public library: <a href="index.html">index.html</a>
+</div>
+</body>
+</html>
