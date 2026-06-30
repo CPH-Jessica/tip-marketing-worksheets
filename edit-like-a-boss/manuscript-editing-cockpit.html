@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuscript Editing Cockpit</title>
+<style>
+  /* ============================================================
+     MANUSCRIPT EDITING COCKPIT
+     Single-file, no backend, no API key. An author pastes a
+     manuscript and gets: (1) instant offline notes from the
+     deterministic editing passes, (2) ready-to-paste prompts for
+     the reasoning passes (run in any LLM), (3) a reader-satisfaction
+     curve, (4) one exportable editorial report — complete with
+     revision prompts to hand back to their LLM.
+     Built CPH-first; flip CONFIG.cphMode for a generic sellable build.
+     ============================================================ */
+  :root{
+    --plum:#1B2A4A; --plum-2:#2C4368; --rose:#E8735A; --rose-soft:#F0A78F;
+    --gold:#D4A853; --cream:#FFF8F0; --ink:#2D2D2D; --muted:#6b6b6b;
+    --line:#D9D0C4; --card:#ffffff; --ok:#5C8A63; --warn:#C97A33; --bad:#C0492F;
+    --c-tension:#E8735A; --c-bond:#1B2A4A; --c-sat:#D4A853; --c-stakes:#7A9E7E;
+    --shadow:0 10px 30px rgba(27,42,74,.10); --shadow-sm:0 3px 10px rgba(27,42,74,.08);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Georgia','Times New Roman',serif;color:var(--ink);
+    background:linear-gradient(160deg,#FFF8F0 0%,#F4EFE6 100%);min-height:100vh;line-height:1.6}
+  h1,h2,h3,.serif{font-family:'Georgia','Times New Roman',serif}
+  a{color:var(--rose)}
+
+  .topbar{background:var(--plum);color:#fff;padding:12px 22px;display:flex;align-items:center;gap:14px;
+    flex-wrap:wrap;box-shadow:var(--shadow);position:sticky;top:0;z-index:50}
+  .topbar .logo{font-family:Georgia,serif;font-size:19px}
+  .topbar .logo b{color:var(--gold)}
+  .topbar .tag{color:#EAD9C4;font-size:12.5px;opacity:.85}
+  .topbar .spacer{flex:1}
+  .topbar button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;
+    padding:7px 12px;border-radius:9px;cursor:pointer;font-size:13px;transition:.15s}
+  .topbar button:hover{background:rgba(255,255,255,.12)}
+  .topbar button.gold{background:var(--gold);border-color:var(--gold);color:#3a2a00;font-weight:600}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;background:var(--plum-2);padding:0 14px;flex-wrap:wrap;position:sticky;top:51px;z-index:49;box-shadow:var(--shadow-sm)}
+  .tabs .tab{color:#EAD9C4;background:transparent;border:none;padding:13px 16px;cursor:pointer;font-size:14px;
+    border-bottom:3px solid transparent;font-weight:600;transition:.13s}
+  .tabs .tab:hover{color:#fff}
+  .tabs .tab.on{color:#fff;border-bottom-color:var(--gold)}
+  .tabs .tab .badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:11px;
+    background:var(--rose);color:#fff;font-size:11px;font-weight:700}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:22px}
+  @media(max-width:600px){.wrap{padding:13px}}
+  .view{display:none}.view.on{display:block}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:20px}
+  @media(max-width:560px){.panel{padding:16px}}
+  .panel h2{margin:0 0 4px;font-size:22px;color:var(--plum)}
+  .panel h3{margin:18px 0 6px;font-size:16px;color:var(--plum-2)}
+  .panel .sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+
+  label.fld{display:block;margin:14px 0 5px;font-weight:600;font-size:13.5px}
+  input[type=text],select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:14px;font-family:inherit;background:#FFFDF8;color:var(--ink);transition:.15s}
+  textarea{resize:vertical;line-height:1.5}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose-soft);box-shadow:0 0 0 3px rgba(233,140,163,.18)}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:160px}
+
+  button.btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:9px 15px;border-radius:9px;
+    cursor:pointer;font-size:13.5px;font-weight:600;transition:.13s}
+  button.btn:hover{border-color:var(--rose-soft);background:#FAF2E9}
+  button.btn.primary{background:var(--rose);border-color:var(--rose);color:#fff}
+  button.btn.primary:hover{filter:brightness(1.05)}
+  button.btn.gold{background:var(--gold);border-color:var(--gold);color:#3a2a00}
+  .toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .toolbar .gap{flex:1}
+
+  .stat{display:inline-flex;flex-direction:column;background:#F7F1E8;border:1px solid var(--line);border-radius:11px;padding:9px 16px;margin:4px 8px 4px 0}
+  .stat .n{font-size:22px;font-weight:800;font-family:Georgia,serif;color:var(--plum)}
+  .stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+
+  /* chapter list */
+  .chap{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
+  .chap>summary{cursor:pointer;padding:11px 15px;font-weight:600;background:#F7F1E8;list-style:none;display:flex;gap:10px;align-items:center}
+  .chap>summary::-webkit-details-marker{display:none}
+  .chap>summary::before{content:"▸";color:var(--rose)}
+  .chap[open]>summary::before{content:"▾"}
+  .chap .cbody{padding:12px 16px;font-size:13.5px}
+  .chap .cw{margin-left:auto;font-size:12px;color:var(--muted);font-weight:400}
+
+  /* findings */
+  .find{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-left-width:5px;border-radius:9px;padding:10px 13px;margin-bottom:8px;background:#fff}
+  .find .ic{font-size:16px}
+  .find .ft{font-weight:700;font-size:13.5px}
+  .find .fd{font-size:13px;color:#5A554F;margin-top:2px}
+  .find .ex{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:4px}
+  .find.crit{border-left-color:var(--bad)} .find.rec{border-left-color:var(--warn)}
+  .find.opt{border-left-color:var(--c-bond)} .find.good{border-left-color:var(--ok)}
+  mark{background:#F4D38A;color:#5a3a00;border-radius:3px;padding:0 1px}
+  mark.ai{background:#F7C8B8;color:#6a1020}
+  .hltext{font-size:13.5px;line-height:1.7;white-space:pre-wrap;max-height:340px;overflow:auto;background:#FFFDF8;border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-top:8px}
+
+  /* prompt blocks */
+  .passcard{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+  .passcard>.head{display:flex;gap:12px;align-items:center;padding:13px 16px;background:#F7F1E8;cursor:pointer}
+  .passcard .pno{width:26px;height:26px;border-radius:50%;background:var(--plum);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+  .passcard .pttl{font-weight:700;font-size:15px}
+  .passcard .psub{font-size:12.5px;color:var(--muted)}
+  .passcard .scope{margin-left:auto;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--rose);font-weight:700;flex:none}
+  .passcard .pbody{padding:14px 16px;display:none}
+  .passcard.open .pbody{display:block}
+  .promptbox{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.5;
+    background:#1B2A4A;color:#F3EEE4;border-radius:10px;padding:14px;max-height:300px;overflow:auto}
+  .copied{color:var(--ok);font-weight:700;font-size:12.5px;margin-left:8px}
+
+  /* satisfaction (charge model) */
+  details.explain{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:18px;overflow:hidden}
+  details.explain>summary{cursor:pointer;padding:13px 18px;font-weight:600;color:var(--plum);list-style:none;background:#F7F1E8}
+  details.explain>summary::-webkit-details-marker{display:none}
+  details.explain>summary::before{content:"▸ ";color:var(--rose)}
+  details.explain[open]>summary::before{content:"▾ "}
+  .explain .body{padding:4px 22px 20px;font-size:14px}
+  .keyline{background:#F7F1E8;border-radius:10px;padding:13px 15px;margin-top:6px;font-size:13.5px}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+  .legend .lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border:1.5px solid var(--line);
+    border-radius:20px;padding:4px 11px;cursor:pointer;user-select:none;background:#fff}
+  .legend .lg .sw{width:14px;height:14px;border-radius:4px}
+  .legend .lg.off{opacity:.38}
+  svg.chart{width:100%;height:auto;display:block;background:linear-gradient(180deg,#FFFDF8,#FCF6EE);border:1px solid var(--line);border-radius:12px}
+  .chartwrap{position:relative}
+  .chart-tip{position:absolute;pointer-events:none;background:var(--plum);color:#fff;padding:8px 11px;border-radius:9px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;max-width:230px;z-index:10}
+  .chart-tip b{color:var(--gold)}
+  .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+  .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:8px 7px;border-bottom:2px solid var(--line);font-weight:700}
+  .tbl td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl input[type=text]{width:100%;min-width:110px;padding:7px 9px;border:1.5px solid transparent;border-radius:8px;font-size:13.5px;background:transparent;font-family:inherit}
+  .tbl input[type=text]:hover{border-color:var(--line)}
+  .tbl input[type=text]:focus{outline:none;border-color:var(--rose-soft);background:#fff}
+  .tbl .valwrap{display:flex;align-items:center;gap:6px;justify-content:center}
+  .tbl .valwrap b{width:16px;text-align:center}
+  .tbl input.range{width:60px}
+  .tbl .pf{width:19px;height:19px;accent-color:var(--rose);cursor:pointer}
+  .tbl .satcell{font-weight:800;text-align:center;font-size:15px}
+  .tbl .del{cursor:pointer;color:var(--muted);border:none;background:none;font-size:16px;padding:2px 6px;border-radius:6px}
+  .tbl .del:hover{color:var(--bad);background:#F6E2DC}
+  .tbl td.center{text-align:center}
+  tr.payoff-row td{background:#FBF1DD}
+  .scorebadge{display:inline-flex;align-items:baseline;gap:8px;background:#F7F1E8;border:1px solid var(--line);border-radius:12px;padding:10px 18px;margin-bottom:6px}
+  .scorebadge .big{font-size:30px;font-weight:800;font-family:Georgia,serif;color:var(--plum)}
+  .scorebadge .lab{font-size:13px;color:var(--muted)}
+
+  .note{background:#F7F1E8;border-left:4px solid var(--gold);border-radius:8px;padding:11px 14px;font-size:13px;margin:12px 0}
+  .foot{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
+  .hidden{display:none!important}
+  .pill{display:inline-block;background:#F0EDE8;color:var(--rose);font-weight:700;font-size:11px;padding:2px 9px;border-radius:14px;margin-left:6px}
+  .panel.intro{border-top:5px solid var(--gold)}
+  .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+  @media(max-width:680px){.howto{grid-template-columns:1fr}}
+  .howto-card{background:var(--cream);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .howto-card.best{background:#fbeede;border-color:var(--gold)}
+  .howto-card .hk{font-family:Georgia,serif;font-weight:700;color:var(--plum);font-size:14.5px;margin-bottom:5px}
+  .howto-card p{margin:0;font-size:13px;color:#5A554F}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="logo">Manuscript Editing <b>Cockpit</b></span>
+    <span class="tag" id="brandTag"></span>
+    <span class="spacer"></span>
+    <button onclick="exportState()">Save file</button>
+    <button onclick="document.getElementById('importFile').click()">Open file</button>
+    <button class="gold" onclick="downloadReportHtml()">Export report</button>
+    <input type="file" id="importFile" accept="application/json" class="hidden" onchange="importState(event)">
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-v="setup">1 · Manuscript</button>
+    <button class="tab" data-v="scan">2 · Auto-Scan <span class="badge hidden" id="scanBadge">0</span></button>
+    <button class="tab" data-v="passes">3 · Editing Passes</button>
+    <button class="tab" data-v="sat">4 · Satisfaction</button>
+    <button class="tab" data-v="report">5 · Report</button>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ===================== 1 · MANUSCRIPT ===================== -->
+    <div class="view on" id="v-setup">
+
+      <div class="panel intro">
+        <h2>Welcome to your Editing Cockpit</h2>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>. It runs the whole editing system on one screen: instant offline checks against the AI banned-word list, ready-to-paste prompts for all 12 reasoning passes, a reader-satisfaction tracker, and one exportable fix-it report with before &amp; after edits.</p>
+        <div class="howto">
+          <div class="howto-card best">
+            <div class="hk">★ Best way to use it</div>
+            <p>Open this tool <b>inside the AI project that already holds your book files</b> (your manuscript, style sheet, character codex, pen-name voice). When the prompts live next to your story, your AI has the full context and the notes come back sharper.</p>
+          </div>
+          <div class="howto-card">
+            <div class="hk">✓ Works standalone too</div>
+            <p>No project? No problem. Paste a chapter (or the whole book) right here and go. Everything stays in your browser — nothing is uploaded, no account, no API key.</p>
+          </div>
+          <div class="howto-card">
+            <div class="hk">⤳ Any AI tool</div>
+            <p>Every prompt is copy-paste and tool-agnostic — drop it into <b>Claude, ChatGPT, Gemini, or Grok</b>. Bring the notes back here and export your report.</p>
+          </div>
+        </div>
+        <div class="note" style="margin-bottom:0">New to this? Work one chapter at a time — paste a chapter, run the passes, then use <b>+ Add next chapter</b> below to build your book up as you go. That matches the course, lesson by lesson.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Drop in your manuscript</h2>
+        <p class="sub">Paste the whole book (or a single chapter). Everything stays in your browser — nothing is uploaded. Then set the pen-name voice and heat so the prompts come out calibrated.</p>
+        <div class="row">
+          <div><label class="fld">Title</label><input id="bookTitle" type="text" placeholder="Book or series title…" oninput="save()"></div>
+          <div><label class="fld">Genre / line <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input id="genre" type="text" placeholder="e.g. small-town contemporary romance" oninput="save()"></div>
+        </div>
+        <div class="row">
+          <div><label class="fld">Pen-name voice</label>
+            <select id="penName" onchange="save()"></select></div>
+          <div><label class="fld">Heat level</label>
+            <select id="heat" onchange="save()">
+              <option value="1">1 / 5 — closed door</option>
+              <option value="2">2 / 5 — sensual</option>
+              <option value="3">3 / 5 — steamy</option>
+              <option value="4" selected>4 / 5 — explicit</option>
+              <option value="5">5 / 5 — fully explicit</option>
+            </select></div>
+        </div>
+        <div id="customVoiceWrap" class="hidden">
+          <label class="fld">Custom voice notes <span style="font-weight:400;color:var(--muted)">(used in the Voice Audit prompt)</span></label>
+          <textarea id="customVoice" rows="3" placeholder="Describe the voice: tone, humor, prose density, what makes it sound like this author…" oninput="save()"></textarea>
+        </div>
+
+        <label class="fld" style="margin-top:18px">Manuscript text</label>
+        <textarea id="manuscript" rows="14" placeholder="Paste your manuscript here. Use “Chapter One”, “Chapter 1”, “# Chapter”, or *** between chapters and the cockpit will split it for you." oninput="onManuscriptInput()"></textarea>
+
+        <div class="toolbar">
+          <button class="btn primary" onclick="splitNow()">Split &amp; scan</button>
+          <button class="btn gold" onclick="addChapters()">+ Add next chapter</button>
+          <button class="btn" onclick="loadDemo()">Load demo chapter</button>
+          <div class="gap"></div>
+          <button class="btn" onclick="clearAll()">Clear all</button>
+        </div>
+        <p class="sub" style="margin-top:8px;font-size:12.5px"><b>Split &amp; scan</b> replaces everything with what's in the box (paste your whole book, or your first chapter). <b>+ Add next chapter</b> keeps the chapters you already have and appends what's in the box — paste one chapter, add it, repeat, lesson by lesson.</p>
+
+        <div id="setupStats" style="margin-top:16px"></div>
+        <div id="chapList" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- ===================== 2 · AUTO-SCAN ===================== -->
+    <div class="view" id="v-scan">
+      <div class="panel">
+        <h2>Auto-Scan <span class="pill">runs offline · no LLM</span></h2>
+        <p class="sub">The deterministic half of the editing workflow — the banned list and mechanical line-edit checks — applied instantly to every chapter. These are real notes you'd otherwise pay an editor to flag.</p>
+        <div id="scanSummary"></div>
+        <div id="scanResults"></div>
+      </div>
+    </div>
+
+    <!-- ===================== 3 · EDITING PASSES ===================== -->
+    <div class="view" id="v-passes">
+      <div class="panel">
+        <h2>Editing Passes — prompts for your LLM</h2>
+        <p class="sub">These are the reasoning passes a human or an LLM has to think through. Pick a chapter (or the whole manuscript), copy the prompt, paste it into ChatGPT / Claude / your tool of choice, and bring the notes back to the Report tab. Every prompt ends by asking your LLM for ready-to-paste revision prompts.</p>
+        <div class="row">
+          <div><label class="fld">Apply to</label>
+            <select id="passScope" onchange="renderPasses()"></select></div>
+          <div style="display:flex;align-items:flex-end"><div class="note" style="margin:0">Voice &amp; heat are pulled from the Manuscript tab. Change them there to recalibrate.</div></div>
+        </div>
+        <div id="passList" style="margin-top:16px"></div>
+      </div>
+    </div>
+
+    <!-- ===================== 4 · SATISFACTION ===================== -->
+    <div class="view" id="v-sat">
+      <div class="panel">
+        <details class="explain">
+          <summary>The Charge Model — why tension alone undersells the book</summary>
+          <div class="body">
+            <p>Tension is <b>potential energy</b>: charge stored at the boundary between two people who want and can't yet have. When they finally fall into each other, that energy isn't lost — it <b>converts into Bond</b>, the closeness that now flows between them. Reader satisfaction tracks the whole system: bond earned, tension still live, stakes that make it matter, and the bright catharsis of release.</p>
+            <div class="keyline"><b>The move to watch:</b> at a good payoff, Tension drops but Satisfaction spikes and settles at a <em>higher floor than before</em>, because Bond rose to catch it. The failure it flags is a <b>leak</b> — tension fell but bond didn't rise to meet it, so the charge escaped instead of passing between them.</div>
+          </div>
+        </details>
+
+        <h2>Reader Satisfaction Tracker</h2>
+        <p class="sub">Map the beats of the book and watch the curve. Rate by hand, or let your LLM do it — copy the prompt below, paste the JSON it returns, and the curve plots itself.</p>
+
+        <div class="toolbar" style="margin-bottom:8px">
+          <button class="btn gold" onclick="copyBeatPrompt(this)">Copy “rate my beats” prompt</button>
+          <button class="btn" onclick="document.getElementById('beatJsonWrap').classList.toggle('hidden')">Paste beat JSON</button>
+          <button class="btn" onclick="loadSampleBeats()">Load sample arc</button>
+          <div class="gap"></div>
+          <button class="btn primary" onclick="addBeat()">+ Add beat</button>
+        </div>
+        <div id="beatJsonWrap" class="hidden" style="margin-bottom:12px">
+          <textarea id="beatJson" rows="4" placeholder='Paste the JSON your LLM returned, e.g. [{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]'></textarea>
+          <div class="toolbar"><button class="btn primary" onclick="ingestBeats()">Plot it</button></div>
+        </div>
+
+        <div class="legend" id="legend"></div>
+        <div class="chartwrap">
+          <svg class="chart" id="chart" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="chart-tip" id="tip"></div>
+        </div>
+
+        <h3>Beats</h3>
+        <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr>
+            <th style="width:28px">#</th><th>Beat</th>
+            <th class="center">Tension</th><th class="center">Bond</th><th class="center">Stakes</th>
+            <th class="center">Payoff</th><th class="center">Sat.</th><th style="width:28px"></th>
+          </tr></thead>
+          <tbody id="beatBody"></tbody>
+        </table>
+        </div>
+
+        <h3 style="margin-top:22px">What the curve says</h3>
+        <div id="scoreBadge"></div>
+        <div id="diag" style="margin-top:8px;display:flex;flex-direction:column;gap:9px"></div>
+      </div>
+    </div>
+
+    <!-- ===================== 5 · REPORT ===================== -->
+    <div class="view" id="v-report">
+      <div class="panel">
+        <h2>Editorial report</h2>
+        <p class="sub">Paste back what your AI returned for each pass. The cockpit folds it together with the auto-scan and the satisfaction read into one report. <b>Download the Fix-It report (.html)</b> and open it on your own computer — every issue becomes a card with the before text, why it matters, and the fix.</p>
+        <div id="reportNotes"></div>
+        <div class="toolbar">
+          <button class="btn primary" onclick="downloadReportHtml()">⬇ Download Fix-It report (.html)</button>
+          <button class="btn" onclick="downloadReport()">Plain text (.md)</button>
+          <button class="btn" onclick="copyMasterRevision(this)">Copy master revision prompt</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">Everything stays in your browser and saves automatically. “Save file” keeps a backup you can reopen anywhere.</div>
+  </div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  cphMode: false,
+  brand: "The Invisible Pen · Edit Like a Boss",
+  brandGeneric: "The Invisible Pen · Edit Like a Boss",
+  w:{ bond:0.40, tension:0.25, stakes:0.15, glow:0.55, glowDecay:0.5, stallPenalty:1.2, leakPenalty:0.6, fatigueMax:0.5 }
+};
+const STORE='tip_editing_cockpit_v1';
+
+/* ============================================================
+   VOICE PRESETS — pick the genre lane closest to your book.
+   These calibrate the Voice Audit and every prompt. Use "Custom"
+   to paste your own pen-name voice (from your Style Sheet).
+   ============================================================ */
+const PENS = {
+  romcom:{label:"Rom-com — playful, banter-driven", voice:
+`Witty, warm, a little chaotic. Banter crackles — flirty, fast, fun, no dead spots. At least one snort-worthy line per scene. Light touch on angst (land it, then bounce back to warmth). Sarcastic interiority, "did I just say that out loud" energy. When there's heat, it stays hot AND fun, never mechanical.`},
+  smalltown:{label:"Small-town contemporary — warm, grounded", voice:
+`Warm, grounded, relatable with a touch of wit. Internal monologue reads like a best friend processing life. Humor comes from observation, not snark. Small-town authenticity without condescension. Emotional honesty without melodrama.`},
+  romantasy:{label:"Romantasy / fantasy — lush, atmospheric", voice:
+`Lush, atmospheric prose; emotionally intense without going purple. Sensory-rich. Raw, unfiltered heroine interiority. Magic and worldbuilding integrated naturally, never info-dumped. Subtext carries weight in dialogue.`},
+  dark:{label:"Dark romance — raw, intense", voice:
+`Raw, intense, no apologies. Short brutal sentences for danger, languid for seduction. Possessive without crossing into abusive. Power exchange is earned, not assumed. The hero's restraint slipping is meaningful. Soft moments after intensity — contrast matters. Heroine has backbone.`},
+  regency:{label:"Historical / Regency — period wit", voice:
+`Period-appropriate wit (Austen-adjacent). Formal address that masks attraction. Verbal sparring as foreplay. Narrator with opinions and personality. No anachronisms in language or values. Double meanings and loaded silences. Characters do NOT use modern contractions where the period voice forbids it.`},
+  paranormal:{label:"Paranormal / supernatural — snark + heart", voice:
+`Snarky, self-aware heroine. Comedy from culture clash (e.g. an ancient being vs. modern life). Supernatural logistics played for humor. Balance of comedy and genuine stakes. "This is so weird but also kind of hot" energy.`},
+  custom:{label:"Custom / my own voice", voice:""}
+};
+
+/* ============================================================
+   BANNED LIST — synced to the /fiction-editing-workflow skill.
+   Drives the offline Auto-Scan. A handful of the skill's words
+   (light, because, like, something, maybe…) are too common to
+   flag literally without flooding you with false positives, so
+   they're enforced inside the LLM pass prompts instead, not here.
+   ============================================================ */
+const BANNED = {
+  firstNames:["Lucian","Marcus","Emma","Lila","Sarah","Cordelia","Nikolia","Mateo","Dante","Ethan","Sebastian","Nathaniel","Gabriel","Grayson","Asher","Olivia","Sophia","Isabella","Aurora","Violet"],
+  lastNames:["Henderson","Patterson","Volkov","Blackwood","Thornwood","Sterling","Hawthorne","Ashworth","Chen"],
+  words:["professional","sometimes","chaos","tangled","hitched","navigate","shadows","glow","indicates","suddenly","slowly","quietly","incredibly","entirely","finally","slightly","unreadable","expression","studying","buzz","humming","flicker","clearly","tension","tense","gripping","precision","military","unease","practiced","lowering","tilting","rolling","smirk","smirked","softly"],
+  phrases:["some days","thick air","air was thick","for the first time","first time","out before I can stop them","I cross my arms","arms crossed","folded arms","heart hammered","by the time","narrow my eyes","open my mouth to","roll my eyes","shake my head","tilts his head","tilts her head","I hate that","let out a","unwavering","my chest","my stomach knots","my stomach twists","distance between us","air crackles","my breath catches","personally offended","personally insulted","too much force","too much enthusiasm","the words hit","words land","words hit","figure it out","scent of","smell of","smells like","something like","mix between","mixture of","through his nose","through her nose"],
+  aiisms:["electricity coursing through","a smile tugging at","couldn't help but","found myself","before I could stop myself","let out a breath I didn't know I was holding","something shifted","I didn't trust my voice","swallowed hard","a beat of silence","broke the silence","search my face","meet my gaze","hold my gaze","the air between us"],
+  tags:["growled","exclaimed","murmured","breathed"],
+  prolepsis:["would later","years from now","she had no idea","he had no idea","had no idea what was coming","little did she know","little did he know","if only she'd known","if only he'd known","if only she had known","everything was about to change","looking back","later, she'd","later, he'd","would come to realize","would soon","it would be the last time","would cost her","would cost him","would spend the next"],
+  transitions:["additionally","furthermore","moreover","in that moment","as if on cue","and just like that","just like that","in the end"]
+};
+const FILTERS=["felt","noticed","realized","seemed","watched","saw","heard","wondered","thought"];
+const FILLERS=["a little","sort of","kind of","just","really","very"];
+
+/* ============================================================
+   THE 12 EDITING PASSES (synced to /fiction-editing-workflow)
+   ============================================================ */
+const PASSES = [
+ {n:1,id:"qc",name:"Quality Check",scope:"chapter",role:"a meticulous line-and-content editor for genre romance",
+  list:["Natural prose — reads human; no AI-isms, overused adverbs, or repeated words/phrases.","Tone match — humor/intensity is right for the pen name.","Outline adherence — stays in THIS chapter's lane; no veering into later plot, no premature resolution, no speeding the book.","Arc consistency — follows the character/story arc.","Romantic/emotional progression — advances appropriately for this point in the story.","Pacing & transitions — scene shifts smooth and earned, not rushed or jarring.","Show vs. tell — flag emotion that's told instead of shown through action, dialogue, or sensation.","Chapter ending — ends on a hook with forward momentum, ON the storybeat, no foreshadowing.","POV — single POV throughout, no head-hopping.","Heat level — matches the pen name's calibration; genre readers will feel satisfied.","Banned list — no banned names, words, phrases, or AI-isms."]},
+ {n:2,id:"plot",name:"Plot Hole Checker",scope:"either",role:"a continuity-obsessed story editor",
+  list:["Cause & effect — everything flows logically from what came before; flag actions/reactions lacking a clear cause.","Setup tracking — log any promise introduced (secret, object, decision, foreshadowed event) that must pay off.","Payoff tracking — confirm resolved setups match the setup's weight; underpowered payoffs are holes too.","Character knowledge — every character acts only on info they've actually received in-story.","Logical behavior — decisions fit established personality, wounds, and goals; flag 'because the plot needs it'.","Introduced-but-dropped — anything mentioned then ignored.","Contradictions — facts that conflict with earlier chapters (eye color, status, prior conversation).","Off-page logic — implied off-page events that strain belief (impossible travel/time)."],
+  out:"Label flags [PLOT HOLE] / [SETUP LOGGED] / [PAYOFF CHECK] / [WATCH] with a precise location (scene, beat, or quoted snippet)."},
+ {n:3,id:"time",name:"Timeline Consistency",scope:"either",role:"a timeline-auditing editor",
+  list:["Scene duration — story-time matches what characters accomplish, say, and feel.","Time anchors — log any day/date/time/elapsed reference; does it match the prior chapter's endpoint?","Travel & logistics — movement times make sense; no impossible arrivals.","Season/weather/light — matches the established season and time of day.","Fatigue & physical state — characters show appropriate hunger/recovery/healing for elapsed time.","Concurrent events — simultaneous events track; nothing precedes what it follows from.","Recency of reference — 'that night last week' math works against the timeline.","Age & life-stage — references track with what was established."],
+  out:"Build/extend a STORY TIMELINE LOG: [Chapter] Day N | Time | Location | Key Events | Time Elapsed — then list [TIMELINE GAP]/[POSSIBLE CONTRADICTION]/[CONFIRM] flags."},
+ {n:4,id:"line",name:"Line Edit",scope:"chapter",role:"a sentence-level line editor",
+  list:["Echoes — repeated words within 2–3 paragraphs (esp. eyes, heart, breath, gaze, chest, stomach).","Filter words — remove felt/noticed/realized/seemed/watched/saw/heard/wondered/thought; show the sensation directly.","Weak verbs — replace was/were + -ing with active verbs; kill 'started to' / 'began to'.","Adverb crutches — cut -ly adverbs; strengthen the verb.","Dialogue tags — trim to said/asked or action beats.","Sentence variety — flag strings of same-length sentences or repeated structures.","Overwriting — cut purple prose, redundant description, metaphors that don't land.","Filler phrases — remove a little / sort of / kind of / just / really / very / unnecessary 'that'.","Body-language inventory — vary the physical tells (too many brow raises, lip bites, jaw clenches).","Rhythm — does the dialogue flow when read aloud?"]},
+ {n:5,id:"dialogue",name:"Dialogue Polish",scope:"chapter",role:"a dialogue specialist",
+  list:["Subtext — characters shouldn't say exactly what they mean; add the unsaid layer.","Distinct voices — cover the names; can you tell who's speaking by cadence and word choice?","Banter rhythm — does the back-and-forth crackle? Trim dead air between zingers.","Exposition dump — flag dialogue that exists only to inform the reader; reframe or cut.","Action-beat balance — right mix of 'said' tags vs. action beats.","Contractions — characters use them (unless period voice forbids it).","Trailing off — overuse of ellipses or em-dashes? Tighten.","Pet phrases — a verbal tic once or twice = character; more = annoying.","Comedic beats (rom-com) — no joke ends without a POV reaction; wit leaks through 3–4×; supporting cast reacts to the POV character's slips."]},
+ {n:6,id:"heat",name:"Heat Scene Edit",scope:"chapter",role:"an intimacy-scene editor calibrated to the pen name's heat level",
+  list:["Emotion over mechanics — emotional connection drives the scene, not body parts.","Sensory balance — all five senses, not just visual.","Pacing — it builds; push-pull, not a rush to the finish.","Voice consistency — POV interiority stays distinct even in the moment.","Verb variety — flag repetitive action words.","Euphemism audit — terms are genre-appropriate for this heat level (not too clinical, not too purple).","Emotional aftermath — scene ends on emotional resonance, not just physical resolution.","Power dynamics — tension/control dynamic intact and consensual.","Slow-burn payoff — if slow burn, where can tension be added for more impact?"]},
+ {n:7,id:"dev",name:"Developmental Edit",scope:"chapter",role:"a developmental editor",
+  list:["Scene purpose — every scene advances plot, character, or relationship; flag 'just vibes'.","Motivation clarity — clear WHY behind every action/reaction.","Conflict present — tension (internal/external/romantic) on every page; where does it sag?","Emotional stakes — reader knows what the POV character stands to lose/gain.","Voice drift — POV character consistent with earlier chapters.","Pacing drag — sections that stall; mark for trim or punch-up.","Setup/payoff — earlier promises honored; flag dangling threads.","Romantic progression — push/pull balance right for this point in the arc (too fast? too slow?).","Reader question — what is the reader asking at chapter's end? Is it the RIGHT question?","Genre expectation — delivers what this pen name's readers expect at this beat."]},
+ {n:8,id:"voice",name:"Voice Audit",scope:"chapter",role:"a brand voice editor",
+  list:["Calibrate every note to the pen-name voice profile provided above.","Flag any line that drifts out of that voice and suggest an in-voice rewrite.","Confirm humor/tone/heat all sit inside the brand."]},
+ {n:9,id:"hook",name:"Engagement / Hook Audit",scope:"chapter",role:"a reader-engagement editor",
+  list:["Stakes legible — reader can name what's at risk, for whom, and why NOW, from what's on the page (shown, not announced). Urgency from scene pressure, never a narrated clock.","A specific Big Question is live by the midpoint — flag vague teasers ('everything was about to change', 'little did she know'); they give nothing to predict and are banned ominous narration.","Question planted early — chapter opens inside a live question, not a stall.","Reversals set up — any twist recontextualizes earlier on-page detail (surprising-yet-inevitable); an unset-up reversal is a gotcha — flag it.","Reversal survives logic — obeys cause→effect, motivation, knowledge-access.","Head Fakes mid-scene, not end-buttons — no ominous one-liner slammed on the last line.","The seam re-hooks — ending closes one loop and opens the next in the same beat; a clean stop is where readers quit — flag it.","No over-hooking — not manufacturing unearned reversals; one earned turn beats three shallow ones."]},
+ {n:10,id:"arc",name:"Arc Pacing Audit",scope:"manuscript",role:"a structural editor who reasons ACROSS chapters",
+  list:["Trajectory — per character: where they started → where they are now, as a plain throughline.","Pacing verdict — ON PACE / RUSHED / STALLED / UNEVEN; name the chapter where any problem ORIGINATES.","Beat check — mark each beat HIT/EARLY/LATE/MISSING/TBD (Meet → Building awareness → First vulnerability → Midpoint shift → Dark moment → Resolution/HEA).","Balance — is one character's emotional movement outpacing the other's? Is vulnerability reciprocal? Imbalance must read as intentional.","Emotional capital — is the story spending trust/tension/intimacy faster than it earned it? Flag the reverse too (banked tension sitting too long).","Heat-vs-emotion sync — does physical escalation track emotional escalation?"],
+  out:"This pass DIAGNOSES pacing; it never invents plot. Flag the problem and name the originating chapter — the fix stays the author's call."},
+ {n:11,id:"present",name:"Present-Moment Pass",scope:"chapter",role:"a prolepsis-hunting line editor who keeps narration anchored in the present scene",
+  list:["Future-knowledge intrusion [PROLEPSIS] — narration tells the reader something the POV character can't know yet ('she would later realize…', 'it would be the last time…', 'years from now, she'd remember').","Ominous teaser narration [FORESHADOW] — the banned 'doom is coming' move ('she had no idea what was coming', 'little did she know', 'if only she'd known', 'everything was about to change').","Outcome leak [OUTCOME LEAK] — a line that quietly spoils a later beat to sound wise ('it was a mistake she'd spend the next month paying for', 'that decision would cost her everything').","Retrospective narrator drift [RETRO DRIFT] — the voice slips into looking-back-from-the-future ('looking back, she should have seen it', 'later, she'd understand').","PROTECT legitimate 'would' — do NOT flag habitual past ('every Sunday she would drive to the lake'), conditionals ('she'd say yes if he asked'), in-the-moment dread in dialogue or thought ('he would leave. They always left.'), reported intentions ('he told her he would call'), or modals ('would you mind?').","When a 'would' is genuinely ambiguous, tag [WOULD — CONFIRM] and ASK — never silently change it.","Recast, don't blanket-delete — convert future-knowledge into present-scene experience using only what the scene already supports; never invent a new detail to make a line work."],
+  out:"Header line with counts: Candidates / Offenders / Protected / Confirm. Then OFFENDERS (with NOW: recast + why), PROTECTED (checked, left alone), and WOULD — CONFIRM (ask, don't auto-change)."},
+ {n:12,id:"deai",name:"Structural De-AI Sweep",scope:"chapter",role:"an editor hunting structural AI tells at the sentence, paragraph, and whole-chapter level",
+  list:["Prestige-word inflation — portable-profundity abstractions standing in for a real image ('the quiet architecture of loss', 'a testament to everything they'd survived'); trade for one concrete sensory fact.","Balanced contrast frames — 'it wasn't X, it was Y' / 'she didn't want him, she needed him'; keep ONLY if both halves are specific and the reversal changes the meaning; otherwise write the truer half once.","Rhetorical question → tidy answer — the explainer voice ('What was she supposed to say? Nothing.'); render as lived experience instead.","Tidy triads & symmetry — three balanced items / parallel clauses recurring; vary the count and weight, let one run lopsided.","Agentless / depersonalized lines — 'a decision was made', 'the tension in the room grew'; name the doer and put a body and a want in the sentence.","Sentiment flattening — ugly/mixed feeling sanded into calm acceptance or a life-lesson; restore friction and ambivalence.","Professionalized sameness — theme legible too early, symbols that announce meaning, an ending that states the lesson; withhold the theme, end on image or unresolved want, add one earned surprise.","Even sentence architecture — every sentence 12–20 words; plant at least one very short line and let one run long per weighty paragraph.","Checklist / prompt-shadow prose — beats arriving in outline order, prompt wording echoed; re-order by dramatic pressure, never echo the brief.","Empty transitions — 'Additionally', 'as if on cue', 'and just like that', 'in the end'; cut the glue or replace with a real causal pivot."],
+  out:"THE CLUSTER TEST is the gate: a lone earned triad/frame/image is human — flag the CLUSTER (3+ stacked tells), not the stray. Verdict: CLEAN / WATCH (1–2) / CLUSTER (3+, rewrite). List tells found (quote + why + fix), log defensible single uses, and revise the clustered lines before delivering."}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{}};
+let hidden={};
+
+function save(){
+  state.title=val('bookTitle'); state.genre=val('genre'); state.penName=val('penName');
+  state.heat=val('heat'); state.customVoice=val('customVoice'); state.manuscript=val('manuscript');
+  try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}
+  document.getElementById('customVoiceWrap').classList.toggle('hidden', state.penName!=='custom');
+}
+function val(id){const e=document.getElementById(id);return e?e.value:'';}
+function load(){
+  try{const raw=localStorage.getItem(STORE);if(raw)state=JSON.parse(raw);}catch(e){}
+  // pen-name dropdown
+  const sel=document.getElementById('penName');
+  sel.innerHTML=Object.entries(PENS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  document.getElementById('bookTitle').value=state.title||'';
+  document.getElementById('genre').value=state.genre||'';
+  document.getElementById('penName').value=state.penName||'smalltown';
+  document.getElementById('heat').value=state.heat||'4';
+  document.getElementById('customVoice').value=state.customVoice||'';
+  document.getElementById('manuscript').value=state.manuscript||'';
+  document.getElementById('customVoiceWrap').classList.toggle('hidden',(state.penName||'smalltown')!=='custom');
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('.tab'); if(!t)return;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on'); document.getElementById('v-'+t.dataset.v).classList.add('on');
+  if(t.dataset.v==='scan')renderScan();
+  if(t.dataset.v==='passes')renderPasses();
+  if(t.dataset.v==='sat'){renderLegend();renderChart();renderBeatTable();renderDiag();}
+  if(t.dataset.v==='report')renderReport();
+});
+
+/* ============================================================
+   MANUSCRIPT SPLITTING
+   ============================================================ */
+function onManuscriptInput(){ save(); }
+function splitManuscript(text){
+  if(!text||!text.trim())return [];
+  const lines=text.split(/\r?\n/);
+  const isHead=l=>{
+    const t=l.trim();
+    return /^#{1,3}\s+\S/.test(t) || /^(chapter|prologue|epilogue)\b/i.test(t) ||
+           /^\*\s*\*\s*\*$/.test(t) || /^—{2,}$/.test(t) || /^chapter\s+(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)/i.test(t);
+  };
+  const chaps=[]; let cur={title:'',lines:[]}; let started=false;
+  for(const l of lines){
+    if(isHead(l)){
+      if(started && (cur.lines.join('').trim()||cur.title)) chaps.push(cur);
+      const title=l.replace(/^#{1,3}\s+/,'').replace(/^\*\s*\*\s*\*$/,'Scene break').trim();
+      cur={title:title||('Chapter '+(chaps.length+1)),lines:[]}; started=true;
+    } else { cur.lines.push(l); started=true; }
+  }
+  if(cur.lines.join('').trim()||cur.title)chaps.push(cur);
+  // if nothing split, treat whole thing as one chapter
+  let out=chaps.map((c,i)=>({title:c.title||('Chapter '+(i+1)),text:c.lines.join('\n').trim()})).filter(c=>c.text.length>0||c.title);
+  if(out.length===0)out=[{title:'Chapter 1',text:text.trim()}];
+  return out;
+}
+function splitNow(){
+  save();
+  state.chapters=splitManuscript(state.manuscript);
+  save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
+  // jump to scan
+  document.querySelector('.tab[data-v="scan"]').click();
+}
+function addChapters(){
+  save();
+  const added=splitManuscript(state.manuscript);
+  if(!added.length){alert('Paste a chapter into the box first, then hit “Add next chapter.”');return;}
+  state.chapters=(state.chapters||[]).concat(added);
+  // renumber any generic "Chapter N" titles so they stay sequential
+  state.chapters.forEach((c,i)=>{if(/^chapter\s+\d+$/i.test((c.title||'').trim()))c.title='Chapter '+(i+1);});
+  state.manuscript=''; document.getElementById('manuscript').value='';
+  save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
+  document.querySelector('.tab[data-v="scan"]').click();
+}
+function wc(s){return (s.trim().match(/\S+/g)||[]).length;}
+function totalWords(){return (state.chapters||[]).reduce((a,c)=>a+wc(c.text),0)||wc(state.manuscript||'');}
+function renderSetupStats(){
+  const tw=totalWords();
+  document.getElementById('setupStats').innerHTML = state.chapters.length?
+    `<span class="stat"><span class="n">${state.chapters.length}</span><span class="l">chapters</span></span>
+     <span class="stat"><span class="n">${tw.toLocaleString()}</span><span class="l">words</span></span>
+     <span class="stat"><span class="n">${Math.round(tw/Math.max(1,state.chapters.length)).toLocaleString()}</span><span class="l">avg / chapter</span></span>`:'';
+}
+function renderChapList(){
+  const el=document.getElementById('chapList');
+  if(!state.chapters.length){el.innerHTML='';return;}
+  el.innerHTML=`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, or remove one with ✕</span></h3>`+
+    state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span><button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}</div></details>`).join('');
+}
+function renameChap(i,v){state.chapters[i].title=v;save();}
+function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();renderScan();}
+
+/* ============================================================
+   AUTO-SCAN (offline deterministic checks)
+   ============================================================ */
+function rxWord(w){return new RegExp('\\b'+escRx(w)+'\\b','gi');}
+function rxPhrase(p){return new RegExp(escRx(p).replace(/\s+/g,'\\s+'),'gi');}
+function escRx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function countMatches(text,rx){const m=text.match(rx);return m?m.length:0;}
+function firstSnippet(text,rx){const m=rx.exec(text);if(!m)return'';const i=m.index;return '…'+text.slice(Math.max(0,i-32),i+m[0].length+32).replace(/\s+/g,' ').trim()+'…';}
+
+function scanChapter(text){
+  const f={crit:[],rec:[],opt:[]};
+  const add=(arr,ic,t,d,ex)=>arr.push({ic,t,d,ex});
+  // names
+  let nameHits=[];
+  BANNED.firstNames.concat(BANNED.lastNames).forEach(n=>{const c=countMatches(text,rxWord(n));if(c)nameHits.push(`${n} (${c})`);});
+  if(/\b\w+(ington|worth)\b/i.test(text))nameHits.push('…ington/…worth surname pattern');
+  if(nameHits.length)add(f.crit,'⛔','Banned character names',`These are on the never-use list: ${nameHits.join(', ')}. Rename before anything else.`);
+  // ai-isms
+  let ai=[];BANNED.aiisms.forEach(p=>{const rx=rxPhrase(p);const c=countMatches(text,rx);if(c)ai.push(`“${p}” ×${c}`);});
+  if(ai.length)add(f.crit,'🤖',`AI-isms (${ai.length})`,`Phrases that read machine-written: ${ai.slice(0,8).join(' · ')}${ai.length>8?' …':''}.`);
+  // dramatic triplet
+  const triplet=/(\b[A-Z][^.!?]{0,40}\.)\s+([A-Z][^.!?]{0,40}\.)\s+([A-Z][^.!?]{0,40}\.)/g;
+  // narrower: "X was a. X was b. X was c." or repeated short fragments
+  const tri2=/((?:\b\w+\b[ ,]){1,4}\w+\.)\s+((?:\b\w+\b[ ,]){1,4}\w+\.)\s+((?:\b\w+\b[ ,]){1,4}\w+\.)/g;
+  let triCount=0,triEx='';let tm;const seen=new Set();
+  const sentences=text.split(/(?<=[.!?])\s+/);
+  for(let i=0;i+2<sentences.length;i++){
+    const a=sentences[i],b=sentences[i+1],c=sentences[i+2];
+    const w=s=>(s.trim().match(/\S+/g)||[]).length;
+    const start=s=>(s.trim().split(/\s+/)[0]||'').toLowerCase().replace(/[^a-z]/g,'');
+    if(w(a)<=6&&w(b)<=6&&w(c)<=6 && start(a)&&start(a)===start(b)&&start(b)===start(c)){
+      triCount++; if(!triEx)triEx=`${a.trim()} ${b.trim()} ${c.trim()}`;
+    }
+  }
+  if(triCount)add(f.crit,'❌',`Dramatic triplet (${triCount})`,`Parallel three-fragment series — the hallmark AI tell. Vary the rhythm or cut two of three.`,triEx);
+  // prolepsis / flash-forward (Pass 11)
+  let pro=[],proEx='';BANNED.prolepsis.forEach(p=>{const c=countMatches(text,rxPhrase(p));if(c){pro.push(`“${p}” ×${c}`);if(!proEx)proEx=firstSnippet(text,rxPhrase(p));}});
+  if(pro.length)add(f.rec,'⏭️',`Flash-forward / foreshadow (${pro.length})`,`Prolepsis the reader can't un-know — keep the narration inside the present scene (Pass 11): ${pro.slice(0,8).join(' · ')}${pro.length>8?' …':''}.`,proEx);
+  // empty transitions (Pass 12 glue)
+  let tr=[];BANNED.transitions.forEach(p=>{const c=countMatches(text,rxPhrase(p));if(c)tr.push(`“${p}” ×${c}`);});
+  if(tr.length)add(f.opt,'🔗',`Empty transitions (${tr.length})`,`Glue that organizes but doesn't mean (Pass 12): ${tr.join(' · ')}. Cut it, or replace with a real causal/emotional pivot.`);
+  // balanced contrast frames (Pass 12 #2)
+  const contrast=countMatches(text,/\b(it|that|this|she|he)\s+(wasn'?t|isn'?t)\b[^.!?]{1,45}\bit\s+(was|is)\b/gi)+countMatches(text,/\bdidn'?t just\b/gi);
+  if(contrast>=2)add(f.opt,'🪞',`Contrast frames (${contrast})`,`"It wasn't X, it was Y" / "didn't just…" structures — human once, an AI tell when stacked (Pass 12). Keep only where both halves are specific.`);
+  // banned phrases
+  let ph=[];BANNED.phrases.forEach(p=>{const c=countMatches(text,rxPhrase(p));if(c)ph.push(`“${p}” ×${c}`);});
+  if(ph.length)add(f.rec,'🚫',`Banned phrases (${ph.length})`,ph.slice(0,10).join(' · ')+(ph.length>10?' …':''));
+  // banned single words
+  let wd=[];BANNED.words.forEach(w=>{const c=countMatches(text,rxWord(w));if(c)wd.push(`${w} ×${c}`);});
+  if(wd.length)add(f.rec,'🚫',`Banned words (${wd.length})`,wd.slice(0,14).join(' · ')+(wd.length>14?' …':''));
+  // dialogue tags
+  let tg=[];BANNED.tags.forEach(t=>{const c=countMatches(text,rxWord(t));if(c)tg.push(`${t} ×${c}`);});
+  const whisper=countMatches(text,rxWord('whispered'));if(whisper>2)tg.push(`whispered ×${whisper} (overused)`);
+  if(tg.length)add(f.rec,'💬',`Dialogue tags (${tg.length})`,`Trim toward said/asked or action beats: ${tg.join(' · ')}.`);
+  // filter words
+  let fl=[],flTot=0;FILTERS.forEach(w=>{const c=countMatches(text,rxWord(w));if(c){fl.push(`${w} ×${c}`);flTot+=c;}});
+  if(flTot>=3)add(f.rec,'🔍',`Filter words (${flTot})`,`Distance the reader from sensation — show it directly instead: ${fl.join(' · ')}.`);
+  // weak verbs
+  const wasing=countMatches(text,/\b(was|were)\s+\w+ing\b/gi);
+  const startedTo=countMatches(text,/\b(started|began)\s+to\b/gi);
+  if(wasing+startedTo>=3)add(f.rec,'🪶',`Weak verb constructions (${wasing+startedTo})`,`${wasing}× "was/were + -ing", ${startedTo}× "started/began to". Swap for active verbs.`);
+  // adverb density
+  const ly=countMatches(text,/\b\w{3,}ly\b/gi);const words=wc(text);
+  const lyRate=words?(ly/words*1000):0;
+  if(lyRate>12)add(f.opt,'🌀',`-ly adverb density (${ly})`,`${lyRate.toFixed(0)} per 1,000 words — on the high side. Strengthen verbs instead of leaning on adverbs.`);
+  // echoes
+  let ech=[];["eyes","heart","breath","gaze","chest","stomach"].forEach(w=>{const c=countMatches(text,rxWord(w));if(c>=4&&words<2500||c>=6)ech.push(`${w} ×${c}`);});
+  if(ech.length)add(f.opt,'🔁',`Body-word echoes`,`Repeated physical tells: ${ech.join(' · ')}. Vary or thin them out.`);
+  // filler
+  let fil=[];FILLERS.forEach(p=>{const c=countMatches(text,p.includes(' ')?rxPhrase(p):rxWord(p));if(c>=3)fil.push(`${p} ×${c}`);});
+  if(fil.length)add(f.opt,'✂️',`Filler phrases`,fil.join(' · ')+'.');
+  // repeated sentence openers
+  const openers={};sentences.forEach(s=>{const w0=(s.trim().split(/\s+/)[0]||'').toLowerCase().replace(/[^a-z]/g,'');if(w0&&w0.length>2)openers[w0]=(openers[w0]||0)+1;});
+  const repOpen=Object.entries(openers).filter(([w,c])=>c>=4).sort((a,b)=>b[1]-a[1]);
+  if(repOpen.length)add(f.opt,'📐',`Repeated sentence openers`,repOpen.slice(0,5).map(([w,c])=>`"${w}…" ×${c}`).join(' · ')+'. Vary sentence beginnings.');
+  return f;
+}
+
+function renderScan(){
+  const sum=document.getElementById('scanSummary');
+  const res=document.getElementById('scanResults');
+  if(!state.chapters.length){sum.innerHTML='';res.innerHTML='<div class="note">Paste a manuscript on the first tab and hit “Split into chapters &amp; scan”.</div>';return;}
+  let totC=0,totR=0,totO=0;
+  const blocks=state.chapters.map((c,i)=>{
+    const f=scanChapter(c.text);totC+=f.crit.length;totR+=f.rec.length;totO+=f.opt.length;
+    const all=[...f.crit.map(x=>['crit',x]),...f.rec.map(x=>['rec',x]),...f.opt.map(x=>['opt',x])];
+    const clean=all.length===0;
+    return `<details class="chap" ${f.crit.length?'open':''}><summary>${esc(c.title)}<span class="cw">${clean?'✓ clean':(f.crit.length?f.crit.length+' critical · ':'')+(f.rec.length+totRfmt(f.rec.length))} </span></summary>
+      <div class="cbody">${clean?'<div class="find good"><div class="ic">✓</div><div><div class="ft">No automated flags</div><div class="fd">Nothing on the banned list or mechanical checks. Still worth running the reasoning passes.</div></div></div>':
+        all.map(([cls,x])=>`<div class="find ${cls}"><div class="ic">${x.ic}</div><div><div class="ft">${x.t}</div><div class="fd">${esc(x.d)}</div>${x.ex?`<div class="ex">${esc(x.ex)}</div>`:''}</div></div>`).join('')}
+        <div class="toolbar"><button class="btn" onclick="toggleHighlight(${i},this)">Show highlighted text</button></div>
+        <div id="hl-${i}"></div>
+      </div></details>`;
+  }).join('');
+  function totRfmt(n){return '';}
+  sum.innerHTML=`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
+    <span class="stat"><span class="n" style="color:var(--warn)">${totR}</span><span class="l">recommended</span></span>
+    <span class="stat"><span class="n" style="color:var(--c-bond)">${totO}</span><span class="l">optional</span></span>`;
+  res.innerHTML=blocks;
+}
+function toggleHighlight(i,btn){
+  const el=document.getElementById('hl-'+i);
+  if(el.innerHTML){el.innerHTML='';btn.textContent='Show highlighted text';return;}
+  btn.textContent='Hide highlighted text';
+  let t=esc(state.chapters[i].text);
+  // highlight ai-isms + prolepsis (strong) then phrases then words
+  BANNED.aiisms.concat(BANNED.prolepsis).forEach(p=>{t=t.replace(rxPhrase(p),m=>`<mark class="ai">${m}</mark>`);});
+  BANNED.phrases.concat(BANNED.transitions).forEach(p=>{t=t.replace(rxPhrase(p),m=>`<mark>${m}</mark>`);});
+  BANNED.words.concat(BANNED.firstNames,BANNED.lastNames,BANNED.tags).forEach(w=>{t=t.replace(rxWord(w),m=>`<mark>${m}</mark>`);});
+  el.innerHTML=`<div class="hltext">${t}</div>`;
+}
+function refreshScanBadge(){
+  const b=document.getElementById('scanBadge');
+  if(!state.chapters.length){b.classList.add('hidden');return;}
+  let tot=0;state.chapters.forEach(c=>{const f=scanChapter(c.text);tot+=f.crit.length;});
+  if(tot>0){b.textContent=tot;b.classList.remove('hidden');}else b.classList.add('hidden');
+}
+
+/* ============================================================
+   EDITING PASS PROMPTS
+   ============================================================ */
+function renderPassScope(){
+  const sel=document.getElementById('passScope');if(!sel)return;
+  let opts=`<option value="ms">Whole manuscript</option>`;
+  state.chapters.forEach((c,i)=>opts+=`<option value="${i}">${esc(c.title)}</option>`);
+  sel.innerHTML=opts;
+}
+function scopeText(){
+  const sel=document.getElementById('passScope');const v=sel?sel.value:'ms';
+  if(v==='ms')return {label:'the full manuscript',text:state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n'),isMs:true};
+  const c=state.chapters[+v];return {label:c?c.title:'this chapter',text:c?c.text:'',isMs:false};
+}
+function voiceProfile(){
+  if(state.penName==='custom')return state.customVoice||'(no custom voice notes provided)';
+  return (PENS[state.penName]||PENS.smalltown).voice;
+}
+function heatGuide(){
+  const h=+state.heat;
+  if(h<=2)return "Heat 1–2/5: closed-door / sensual. Tension through longing and near-misses; no explicit content.";
+  if(h===3)return "Heat 3/5: steamy. Sensations over mechanics; can be direct; emotional interiority throughout.";
+  if(h===4)return "Heat 4/5: explicit. Direct anatomical language allowed; keep emotional interiority dominant.";
+  return "Heat 5/5: fully explicit. Full vocabulary and dirty talk allowed; emotion still drives the scene.";
+}
+function buildPrompt(pass){
+  const sc=scopeText();
+  const penLabel=(PENS[state.penName]||{}).label||state.penName;
+  const usable = (pass.scope==='manuscript' && !sc.isMs) ? false : true;
+  let p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
+  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
+  if(pass.id==='heat'||pass.id==='qc'||pass.id==='voice')p+=`HEAT TARGET: ${heatGuide()}\n\n`;
+  p+=`Check every item below. For each issue, quote the exact text and give a specific fix — do not give vague notes:\n`;
+  p+=pass.list.map((x,i)=>`${i+1}. ${x}`).join('\n')+'\n';
+  if(pass.out)p+=`\nOUTPUT: ${pass.out}\n`;
+  p+=`\nALSO enforce this banned list — flag any hit: AI-isms, the dramatic triplet ("X. Y. Z." parallel fragments), and overused filter words (felt/noticed/realized/seemed/watched/saw/heard/wondered/thought).\n`;
+  p+=`\nThen finish with a section titled "REVISION PROMPTS" containing 3–5 copy-paste prompts I can hand to my writing LLM to fix the highest-priority issues you found. Each revision prompt must name the location and the exact change.\n`;
+  p+=`\n----- TEXT BEGINS -----\n${sc.text||'(paste your text here)'}\n----- TEXT ENDS -----`;
+  return {prompt:p,usable};
+}
+function renderPasses(){
+  renderPassScope();
+  const sc=scopeText();
+  const list=document.getElementById('passList');
+  list.innerHTML=PASSES.map(pass=>{
+    const {prompt,usable}=buildPrompt(pass);
+    const scopeTag=pass.scope==='manuscript'?'manuscript':pass.scope==='chapter'?'per chapter':'chapter or book';
+    const warn=(pass.scope==='manuscript'&&!sc.isMs)?`<div class="note">Pass ${pass.n} reasons across chapters — switch “Apply to” to <b>Whole manuscript</b> for the real result.</div>`:'';
+    return `<div class="passcard" id="pc-${pass.id}">
+      <div class="head" onclick="document.getElementById('pc-${pass.id}').classList.toggle('open')">
+        <div class="pno">${pass.n}</div>
+        <div><div class="pttl">${pass.name}</div><div class="psub">${pass.list.length} checks</div></div>
+        <div class="scope">${scopeTag}</div>
+      </div>
+      <div class="pbody">
+        ${warn}
+        <div class="toolbar" style="margin:0 0 10px">
+          <button class="btn primary" onclick="copyPrompt('${pass.id}',this)">Copy prompt</button>
+          <span class="copied hidden">copied ✓</span>
+        </div>
+        <div class="promptbox" id="prompt-${pass.id}">${esc(prompt)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function copyPrompt(id,btn){
+  const pass=PASSES.find(p=>p.id===id);
+  const {prompt}=buildPrompt(pass);
+  navigator.clipboard.writeText(prompt).then(()=>{
+    const tag=btn.parentElement.querySelector('.copied');tag.classList.remove('hidden');
+    setTimeout(()=>tag.classList.add('hidden'),1500);
+  });
+}
+
+/* ============================================================
+   SATISFACTION TRACKER (The Charge Model)
+   ============================================================ */
+const SAMPLE_BEATS=[
+  {name:"They meet",T:3,B:1,S:2,payoff:false},{name:"The spark",T:5,B:2,S:2,payoff:false},
+  {name:"Forced proximity",T:6,B:3,S:3,payoff:false},{name:"The almost-kiss",T:8,B:3,S:4,payoff:false},
+  {name:"First kiss",T:5,B:6,S:4,payoff:true},{name:"Retreat / fear",T:6,B:5,S:5,payoff:false},
+  {name:"Confession builds",T:8,B:6,S:6,payoff:false},{name:"The night together",T:4,B:7,S:6,payoff:true},
+  {name:"Morning-after distance",T:6,B:6,S:7,payoff:false},{name:"Dark moment",T:7,B:3,S:9,payoff:false},
+  {name:"The grand gesture",T:5,B:8,S:6,payoff:true},{name:"HEA",T:2,B:10,S:3,payoff:true}
+];
+function clamp(n){return Math.max(0,Math.min(10,n));}
+function computeSeries(beats){
+  const out=[];let since=0,glow=0;
+  for(let i=0;i<beats.length;i++){
+    const b=beats[i],prev=i>0?beats[i-1]:null;
+    const T=clamp(+b.T||0),B=clamp(+b.B||0),S=clamp(+b.S||0);
+    const pT=prev?clamp(+prev.T||0):T,pB=prev?clamp(+prev.B||0):0;
+    const release=b.payoff?Math.max(0,pT-T):0;
+    const bondGain=Math.max(0,B-pB);
+    const leak=b.payoff?Math.max(0,release-bondGain):0;
+    if(b.payoff){glow=Math.max(glow,release);since=0;}else{since++;glow*=CONFIG.w.glowDecay;}
+    const fatigue=Math.min(1,since/6);
+    const Tadj=T*(1-CONFIG.w.fatigueMax*fatigue*(T/10));
+    const change=Math.abs(T-pT)+Math.abs(B-pB);
+    const stall=(!b.payoff&&change<1.5)?CONFIG.w.stallPenalty:0;
+    let sat=CONFIG.w.bond*B+CONFIG.w.tension*Tadj+CONFIG.w.stakes*S+CONFIG.w.glow*glow-stall-CONFIG.w.leakPenalty*leak;
+    sat=Math.max(0,Math.min(10,sat));
+    out.push({...b,T,B,S,release,bondGain,leak,glow,stall,since,sat});
+  }
+  return out;
+}
+const SERIES=[
+  {key:'sat',label:'Satisfaction',color:'var(--c-sat)',width:3.5,get:d=>d.sat},
+  {key:'T',label:'Tension',color:'var(--c-tension)',width:2.2,get:d=>d.T},
+  {key:'B',label:'Bond',color:'var(--c-bond)',width:2.2,get:d=>d.B},
+  {key:'S',label:'Stakes',color:'var(--c-stakes)',width:1.8,dash:'5 5',get:d=>d.S}
+];
+function renderLegend(){
+  document.getElementById('legend').innerHTML=SERIES.map(s=>`<span class="lg ${hidden[s.key]?'off':''}" onclick="toggleSeries('${s.key}')"><span class="sw" style="background:${s.color}"></span>${s.label}</span>`).join('');
+}
+function toggleSeries(k){hidden[k]=!hidden[k];renderLegend();renderChart();}
+function renderChart(){
+  const data=computeSeries(state.beats);const svg=document.getElementById('chart');
+  const W=1000,H=420,padL=42,padR=20,padT=22,padB=64,plotW=W-padL-padR,plotH=H-padT-padB,n=data.length;
+  const x=i=>n<=1?padL+plotW/2:padL+plotW*i/(n-1);const y=v=>padT+plotH*(1-v/10);
+  let s='';
+  for(let g=0;g<=10;g+=2){const yy=y(g);s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#E8DFD2"/><text x="${padL-8}" y="${yy+4}" font-size="11" fill="#A89F90" text-anchor="end">${g}</text>`;}
+  if(!n){svg.innerHTML=s+`<text x="${W/2}" y="${H/2}" font-size="15" fill="#A89F90" text-anchor="middle">Add a beat to see the curve.</text>`;return;}
+  data.forEach((d,i)=>{if(d.payoff){s+=`<line x1="${x(i)}" y1="${padT}" x2="${x(i)}" y2="${padT+plotH}" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="2 4" opacity=".55"/><text x="${x(i)}" y="${padT-8}" font-size="10" fill="var(--gold)" text-anchor="middle" font-weight="700">payoff</text>`;}});
+  data.forEach((d,i)=>s+=`<text x="${x(i)}" y="${padT+plotH+18}" font-size="10.5" fill="#A89F90" text-anchor="middle">${i+1}</text>`);
+  if(!hidden.sat){let a=`M ${x(0)} ${y(data[0].sat)} `;data.forEach((d,i)=>a+=`L ${x(i)} ${y(d.sat)} `);a+=`L ${x(n-1)} ${padT+plotH} L ${x(0)} ${padT+plotH} Z`;s+=`<path d="${a}" fill="var(--c-sat)" opacity=".10"/>`;}
+  SERIES.forEach(se=>{if(hidden[se.key])return;let p='';data.forEach((d,i)=>p+=(i===0?'M':'L')+` ${x(i)} ${y(se.get(d))} `);s+=`<path d="${p}" fill="none" stroke="${se.color}" stroke-width="${se.width}" ${se.dash?`stroke-dasharray="${se.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"/>`;});
+  SERIES.forEach(se=>{if(hidden[se.key])return;data.forEach((d,i)=>{const r=se.key==='sat'?4:2.6;s+=`<circle cx="${x(i)}" cy="${y(se.get(d))}" r="${r}" fill="#fff" stroke="${se.color}" stroke-width="2"/>`;});});
+  data.forEach((d,i)=>{const cw=plotW/Math.max(1,n);s+=`<rect x="${x(i)-cw/2}" y="${padT}" width="${cw}" height="${plotH}" fill="transparent" onmousemove="showTip(event,${i})" onmouseleave="hideTip()"/>`;});
+  svg.innerHTML=s;
+}
+function showTip(ev,i){
+  const d=computeSeries(state.beats)[i];const tip=document.getElementById('tip');
+  const wrap=document.querySelector('#v-sat .chartwrap').getBoundingClientRect();
+  const leak=d.leak>0.5?`<br><span style="color:#E8A18F">⚠ leak ${d.leak.toFixed(1)}</span>`:'';
+  const pf=d.payoff?`<br><b>★ Payoff</b> · released ${d.release.toFixed(1)}`:'';
+  tip.innerHTML=`<b>${i+1}. ${esc(d.name||'—')}</b>${pf}<br>T ${d.T} · B ${d.B} · S ${d.S}<br>Sat <b>${d.sat.toFixed(1)}</b>${leak}`;
+  tip.style.left=Math.min(wrap.width-230,Math.max(0,(ev.clientX-wrap.left)+12))+'px';
+  tip.style.top=Math.max(0,(ev.clientY-wrap.top)-10)+'px';tip.style.opacity=1;
+}
+function hideTip(){document.getElementById('tip').style.opacity=0;}
+function renderBeatTable(){
+  const data=computeSeries(state.beats);
+  document.getElementById('beatBody').innerHTML=state.beats.map((b,i)=>{
+    const d=data[i];const col=d.sat>=7?'var(--ok)':d.sat>=4.5?'var(--warn)':'var(--bad)';
+    const cell=(k,v)=>`<td class="center"><div class="valwrap"><input class="range" type="range" min="0" max="10" value="${v}" oninput="updBeat(${i},'${k}',this.value)"><b>${v}</b></div></td>`;
+    return `<tr class="${b.payoff?'payoff-row':''}"><td class="center" style="color:var(--muted);font-weight:700">${i+1}</td>
+      <td><input type="text" value="${esc(b.name||'')}" placeholder="What happens…" oninput="updBeat(${i},'name',this.value)"></td>
+      ${cell('T',b.T)}${cell('B',b.B)}${cell('S',b.S)}
+      <td class="center"><input type="checkbox" class="pf" ${b.payoff?'checked':''} onchange="updBeat(${i},'payoff',this.checked)"></td>
+      <td class="satcell" style="color:${col}">${d.sat.toFixed(1)}</td>
+      <td class="center"><button class="del" onclick="delBeat(${i})">×</button></td></tr>`;
+  }).join('');
+}
+function updBeat(i,k,v){
+  if(k==='payoff')state.beats[i].payoff=v;else if(k==='name')state.beats[i].name=v;else state.beats[i][k]=+v;
+  persist();renderChart();renderBeatTable_light();renderDiag();
+}
+function renderBeatTable_light(){
+  const data=computeSeries(state.beats);
+  document.querySelectorAll('#beatBody tr').forEach((tr,i)=>{
+    const d=data[i];if(!d)return;const b=tr.querySelectorAll('.valwrap b');
+    b[0].textContent=state.beats[i].T;b[1].textContent=state.beats[i].B;b[2].textContent=state.beats[i].S;
+    const sc=tr.querySelector('.satcell');sc.textContent=d.sat.toFixed(1);
+    sc.style.color=d.sat>=7?'var(--ok)':d.sat>=4.5?'var(--warn)':'var(--bad)';
+    tr.className=state.beats[i].payoff?'payoff-row':'';
+  });
+}
+function addBeat(){const l=state.beats[state.beats.length-1];state.beats.push({name:'',T:l?l.T:4,B:l?l.B:1,S:l?l.S:3,payoff:false});persist();renderChart();renderBeatTable();renderDiag();}
+function delBeat(i){state.beats.splice(i,1);persist();renderChart();renderBeatTable();renderDiag();}
+function loadSampleBeats(){if(state.beats.length&&!confirm('Replace current beats with the sample arc?'))return;state.beats=JSON.parse(JSON.stringify(SAMPLE_BEATS));persist();renderChart();renderBeatTable();renderDiag();}
+function ingestBeats(){
+  try{
+    let arr=JSON.parse(document.getElementById('beatJson').value);
+    if(!Array.isArray(arr))throw 0;
+    state.beats=arr.map(b=>({name:b.name||b.beat||'',T:clamp(+b.T||+b.tension||0),B:clamp(+b.B||+b.bond||0),S:clamp(+b.S||+b.stakes||0),payoff:!!(b.payoff||b.payoff==='true')}));
+    persist();renderChart();renderBeatTable();renderDiag();
+    document.getElementById('beatJsonWrap').classList.add('hidden');
+  }catch(e){alert('Could not read that JSON. Expecting an array like [{"name":"...","T":5,"B":3,"S":4,"payoff":true}].');}
+}
+function copyBeatPrompt(btn){
+  const ms=state.chapters.length?state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n'):state.manuscript;
+  const p=`You are a romance story analyst. Read the manuscript below and break it into its major story beats in order (one per scene or chapter). For EACH beat, rate three things 0–10 and mark whether it is a payoff:\n\n• Tension (T): unfulfilled romantic/dramatic wanting — the gap, the ache, the not-yet.\n• Bond (B): closeness EARNED so far — the intimacy and trust that now flows between the leads. This should generally climb across the book.\n• Stakes (S): what's at risk if the relationship fails right now.\n• payoff: true if tension is realized in this beat (a kiss, confession, "I love you", consummation, reunion); otherwise false.\n\nReturn ONLY a JSON array, no commentary, in exactly this shape:\n[{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]\n\n----- MANUSCRIPT BEGINS -----\n${ms||'(paste your manuscript)'}\n----- MANUSCRIPT ENDS -----`;
+  navigator.clipboard.writeText(p).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy “rate my beats” prompt',1500);});
+}
+function persist(){save();}
+function renderDiag(){
+  const data=computeSeries(state.beats);const diag=document.getElementById('diag');const badge=document.getElementById('scoreBadge');
+  if(data.length<3){diag.innerHTML='<div class="find opt"><div class="ic">✎</div><div><div class="ft">Map a few more beats</div><div class="fd">At least 4–5 beats, including one payoff, makes the read useful.</div></div></div>';badge.innerHTML='';return;}
+  const avg=data.reduce((a,d)=>a+d.sat,0)/data.length;
+  const endB=data[data.length-1].B,startB=data[0].B,payoffs=data.filter(d=>d.payoff);
+  const grade=avg>=7?'Paying the reader well':avg>=5.5?'Solid, with soft spots':avg>=4?'Underpaying in places':'Energy is leaking';
+  badge.innerHTML=`<span class="scorebadge"><span class="big">${avg.toFixed(1)}</span><span class="lab">avg satisfaction / 10<br>${grade}</span></span>`;
+  const items=[];
+  data.forEach((d,i)=>{if(d.leak>1.2)items.push(['crit','⚠',`Beat ${i+1} “${d.name||'untitled'}” — the payoff leaked`,`Tension fell ${d.release.toFixed(1)} but Bond rose only ${d.bondGain.toFixed(1)} — ${d.leak.toFixed(1)} points of charge escaped instead of passing between them. Add a closeness/aftercare beat or raise what the moment means so bond climbs to catch the falling tension.`]);});
+  if(endB<=startB+1)items.push(['rec','↗','The bond never really climbs',`Bond starts at ${startB} and ends at ${endB}. The energy isn't accumulating — the reader leaves about where they started. Each payoff should leave them measurably closer.`]);
+  else items.push(['good','↗','The bond climbs — energy accumulates',`Bond rises ${startB}→${endB}. That rising floor under the tension sawtooth is the staircase you want.`]);
+  let run=0,rs=0;data.forEach((d,i)=>{if(d.stall>0){if(!run)rs=i;run++;}else{if(run>=3)items.push(['rec','—',`Beats ${rs+1}–${rs+run} flatten out`,`Across ${run} beats almost nothing moves and there's no payoff. Add a threat, a forced-closeness beat, or a small payoff to keep the line alive.`]);run=0;}});
+  if(run>=3)items.push(['rec','—',`Beats ${rs+1}–${rs+run} flatten out`,`Across ${run} beats almost nothing moves. Add tension or a small payoff.`]);
+  let gap=0,mg=0,at=0;data.forEach((d,i)=>{if(d.payoff)gap=0;else{gap++;if(gap>mg){mg=gap;at=i;}}});
+  if(mg>=6)items.push(['rec','⏳',`A long stretch with no payoff (around beat ${at+1})`,`${mg} beats pass without realizing any tension. Give a smaller threshold to cross to bank some bond before the big one.`]);
+  if(data.filter(d=>d.S<=2).length>=Math.ceil(data.length/2))items.push(['rec','◇','Stakes stay low',`Little is at risk for much of the book. A secret, rival, deadline, or cost to choosing each other lifts the whole satisfaction floor.`]);
+  if(!payoffs.length)items.push(['crit','★','No payoffs marked',`Tick the beats where tension is realized so the model can show catharsis spikes and the bond staircase.`]);
+  else if(payoffs.length===1&&data.length>=8)items.push(['opt','★','Only one payoff in a long arc',`A single release across ${data.length} beats is a long wait. Ladder several thresholds — small early, big late.`]);
+  const climbers=data.filter(d=>d.payoff&&d.bondGain>=d.release-0.5&&d.bondGain>0).length;
+  if(climbers>=2)items.push(['good','✦','Your payoffs convert cleanly',`${climbers} payoffs raise Bond at least as much as they drop Tension — the energy passes between them instead of escaping. This is the move: tension released, satisfaction sustained.`]);
+  if(endB>=8&&data[data.length-1].T<=4)items.push(['good','♥','The landing is earned',`You close on high bond (${endB}) and settled tension — the warm, satisfied exhale.`]);
+  diag.innerHTML=items.map(([c,ic,t,d])=>`<div class="find ${c}"><div class="ic">${ic}</div><div><div class="ft">${t}</div><div class="fd">${esc(d)}</div></div></div>`).join('');
+}
+
+/* ============================================================
+   REPORT
+   ============================================================ */
+function renderReport(){
+  const el=document.getElementById('reportNotes');
+  el.innerHTML=PASSES.map(p=>`<label class="fld">Pass ${p.n} — ${p.name}</label>
+    <textarea rows="3" placeholder="Paste your LLM's notes for ${p.name} here…" oninput="state.passNotes['${p.id}']=this.value;persist()">${esc(state.passNotes[p.id]||'')}</textarea>`).join('');
+}
+function buildReportMd(){
+  const data=computeSeries(state.beats);
+  let md=`# Editorial Report — ${state.title||'Untitled'}\n`;
+  md+=`Pen name voice: ${(PENS[state.penName]||{}).label||state.penName} · Heat ${state.heat}/5${state.genre?` · ${state.genre}`:''}\n\n`;
+  // auto scan
+  md+=`## 1. Auto-Scan (offline checks)\n`;
+  if(state.chapters.length){
+    state.chapters.forEach(c=>{
+      const f=scanChapter(c.text);const all=[...f.crit,...f.rec,...f.opt];
+      md+=`\n### ${c.title}\n`;
+      if(!all.length)md+=`- ✓ No automated flags.\n`;
+      else all.forEach(x=>md+=`- **${x.t}** — ${x.d}${x.ex?` _(${x.ex})_`:''}\n`);
+    });
+  }else md+=`_No manuscript loaded._\n`;
+  // satisfaction
+  md+=`\n## 2. Reader Satisfaction (Charge Model)\n`;
+  if(data.length>=3){
+    const avg=(data.reduce((a,d)=>a+d.sat,0)/data.length).toFixed(1);
+    md+=`Average satisfaction: **${avg}/10**\n\n`;
+    md+=`| # | Beat | T | B | S | Payoff | Sat |\n|--|------|---|---|---|--------|-----|\n`;
+    data.forEach((d,i)=>md+=`| ${i+1} | ${(d.name||'').replace(/\|/g,'/')} | ${d.T} | ${d.B} | ${d.S} | ${d.payoff?'★':''} | ${d.sat.toFixed(1)} |\n`);
+    data.forEach((d,i)=>{if(d.leak>1.2)md+=`\n> ⚠ Leak at beat ${i+1} (${d.name}): tension fell ${d.release.toFixed(1)}, bond rose ${d.bondGain.toFixed(1)}.\n`;});
+  }else md+=`_Not enough beats mapped._\n`;
+  // pass notes
+  md+=`\n## 3. Editing-Pass Notes\n`;
+  PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())md+=`\n### Pass ${p.n} — ${p.name}\n${n.trim()}\n`;});
+  return md;
+}
+function downloadReport(){
+  const blob=new Blob([buildReportMd()],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(state.title||'editorial-report').replace(/[^\w-]+/g,'_')+'.md';a.click();
+}
+
+/* ============================================================
+   HTML FIX-IT REPORT — before/after cards, opens in any browser
+   ============================================================ */
+const FIXMETA={
+ name:{sev:'crit',label:'Banned character name',why:"On the never-use banned-names list — these are overused in AI fiction, so readers and AI-detectors clock them fast.",how:"Rename the character to something fresh that suits your world."},
+ aiism:{sev:'crit',label:'AI-ism',why:"A phrase that reads machine-written — it turns up constantly in AI text.",how:"Cut it, or replace it with a concrete, physical detail your POV character would actually notice."},
+ prolepsis:{sev:'high',label:'Flash-forward / foreshadow (Pass 11)',why:"Prolepsis — the narration tells the reader something the POV character can't know yet, which drains the tension of the present scene.",how:"Recast it into the present moment: land the feeling when she actually feels it. Don't blanket-delete legitimate 'would' (habits, conditionals, in-the-moment dread)."},
+ phrase:{sev:'rec',label:'Banned phrase',why:"A banned phrase or overused tell from the workflow list.",how:"Swap it for a fresher, more specific beat — or cut it."},
+ word:{sev:'rec',label:'Banned word',why:"A filler or abstraction word that adds nothing concrete.",how:"Cut it, or swap for a precise, sensory choice."},
+ tag:{sev:'rec',label:'Dialogue tag',why:"An over-the-top dialogue tag.",how:"Trim to 'said' or 'asked', or use an action beat instead."},
+ filter:{sev:'rec',label:'Filter word',why:"A filter word that holds the reader at arm's length from the sensation.",how:"Show the sensation directly instead of filtering it through felt/saw/realized."},
+ transition:{sev:'opt',label:'Empty transition (Pass 12)',why:"Glue that organizes the prose but doesn't mean anything.",how:"Cut it and let the next beat land, or replace it with a real causal/emotional pivot."}
+};
+const SEV={crit:{c:'#C0492F',n:'Critical'},high:{c:'#C97A33',n:'High'},rec:{c:'#D4A853',n:'Recommended'},opt:{c:'#7A9E7E',n:'Optional'}};
+const WORDFIX={suddenly:"cut it — just show the action",slowly:"cut, or show the slowness in the action itself",quietly:"cut, or describe how the quiet sounds",finally:"cut — let the action land on its own",slightly:"cut — it only weakens the verb",smirk:"smiled, grinned, mouth quirked",smirked:"smiled, grinned, mouth quirked",glow:"name the actual light",tension:"show the specific physical pressure",tense:"show what the body actually does",professional:"name the specific competence",chaos:"describe the specific mess",expression:"name the specific look",softly:"cut the adverb — let the line carry the tone"};
+const PHRASEFIX={"couldn't help but":"cut — just do the action","found myself":"cut — just do the action","something shifted":"name exactly what changed","the air between us":"describe the specific tension or sensation","let out a breath i didn't know i was holding":"describe the exhale specifically","heart hammered":"pulse kicked / chest tightened — a specific reaction","arms crossed":"a different defensive beat","folded arms":"a different defensive beat","i cross my arms":"a different defensive beat","swallowed hard":"a specific throat or voice reaction","meet my gaze":"a specific look, or break the eye contact","hold my gaze":"a specific look, or break the eye contact","search my face":"name what she's actually looking for","little did she know":"cut — give her present-tense unease instead","little did he know":"cut — give him present-tense unease instead","everything was about to change":"cut — let the change happen on the page"};
+function collectHits(text,terms,cat,isPhrase){
+  const out=[];
+  terms.forEach(term=>{
+    const rx=isPhrase?rxPhrase(term):rxWord(term);let m,guard=0;
+    while((m=rx.exec(text))!==null){
+      const i=m.index,end=i+m[0].length;
+      out.push({cat,term,
+        b:(i>0?'…':'')+text.slice(Math.max(0,i-55),i).replace(/\s+/g,' '),
+        mt:m[0],
+        a:text.slice(end,end+55).replace(/\s+/g,' ')+(end<text.length?'…':''),
+        fix:PHRASEFIX[term.toLowerCase()]||WORDFIX[term.toLowerCase()]||''});
+      if(m.index===rx.lastIndex)rx.lastIndex++;
+      if(++guard>300)break;
+    }
+  });
+  return out;
+}
+function buildFixList(text){
+  let items=[].concat(
+    collectHits(text,BANNED.firstNames.concat(BANNED.lastNames),'name',false),
+    collectHits(text,BANNED.aiisms,'aiism',true),
+    collectHits(text,BANNED.prolepsis,'prolepsis',true),
+    collectHits(text,BANNED.phrases,'phrase',true),
+    collectHits(text,BANNED.words,'word',false),
+    collectHits(text,BANNED.tags,'tag',false),
+    collectHits(text,FILTERS,'filter',false),
+    collectHits(text,BANNED.transitions,'transition',true)
+  );
+  const order={crit:0,high:1,rec:2,opt:3};
+  items.sort((x,y)=>order[FIXMETA[x.cat].sev]-order[FIXMETA[y.cat].sev]);
+  return items;
+}
+const PATTERN_TITLES=['Dramatic triplet','Contrast frames','Weak verb','-ly adverb','Body-word echoes','Filler phrases','Repeated sentence openers'];
+function patternFindings(text){
+  const f=scanChapter(text);
+  return [...f.crit,...f.rec,...f.opt].filter(x=>PATTERN_TITLES.some(t=>x.t.indexOf(t)===0));
+}
+function buildReportHtml(){
+  const data=computeSeries(state.beats);
+  const voice=(PENS[state.penName]||{}).label||state.penName;
+  const fixCard=h=>{const m=FIXMETA[h.cat],s=SEV[m.sev];
+    return `<div class="card" style="border-left-color:${s.c}">
+      <div class="cardhead"><span class="sev" style="background:${s.c}">${s.n}</span><span class="lab">${esc(m.label)}</span></div>
+      <div class="why">${esc(m.why)}</div>
+      <div class="ba"><div class="bx before"><div class="bl">Before</div><div>${esc(h.b)}<mark>${esc(h.mt)}</mark>${esc(h.a)}</div></div>
+      <div class="bx after"><div class="bl">Fix</div><div>${esc(m.how)}${h.fix?` <b>→ ${esc(h.fix)}</b>`:''}</div></div></div>
+    </div>`;};
+  const patCard=x=>`<div class="card" style="border-left-color:#1B2A4A">
+      <div class="cardhead"><span class="sev" style="background:#1B2A4A">Pattern</span><span class="lab">${esc(x.t)}</span></div>
+      <div class="why">${esc(x.d)}</div>${x.ex?`<div class="ba"><div class="bx before"><div class="bl">Example</div><div>${esc(x.ex)}</div></div></div>`:''}
+    </div>`;
+  let chaptersHtml='',gc=0,gh=0,gr=0,go=0;
+  if(state.chapters.length){
+    state.chapters.forEach((c,ci)=>{
+      const fixes=buildFixList(c.text),pats=patternFindings(c.text);
+      fixes.forEach(h=>{const s=FIXMETA[h.cat].sev;if(s==='crit')gc++;else if(s==='high')gh++;else if(s==='rec')gr++;else go++;});
+      const total=fixes.length+pats.length;
+      chaptersHtml+=`<details class="chap" ${ci===0?'open':''}><summary>${esc(c.title)} <span class="pillc">${total?total+' to fix':'✓ clean'}</span></summary>
+        <div class="cbody">${total?fixes.map(fixCard).join('')+pats.map(patCard).join(''):'<p class="clean">No automated flags. Still run the reasoning passes — the auto-scan only catches the mechanical half.</p>'}</div></details>`;
+    });
+  } else chaptersHtml=`<p class="clean">No manuscript was loaded when this report was made.</p>`;
+  // satisfaction block
+  let satHtml='<p class="clean">Not enough beats were mapped to plot a curve.</p>';
+  if(data.length>=3){
+    const avg=(data.reduce((a,d)=>a+d.sat,0)/data.length).toFixed(1);
+    const leaks=data.map((d,i)=>d.leak>1.2?`Beat ${i+1} (${esc(d.name||'')}): tension fell ${d.release.toFixed(1)} but bond rose only ${d.bondGain.toFixed(1)}`:null).filter(Boolean);
+    satHtml=`<p><b>Average satisfaction: ${avg}/10</b> across ${data.length} beats.</p>`+
+      (leaks.length?`<div class="why"><b>Leaks to fix:</b><ul>${leaks.map(l=>`<li>${l}</li>`).join('')}</ul>Add closeness or aftermath so the bond rises to catch the released tension.</div>`:`<p class="clean">No major satisfaction leaks detected — your payoffs convert cleanly.</p>`);
+  }
+  // pass notes
+  let notesHtml='';
+  PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())notesHtml+=`<div class="passnote"><h3>Pass ${p.n} — ${esc(p.name)}</h3><div>${esc(n.trim()).replace(/\n/g,'<br>')}</div></div>`;});
+  if(!notesHtml)notesHtml=`<p class="clean">No editing-pass notes pasted yet. Run the 12 passes (any AI tool), paste each result into the Report tab, then re-export to fold them in here.</p>`;
+  const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#FFF8F0;margin:0;line-height:1.6}
+  .hd{background:#1B2A4A;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#D4A853;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+  .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
+  .counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.cbox{flex:1;min-width:90px;background:#fff;border:1px solid #D9D0C4;border-radius:10px;padding:12px;text-align:center}.cbox .n{font-size:1.7rem;font-weight:bold}.cbox .l{font-size:.75rem;color:#6b6b6b;text-transform:uppercase;letter-spacing:.5px}
+  h2.sec{color:#1B2A4A;border-bottom:2px solid #E8735A;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
+  details.chap{background:#fff;border:1px solid #D9D0C4;border-radius:10px;margin-bottom:12px;overflow:hidden}
+  details.chap>summary{cursor:pointer;padding:13px 16px;font-weight:bold;color:#1B2A4A;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#F7F1E8}
+  .pillc{font-size:.75rem;font-weight:bold;color:#fff;background:#E8735A;border-radius:12px;padding:2px 10px}.chap .cbody{padding:14px 16px}
+  .card{background:#fff;border:1px solid #E8DFD2;border-left-width:5px;border-radius:8px;padding:12px 14px;margin-bottom:11px}
+  .cardhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}.sev{color:#fff;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:10px}.lab{font-weight:bold;color:#1B2A4A}
+  .why{font-size:.92rem;color:#5A554F;margin-bottom:8px}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:620px){.ba{grid-template-columns:1fr}}
+  .bx{border-radius:7px;padding:8px 10px;font-size:.9rem}.bx.before{background:#FBF1E9}.bx.after{background:#EFF4EE}.bl{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;color:#6b6b6b;margin-bottom:3px}
+  mark{background:#F7C8B8;color:#6a1020;border-radius:3px;padding:0 2px}
+  .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #D9D0C4;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#1B2A4A;font-size:1.02rem}
+  ul{margin:6px 0 0;padding-left:20px}.foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Editorial Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
+<body><div class="hd"><h1>Editorial Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+<div class="wrap">
+  <div class="counts">
+    <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
+    <div class="cbox"><div class="n" style="color:#C97A33">${gh}</div><div class="l">Flash-forward</div></div>
+    <div class="cbox"><div class="n" style="color:#D4A853">${gr}</div><div class="l">Recommended</div></div>
+    <div class="cbox"><div class="n" style="color:#7A9E7E">${go}</div><div class="l">Optional</div></div>
+  </div>
+  <p class="why">Each card below shows the exact text the offline scan flagged (<b>Before</b>), why it weakens the prose, and how to fix it (<b>Fix</b>). These are the mechanical, banned-list issues you'd otherwise pay a line editor to catch. The reasoning passes (plot, dialogue, developmental, arc…) are folded in lower down from your pasted notes.</p>
+  <h2 class="sec">1 · Fix-it list, by chapter</h2>
+  ${chaptersHtml}
+  <h2 class="sec">2 · Reader satisfaction</h2>
+  ${satHtml}
+  <h2 class="sec">3 · Editing-pass notes</h2>
+  ${notesHtml}
+  <div class="foot">Generated by the Manuscript Editing Cockpit · The Invisible Pen — Edit Like a Boss. Everything stayed in your browser; nothing was uploaded.</div>
+</div></body></html>`;
+}
+function downloadReportHtml(){
+  const blob=new Blob([buildReportHtml()],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(state.title||'editorial-report').replace(/[^\w-]+/g,'_')+'_fix-it-report.html';a.click();
+}
+function copyMasterRevision(btn){
+  const sat=computeSeries(state.beats);
+  let leaks=sat.map((d,i)=>d.leak>1.2?`beat ${i+1} (${d.name})`:null).filter(Boolean);
+  const p=`You are my writing LLM. Revise my manuscript in the voice of ${(PENS[state.penName]||{}).label||state.penName} at heat ${state.heat}/5. Apply these fixes from my editorial report, preserving voice, character, and pacing:\n\n`+
+    `1. Remove every banned-list hit flagged in the auto-scan (AI-isms, dramatic triplets, filter words, banned names/words/phrases) — replace with specific, in-voice prose.\n`+
+    `2. Address the developmental and dialogue notes I paste below.\n`+
+    (leaks.length?`3. Fix the satisfaction leaks at: ${leaks.join('; ')} — add closeness/aftermath so the bond rises to catch the released tension.\n`:'')+
+    `\nWork chapter by chapter. After each chapter, list what you changed.\n\n[PASTE THE RELEVANT PASS NOTES HERE]`;
+  navigator.clipboard.writeText(p).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy master revision prompt',1500);});
+}
+
+/* ============================================================
+   IMPORT / EXPORT / DEMO
+   ============================================================ */
+function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'editing-cockpit').replace(/[^\w-]+/g,'_')+'.json';a.click();}
+function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({chapters:[],beats:[],passNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
+function clearAll(){if(!confirm('Clear everything? Export first if you want a backup.'))return;state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{}};load();renderAll();}
+const DEMO=`Chapter One
+
+The bell over the bakery door jingled, and Mara looked up from the dough she was punching down. She felt her heart hammer when she saw him. Cole Henderson, back in town after all these years, filling the doorway like he owned it.
+
+"Didn't think you'd still be here," he said quietly.
+
+She crossed her arms. "Somebody has to keep the place running." Suddenly the air between them was thick. She couldn't help but notice the way his jaw clenched. She was angry. She was nervous. She was undone.
+
+He took a step closer, and she found herself holding her breath. The scent of him — cedar and rain — undid something in her chest. Slowly, carefully, she set down the dough and met his gaze.
+
+"Mara," he started to say, but she shook her head.
+
+"Don't." Her voice came out before she could stop it. "You don't get to come back and—" She let out a breath she didn't know she was holding.`;
+function loadDemo(){document.getElementById('manuscript').value=DEMO;save();splitNow();}
+
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function renderAll(){renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();renderLegend();renderChart();renderBeatTable();renderDiag();}
+
+(function init(){
+  document.getElementById('brandTag').textContent=CONFIG.cphMode?CONFIG.brand:CONFIG.brandGeneric;
+  load();
+  if(state.manuscript&&!state.chapters.length)state.chapters=splitManuscript(state.manuscript);
+  renderAll();
+})();
+</script>
+</body>
+</html>
