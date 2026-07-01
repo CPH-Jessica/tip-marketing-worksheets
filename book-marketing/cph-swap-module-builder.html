@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPH Swap Module Builder — all pen names</title>
+<title>CPH Newsletter Composer — all pen names</title>
 <!--
   Clark Publishing House, LLC — internal newsletter tool.
   Builds each pen name's weekly FREE newsletter swaps into their own house
@@ -78,13 +78,38 @@
 <body>
 <header class="appbar" id="appbar">
   <img class="logo" id="brandLogo" alt="" style="display:none;">
-  <h1 id="brandTitle">CPH Swap Module Builder</h1>
+  <h1 id="brandTitle">CPH Newsletter Composer</h1>
   <select id="brandSelect" onchange="switchBrand(this.value)"></select>
 </header>
 
 <div class="wrap">
   <div class="panel controls">
     <div class="warn" id="brandBlurb"></div>
+
+    <h2 class="sec">Write the top (in voice)</h2>
+    <label>What do you want to talk about this week?</label>
+    <textarea id="fTopic" placeholder="e.g. finished drafting book 3; a summer KU sale; a story about my rescue dog…"></textarea>
+    <div class="row">
+      <div>
+        <label>Model</label>
+        <select class="f" id="fModel">
+          <option value="claude-opus-4-8">Opus 4.8 (best)</option>
+          <option value="claude-sonnet-5">Sonnet 5 (fast, cheaper)</option>
+          <option value="claude-haiku-4-5">Haiku 4.5 (cheapest)</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <button class="btn" id="genBtn" onclick="generateIntro()" style="width:100%;">✍️ Generate in voice</button>
+      </div>
+    </div>
+    <p class="hint" id="genStatus"></p>
+    <details id="keyDetails">
+      <summary>Anthropic API key (stored in this browser only)</summary>
+      <label>Key (sk-ant-…)</label>
+      <input type="password" id="fKey" placeholder="sk-ant-…" autocomplete="off">
+      <div class="btnbar"><button class="btn btn-ghost btn-sm" onclick="saveKey()">Save key</button></div>
+      <p class="hint">Used only to call Claude directly from your browser to write the opening note. It never leaves your machine except to api.anthropic.com. Get a key at console.anthropic.com.</p>
+    </details>
 
     <h2 class="sec" id="secAdd">Add a swap module</h2>
     <label>Cover image URL <span style="text-transform:none;color:#9a92a6;">(the "top of the promo" graphic / book cover)</span></label>
@@ -130,6 +155,10 @@
   <div class="panel previewpane" id="previewpane">
     <div class="nl" id="nl">
       <div class="hdr" id="pHeader"></div>
+      <div id="pIntroWrap" style="display:none;margin:0 0 6px;">
+        <div id="pIntro" contenteditable="true" spellcheck="true" style="outline:1px dashed transparent;padding:2px;" onfocus="this.style.outlineColor='#c9bfe0'" onblur="this.style.outlineColor='transparent'" oninput="saveIntroEdit()"></div>
+        <p style="text-align:center;font-size:11px;color:#b3a9c4;margin:2px 0 0;font-family:'Segoe UI',sans-serif;">↑ click to edit the opening note</p>
+      </div>
       <div class="toprule">
         <div class="secttl" id="pSecTtl"></div>
         <div class="secsub" id="pSecSub"></div>
@@ -255,11 +284,23 @@ const BRANDS = {
 };
 const ORDER=["connie","ruthie","sage","marjorie","kelsey","nora"];
 
+/* Per-pen-name voice for the AI-written opening note */
+const VOICE={
+  connie:{greeting:"Hey friend,",desc:"sweet small-town & contemporary romance",voice:"Warm, cozy, chatty small-town storyteller who talks to readers like neighbors over coffee. Fond of little joys and gratitude, gentle humor; may reference her opinionated friend Diana."},
+  ruthie:{greeting:"Darlings,",desc:"dark romance, romantasy & fairytale retellings",voice:"Sultry, playful-wicked, a little gothic. Lush sensory language, teasing menace, winks at the reader. Atmosphere and heat, never explicit in the note itself."},
+  sage:{greeting:"Hi gorgeous,",desc:"steamy billionaire & rom-com",voice:"Champagne-bestie energy: funny, flirty, chaotic-good. Short punchy lines, pop-culture wit, hype-woman for the reader."},
+  marjorie:{greeting:"Dear Reader,",desc:"sweet Regency & historical romance",voice:"A Regency gossip columnist in the vein of Lady Whistledown. Period diction, arch wit, mock-decorum, 'between us' confidences. Sweet, never crude."},
+  kelsey:{greeting:"Hi friends,",desc:"vampire rom-com & paranormal",voice:"Wry, modern, deadpan-funny vampire. Leans into being nocturnal/undead for jokes; warm under the snark."},
+  nora:{greeting:"Hey neighbor,",desc:"sweet small-town firefighter romance",voice:"Warm, cozy, a touch cheeky. Front-porch small-town charm, hometown-hero swoon, low spice, wholesome and heartfelt."}
+};
+
 /* ============================ ENGINE ============================ */
 let current="connie";
 let modules={};
-function loadModules(){modules=JSON.parse(localStorage.getItem('cph_modules')||'{}');}
+let intros={};
+function loadModules(){modules=JSON.parse(localStorage.getItem('cph_modules')||'{}');intros=JSON.parse(localStorage.getItem('cph_intros')||'{}');}
 function save(){localStorage.setItem('cph_modules',JSON.stringify(modules));}
+function saveIntros(){localStorage.setItem('cph_intros',JSON.stringify(intros));}
 function cur(){return modules[current]||(modules[current]=[]);}
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function val(id){return document.getElementById(id).value.trim();}
@@ -272,7 +313,7 @@ function applyTheme(){
   const nl=document.getElementById('nl');
   nl.style.setProperty('--accent',b.accent); nl.style.setProperty('--accentDk',b.accent==b.accentDk?b.accent:b.accentDk);
   nl.style.setProperty('--box',b.box); nl.style.setProperty('--text',b.text);
-  document.getElementById('brandTitle').textContent="CPH Swap Builder · "+b.label;
+  document.getElementById('brandTitle').textContent="CPH Newsletter Composer · "+b.label;
   const logo=document.getElementById('brandLogo');
   if(b.header){logo.src=b.header;logo.style.display='block';}else{logo.style.display='none';}
   const bl=document.getElementById('brandBlurb');
@@ -323,6 +364,9 @@ function render(){
   document.getElementById('pBanTtl').textContent=b.banTtl;
   document.getElementById('pBanSub').textContent=b.banSub;
   document.getElementById('pSign').innerHTML=b.sign.map(esc).join('<br>');
+  const intro=intros[current]||'';
+  document.getElementById('pIntroWrap').style.display=intro?'block':'none';
+  if(document.activeElement!==document.getElementById('pIntro')) document.getElementById('pIntro').innerHTML=intro;
   const list=cur();
   const feat=[],tiles=[],banners=[];
   list.forEach((m,i)=>{(m.type==='featured'?feat:m.type==='banner'?banners:tiles).push({m,i});});
@@ -343,7 +387,10 @@ function exportHTML(){
   const b=BRANDS[current], list=cur();
   const feat=list.filter(m=>m.type==='featured'),tiles=list.filter(m=>m.type==='tile'),banners=list.filter(m=>m.type==='banner');
   const A=b.accent,AD=b.accentDk,BX=b.box;
-  let h=`<!-- ===== ${b.label}: swap section (generated by CPH Swap Module Builder) ===== -->\n`;
+  const intro=(intros[current]||'').trim();
+  let h=`<!-- ===== ${b.label}: newsletter (generated by CPH Newsletter Composer) ===== -->\n`;
+  if(intro) h+=`<div style="max-width:600px;margin:0 auto;font-family:Georgia,serif;color:${b.text};line-height:1.6;">\n${intro}\n</div>\n`;
+  h+=`<!-- swap section -->\n`;
   h+=`<div style="border-top:2px solid ${A};margin:26px 0 0;padding-top:18px;">\n`;
   h+=`  <p style="font-size:21px;font-weight:bold;color:${AD};text-align:center;margin:0 0 4px;">${esc(b.secTtl)}</p>\n`;
   h+=`  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 24px;font-size:13px;">${esc(b.secSub)}</p>\n`;
@@ -366,7 +413,7 @@ function exportHTML(){
   return h;
 }
 function doExport(){
-  const list=cur();if(!list.length){alert('Add some modules first.');return;}
+  const list=cur();if(!list.length && !(intros[current]||'').trim()){alert('Generate an opening note or add swap modules first.');return;}
   const miss=list.filter(m=>!m.cover).length;const box=document.getElementById('exportBox');
   box.value=(miss?`<!-- NOTE: ${miss} module(s) still need a cover image URL. -->\n`:'')+exportHTML();
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -374,8 +421,38 @@ function doExport(){
 function copyExport(){const bx=document.getElementById('exportBox');if(!bx.value)doExport();bx.select();document.execCommand('copy');}
 function downloadExport(){if(!document.getElementById('exportBox').value)doExport();const blob=new Blob([document.getElementById('exportBox').value],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=current+'-swaps.html';a.click();}
 
+/* ---------- AI opening note (calls Claude directly from the browser) ---------- */
+function setStatus(s){document.getElementById('genStatus').textContent=s;}
+function saveKey(){localStorage.setItem('cph_key',(document.getElementById('fKey').value||'').trim());setStatus('Key saved in this browser.');}
+function saveIntroEdit(){intros[current]=document.getElementById('pIntro').innerHTML;saveIntros();}
+async function generateIntro(){
+  const key=((document.getElementById('fKey').value||'')||localStorage.getItem('cph_key')||'').trim();
+  if(!key){document.getElementById('keyDetails').open=true;setStatus('Add your Anthropic API key first (below), then Save key.');return;}
+  const topic=val('fTopic');
+  if(!topic){setStatus('Type what you want to talk about this week first.');return;}
+  const b=BRANDS[current], v=VOICE[current], model=document.getElementById('fModel').value;
+  const btn=document.getElementById('genBtn'); btn.disabled=true; setStatus('Writing in '+b.label+'’s voice…');
+  const system=`You write the opening section of ${b.label}'s weekly reader newsletter (${v.desc}). Voice: ${v.voice} Write 150–230 words as warm, on-brand HTML using only <p>…</p> paragraphs — no headings, no <html>/<head>, no book-promo or swap section, and no sign-off. Begin with the greeting "${v.greeting}". Weave in what the author wants to talk about this week. Output ONLY the <p> paragraphs.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:model,max_tokens:1024,system:system,messages:[{role:'user',content:'This week I want to talk about: '+topic}]})
+    });
+    const data=await res.json();
+    if(!res.ok){setStatus('Error: '+((data.error&&data.error.message)||('HTTP '+res.status)));btn.disabled=false;return;}
+    const text=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').trim();
+    if(!text){setStatus('No text came back — try again.');btn.disabled=false;return;}
+    intros[current]=text; saveIntros(); render();
+    setStatus('Done — click the note in the preview to tweak it.');
+  }catch(e){setStatus('Network error: '+e.message+' (some browsers block cross-site calls — try Chrome).');}
+  btn.disabled=false;
+}
+
 /* ---------- init ---------- */
 loadModules();
+(function(){var k=localStorage.getItem('cph_key');if(k)document.getElementById('fKey').value=k;var m=localStorage.getItem('cph_model');if(m)document.getElementById('fModel').value=m;
+document.getElementById('fModel').addEventListener('change',function(){localStorage.setItem('cph_model',this.value);});})();
 document.getElementById('brandSelect').innerHTML=ORDER.map(k=>`<option value="${k}">${esc(BRANDS[k].label)}</option>`).join('');
 applyTheme();render();
 </script>
