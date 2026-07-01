@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trope Stack &amp; Reader Intent Worksheet — Week 1 | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --coral-dark: #d4604a;
+    --navy: #1B2A4A;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --gold-light: #ecdcae;
+    --sage: #7A9E7E;
+    --text: #2D2D2D;
+    --gray: #666;
+    --light-gray: #ece7df;
+    --border: #D4CFC7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+  .container { max-width: 940px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 34px 20px; text-align: center; border-bottom: 4px solid var(--coral); }
+  header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  header h1 { font-size: 1.9em; letter-spacing: 0.5px; }
+  header .subtitle { color: var(--coral-light); font-size: 1em; margin-top: 8px; font-style: italic; }
+  header .weektag { display:inline-block; margin-top:14px; background: var(--coral); color:white; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; font-family:Georgia,serif; }
+
+  .intro-box { background: white; border-left: 4px solid var(--coral); padding: 20px 22px; margin: 24px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .intro-box p { margin-bottom: 8px; }
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  .section { background: white; border-radius: 8px; padding: 26px 28px; margin: 22px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section > h2 { color: var(--navy); font-size: 1.4em; margin-bottom: 6px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; }
+  .section .step { color: var(--sage); font-size:0.75em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; }
+  .helptext { color: var(--gray); font-size: 0.94em; margin: 8px 0 14px; }
+
+  label { display: block; font-weight: bold; margin: 14px 0 5px; font-size: 0.95em; }
+  input[type="text"], select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
+  textarea { resize: vertical; min-height: 70px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .form-row > div { flex: 1; min-width: 220px; }
+
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: var(--coral-dark); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: #c1962f; }
+  .btn-navy { background: var(--navy); }
+  .btn-navy:hover { background: #24365c; }
+  .center { text-align:center; }
+
+  /* Legend */
+  .legend { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85em; color:var(--gray); margin:10px 0 4px; }
+  .legend span { display:inline-flex; align-items:center; gap:5px; }
+  .sig { font-size:0.7em; font-weight:bold; padding:2px 7px; border-radius:10px; letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap; }
+  .sig-growth { background:#fce3dc; color:var(--coral-dark); }
+  .sig-ever { background:#e6efe6; color:#4a7a52; }
+  .sig-steady { background:#f4ecd6; color:#977224; }
+  .sig-niche { background:#e8e4ef; color:#6b5b8a; }
+
+  /* Trope bank */
+  .cat-label { color: var(--sage); font-size: 0.78em; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 8px; padding-bottom:4px; border-bottom:1px dashed var(--border); }
+  .trope-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 9px; }
+  .trope { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 2px solid var(--light-gray); border-radius: 7px; cursor: pointer; transition: all 0.15s; background:white; }
+  .trope:hover { border-color: var(--coral-light); background: var(--cream); }
+  .trope.selected { border-color: var(--coral); background: rgba(232,115,90,0.08); }
+  .trope .tname { flex:1; font-size:0.92em; }
+  .trope input { display:none; }
+  .selcount { color:var(--coral); font-weight:bold; font-size:0.92em; margin:14px 0 2px; }
+
+  /* Live stack panel */
+  #stackPanel { display:none; }
+  .stack-chips { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 6px; }
+  .chip { background:var(--navy); color:white; padding:6px 14px; border-radius:20px; font-size:0.9em; display:inline-flex; gap:8px; align-items:center; }
+  .chip .x { cursor:pointer; opacity:0.7; font-weight:bold; }
+  .chip .x:hover { opacity:1; }
+
+  .result-card { background: var(--cream); border:1px solid var(--gold-light); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:16px 18px; margin:14px 0; }
+  .result-card h3 { color:var(--navy); font-size:1.05em; margin-bottom:8px; }
+  .searchline { background:white; border:1px solid var(--light-gray); border-radius:6px; padding:9px 12px; margin:6px 0; font-family: 'Courier New', monospace; font-size:0.92em; color:var(--navy); display:flex; align-items:center; gap:8px; }
+  .searchline::before { content:"\1F50D"; font-size:0.95em; }
+  .taghash { color:var(--coral-dark); font-weight:bold; }
+  .positioning { font-size:1.15em; line-height:1.7; color:var(--navy); background:white; border:1px dashed var(--coral); border-radius:8px; padding:16px 18px; }
+  .positioning b { color:var(--coral-dark); }
+
+  .callout { border-radius:8px; padding:14px 18px; margin:14px 0; font-size:0.94em; }
+  .callout.beginner { background:#eef4ef; border-left:4px solid var(--sage); }
+  .callout.pro { background:#f2ecfb; border-left:4px solid #7b64ab; }
+  .callout .tag { display:block; font-size:0.72em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .callout.beginner .tag { color:#4a7a52; }
+  .callout.pro .tag { color:#6b5b8a; }
+
+  /* Toolkit links */
+  .toolkit { display:grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap:12px; }
+  .toolcard { display:block; text-decoration:none; color:var(--text); border:1px solid var(--light-gray); border-radius:8px; padding:15px 16px; transition:all 0.15s; background:white; }
+  .toolcard:hover { border-color:var(--coral); box-shadow:0 3px 10px rgba(0,0,0,0.07); transform:translateY(-2px); }
+  .toolcard .tk-name { color:var(--navy); font-weight:bold; font-size:1.02em; margin-bottom:4px; }
+  .toolcard .tk-name .arrow { color:var(--coral); }
+  .toolcard .tk-desc { color:var(--gray); font-size:0.86em; }
+  .toolcard .tk-pill { display:inline-block; font-size:0.68em; letter-spacing:1px; text-transform:uppercase; color:var(--sage); font-weight:bold; margin-top:8px; }
+  .toolcard.locked { opacity:0.6; cursor:default; }
+  .toolcard.locked:hover { transform:none; box-shadow:none; border-color:var(--light-gray); }
+  .toolcard.locked .tk-pill { color:var(--gold); }
+
+  footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+  footer a { color: var(--coral); }
+  .print-wrap { text-align:center; margin: 26px 0; }
+
+  @media print {
+    body { background:white; font-size:10.5pt; }
+    .btn, .print-wrap, .no-print, .trope:not(.selected) { display:none !important; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    header { background:white; color:var(--navy); border-bottom:3px solid var(--coral); }
+    header .brand, header .subtitle, header .weektag { color:var(--navy); background:none; }
+    .toolcard { page-break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <h1>Trope Stack &amp; Reader Intent</h1>
+  <div class="subtitle">What readers are actually searching for &mdash; and how to line your book up with them</div>
+  <div class="weektag">Week 1 Worksheet</div>
+</header>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p><strong>Before you write a single word, know what your reader is already hunting for.</strong> Readers don't search for "a beautiful story about healing." They search for <em>grumpy sunshine small town romance</em>. Those specific words are called <strong>tropes</strong>, and the combination you choose is your <strong>trope stack</strong>.</p>
+    <p>This worksheet walks you through building a stack that speaks your genre's language, then turns that stack into the exact search phrases, hashtags, and positioning lines that put your book in front of the right readers. Fill it in as we go &mdash; then hit <strong>Print / Save as PDF</strong> at the bottom to keep your results.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <div class="step">Step 1</div>
+    <h2>Set Your Genre</h2>
+    <p class="helptext">Your genre sets the shelf. Your tropes decide <em>which reader on that shelf</em> picks you up.</p>
+    <div class="form-row">
+      <div>
+        <label for="penName">Pen name (optional)</label>
+        <input type="text" id="penName" placeholder="Your author name">
+      </div>
+      <div>
+        <label for="genre">Your genre / subgenre</label>
+        <select id="genre" onchange="refreshAll()">
+          <option value="Contemporary Romance">Contemporary Romance</option>
+          <option value="Small-Town Romance">Small-Town Romance</option>
+          <option value="Romantic Comedy">Romantic Comedy</option>
+          <option value="Dark Romance">Dark Romance</option>
+          <option value="Romantic Suspense">Romantic Suspense</option>
+          <option value="Historical Romance">Historical Romance</option>
+          <option value="Paranormal Romance">Paranormal Romance</option>
+          <option value="Romantasy / Fantasy Romance">Romantasy / Fantasy Romance</option>
+          <option value="Thriller / Suspense">Thriller / Suspense</option>
+          <option value="Fantasy">Fantasy</option>
+        </select>
+      </div>
+      <div>
+        <label for="heat">Heat / tone</label>
+        <select id="heat" onchange="refreshAll()">
+          <option value="">Not sure yet</option>
+          <option value="clean">Clean / closed-door</option>
+          <option value="sweet">Sweet with tension</option>
+          <option value="steamy">Steamy / open-door</option>
+          <option value="spicy">Spicy / explicit</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <div class="step">Step 2</div>
+    <h2>Build Your Trope Stack</h2>
+    <p class="helptext">Pick <strong>3 to 5 tropes</strong> that are truly in your book. The market signal shows you how hungry readers currently are for each one. <strong>The winning move:</strong> pair one or two high-demand tropes with a more specific one that makes your book <em>yours</em>.</p>
+    <div class="legend">
+      <span><em class="sig sig-growth">Growth</em> readers actively hunting right now</span>
+      <span><em class="sig sig-ever">Evergreen</em> never goes out of style</span>
+      <span><em class="sig sig-steady">Steady</em> reliable, always selling</span>
+      <span><em class="sig sig-niche">Niche</em> smaller but devoted crowd</span>
+    </div>
+    <div id="tropeBank"></div>
+    <div class="selcount" id="selCount">0 selected &mdash; aim for 3 to 5</div>
+  </div>
+
+  <!-- LIVE STACK + RESULTS -->
+  <div class="section" id="stackPanel">
+    <div class="step">Your Stack</div>
+    <h2 id="stackTitle">Your Trope Stack</h2>
+    <div class="stack-chips" id="stackChips"></div>
+
+    <div class="result-card">
+      <h3>&#128269; What your reader types into the search bar (Reader Intent)</h3>
+      <p class="helptext" style="margin-top:0;">These are the phrases a reader hunting <em>your exact book</em> would type into Amazon, Kindle, or Google. Put them in your book description, keywords, and ad targeting.</p>
+      <div id="searchLines"></div>
+    </div>
+
+    <div class="result-card" style="border-left-color:var(--coral); background:#fdf2ef; border-color:var(--coral-light);">
+      <h3>&#127908; BookTok / Instagram hashtags &amp; hooks</h3>
+      <div id="hashLines"></div>
+    </div>
+
+    <div class="result-card">
+      <h3>&#127919; Your positioning line (niche it down)</h3>
+      <p class="helptext" style="margin-top:0;">Two or three tropes stacked together <em>is</em> your niche. Here's a starting positioning line you can shape into your blurb hook or tagline:</p>
+      <div class="positioning" id="positioning"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <div class="step">Step 3</div>
+    <h2>Niche It Down</h2>
+    <p class="helptext">A trope stack is only powerful when it's specific enough to feel <em>made for me</em> but familiar enough that readers already want it. Use the guidance for wherever you are:</p>
+
+    <div class="callout beginner">
+      <span class="tag">&#127793; New author &mdash; start here</span>
+      Pick <strong>ONE</strong> anchor trope with a <em>Growth</em> or <em>Evergreen</em> signal (that's your visibility) and add <strong>ONE</strong> flavour trope you love writing (that's your voice). Two clear tropes beats five muddy ones. Example: <em>Grumpy/Sunshine</em> (anchor) + <em>Small Town</em> (flavour). Write that. Sell that. You can widen later.
+    </div>
+
+    <div class="callout pro">
+      <span class="tag">&#9889; Seasoned author &mdash; sharpen the edge</span>
+      Keep your proven anchor tropes, then <strong>stack a third trope to escape the crowd</strong>. Everyone is writing enemies-to-lovers; far fewer are writing <em>enemies-to-lovers + forced proximity + single dad</em>. Cross-check demand with the Trope Compatibility Checker (linked below), and lead your ads with the <em>rarest</em> trope in your stack &mdash; that's the reader who can't find this book anywhere else.
+    </div>
+
+    <label for="anchorNote">Write it out: my anchor trope(s) and why readers want them right now</label>
+    <textarea id="anchorNote" placeholder="e.g. Grumpy/Sunshine — bestseller lists are full of it, so readers trust the promise and buy fast..."></textarea>
+
+    <label for="edgeNote">My edge: the one trope or twist that makes this book only mine</label>
+    <textarea id="edgeNote" placeholder="e.g. ...but mine is set on a struggling Christmas-tree farm with a fake engagement, which almost no one in my lane is doing."></textarea>
+
+    <label for="readerNote">My reader in one sentence: "This book is for the reader who..."</label>
+    <textarea id="readerNote" placeholder="e.g. ...wants to sob-laugh through a cozy holiday romance and re-read the grovel scene three times."></textarea>
+  </div>
+
+  <!-- STEP 4 — TOOLKIT / OTHER WORKSHEETS -->
+  <div class="section">
+    <div class="step">Step 4</div>
+    <h2>Your Class Toolkit</h2>
+    <p class="helptext">These are the other interactive worksheets and tools that pair with this class. Once your trope stack is set, carry it straight into these &mdash; each one builds on the words you chose today.</p>
+    <div class="toolkit">
+      <a class="toolcard" href="https://cph-jessica.github.io/tip-tools/author-tools/trope-compatibility-checker.html" target="_blank" rel="noopener">
+        <div class="tk-name">Trope Compatibility Checker <span class="arrow">&rarr;</span></div>
+        <div class="tk-desc">Test whether the tropes in your stack actually sell <em>together</em> &mdash; and which pairings readers reward most.</div>
+        <span class="tk-pill">Use right after this worksheet</span>
+      </a>
+      <a class="toolcard" href="https://cph-jessica.github.io/tip-tools/author-tools/blurb-builder.html" target="_blank" rel="noopener">
+        <div class="tk-name">Blurb Builder <span class="arrow">&rarr;</span></div>
+        <div class="tk-desc">Turn your positioning line and search phrases into a back-cover blurb that leads with trope.</div>
+        <span class="tk-pill">Turns your stack into copy</span>
+      </a>
+      <a class="toolcard" href="https://cph-jessica.github.io/tip-marketing-worksheets/book-marketing/05-content-marketing-calendar.html" target="_blank" rel="noopener">
+        <div class="tk-name">Content Marketing Calendar <span class="arrow">&rarr;</span></div>
+        <div class="tk-desc">Plan trope-reveal posts and search-driven content around the hooks you generated above.</div>
+        <span class="tk-pill">Market the stack</span>
+      </a>
+      <a class="toolcard" href="https://cph-jessica.github.io/tip-marketing-worksheets/book-marketing/01-marketing-channel-audit.html" target="_blank" rel="noopener">
+        <div class="tk-name">Marketing Channel Audit <span class="arrow">&rarr;</span></div>
+        <div class="tk-desc">Decide where your trope readers actually hang out before you spend a minute posting.</div>
+        <span class="tk-pill">Find your readers</span>
+      </a>
+      <a class="toolcard" href="https://cph-jessica.github.io/tip-tools/author-tools/name-generator.html" target="_blank" rel="noopener">
+        <div class="tk-name">Character Name Generator <span class="arrow">&rarr;</span></div>
+        <div class="tk-desc">Names that match the tone your trope stack promises (a grumpy billionaire isn't a "Sunny").</div>
+        <span class="tk-pill">Companion tool</span>
+      </a>
+      <div class="toolcard locked">
+        <div class="tk-name">Week 2: Blurb &amp; Keyword Lab</div>
+        <div class="tk-desc">Coming next class &mdash; we take today's stack and build the description and Amazon keywords around it.</div>
+        <span class="tk-pill">&#128274; Unlocks next week</span>
+      </div>
+    </div>
+    <p class="helptext" style="margin-top:16px;">Home base for every worksheet in the library: <a href="https://cph-jessica.github.io/tip-marketing-worksheets/" target="_blank" rel="noopener">cph-jessica.github.io/tip-marketing-worksheets</a></p>
+  </div>
+
+  <div class="print-wrap no-print">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</div>
+
+<footer>
+  &copy; The Invisible Pen &middot; Clark Publishing House LLC &middot; Trope Stacks &amp; Reader Intent &mdash; for personal student use only.
+</footer>
+
+<script>
+  // ---- Trope data: name + market signal (from the TIP Trope Glossary) ----
+  const TROPES = {
+    "Reader-Favorite Core": [
+      ["Enemies-to-Lovers","ever"], ["Grumpy / Sunshine","growth"], ["Fake Dating","growth"],
+      ["Forced Proximity","steady"], ["Second-Chance Romance","steady"], ["Slow Burn","growth"],
+      ["Found Family","growth"], ["Friends-to-Lovers","steady"], ["Forbidden Romance","steady"],
+      ["Banter / Witty","growth"]
+    ],
+    "Setting & Situation": [
+      ["Small Town","growth"], ["Christmas / Holiday","steady"], ["Office / Workplace","steady"],
+      ["Single Parent","growth"], ["Secret Baby","steady"], ["Bodyguard / Protector","steady"],
+      ["Marriage of Convenience","steady"], ["Return Home","steady"]
+    ],
+    "High-Voltage / Dark": [
+      ["Age Gap","growth"], ["Morally Gray Hero","growth"], ["Stalker / Obsession","niche"],
+      ["Captive / Kidnapping","niche"], ["Power Imbalance","niche"], ["Reverse Harem","niche"],
+      ["Redemption Arc","steady"], ["Touch Her and Die","growth"]
+    ],
+    "Fantasy / Paranormal": [
+      ["Fated Mates","growth"], ["Dragon / Shifter","growth"], ["Vampire","ever"],
+      ["Chosen One","steady"], ["Magic Academy","growth"], ["Only One Bed (Fae Court)","growth"],
+      ["Monster Romance","niche"], ["Hidden Powers","steady"]
+    ],
+    "Thriller / Suspense": [
+      ["Unreliable Narrator","growth"], ["Whodunit / Murder Mystery","ever"],
+      ["Betrayal Twist","steady"], ["Survival Against Odds","steady"], ["Hidden Identity","steady"]
+    ]
+  };
+
+  const SIG_META = {
+    growth: {label:"Growth", cls:"sig-growth"},
+    ever:   {label:"Evergreen", cls:"sig-ever"},
+    steady: {label:"Steady", cls:"sig-steady"},
+    niche:  {label:"Niche", cls:"sig-niche"}
+  };
+
+  const MAX = 6;
+  let selected = []; // array of trope names in selection order
+
+  // Build the trope bank
+  (function buildBank(){
+    const bank = document.getElementById('tropeBank');
+    let html = '';
+    for (const [cat, list] of Object.entries(TROPES)) {
+      html += `<div class="cat-label">${cat}</div><div class="trope-grid">`;
+      list.forEach(([name, sig]) => {
+        const m = SIG_META[sig];
+        html += `<label class="trope" data-name="${name}" onclick="toggleTrope(this)">
+          <span class="tname">${name}</span>
+          <em class="sig ${m.cls}">${m.label}</em>
+        </label>`;
+      });
+      html += '</div>';
+    }
+    bank.innerHTML = html;
+  })();
+
+  function toggleTrope(el){
+    const name = el.dataset.name;
+    if (selected.includes(name)) {
+      selected = selected.filter(n => n !== name);
+      el.classList.remove('selected');
+    } else {
+      if (selected.length >= MAX) { alert('Keep it to '+MAX+' tropes max — a focused stack sells better than a crowded one.'); return; }
+      selected.push(name);
+      el.classList.add('selected');
+    }
+    refreshAll();
+  }
+
+  function removeTrope(name){
+    selected = selected.filter(n => n !== name);
+    document.querySelectorAll('.trope').forEach(t => { if (t.dataset.name === name) t.classList.remove('selected'); });
+    refreshAll();
+  }
+
+  // normalize a trope name into a clean search phrase fragment
+  function clean(name){
+    return name.toLowerCase()
+      .replace(/\s*\/.*$/,'')          // drop everything after a slash
+      .replace(/\(.*?\)/g,'')          // drop parentheticals
+      .replace(/-/g,' ')
+      .replace(/[^a-z ]/g,'')
+      .replace(/\s+/g,' ').trim();
+  }
+
+  function genreShort(){
+    const g = document.getElementById('genre').value;
+    return g.replace(/ ?\/.*$/,'').replace(/-/g,' ').toLowerCase();
+  }
+
+  // remove duplicate words from a search phrase, keep order
+  function dedupePhrase(str){
+    const seen = new Set(); const out = [];
+    str.split(/\s+/).forEach(w => { if (w && !seen.has(w)) { seen.add(w); out.push(w); } });
+    return out.join(' ');
+  }
+
+  function heatWord(){
+    const h = document.getElementById('heat').value;
+    return {clean:'clean', sweet:'sweet', steamy:'steamy', spicy:'spicy'}[h] || '';
+  }
+
+  function refreshAll(){
+    document.getElementById('selCount').textContent =
+      selected.length + ' selected' + (selected.length < 3 ? ' — aim for 3 to 5' : selected.length > 5 ? ' — consider trimming to 5' : ' — nice stack!');
+
+    const panel = document.getElementById('stackPanel');
+    if (selected.length === 0) { panel.style.display = 'none'; return; }
+    panel.style.display = 'block';
+
+    // Chips
+    document.getElementById('stackChips').innerHTML = selected.map(n =>
+      `<span class="chip">${n}<span class="x" onclick="removeTrope('${n.replace(/'/g,"\\'")}')">&times;</span></span>`).join('');
+
+    const g = genreShort();
+    const heat = heatWord();
+    const t = selected.map(clean);
+
+    // ---- Reader intent / search lines ----
+    const s = [];
+    if (t[0]) s.push(`${t[0]} ${g} books`);
+    if (t[1]) s.push(`${t[0]} ${t[1]} ${g}`);
+    if (heat && t[0]) s.push(`${heat} ${t[0]} ${g}`);
+    if (t[2]) s.push(`${t[1]} ${t[2]} ${g}`);
+    if (t[0]) s.push(`best ${t[0]} ${g} books`);
+    if (t[0]) s.push(`${g} with ${t.slice(0,2).join(' and ')}`);
+    s.push(`books like your favourite comp with ${t[0]}`);
+    const uniq = [...new Set(s.filter(Boolean).map(p => dedupePhrase(p).replace(/\s+(and|with|for)$/,'')))].slice(0,7);
+    document.getElementById('searchLines').innerHTML =
+      uniq.map(x => `<div class="searchline">${x}</div>`).join('');
+
+    // ---- Hashtags / hooks ----
+    const tags = selected.map(n => '#' + clean(n).replace(/\s+/g,''))
+      .concat(['#' + g.replace(/[^a-z]/g,''), '#booktok', '#tropetok', '#indieauthor']);
+    const uniqTags = [...new Set(tags)].slice(0,8);
+    let hookLine = '';
+    if (t.length >= 2) hookLine = `POV: you love <b>${selected[0]}</b> but you didn't know you needed <b>${selected[1]}</b> until now.`;
+    else hookLine = `POV: you can't stop reading <b>${selected[0]}</b> ${g}.`;
+    document.getElementById('hashLines').innerHTML =
+      `<div style="margin-bottom:8px;">${hookLine}</div>` +
+      `<div class="searchline" style="font-family:inherit;">` +
+      uniqTags.map(x => `<span class="taghash">${x}</span>`).join(' &nbsp;') + `</div>`;
+
+    // ---- Positioning line ----
+    const genreFull = document.getElementById('genre').value;
+    let pos = '';
+    if (selected.length >= 3) {
+      pos = `A <b>${genreFull}</b> where <b>${selected[0]}</b> meets <b>${selected[1]}</b> &mdash; for the reader who can't resist <b>${selected[2].toLowerCase()}</b>.`;
+    } else if (selected.length === 2) {
+      pos = `A <b>${genreFull}</b> built on <b>${selected[0]}</b> and <b>${selected[1]}</b> &mdash; a familiar hook with a fresh twist.`;
+    } else {
+      pos = `A <b>${genreFull}</b> anchored in <b>${selected[0]}</b>. Add one or two more tropes to sharpen your niche.`;
+    }
+    if (heat) pos += ` <span style="color:var(--gray);font-size:0.85em;">(${heat} heat)</span>`;
+    document.getElementById('positioning').innerHTML = pos;
+  }
+</script>
+</body>
+</html>

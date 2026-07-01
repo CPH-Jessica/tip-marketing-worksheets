@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEACHING NOTES — Week 1: Trope Stacks &amp; Reader Intent | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-dark: #d4604a;
+    --navy: #1B2A4A;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --gold-light: #ecdcae;
+    --sage: #7A9E7E;
+    --text: #2D2D2D;
+    --gray: #666;
+    --light-gray: #ece7df;
+    --border: #D4CFC7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.65; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 34px 24px; text-align: center; border-bottom: 4px solid var(--gold); }
+  header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  header .kicker { color: var(--coral); font-size:0.85em; text-transform:uppercase; letter-spacing:2px; }
+  header h1 { font-size: 2em; letter-spacing: 0.5px; margin:6px 0; }
+  header .subtitle { color: #cfd6e2; font-size: 1em; margin-top: 8px; font-style: italic; }
+  .teach-badge { display:inline-block; margin-top:14px; background: var(--gold); color: var(--navy); font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; font-weight:bold; }
+
+  /* Sticky mini-nav */
+  nav.toc { position: sticky; top: 0; background: rgba(255,248,240,0.96); backdrop-filter: blur(4px); border-bottom:1px solid var(--border); padding:10px 20px; z-index:20; font-size:0.82em; }
+  nav.toc .inner { max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; gap:6px 16px; }
+  nav.toc a { color: var(--navy); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }
+  nav.toc a:hover { border-color: var(--coral); color: var(--coral-dark); }
+
+  .section { background: white; border-radius: 8px; padding: 26px 30px; margin: 22px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section > h2 { color: var(--navy); font-size: 1.5em; margin-bottom: 4px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; display:flex; align-items:center; gap:10px; }
+  .section > h2 .ic { font-size:0.9em; }
+  h3 { color: var(--coral-dark); font-size:1.12em; margin:20px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul, ol { margin: 6px 0 12px 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--navy); }
+  em.term { color: var(--coral-dark); font-style: normal; font-weight: bold; }
+
+  .meta-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin:6px 0; }
+  .meta-grid .m { background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .meta-grid .m .k { font-size:0.72em; text-transform:uppercase; letter-spacing:1.5px; color:var(--sage); font-weight:bold; }
+  .meta-grid .m .v { font-size:1.05em; color:var(--navy); font-weight:bold; }
+
+  /* Script blocks */
+  .beat { border-left:4px solid var(--gold); background:#fffdf8; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; }
+  .beat .time { display:inline-block; background:var(--navy); color:white; font-size:0.72em; letter-spacing:1px; padding:3px 10px; border-radius:12px; margin-bottom:8px; }
+  .say, .do, .ask { border-radius:6px; padding:10px 14px; margin:8px 0; font-size:0.97em; }
+  .say { background:#fdf2ef; border-left:3px solid var(--coral); }
+  .do  { background:#eef4ef; border-left:3px solid var(--sage); }
+  .ask { background:#f2ecfb; border-left:3px solid #7b64ab; }
+  .say .lbl, .do .lbl, .ask .lbl { display:block; font-size:0.7em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:3px; }
+  .say .lbl { color:var(--coral-dark); }
+  .do .lbl  { color:#4a7a52; }
+  .ask .lbl { color:#6b5b8a; }
+  .say .quote { font-style:italic; }
+
+  .track { border-radius:8px; padding:14px 18px; margin:12px 0; }
+  .track.beginner { background:#eef4ef; border-left:4px solid var(--sage); }
+  .track.pro { background:#f2ecfb; border-left:4px solid #7b64ab; }
+  .track .tag { display:block; font-size:0.72em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .track.beginner .tag { color:#4a7a52; }
+  .track.pro .tag { color:#6b5b8a; }
+
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.92em; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--light-gray); vertical-align:top; }
+  th { background:var(--navy); color:white; font-size:0.85em; letter-spacing:0.5px; }
+  tr:nth-child(even) td { background:var(--cream); }
+  .sig { font-size:0.7em; font-weight:bold; padding:2px 7px; border-radius:10px; text-transform:uppercase; white-space:nowrap; }
+  .sig-growth { background:#fce3dc; color:var(--coral-dark); }
+  .sig-ever { background:#e6efe6; color:#4a7a52; }
+  .sig-steady { background:#f4ecd6; color:#977224; }
+  .sig-niche { background:#e8e4ef; color:#6b5b8a; }
+
+  .qa { margin:10px 0; }
+  .qa .q { font-weight:bold; color:var(--navy); }
+  .qa .a { color:var(--text); margin-left:2px; }
+
+  .callout-box { background:var(--navy); color:#f4f1ea; border-radius:8px; padding:18px 22px; margin:16px 0; }
+  .callout-box h3 { color:var(--gold); margin-top:0; }
+  .callout-box a { color:var(--gold-light); }
+
+  .linkbtn { display:inline-block; background:var(--coral); color:white; text-decoration:none; padding:9px 18px; border-radius:6px; font-size:0.9em; margin:4px 6px 4px 0; }
+  .linkbtn:hover { background:var(--coral-dark); }
+  .linkbtn.gold { background:var(--gold); color:var(--navy); }
+
+  footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+  .print-wrap { text-align:center; margin: 26px 0; }
+  .btn { background: var(--gold); color: var(--navy); border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; }
+  .btn:hover { background:#c1962f; }
+
+  @media print {
+    nav.toc, .print-wrap, .no-print { display:none !important; }
+    body { background:white; font-size:10.5pt; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    header { background:white; color:var(--navy); border-bottom:3px solid var(--gold); }
+    header .brand, header .subtitle { color:var(--navy); }
+    .callout-box { background:white; color:var(--navy); border:2px solid var(--navy); }
+    .callout-box h3 { color:var(--coral-dark); }
+    .beat, .say, .do, .ask { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <div class="kicker">Instructor Teaching Notes &mdash; Not for Students</div>
+  <h1>Trope Stacks &amp; Reader Intent</h1>
+  <div class="subtitle">Week 1 &middot; What Readers Actually Search For</div>
+  <div class="teach-badge">Your Script &amp; Cheat Sheet</div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#glance">At a Glance</a>
+    <a href="#bigidea">The Big Idea</a>
+    <a href="#concepts">Core Concepts</a>
+    <a href="#script">Class Script</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#tracks">Beginner vs Pro</a>
+    <a href="#cheatsheet">Trope Cheat Sheet</a>
+    <a href="#qa">Q&amp;A</a>
+    <a href="#wrap">Wrap &amp; Homework</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- AT A GLANCE -->
+  <div class="section" id="glance">
+    <h2><span class="ic">&#128203;</span> At a Glance</h2>
+    <div class="meta-grid">
+      <div class="m"><div class="k">Week</div><div class="v">1 of the series</div></div>
+      <div class="m"><div class="k">Run time</div><div class="v">~60 min</div></div>
+      <div class="m"><div class="k">Format</div><div class="v">Teach + live worksheet</div></div>
+      <div class="m"><div class="k">They leave with</div><div class="v">A finished trope stack</div></div>
+    </div>
+    <h3>The one-sentence promise</h3>
+    <p>By the end of today, every author in the room can name the 3&ndash;5 tropes in their book <em>and</em> the exact phrases their readers type into a search bar to find it.</p>
+    <h3>Who's in the room</h3>
+    <p>Mixed levels. Some have never heard the word "trope" as a marketing term; some have ten books out and want to escape a crowded lane. This lesson serves both &mdash; watch for the <span class="track beginner" style="display:inline;padding:2px 8px;">Beginner</span> and <span class="track pro" style="display:inline;padding:2px 8px;">Seasoned</span> callouts throughout and read whichever fits the faces in front of you.</p>
+    <h3>What to have open before you start</h3>
+    <ul>
+      <li>The <strong>student worksheet</strong> (share the link in chat): <a href="week-1-trope-stack-worksheet.html">Trope Stack &amp; Reader Intent Worksheet</a></li>
+      <li>An Amazon or Kindle store tab (for the live search-bar demo).</li>
+      <li>This notes page &mdash; scroll along as you teach, or print it.</li>
+    </ul>
+  </div>
+
+  <!-- BIG IDEA -->
+  <div class="section" id="bigidea">
+    <h2><span class="ic">&#128161;</span> The Big Idea (say this in your own words)</h2>
+    <p>Most new authors think tropes are a <em>craft</em> thing &mdash; the ingredients of the story. They are. But tropes are also the single most important <strong>marketing</strong> tool an indie author has, because <strong>tropes are the words readers actually search.</strong></p>
+    <p>A reader almost never types "a moving story about two people learning to trust again." They type <em class="term">second chance small town romance</em>. That's a trope stack. When your book description, keywords, and ads use the <em>same words the reader is already typing</em>, you stop hoping to be discovered and start lining yourself up directly in front of demand.</p>
+    <div class="callout-box">
+      <h3>The line to land the whole class on</h3>
+      <p style="font-size:1.15em; margin-bottom:0;">"You're not inventing what readers want. You're naming it &mdash; in <em>their</em> words &mdash; so they can find you."</p>
+    </div>
+  </div>
+
+  <!-- CORE CONCEPTS -->
+  <div class="section" id="concepts">
+    <h2><span class="ic">&#127891;</span> Core Concepts to Teach</h2>
+
+    <h3>1. What a trope really is</h3>
+    <p>A <em class="term">trope</em> is a familiar, repeatable story pattern that readers recognize and seek out on purpose &mdash; <em>grumpy/sunshine, enemies-to-lovers, fated mates, fake dating.</em> Tropes are <strong>not</strong> clichés and they are <strong>not</strong> a lack of originality. They're a promise. When a reader buys "enemies-to-lovers," they are pre-ordering a specific emotional experience. Your originality lives in <em>how</em> you deliver the promise, not in avoiding it.</p>
+
+    <h3>2. The trope stack</h3>
+    <p>A single trope is a shelf; a <em class="term">trope stack</em> is your address on that shelf. Most books have 3&ndash;5 primary tropes. The <em>combination</em> is what makes a book feel specific: "small town + grumpy/sunshine + single dad" is a very different book from "small town + fake dating + Christmas," even though both are small-town romance.</p>
+    <ul>
+      <li><strong>Anchor tropes</strong> &mdash; high-demand, familiar (this is your visibility).</li>
+      <li><strong>Flavour / edge tropes</strong> &mdash; more specific, more "you" (this is your differentiation).</li>
+      <li>The pro move: <strong>pair a hungry, high-demand trope with one more specific trope</strong> so you're both findable <em>and</em> distinct.</li>
+    </ul>
+
+    <h3>3. Reader intent (the marketing heart of the lesson)</h3>
+    <p><em class="term">Reader intent</em> is what a reader is actually <em>trying to do</em> when they type into a search bar. It's demand you can see. A reader searching "spicy age gap billionaire romance" has already decided what they want to buy &mdash; they're just looking for who's selling it. Your job: make sure the words on your product page match the words in that search. Reader intent shows up in three places we'll use today:</p>
+    <ul>
+      <li><strong>Amazon / Kindle search &amp; keywords</strong> &mdash; the buying search bar.</li>
+      <li><strong>BookTok / Instagram hashtags</strong> &mdash; the discovery search bar.</li>
+      <li><strong>Your blurb's first two lines</strong> &mdash; where you confirm "yes, this is the book you searched for."</li>
+    </ul>
+
+    <h3>4. Niching down</h3>
+    <p>New authors fear a niche makes their audience smaller. Reframe it: <strong>a niche makes your audience <em>reachable</em>.</strong> "Romance" is 500,000 competitors. "Grumpy single-dad small-town Christmas romance" is a reader who feels like you wrote the book for them &mdash; and far fewer authors to compete with for that exact search. Niching down is how a small author out-markets a big one.</p>
+    <div class="say"><span class="lbl">Say this</span><span class="quote">"A niche isn't a smaller room. It's a room where you're the only author standing at the front."</span></div>
+  </div>
+
+  <!-- SCRIPT -->
+  <div class="section" id="script">
+    <h2><span class="ic">&#127908;</span> The Class Script (~60 min)</h2>
+    <p class="no-print" style="color:var(--gray);font-size:0.9em;">Green = do, coral = say, purple = ask the room. Timings are a guide, not a cage.</p>
+
+    <div class="beat">
+      <span class="time">0:00 &ndash; 0:05 &middot; Open</span>
+      <div class="say"><span class="lbl">Say</span><span class="quote">"Welcome to Week 1. Before you write a single word of your next book, you're going to learn what your reader is already hunting for &mdash; and how to line your book up right in front of them. That starts with tropes."</span></div>
+      <div class="ask"><span class="lbl">Ask</span>"Quick show of hands &mdash; who here has ever searched for a book by typing something like 'enemies to lovers' or 'small town romance'? Keep your hand up if you've ever done it as a <em>reader</em>." (Almost every hand stays up. That's your proof.)</div>
+    </div>
+
+    <div class="beat">
+      <span class="time">0:05 &ndash; 0:15 &middot; The Big Idea</span>
+      <div class="say"><span class="lbl">Say</span><span class="quote">"Everything you just admitted to searching &mdash; those are tropes. Tropes aren't lazy writing. They're the words readers use to find the exact feeling they want to buy. Today we turn that into your marketing."</span></div>
+      <div class="do"><span class="lbl">Do</span>Teach Core Concepts #1 and #2 (what a trope is, the trope stack). Give one concrete stack from your own catalog as an example so it's real, not abstract.</div>
+    </div>
+
+    <div class="beat">
+      <span class="time">0:15 &ndash; 0:22 &middot; Reader Intent live</span>
+      <div class="do"><span class="lbl">Do</span>Share your screen with the Amazon store open. Type a trope phrase into the search bar (e.g. "grumpy sunshine romance") and let the autocomplete suggestions appear.</div>
+      <div class="say"><span class="lbl">Say</span><span class="quote">"See these suggestions dropping down? That's not Amazon guessing. That's Amazon telling you what thousands of real readers already typed. This is reader intent &mdash; visible demand. We're going to make sure your book speaks in these exact words."</span></div>
+      <div class="ask"><span class="lbl">Ask</span>"Call out a trope from your genre and let's watch what autocompletes." (Do 2&ndash;3 live. It always lands.)</div>
+    </div>
+
+    <div class="beat">
+      <span class="time">0:22 &ndash; 0:45 &middot; Build the stack (worksheet)</span>
+      <div class="do"><span class="lbl">Do</span>Drop the worksheet link in chat. Walk them through it live, step by step (see the Live Demo section below). This is the heart of the class &mdash; give it the most time.</div>
+      <div class="say"><span class="lbl">Say</span><span class="quote">"Open the worksheet. Set your genre and heat at the top. Now pick 3 to 5 tropes that are truly in your book &mdash; watch the market signal beside each one. Aim for one or two 'Growth' or 'Evergreen' tropes plus something more specific."</span></div>
+      <div class="do"><span class="lbl">Do</span>As they select, the worksheet auto-builds their search phrases, hashtags, and positioning line. Pause and let a couple of authors read theirs aloud.</div>
+    </div>
+
+    <div class="beat">
+      <span class="time">0:45 &ndash; 0:55 &middot; Niche it down</span>
+      <div class="do"><span class="lbl">Do</span>Teach Core Concept #4, then have them fill the three text boxes in Step 3 (anchor, edge, reader-in-one-sentence).</div>
+      <div class="ask"><span class="lbl">Ask</span>"Who's got a positioning line they're willing to share? Read me the 'this book is for the reader who&hellip;' sentence." Workshop 2&ndash;3 out loud &mdash; tighten them together.</div>
+    </div>
+
+    <div class="beat">
+      <span class="time">0:55 &ndash; 1:00 &middot; Close &amp; homework</span>
+      <div class="do"><span class="lbl">Do</span>Point them to the Class Toolkit (Step 4 of the worksheet). Give the homework (see Wrap section). Tease Week 2.</div>
+      <div class="say"><span class="lbl">Say</span><span class="quote">"You now have something most authors never get: the exact words your reader is searching. Next week we turn that stack into a blurb and Amazon keywords that convert. Print your worksheet &mdash; you'll need it."</span></div>
+    </div>
+  </div>
+
+  <!-- LIVE DEMO -->
+  <div class="section" id="demo">
+    <h2><span class="ic">&#128421;</span> Running the Worksheet Live (step by step)</h2>
+    <p>Have <a href="week-1-trope-stack-worksheet.html">the worksheet</a> open on your shared screen. Narrate as you go so they follow along on their own copies.</p>
+    <ol>
+      <li><strong>Step 1 &mdash; Genre &amp; heat.</strong> Choose a genre from the dropdown and a heat level. Explain: "Genre is the shelf, heat is a filter readers use, tropes are the address."</li>
+      <li><strong>Step 2 &mdash; Trope bank.</strong> Click tropes to select. Point out the coloured <span class="sig sig-growth">Growth</span> / <span class="sig sig-ever">Evergreen</span> / <span class="sig sig-steady">Steady</span> / <span class="sig sig-niche">Niche</span> signals &mdash; that's live market context. The tool caps them at 6 and nudges toward 3&ndash;5.</li>
+      <li><strong>Watch the Stack panel appear.</strong> As soon as they pick one trope, the panel unfolds with three auto-generated blocks:
+        <ul>
+          <li><em>Reader Intent search lines</em> &mdash; paste-ready Amazon/keyword phrases.</li>
+          <li><em>BookTok/Instagram hashtags &amp; a hook</em> &mdash; ready for social.</li>
+          <li><em>A positioning line</em> &mdash; "A [genre] where [trope] meets [trope]&hellip;"</li>
+        </ul>
+      </li>
+      <li><strong>Step 3 &mdash; Niche it down.</strong> They write their anchor, their edge, and their one-sentence reader. This is where the thinking happens &mdash; give them a quiet minute.</li>
+      <li><strong>Step 4 &mdash; Class Toolkit.</strong> These are the other interactive worksheets that pair with this class &mdash; Trope Compatibility Checker, Blurb Builder, Content Calendar, Channel Audit, Name Generator. Tell them the natural next step is the <strong>Trope Compatibility Checker</strong> to pressure-test their stack.</li>
+      <li><strong>Print / Save as PDF.</strong> Everyone saves their sheet before leaving. They bring it to Week 2.</li>
+    </ol>
+    <p style="color:var(--gray);font-size:0.9em;"><strong>Tech note:</strong> the worksheet is fully self-contained &mdash; nothing to install, no login, works in any browser, and prints cleanly. If a student's results don't appear, they simply haven't selected a trope yet.</p>
+  </div>
+
+  <!-- TRACKS -->
+  <div class="section" id="tracks">
+    <h2><span class="ic">&#9878;</span> Serving Both Levels</h2>
+    <div class="track beginner">
+      <span class="tag">&#127793; For the beginners in the room</span>
+      Keep it to <strong>two tropes</strong>: one anchor with a Growth/Evergreen signal + one flavour trope they love writing. Reassure them that focus is not limitation &mdash; a clear two-trope book is far easier to sell than a vague five-trope one. Their win today is simply being able to <em>name</em> their book in reader language.
+    </div>
+    <div class="track pro">
+      <span class="tag">&#9889; For the seasoned authors in the room</span>
+      Push them to <strong>escape the crowd</strong>. Their anchor tropes are proven &mdash; the growth comes from stacking a third, rarer trope and leading their ads with it. Send them to the Trope Compatibility Checker to confirm the stack sells together, and challenge them to rewrite an <em>existing</em> backlist blurb using today's search phrases.
+    </div>
+    <h3>If someone says "but I don't want to write to trends"</h3>
+    <p>Great objection &mdash; welcome it. Answer: "We're not choosing tropes to chase trends. We're <em>naming the tropes already in your book</em> so readers who want them can find you. You wrote the story you wanted. This is just the label on the jar."</p>
+  </div>
+
+  <!-- CHEAT SHEET -->
+  <div class="section" id="cheatsheet">
+    <h2><span class="ic">&#128200;</span> Trope Market Cheat Sheet</h2>
+    <p>Your quick-reference so you can speak to demand with confidence when a student names their trope. Signals reflect the TIP Trope Glossary.</p>
+    <table>
+      <tr><th>Trope</th><th>Signal</th><th>Say this about it</th></tr>
+      <tr><td>Enemies-to-Lovers</td><td><span class="sig sig-ever">Evergreen</span></td><td>Perennial bestseller across every subgenre; readers never tire of it.</td></tr>
+      <tr><td>Grumpy / Sunshine</td><td><span class="sig sig-growth">Growth</span></td><td>Dominates contemporary &amp; paranormal lists right now; readers buy heavily.</td></tr>
+      <tr><td>Fake Dating</td><td><span class="sig sig-growth">Growth</span></td><td>High demand, easy emotional payoff &mdash; a bestseller-generating trope.</td></tr>
+      <tr><td>Found Family</td><td><span class="sig sig-growth">Growth</span></td><td>Explosive growth with Millennial/Gen Z readers; great paired with romance.</td></tr>
+      <tr><td>Age Gap</td><td><span class="sig sig-growth">Growth</span></td><td>Explosive 2024&ndash;2026; commercially strong &mdash; be transparent about ages.</td></tr>
+      <tr><td>Slow Burn</td><td><span class="sig sig-growth">Growth</span></td><td>Readers increasingly want emotional connection before heat; extends across series.</td></tr>
+      <tr><td>Second-Chance / Forced Proximity</td><td><span class="sig sig-steady">Steady</span></td><td>Reliable, works everywhere, pairs beautifully with grumpy/sunshine.</td></tr>
+      <tr><td>Fated Mates / Dragon-Shifter</td><td><span class="sig sig-growth">Growth</span></td><td>Dominant in paranormal romance; readers search these by name.</td></tr>
+      <tr><td>Vampire / Whodunit</td><td><span class="sig sig-ever">Evergreen</span></td><td>Never goes out of fashion in their lanes.</td></tr>
+      <tr><td>Reverse Harem / Monster / Stalker</td><td><span class="sig sig-niche">Niche</span></td><td>Smaller but fiercely devoted readership; pair with a market-strong trope.</td></tr>
+    </table>
+    <p style="font-size:0.9em;color:var(--gray);">Rule of thumb to repeat: <strong>pair niche tropes with market-strong tropes</strong>, and always <strong>name the trope</strong> &mdash; in the blurb, the ads, and the newsletter. Readers search tropes, not vague descriptions.</p>
+  </div>
+
+  <!-- Q&A -->
+  <div class="section" id="qa">
+    <h2><span class="ic">&#10067;</span> Questions You'll Get (with answers)</h2>
+    <div class="qa"><p class="q">"Isn't using tropes just being unoriginal?"</p><p class="a">No &mdash; a trope is a promise, not a plot. Two authors can both write "fake dating" and produce completely different books. Originality is in the execution; the trope is how readers find the execution.</p></div>
+    <div class="qa"><p class="q">"How many tropes should I have?"</p><p class="a">Three to five primary tropes for most books. Beginners: start with two. More than five and your positioning gets muddy.</p></div>
+    <div class="qa"><p class="q">"What if my book has a trope readers are polarized on, like love triangle?"</p><p class="a">Know your audience. Divisive tropes (love triangle, cheating, certain dark elements) can be a strong draw for the readers who want them &mdash; but signal clearly so you attract fans, not one-star reviews.</p></div>
+    <div class="qa"><p class="q">"Where exactly do I put these words?"</p><p class="a">Blurb (first two lines), Amazon's 7 keyword slots, your also-boughts/ad targeting, and your social hooks. Same words, everywhere the reader looks.</p></div>
+    <div class="qa"><p class="q">"My trope is niche and low-demand &mdash; am I doomed?"</p><p class="a">No. Anchor it to a high-demand trope so you show up in busy searches, then let the niche trope be the reason that reader chooses <em>you</em>. Niche + market-strong is the winning stack.</p></div>
+  </div>
+
+  <!-- WRAP -->
+  <div class="section" id="wrap">
+    <h2><span class="ic">&#127881;</span> Wrap-Up &amp; Homework</h2>
+    <h3>Homework to assign</h3>
+    <ol>
+      <li>Finish and <strong>save your trope-stack worksheet</strong> as a PDF.</li>
+      <li>Run your stack through the <a href="https://cph-jessica.github.io/tip-tools/author-tools/trope-compatibility-checker.html" target="_blank" rel="noopener">Trope Compatibility Checker</a> and note whether your tropes reinforce each other.</li>
+      <li>Type your top 2 search phrases into Amazon and screenshot the autocomplete &mdash; proof of the reader demand you're aiming at. Bring it to Week 2.</li>
+    </ol>
+    <h3>Week 2 teaser</h3>
+    <p>"Next week &mdash; <strong>Blurb &amp; Keyword Lab</strong>: we take the exact stack you built today and turn it into a back-cover blurb and a set of Amazon keywords that actually convert browsers into buyers."</p>
+    <div class="callout-box">
+      <h3>Links to have handy</h3>
+      <a class="linkbtn gold" href="week-1-trope-stack-worksheet.html">Open the Student Worksheet</a>
+      <a class="linkbtn" href="https://cph-jessica.github.io/tip-tools/author-tools/trope-compatibility-checker.html" target="_blank" rel="noopener">Trope Compatibility Checker</a>
+      <a class="linkbtn" href="https://cph-jessica.github.io/tip-tools/author-tools/blurb-builder.html" target="_blank" rel="noopener">Blurb Builder</a>
+      <p style="margin:12px 0 0;">Library home base: <a href="https://cph-jessica.github.io/tip-marketing-worksheets/" target="_blank" rel="noopener">cph-jessica.github.io/tip-marketing-worksheets</a></p>
+    </div>
+  </div>
+
+  <div class="print-wrap no-print">
+    <button class="btn" onclick="window.print()">Print / Save These Notes</button>
+  </div>
+</div>
+
+<footer>
+  &copy; The Invisible Pen &middot; Clark Publishing House LLC &middot; Instructor notes &mdash; Week 1: Trope Stacks &amp; Reader Intent
+</footer>
+</body>
+</html>
