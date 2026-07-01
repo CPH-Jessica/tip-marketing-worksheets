@@ -236,15 +236,21 @@ const BRANDS = {
     excluded:[{title:"All Romance — clean sets",why:"no paranormal hook"},{title:"Regency / sweet",why:"off-genre"}]
   },
   nora:{
-    label:"Nora Brooks  (NEW — set details)", wordmark:"Nora Brooks",
-    header:"", accent:"#2f7d8a", accentDk:"#205862", box:"#e6f3f5", text:"#2b2f31", cream:"#f6fafb",
-    placeholder:true,
-    blurb:"NEW PEN NAME — genre, voice, magnet, and palette are placeholders. Tell Jessica's assistant Nora's genre/heat + reader magnet and this brand gets themed properly. Edit accent/box/header/voice in the BRANDS.nora config.",
-    secTtl:"This Week's Featured Reads", secSub:"[Nora's section tagline — set once genre is known]",
-    featLead:"Hi there,", tilesTtl:"More to Explore", tilesSub:"[tiles tagline]",
-    banTtl:"Free Reads Worth a Look", banSub:"[banners tagline]",
-    sign:["[Nora's sign-off],","Nora Brooks","Clark Publishing House, LLC"],
-    candidates:[], excluded:[]
+    label:"Nora Brooks", wordmark:"Nora Brooks",
+    header:"", accent:"#c2410c", accentDk:"#9a3412", box:"#fdece0", text:"#3a3230", cream:"#fff8f3",
+    blurb:"Sweet small-town firefighter / first-responder romance, low heat. Cozy, warm-hearted, a touch cheeky. Magnet: \"Sweet on the Fire Chief.\" Free swaps only — sweet/clean contemporary; no steamy/dark/PNR.",
+    secTtl:"This Week's Cozy Picks", secSub:"A few warm-hearted reads to keep you company on the porch.",
+    featLead:"From the porch,", tilesTtl:"A Few More to Love", tilesSub:"Sweet reads to tuck into your weekend.",
+    banTtl:"Free Reads Worth a Look", banSub:"Whole collections of sweet, free romance.",
+    sign:["Stay sweet (and fire-safe),","Nora Brooks — small-town hearts & hometown heroes","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Summer Romance Freebie Collection", type:"banner", link:"https://books.bookfunnel.com/summerromancefreebiecollection/v3r1xluz6p", cover:"", note:"All-romance freebie collection.", checked:true},
+      {title:"One More Chapter Romance: Reads You Won't Want to Put Down", type:"banner", link:"https://books.bookfunnel.com/readsyouwontwanttoputdown/bexp7t8mro", cover:"", note:"General sweet-to-warm romance.", checked:true},
+      {title:"Hearts, Heat, and Happy Endings", type:"banner", link:"https://books.bookfunnel.com/heartsheathappyendings/blnfcl0b73", cover:"", note:"Sweet-to-warm contemporary.", checked:false},
+      {title:"Romance Reader Magnets", type:"banner", link:"https://books.bookfunnel.com/romancereadermagnets/3zie3g4iw5", cover:"https://storage.mlcdn.com/account_image/1362400/uaEKCo5k0egunL9F_8aca1b57-e74b-4408-9833-e8039b9d101f.jpg", note:"Reader-magnet promo (cover known).", checked:false},
+      {title:"Chance Encounters", type:"banner", link:"https://books.bookfunnel.com/chanceencounters/rte8sn9con", cover:"", note:"Contemporary meet-cutes.", checked:false}
+    ],
+    excluded:[{title:"June/July Hot & Steamy",why:"steamy — off-genre"},{title:"Dark and Extra Spicy",why:"dark — off-genre"},{title:"Paranormal & Fantasy Free Reads",why:"paranormal — off-genre"}]
   }
 };
 const ORDER=["connie","ruthie","sage","marjorie","kelsey","nora"];
