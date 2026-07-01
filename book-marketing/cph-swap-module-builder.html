@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPH Swap Module Builder — all pen names</title>
+<!--
+  Clark Publishing House, LLC — internal newsletter tool.
+  Builds each pen name's weekly FREE newsletter swaps into their own house
+  style: every promo is a cover image on top, linked to its tracking URL.
+  Pick a pen name up top; the whole tool re-themes (header, palette, voice,
+  candidate promos). Add swaps, preview in-voice, export MailerLite-ready HTML.
+  Modules are saved per pen name in this browser. FREE swaps only.
+  To add a pen name: drop a new entry in the BRANDS object below.
+-->
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#eceaf0;color:#2b2630;font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.55;}
+  header.appbar{color:#fff;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;transition:background .25s;}
+  header.appbar img.logo{height:38px;border-radius:4px;background:#fff;}
+  header.appbar h1{font-family:Georgia,serif;font-size:18px;margin:0;font-weight:600;}
+  header.appbar select{margin-left:auto;padding:7px 10px;border-radius:6px;border:none;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
+  .wrap{display:grid;grid-template-columns:minmax(340px,430px) 1fr;min-height:calc(100vh - 62px);}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr;}}
+  .panel{padding:20px 22px;overflow-y:auto;}
+  .controls{background:#fff;border-right:1px solid #e2dfe8;}
+  h2.sec{font-family:Georgia,serif;font-size:16px;margin:22px 0 10px;border-bottom:2px solid #ece9f1;padding-bottom:6px;}
+  h2.sec:first-child{margin-top:0;}
+  label{display:block;font-size:12px;font-weight:600;color:#4a4356;margin:10px 0 3px;text-transform:uppercase;letter-spacing:.4px;}
+  input[type=text],textarea,select.f{width:100%;padding:8px 10px;border:1px solid #cdc4da;border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+  textarea{resize:vertical;min-height:58px;}
+  .row{display:flex;gap:8px;}.row>div{flex:1;}
+  .btn{border:none;border-radius:6px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#fff;}
+  .btn-ghost{background:#fff;border:1px solid currentColor;}
+  .btn-sm{padding:5px 10px;font-size:12px;}
+  .btnbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .hint{font-size:12px;color:#7a7286;margin:4px 0 0;}
+  .cand{border:1px solid #e8e4ee;border-radius:8px;padding:10px;margin:8px 0;background:#fbfafd;font-size:13px;}
+  .cand .t{font-weight:600;}
+  .cand .m{font-size:11.5px;color:#7a7286;margin:2px 0 0;}
+  .needcover{color:#b5411f;font-weight:600;}
+  .cand.excluded{opacity:.7;background:#f6f2f2;border-style:dashed;}
+  .cand.excluded .why{color:#9a5b2c;font-size:11.5px;font-style:italic;}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-right:6px;}
+  .pill.free{background:#e4f4e8;color:#1f7a3d;}
+  .pill.k{background:#eee3f6;color:#6b4e8e;}
+  details{margin:10px 0;}summary{cursor:pointer;font-weight:600;font-size:13px;}
+  .warn{border-radius:8px;padding:10px 12px;font-size:12.5px;margin:10px 0;}
+  .banner-note{background:#fef7e6;border:1px solid #e6d59a;color:#7a5c12;border-radius:8px;padding:10px 12px;font-size:12.5px;margin:10px 0;}
+  .empty{color:#9a92a6;font-style:italic;text-align:center;padding:40px 10px;}
+  #exportBox{width:100%;min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;}
+  /* ===== newsletter preview (themed per brand via CSS vars) ===== */
+  .previewpane{transition:background .25s;}
+  .nl{max-width:600px;margin:0 auto;background:#fff;padding:22px;border-radius:8px;box-shadow:0 2px 14px rgba(0,0,0,.12);font-family:Georgia,serif;color:var(--text);}
+  .nl .hdr img{width:100%;max-width:600px;display:block;margin:0 auto 12px;border-radius:6px;}
+  .nl .hdr .wordmark{text-align:center;font-size:26px;font-weight:bold;color:var(--accentDk);letter-spacing:.5px;margin:2px 0 14px;}
+  .nl .toprule{border-top:2px solid var(--accent);margin:16px 0 0;padding-top:16px;}
+  .nl .secttl{font-size:21px;font-weight:bold;color:var(--accentDk);text-align:center;margin:4px 0 2px;}
+  .nl .secsub{text-align:center;font-style:italic;color:#948b9e;margin:0 0 20px;font-size:13px;}
+  .nl .subttl{font-weight:bold;color:var(--accentDk);text-align:center;margin:22px 0 4px;font-size:17px;}
+  .mod{position:relative;margin:0 0 26px;}
+  .mod .del{position:absolute;top:-6px;right:-6px;background:#a32020;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:1;z-index:2;font-family:sans-serif;}
+  .mod.featured .cov{display:block;margin:0 auto 14px;width:170px;max-width:55%;border-radius:6px;}
+  .mod .box{background:var(--box);border-left:4px solid var(--accent);padding:16px 20px;border-radius:4px;}
+  .mod .box .dr{margin:0 0 8px;font-weight:bold;color:var(--accentDk);}
+  .mod .box p{margin:0 0 10px;font-size:15px;}.mod .box p:last-child{margin-bottom:0;}
+  .mod .cta{margin:12px 0 0;font-size:14px;}.mod .cta a{color:var(--accentDk);font-weight:bold;}
+  .tilewrap{display:flex;flex-wrap:wrap;gap:2%;}
+  .tile{width:32%;text-align:center;margin-bottom:12px;position:relative;}
+  .tile img{width:160px;max-width:100%;border-radius:4px;display:block;margin:0 auto;}
+  .tile .del{top:-4px;right:6px;}
+  .bmod{text-align:center;margin:0 0 16px;position:relative;}
+  .bmod img{width:100%;max-width:540px;border-radius:6px;display:block;margin:0 auto;}
+  .nl .sign{font-size:13px;color:#948b9e;text-align:center;border-top:1px solid #eee;padding-top:14px;margin-top:24px;}
+  .placeholder-cover{background:repeating-linear-gradient(45deg,#eee7f7,#eee7f7 8px,#e2d8f0 8px,#e2d8f0 16px);display:flex;align-items:center;justify-content:center;color:#8a6aad;font-family:sans-serif;font-size:10px;text-align:center;border-radius:6px;margin:0 auto;}
+</style>
+</head>
+<body>
+<header class="appbar" id="appbar">
+  <img class="logo" id="brandLogo" alt="" style="display:none;">
+  <h1 id="brandTitle">CPH Swap Module Builder</h1>
+  <select id="brandSelect" onchange="switchBrand(this.value)"></select>
+</header>
+
+<div class="wrap">
+  <div class="panel controls">
+    <div class="warn" id="brandBlurb"></div>
+
+    <h2 class="sec" id="secAdd">Add a swap module</h2>
+    <label>Cover image URL <span style="text-transform:none;color:#9a92a6;">(the "top of the promo" graphic / book cover)</span></label>
+    <input type="text" id="fCover" placeholder="https://…/cover.jpg">
+    <label>Tracking / promo link <span style="text-transform:none;color:#9a92a6;">(where the cover clicks through)</span></label>
+    <input type="text" id="fLink" placeholder="https://dl.bookfunnel.com/… or Amazon link">
+    <div class="row">
+      <div><label>Layout</label>
+        <select class="f" id="fType">
+          <option value="tile">Cover tile (mentions grid)</option>
+          <option value="banner">Banner (group promo)</option>
+          <option value="featured">Featured (cover + blurb)</option>
+        </select>
+      </div>
+      <div><label>Title (alt/label)</label><input type="text" id="fTitle" placeholder="Book or promo title"></div>
+    </div>
+    <label>Blurb <span style="text-transform:none;color:#9a92a6;">(Featured layout only — write it in this pen name's voice)</span></label>
+    <textarea id="fBlurb"></textarea>
+    <div class="btnbar">
+      <button class="btn" id="addBtn" onclick="addFromForm()">+ Add module</button>
+      <button class="btn btn-ghost btn-sm" id="clearBtn" onclick="clearForm()">Clear fields</button>
+    </div>
+
+    <h2 class="sec">This week's free candidates</h2>
+    <p class="hint">Genre-matched to this pen name from your BookFunnel feed. Tick and add. <span class="needcover">needs cover</span> = paste the banner image (BookFunnel's page is unreachable from here).</p>
+    <div id="candList"></div>
+    <button class="btn btn-ghost btn-sm" id="addCandBtn" onclick="addChecked()">+ Add ticked candidates</button>
+    <details><summary>Auto-excluded (off-genre) — <span id="exCount"></span></summary><div id="exList"></div></details>
+    <details><summary>Add BookClicker / BookSwappy mention swaps</summary>
+      <p class="hint">Those live on platforms I can't reach here. Grab each partner's cover + tracking link and paste above as a <em>Cover tile</em>. In a Cowork/browser session, your booking-retriever skill can auto-pull them.</p></details>
+
+    <h2 class="sec">Export to MailerLite</h2>
+    <div class="btnbar">
+      <button class="btn" id="expBtn" onclick="doExport()">Generate newsletter HTML</button>
+      <button class="btn btn-ghost btn-sm" id="copyBtn" onclick="copyExport()">Copy</button>
+      <button class="btn btn-ghost btn-sm" id="dlBtn" onclick="downloadExport()">Download</button>
+      <button class="btn btn-ghost btn-sm" id="wipeBtn" onclick="wipeAll()">Clear all</button>
+    </div>
+    <p class="hint">Paste into a MailerLite <strong>Custom HTML</strong> block in this pen name's template.</p>
+    <textarea id="exportBox" placeholder="Click &quot;Generate newsletter HTML&quot;…"></textarea>
+  </div>
+
+  <div class="panel previewpane" id="previewpane">
+    <div class="nl" id="nl">
+      <div class="hdr" id="pHeader"></div>
+      <div class="toprule">
+        <div class="secttl" id="pSecTtl"></div>
+        <div class="secsub" id="pSecSub"></div>
+        <div id="pFeatured"></div>
+        <div id="pTilesWrap" style="display:none;"><div class="subttl" id="pTilesTtl"></div><div class="secsub" id="pTilesSub"></div><div class="tilewrap" id="pTiles"></div></div>
+        <div id="pBannersWrap" style="display:none;"><div class="subttl" id="pBanTtl"></div><div class="secsub" id="pBanSub"></div><div id="pBanners"></div></div>
+        <div id="pEmpty" class="empty">No modules yet — add swaps on the left and they'll appear here in this pen name's voice.</div>
+      </div>
+      <div class="sign" id="pSign"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================ BRAND CONFIG ============================ */
+const BRANDS = {
+  connie:{
+    label:"Connie Clark", wordmark:"Connie Clark",
+    header:"https://storage.mlcdn.com/account_image/1362400/B3B8KZObjX4pch3sFWOWrNpHrgy2A4qHj6jAMydI.jpg",
+    accent:"#a52834", accentDk:"#7d1e28", box:"#f8e3e3", text:"#515856", cream:"#fbf6f4",
+    blurb:"Sweet-to-steamy small-town & contemporary. Warm, cozy, 'Diana has Thoughts' energy. Free swaps only — no dark/PNR/erotica/historical-only.",
+    secTtl:"This Week's Featured Reads", secSub:"Diana's got a stack for you — and Thoughts, as always.",
+    featLead:"Diana says…", tilesTtl:"A Few More to Love", tilesSub:"Cozy up with any that catch your eye.",
+    banTtl:"Freebie Tables Worth a Look", banSub:"Whole collections of free reads, gathered for you.",
+    sign:["Cozy reads and warm wishes,","Constance Ruth Clark — small-town storyteller","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Summer Romance Freebie Collection", type:"banner", link:"https://books.bookfunnel.com/summerromancefreebiecollection/v3r1xluz6p", cover:"", note:"All-romance freebie collection.", checked:true},
+      {title:"One More Chapter Romance: Reads You Won't Want to Put Down", type:"banner", link:"https://books.bookfunnel.com/readsyouwontwanttoputdown/bexp7t8mro", cover:"", note:"General romance reads.", checked:true},
+      {title:"Hearts, Heat, and Happy Endings", type:"banner", link:"https://books.bookfunnel.com/heartsheathappyendings/blnfcl0b73", cover:"", note:"Sweet-to-warm contemporary.", checked:false},
+      {title:"Chance Encounters", type:"banner", link:"https://books.bookfunnel.com/chanceencounters/rte8sn9con", cover:"", note:"Contemporary meet-cutes.", checked:false},
+      {title:"Romance Reader Magnets", type:"banner", link:"https://books.bookfunnel.com/romancereadermagnets/3zie3g4iw5", cover:"https://storage.mlcdn.com/account_image/1362400/uaEKCo5k0egunL9F_8aca1b57-e74b-4408-9833-e8039b9d101f.jpg", note:"Reader-magnet promo (cover known).", checked:false}
+    ],
+    excluded:[{title:"Dark and Extra Spicy Romance",why:"dark — off-genre"},{title:"Paranormal & Fantasy Free Reads",why:"paranormal — off-genre"},{title:"Christmas in July (Regency set)",why:"historical-only — that's Marjorie"}]
+  },
+  ruthie:{
+    label:"Ruthie Clark", wordmark:"Ruthie Clark",
+    header:"https://storage.mlcdn.com/account_image/1362400/s2Fv12cxYPdGcPPLclM8Lzmvq1mLYMfsnap1TX41.jpg",
+    accent:"#b3122a", accentDk:"#7a0d1b", box:"#f5e6e6", text:"#2a1a1a", cream:"#1f1616",
+    darkpane:true,
+    blurb:"Dark romance / romantasy / PNR / shifter / fae / fairytale retellings. High heat, 'tropes that bite'. Free swaps only — no clean/sweet/historical/contemporary-only.",
+    secTtl:"Curl Up With These Sexy Reads", secSub:"A few dark little temptations for your shelf.",
+    featLead:"Darlings,", tilesTtl:"More to Sink Into", tilesSub:"Help yourself — every one of them bites.",
+    banTtl:"Whole Covens of Free Reads", banSub:"Tables of free dark & spicy reads.",
+    sign:["Until next time, stay wicked,","💋 Ruthie","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Passion Pages Steamy Sales (June)", type:"tile", link:"https://books.bookfunnel.com/passionpagessteamysalesjune/o9z1ijq86o", cover:"https://storage.mlcdn.com/account_image/1362400/poPSJ6wZcwi1tfxzdxw2V7MG6PMfrq7IFdT6u8qz.jpg", note:"Real — from your last send.", checked:true},
+      {title:"Immortal Desires (June)", type:"tile", link:"https://books.bookfunnel.com/immortaldesiresjune/w2vezvjs7b", cover:"https://storage.mlcdn.com/account_image/1362400/QL08mj6kjw75Ld9b_ef0dab5e6394c5b147257b8eded5ffa8f74bf06a53ac3130948448960fa78c10.png", note:"Real — from your last send.", checked:true},
+      {title:"Make Me Swoon: FREE Steamy Romance", type:"tile", link:"https://books.bookfunnel.com/makemeswoonjun26/4bbdjhasm8", cover:"https://storage.mlcdn.com/account_image/1362400/nHaXBijFZMPyEWtHY47iOuf3C38Dc31c54chMS2D.jpg", note:"Real — from your last send.", checked:true},
+      {title:"Paranormal & Fantasy Romance Free Reads", type:"banner", link:"https://books.bookfunnel.com/paranormal-fantasyromance-promo/7z2p670xo0", cover:"", note:"PNR/fantasy list builder.", checked:false},
+      {title:"Hot and Spicy Paranormal Reads", type:"banner", link:"https://books.bookfunnel.com/hotspicyparanormal/ka615ah2ez", cover:"", note:"Spicy PNR.", checked:false},
+      {title:"Dark and Extra Spicy Romance", type:"banner", link:"https://books.bookfunnel.com/darkandextraspicy/p2vj6d5vc3", cover:"", note:"Dark & explicit.", checked:false}
+    ],
+    excluded:[{title:"All Romance — No rep (clean-friendly)",why:"too sweet for your list"},{title:"Christmas in July (sweet)",why:"sweet/historical — off-genre"}]
+  },
+  sage:{
+    label:"Sage Kennedy", wordmark:"Sage Kennedy",
+    header:"", accent:"#d6336c", accentDk:"#b02a5b", box:"#fdf0f5", text:"#33312e", cream:"#fef7fa",
+    blurb:"Steamy billionaire / rom-com / sports / holiday. Champagne-bestie 'Hi gorgeous' energy. Free swaps only — no clean-only, historical, or dark.",
+    secTtl:"This Week's Featured Books", secSub:"The reads I'm shoving into your hands, no notes.",
+    featLead:"Okay but listen —", tilesTtl:"More to Tempt You", tilesSub:"Grab whatever makes your Kindle blush.",
+    banTtl:"Big Ol' Free Book Tables", banSub:"Whole collections, all free, all yours.",
+    sign:["Stay chaotic,","Sage 💋","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Billionaire Bliss", type:"banner", link:"https://books.bookfunnel.com/billionairebliss/qfz13rp9ok", cover:"", note:"Billionaire romance.", checked:true},
+      {title:"Sultry Summer Nights — Steamy Billionaire Romance", type:"banner", link:"https://books.bookfunnel.com/sultry-summer-nights/bu3jcj28us", cover:"", note:"Steamy billionaire.", checked:true},
+      {title:"The Billionaire's Bookshelf (July)", type:"banner", link:"https://books.bookfunnel.com/thebillionairesbookshelfjune/hyj04mw67n", cover:"", note:"Billionaire promo.", checked:false},
+      {title:"FREE & SPICY Contemporary Romance (July)", type:"banner", link:"https://books.bookfunnel.com/free_spicy_cr_books/opkpqmgsyo", cover:"", note:"Spicy contemporary list builder.", checked:false},
+      {title:"Too Hot To Put Down (July)", type:"banner", link:"https://books.bookfunnel.com/toohottoputdownyourkindlecanthandlethisjuly/djkwaiwyjo", cover:"", note:"Steamy contemporary.", checked:false},
+      {title:"Christmas in July Romance Reads", type:"banner", link:"https://books.bookfunnel.com/christmas-in-july-romance-reads/km02zhuie5", cover:"", note:"Holiday romance.", checked:false}
+    ],
+    excluded:[{title:"Paranormal & Fantasy Free Reads",why:"PNR — that's Ruthie/Kelsey"},{title:"Regency / sweet sets",why:"clean/historical — off-genre"}]
+  },
+  marjorie:{
+    label:"Marjorie Adams", wordmark:"Tea & Tattle",
+    header:"https://storage.mlcdn.com/account_image/1362400/d27ed843309700993f119737354ebefe51ed3600.jpeg",
+    accent:"#6b4e8e", accentDk:"#553f73", box:"#f1eef7", text:"#2e2a3a", cream:"#faf8f5",
+    blurb:"Regency / historical / sweet, clean-to-medium heat. 'Dear Reader' gossip-column voice. Free swaps only — no steamy/dark/PNR/billionaire.",
+    secTtl:"And Now — the Tattle", secSub:"A few morsels of gossip I simply must share before the season is out.",
+    featLead:"Dear Reader,", tilesTtl:"More to Tempt You", tilesSub:"A little stack of clean and sweet reads. Do help yourself to any that catch your eye.",
+    banTtl:"Collections Worth Perusing", banSub:"Whole tables of complimentary reads, gathered for your pleasure.",
+    sign:["May your tea be warm and your scandals fictional.","Yours most sincerely, Marjorie Adams","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Romance Reader Magnets", type:"banner", link:"https://books.bookfunnel.com/romancereadermagnets/3zie3g4iw5", cover:"https://storage.mlcdn.com/account_image/1362400/uaEKCo5k0egunL9F_8aca1b57-e74b-4408-9833-e8039b9d101f.jpg", note:"Clean-friendly. Used last send.", checked:true},
+      {title:"All Romance — No rep requirement (July)", type:"banner", link:"https://books.bookfunnel.com/bf_allromnl/klgq5gyuqw", cover:"https://images.bookfunnel.com/headers/82ce40fb5b4ee099f663a64005aaa83bd40657d92186ba1c44a8e139ef429087.png", note:"All-genre builder. Used last send.", checked:true},
+      {title:"Summer Romance Freebie Collection", type:"banner", link:"https://books.bookfunnel.com/summerromancefreebiecollection/v3r1xluz6p", cover:"", note:"All-romance freebie collection.", checked:false},
+      {title:"Christmas in July Romance Reads", type:"banner", link:"https://books.bookfunnel.com/christmas-in-july-romance-reads/km02zhuie5", cover:"", note:"Clean holiday romance.", checked:false}
+    ],
+    excluded:[{title:"June/July Hot & Steamy",why:"steamy — off-genre"},{title:"Dark and Extra Spicy",why:"dark — off-genre"},{title:"Paranormal & Fantasy",why:"paranormal — off-genre"},{title:"Billionaire Bliss",why:"steamy billionaire — that's Sage"}]
+  },
+  kelsey:{
+    label:"Kelsey Croft", wordmark:"Kelsey Croft",
+    header:"", accent:"#6a1b9a", accentDk:"#54157a", box:"#f3edf7", text:"#2b2630", cream:"#f9f6fb",
+    blurb:"Vampire rom-com / paranormal with humor. 'Hi friends', ancient vampires + modern women + relentless comedy. Free swaps only — needs a paranormal streak; no clean-only or humorless-dark.",
+    secTtl:"Fresh From the Crypt", secSub:"A few reads worth staying up past sunrise for.",
+    featLead:"Dear mortals,", tilesTtl:"More to Sink Your Teeth Into", tilesSub:"Help yourself — no garlic in sight.",
+    banTtl:"Free Reads, No Garlic", banSub:"Whole tables of complimentary paranormal reads.",
+    sign:["Bite first, ask later,","Kelsey — ancient vampires, modern women, relentless comedy","Clark Publishing House, LLC"],
+    candidates:[
+      {title:"Paranormal & Fantasy Romance Free Reads", type:"banner", link:"https://books.bookfunnel.com/paranormal-fantasyromance-promo/7z2p670xo0", cover:"", note:"PNR/fantasy list builder.", checked:true},
+      {title:"Hot and Spicy Paranormal Reads", type:"banner", link:"https://books.bookfunnel.com/hotspicyparanormal/ka615ah2ez", cover:"", note:"Spicy PNR.", checked:true},
+      {title:"Supernaturally Yours — Paranormal Romance", type:"banner", link:"https://books.bookfunnel.com/supernaturallyyoursjune/crfgsszzdu", cover:"", note:"Paranormal romance NL.", checked:false},
+      {title:"Paranormal/Fantasy Romance Sales", type:"banner", link:"https://books.bookfunnel.com/paranormal-fantasyromance-sales/n55xqi6veb", cover:"", note:"PNR sales promo.", checked:false}
+    ],
+    excluded:[{title:"All Romance — clean sets",why:"no paranormal hook"},{title:"Regency / sweet",why:"off-genre"}]
+  },
+  nora:{
+    label:"Nora Brooks  (NEW — set details)", wordmark:"Nora Brooks",
+    header:"", accent:"#2f7d8a", accentDk:"#205862", box:"#e6f3f5", text:"#2b2f31", cream:"#f6fafb",
+    placeholder:true,
+    blurb:"NEW PEN NAME — genre, voice, magnet, and palette are placeholders. Tell Jessica's assistant Nora's genre/heat + reader magnet and this brand gets themed properly. Edit accent/box/header/voice in the BRANDS.nora config.",
+    secTtl:"This Week's Featured Reads", secSub:"[Nora's section tagline — set once genre is known]",
+    featLead:"Hi there,", tilesTtl:"More to Explore", tilesSub:"[tiles tagline]",
+    banTtl:"Free Reads Worth a Look", banSub:"[banners tagline]",
+    sign:["[Nora's sign-off],","Nora Brooks","Clark Publishing House, LLC"],
+    candidates:[], excluded:[]
+  }
+};
+const ORDER=["connie","ruthie","sage","marjorie","kelsey","nora"];
+
+/* ============================ ENGINE ============================ */
+let current="connie";
+let modules={};
+function loadModules(){modules=JSON.parse(localStorage.getItem('cph_modules')||'{}');}
+function save(){localStorage.setItem('cph_modules',JSON.stringify(modules));}
+function cur(){return modules[current]||(modules[current]=[]);}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function val(id){return document.getElementById(id).value.trim();}
+
+function switchBrand(k){current=k;applyTheme();render();}
+function applyTheme(){
+  const b=BRANDS[current];
+  document.getElementById('appbar').style.background=b.accentDk;
+  document.getElementById('previewpane').style.background=b.darkpane?'#141010':b.cream;
+  const nl=document.getElementById('nl');
+  nl.style.setProperty('--accent',b.accent); nl.style.setProperty('--accentDk',b.accent==b.accentDk?b.accent:b.accentDk);
+  nl.style.setProperty('--box',b.box); nl.style.setProperty('--text',b.text);
+  document.getElementById('brandTitle').textContent="CPH Swap Builder · "+b.label;
+  const logo=document.getElementById('brandLogo');
+  if(b.header){logo.src=b.header;logo.style.display='block';}else{logo.style.display='none';}
+  const bl=document.getElementById('brandBlurb');
+  bl.style.background=b.placeholder?'#fff5f5':b.box; bl.style.border='1px solid '+b.accent; bl.style.color=b.accentDk;
+  bl.innerHTML=(b.placeholder?'<strong>NEW pen name.</strong> ':'<strong>Free swaps only.</strong> ')+esc(b.blurb);
+  ['addBtn','expBtn'].forEach(id=>document.getElementById(id).style.background=b.accent);
+  ['clearBtn','addCandBtn','copyBtn','dlBtn','wipeBtn'].forEach(id=>document.getElementById(id).style.color=b.accent);
+}
+
+function addModule(m){
+  if(!m.link){alert('A tracking / promo link is required.');return;}
+  cur().push({cover:m.cover||'',link:m.link,type:m.type||'tile',title:m.title||'',blurb:m.blurb||''});save();render();
+}
+function addFromForm(){addModule({cover:val('fCover'),link:val('fLink'),type:val('fType'),title:val('fTitle'),blurb:val('fBlurb')});clearForm();}
+function clearForm(){['fCover','fLink','fTitle','fBlurb'].forEach(id=>document.getElementById(id).value='');}
+function delMod(i){cur().splice(i,1);save();render();}
+function wipeAll(){if(confirm('Remove all modules for '+BRANDS[current].label+'?')){modules[current]=[];save();render();}}
+
+function renderCandidates(){
+  const b=BRANDS[current];
+  document.getElementById('candList').innerHTML=(b.candidates||[]).map((c,i)=>`
+    <div class="cand"><label style="text-transform:none;font-weight:400;margin:0;display:flex;gap:8px;align-items:flex-start;cursor:pointer;">
+      <input type="checkbox" data-ci="${i}" ${c.checked?'checked':''} style="margin-top:3px;">
+      <span><span class="pill free">Free</span><span class="pill k">${c.type}</span>
+      <span class="t" style="color:${b.accentDk}">${esc(c.title)}</span>
+      <span class="m">${esc(c.note||'')} ${c.cover?'':'<span class="needcover">· needs cover</span>'}</span></span>
+    </label></div>`).join('') || '<p class="hint">No pre-loaded candidates for this pen name yet — add swaps manually above.</p>';
+  document.getElementById('exList').innerHTML=(b.excluded||[]).map(e=>`<div class="cand excluded"><span class="t">${esc(e.title)}</span><div class="why">${esc(e.why)}</div></div>`).join('')||'<p class="hint">—</p>';
+  document.getElementById('exCount').textContent=(b.excluded||[]).length+' hidden';
+}
+function addChecked(){
+  const b=BRANDS[current];
+  document.querySelectorAll('#candList input[type=checkbox]:checked').forEach(cb=>{
+    const c=b.candidates[+cb.dataset.ci];addModule({cover:c.cover,link:c.link,type:c.type,title:c.title,blurb:''});cb.checked=false;});
+}
+function coverImg(m,w){return m.cover?`<img class="cov" src="${esc(m.cover)}" alt="${esc(m.title||'Featured read')}">`:`<div class="placeholder-cover cov" style="width:${w}px;height:${Math.round(w*1.5)}px;max-width:100%;">paste cover URL</div>`;}
+
+function render(){
+  const b=BRANDS[current];
+  document.getElementById('brandSelect').value=current;
+  renderCandidates();
+  // header
+  document.getElementById('pHeader').innerHTML=b.header?`<img src="${esc(b.header)}" alt="${esc(b.label)}">`:`<div class="wordmark">${esc(b.wordmark)}</div>`;
+  document.getElementById('pSecTtl').textContent=b.secTtl;
+  document.getElementById('pSecSub').textContent=b.secSub;
+  document.getElementById('pTilesTtl').textContent=b.tilesTtl;
+  document.getElementById('pTilesSub').textContent=b.tilesSub;
+  document.getElementById('pBanTtl').textContent=b.banTtl;
+  document.getElementById('pBanSub').textContent=b.banSub;
+  document.getElementById('pSign').innerHTML=b.sign.map(esc).join('<br>');
+  const list=cur();
+  const feat=[],tiles=[],banners=[];
+  list.forEach((m,i)=>{(m.type==='featured'?feat:m.type==='banner'?banners:tiles).push({m,i});});
+  document.getElementById('pFeatured').innerHTML=feat.map(({m,i})=>`
+    <div class="mod featured"><button class="del" onclick="delMod(${i})">×</button>
+      <a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,170)}</a>
+      <div class="box"><p class="dr">${esc(b.featLead)}</p><p>${esc(m.blurb)||'<em style=\"opacity:.6\">(add a blurb in the form)</em>'}</p></div>
+      <p class="cta">👉 <a href="${esc(m.link)}" target="_blank" rel="noopener">${esc(m.title)||'Read it now'}</a></p></div>`).join('');
+  const tw=document.getElementById('pTilesWrap');tw.style.display=tiles.length?'block':'none';
+  document.getElementById('pTiles').innerHTML=tiles.map(({m,i})=>`<div class="tile"><button class="del" onclick="delMod(${i})">×</button><a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,160)}</a></div>`).join('');
+  const bw=document.getElementById('pBannersWrap');bw.style.display=banners.length?'block':'none';
+  document.getElementById('pBanners').innerHTML=banners.map(({m,i})=>`<div class="bmod"><button class="del" onclick="delMod(${i})">×</button><a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,540)}</a></div>`).join('');
+  document.getElementById('pEmpty').style.display=list.length?'none':'block';
+}
+
+/* ---------- export: MailerLite-ready HTML in this brand's colors ---------- */
+function exportHTML(){
+  const b=BRANDS[current], list=cur();
+  const feat=list.filter(m=>m.type==='featured'),tiles=list.filter(m=>m.type==='tile'),banners=list.filter(m=>m.type==='banner');
+  const A=b.accent,AD=b.accentDk,BX=b.box;
+  let h=`<!-- ===== ${b.label}: swap section (generated by CPH Swap Module Builder) ===== -->\n`;
+  h+=`<div style="border-top:2px solid ${A};margin:26px 0 0;padding-top:18px;">\n`;
+  h+=`  <p style="font-size:21px;font-weight:bold;color:${AD};text-align:center;margin:0 0 4px;">${esc(b.secTtl)}</p>\n`;
+  h+=`  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 24px;font-size:13px;">${esc(b.secSub)}</p>\n`;
+  feat.forEach(m=>{
+    h+=`  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;"><tr><td align="center" style="padding-bottom:14px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)}" width="170" style="width:170px;max-width:55%;border-radius:6px;display:block;"></a></td></tr>\n`;
+    h+=`  <tr><td><div style="background:${BX};border-left:4px solid ${A};padding:16px 20px;border-radius:4px;"><p style="margin:0 0 8px;font-weight:bold;color:${AD};">${esc(b.featLead)}</p><p style="margin:0;">${esc(m.blurb)}</p></div>\n`;
+    h+=`  <p style="margin:12px 0 0;font-size:14px;">&#128073; <a href="${esc(m.link)}" style="color:${AD};font-weight:bold;text-decoration:underline;">${esc(m.title)||'Read it now'}</a></p></td></tr></table>\n`;
+  });
+  if(tiles.length){
+    h+=`  <p style="font-weight:bold;color:${AD};text-align:center;margin:0 0 4px;font-size:17px;">${esc(b.tilesTtl)}</p>\n  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 16px;font-size:13px;">${esc(b.tilesSub)}</p>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>\n`;
+    tiles.forEach((m,i)=>{h+=`    <td width="33%" align="center" valign="top" style="padding:6px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)||'Featured read'}" width="160" style="width:160px;max-width:100%;border-radius:4px;display:block;"></a></td>\n`;if(i%3===2&&i!==tiles.length-1)h+=`  </tr><tr>\n`;});
+    const rem=tiles.length%3;if(rem)for(let k=rem;k<3;k++)h+=`    <td width="33%"></td>\n`;
+    h+=`  </tr></table>\n`;
+  }
+  if(banners.length){
+    h+=`  <p style="font-weight:bold;color:${AD};text-align:center;margin:26px 0 4px;font-size:17px;">${esc(b.banTtl)}</p>\n  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 16px;font-size:13px;">${esc(b.banSub)}</p>\n`;
+    banners.forEach(m=>{h+=`  <p align="center" style="margin:0 0 16px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)||'Group promo'}" width="540" style="width:100%;max-width:540px;border-radius:6px;display:block;margin:0 auto;"></a></p>\n`;});
+  }
+  h+=`</div>\n<!-- ===== end ${esc(b.label)} swap section ===== -->\n`;
+  return h;
+}
+function doExport(){
+  const list=cur();if(!list.length){alert('Add some modules first.');return;}
+  const miss=list.filter(m=>!m.cover).length;const box=document.getElementById('exportBox');
+  box.value=(miss?`<!-- NOTE: ${miss} module(s) still need a cover image URL. -->\n`:'')+exportHTML();
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyExport(){const bx=document.getElementById('exportBox');if(!bx.value)doExport();bx.select();document.execCommand('copy');}
+function downloadExport(){if(!document.getElementById('exportBox').value)doExport();const blob=new Blob([document.getElementById('exportBox').value],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=current+'-swaps.html';a.click();}
+
+/* ---------- init ---------- */
+loadModules();
+document.getElementById('brandSelect').innerHTML=ORDER.map(k=>`<option value="${k}">${esc(BRANDS[k].label)}</option>`).join('');
+applyTheme();render();
+</script>
+</body>
+</html>
