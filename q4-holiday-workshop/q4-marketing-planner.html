@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q4 Marketing Planner — Q4 Release Workshop | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --coral-dark: #d4604a;
+    --navy: #1B2A4A;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --gold-light: #ecdcae;
+    --sage: #7A9E7E;
+    --text: #2D2D2D;
+    --gray: #666;
+    --light-gray: #ece7df;
+    --border: #D4CFC7;
+    --spooky: #6b3fa0;
+    --pumpkin: #C46A2B;
+    --pine: #2F5D3A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+  .container { max-width: 940px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 34px 20px; text-align: center; border-bottom: 4px solid var(--coral); }
+  header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  header h1 { font-size: 1.9em; letter-spacing: 0.5px; }
+  header .subtitle { color: var(--coral-light); font-size: 1em; margin-top: 8px; font-style: italic; }
+  header .weektag { display:inline-block; margin-top:14px; background: var(--coral); color:white; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+
+  .intro-box { background: white; border-left: 4px solid var(--coral); padding: 20px 22px; margin: 24px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .intro-box p { margin-bottom: 8px; }
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  .section { background: white; border-radius: 8px; padding: 26px 28px; margin: 22px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section > h2 { color: var(--navy); font-size: 1.4em; margin-bottom: 6px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; }
+  .section .step { color: var(--sage); font-size:0.75em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; }
+  .helptext { color: var(--gray); font-size: 0.94em; margin: 8px 0 14px; }
+
+  label { display: block; font-weight: bold; margin: 12px 0 5px; font-size: 0.95em; }
+  input[type="text"], input[type="date"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display: flex; gap: 18px; flex-wrap: wrap; }
+  .form-row > div { flex: 1; min-width: 200px; }
+
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: var(--coral-dark); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: #c1962f; }
+  .center { text-align:center; }
+
+  /* Release count picker */
+  .count-pick { display:flex; gap:12px; flex-wrap:wrap; }
+  .count-opt { flex:1; min-width:180px; border:2px solid var(--light-gray); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all 0.15s; background:white; }
+  .count-opt:hover { border-color: var(--coral-light); }
+  .count-opt.selected { border-color: var(--coral); background: rgba(232,115,90,0.07); }
+  .count-opt .n { font-size:1.7em; color:var(--navy); font-weight:bold; }
+  .count-opt .d { font-size:0.85em; color:var(--gray); }
+
+  /* Book cards */
+  .book-card { border:1px solid var(--border); border-radius:10px; margin:18px 0; overflow:hidden; }
+  .book-card .bc-head { color:white; padding:12px 18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; }
+  .book-card .bc-head .wavelabel { font-size:0.8em; opacity:0.9; font-weight:normal; }
+  .book-card.spooky .bc-head { background: linear-gradient(160deg, #3d2a4a, var(--spooky) 160%); }
+  .book-card.autumn .bc-head { background: linear-gradient(160deg, #7a4a1f, var(--pumpkin)); }
+  .book-card.christmas .bc-head { background: linear-gradient(160deg, #1f3d2a, var(--pine)); }
+  .book-card.none .bc-head { background: var(--navy); }
+  .book-card .bc-body { padding: 16px 18px; }
+
+  .warn { border-radius:8px; padding:11px 15px; margin:10px 0; font-size:0.92em; }
+  .warn.bad { background:#fce3dc; border-left:4px solid var(--coral-dark); color:#8a3524; }
+  .warn.note { background:#f4ecd6; border-left:4px solid var(--gold); color:#6b5420; }
+  .warn.good { background:#eef4ef; border-left:4px solid var(--sage); color:#3d6244; }
+
+  /* Timeline */
+  .timeline { margin:12px 0 4px; }
+  .ms { display:flex; gap:12px; padding:8px 10px; border-radius:7px; align-items:flex-start; }
+  .ms:nth-child(even) { background: var(--cream); }
+  .ms .msdate { min-width:105px; font-weight:bold; color:var(--navy); font-size:0.92em; white-space:nowrap; }
+  .ms .mslabel { flex:1; font-size:0.95em; }
+  .ms .mslabel .sub { display:block; color:var(--gray); font-size:0.87em; }
+  .ms.launch { background: var(--navy); color:white; border-radius:8px; }
+  .ms.launch .msdate { color: var(--gold); }
+  .ms.launch .mslabel .sub { color:#cfd6e2; }
+  .ms.past .msdate, .ms.past .mslabel { opacity:0.55; text-decoration:line-through; }
+
+  /* Channels */
+  .chan-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:9px; }
+  .chan { display:flex; align-items:flex-start; gap:9px; padding:10px 13px; border:2px solid var(--light-gray); border-radius:7px; cursor:pointer; background:white; transition:all 0.15s; }
+  .chan:hover { border-color: var(--coral-light); }
+  .chan.selected { border-color: var(--sage); background:#eef4ef; }
+  .chan input { display:none; }
+  .chan .cname { font-size:0.92em; }
+  .chan .cname b { display:block; color:var(--navy); }
+
+  /* Master calendar */
+  .mcal h3 { color: var(--coral-dark); font-size:1.1em; margin:18px 0 6px; border-bottom:1px dashed var(--border); padding-bottom:4px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:0.92em; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--light-gray); vertical-align:top; }
+  th { background:var(--navy); color:white; font-size:0.85em; letter-spacing:0.5px; }
+  tr:nth-child(even) td { background:var(--cream); }
+  .empty { color:var(--gray); font-style:italic; }
+  .pill { display:inline-block; font-size:0.72em; font-weight:bold; padding:2px 9px; border-radius:10px; color:white; white-space:nowrap; }
+  .pill.spooky { background:var(--spooky); }
+  .pill.autumn { background:var(--pumpkin); }
+  .pill.christmas { background:var(--pine); }
+  .pill.none { background:var(--navy); }
+
+  .savebar { text-align:center; font-size:0.8em; color:var(--gray); margin-top:6px; }
+  .savebar a { color:var(--coral); cursor:pointer; }
+
+  footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+  footer a { color: var(--coral); }
+  .print-wrap { text-align:center; margin: 26px 0; }
+
+  @media print {
+    body { background:white; font-size:10.5pt; }
+    .btn, .print-wrap, .savebar, .no-print, .count-pick { display:none !important; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    header { background:white; color:var(--navy); border-bottom:3px solid var(--coral); }
+    header .brand, header .subtitle, header .weektag { color:var(--navy); background:none; }
+    .book-card .bc-head { color:var(--navy); background:white !important; border-bottom:2px solid var(--border); }
+    .ms.launch { background:white; color:var(--navy); border:2px solid var(--navy); }
+    .chan:not(.selected) { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <h1>Q4 Marketing Planner</h1>
+  <div class="subtitle">Work backward from your release dates &mdash; every launch beat on a real calendar</div>
+  <div class="weektag">Q4 Holiday Release Workshop</div>
+</header>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p><strong>A release date isn't a plan &mdash; it's a deadline with a costume on.</strong> The plan is everything that has to happen <em>before</em> that date: draft, edits, cover, ARCs, swaps, newsletter, countdown. This planner takes each release date and rolls out the full timeline backward, so you can see in July whether your Q4 actually fits.</p>
+    <p>Bring your lineup from the <a href="holiday-trope-workbook.html">Holiday Trope Workbook</a>, give each book a date, and print the master calendar at the bottom. Your work autosaves in this browser.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <div class="step">Step 1</div>
+    <h2>How Many Q4 Releases?</h2>
+    <p class="helptext">Be honest about your pace. One well-marketed holiday book beats three rushed ones &mdash; and novellas count.</p>
+    <div class="count-pick" id="countPick">
+      <div class="count-opt" data-n="1"><div class="n">1</div><div class="d">One flagship holiday release</div></div>
+      <div class="count-opt" data-n="2"><div class="n">2</div><div class="d">Two waves, e.g. Autumn + Christmas</div></div>
+      <div class="count-opt" data-n="3"><div class="n">3</div><div class="d">The full Q4 run &mdash; all three waves</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <div class="step">Step 2</div>
+    <h2>Your Releases &amp; Their Timelines</h2>
+    <p class="helptext">Set a title, wave, and release date for each book. The timeline below each one updates instantly &mdash; those are your real deadlines.</p>
+    <div id="books"></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <div class="step">Step 3</div>
+    <h2>Your Marketing Channels</h2>
+    <p class="helptext">Click the channels you'll actually run this quarter. Fewer channels done consistently beats all of them done once.</p>
+    <div class="chan-grid" id="chanGrid"></div>
+  </div>
+
+  <!-- MASTER CALENDAR -->
+  <div class="section">
+    <h2>Master Q4 Calendar</h2>
+    <p class="helptext">Every milestone from every book, merged in date order. This is your quarter on one page.</p>
+    <div class="mcal" id="masterCal"></div>
+  </div>
+
+  <div class="print-wrap">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+    <div class="savebar">Your plan autosaves in this browser. <a onclick="clearAll()">Start over</a></div>
+  </div>
+
+</div>
+
+<footer>
+  The Invisible Pen &middot; Q4 Holiday Release Workshop &middot; <a href="https://cph-jessica.github.io/tip-marketing-worksheets/">Worksheet Library</a>
+</footer>
+
+<script>
+var WAVES = {
+  none: { label: "Pick a wave…", emoji: "📘", cls:"none", releaseBy: null, hardEnd: null },
+  spooky: { label: "Spooky Season", emoji: "🎃", cls:"spooky", releaseBy: "-10-01", hardEnd: "-10-31" },
+  autumn: { label: "Cozy Autumn", emoji: "🍂", cls:"autumn", releaseBy: "-10-20", hardEnd: "-11-25" },
+  christmas: { label: "Christmas & Holiday", emoji: "🎄", cls:"christmas", releaseBy: "-11-15", hardEnd: "-12-20" }
+};
+
+var MILESTONES = [
+  [-56, "Draft finished", "Full manuscript done — everything after this is polish and promo."],
+  [-42, "Edits complete", "Self-edits + editor/proof pass wrapped."],
+  [-35, "Cover & blurb final", "Seasonal cover, trope-forward blurb, keywords set."],
+  [-28, "ARC copies out", "Review team gets the book — 4 weeks is the courtesy window."],
+  [-21, "Preorder live + swaps booked", "Store page up; newsletter swaps and promo slots locked in."],
+  [-14, "Countdown begins", "Newsletter tease + first social countdown posts."],
+  [-7, "Final week prep", "ARC review nudge; swap creatives delivered; launch posts scheduled."],
+  [0, "LAUNCH DAY", "Newsletter blast, community post, every social channel, all links checked."],
+  [3, "Early push", "Share first reviews; thank-you + social proof posts."],
+  [7, "Second wave", "Newsletter re-send to non-openers; check ads and also-boughts."],
+  [14, "Cross-promo", "Point this book's readers at your next release or backlist."]
+];
+
+var CHANNELS = [
+  ["Newsletter", "Your list is the launch engine — tease, blast, re-send."],
+  ["Newsletter swaps", "BookClicker & co. — book slots 3+ weeks out."],
+  ["Facebook group / page", "Countdown posts, cover reveal, launch-day party."],
+  ["Instagram / TikTok", "Seasonal aesthetic is free attention in Q4."],
+  ["ARC / review team", "Social proof ready on launch day."],
+  ["Amazon / FB ads", "Only if budget allows — seasonal keywords get pricey in Nov."],
+  ["Threads / X", "Low-lift countdown reposts."],
+  ["Preorder campaign", "Rank spike on day one from stacked preorders."]
+];
+
+var state = { count: 1, books: [], channels: [] };
+var KEY = "tip-q4-marketing-planner";
+
+function blankBook(i) {
+  return { title: "", wave: "none", date: "" };
+}
+
+function saveAll() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+function loadAll() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) { var s = JSON.parse(raw); if (s && s.books) state = s; }
+  } catch(e) {}
+  while (state.books.length < 3) state.books.push(blankBook(state.books.length));
+}
+function clearAll() {
+  if (!confirm("Clear the whole plan and start over?")) return;
+  try { localStorage.removeItem(KEY); } catch(e) {}
+  location.reload();
+}
+
+function fmt(d) {
+  return d.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+}
+function fmtLong(d) {
+  return d.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
+}
+function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function parseDate(s) {
+  if (!s) return null;
+  var p = s.split("-");
+  return new Date(+p[0], +p[1]-1, +p[2]);
+}
+
+function renderCount() {
+  document.querySelectorAll('#countPick .count-opt').forEach(function(el){
+    el.classList.toggle('selected', +el.dataset.n === state.count);
+    el.onclick = function(){ state.count = +el.dataset.n; saveAll(); renderAll(); };
+  });
+}
+
+function bookWarnings(b, idx) {
+  var html = "";
+  var rd = parseDate(b.date);
+  if (!rd) return html;
+  var w = WAVES[b.wave];
+  var yr = rd.getFullYear();
+  if (w && w.releaseBy) {
+    var sweet = parseDate(yr + w.releaseBy);
+    var hard = parseDate(yr + w.hardEnd);
+    if (rd > hard) {
+      html += '<div class="warn bad">⚠️ This date is <b>past the ' + w.label + ' buy window</b> (ends ' + fmt(hard) + '). Readers have moved on — pull the date earlier or make this next year\'s book on purpose.</div>';
+    } else if (rd > sweet) {
+      html += '<div class="warn note">⏰ Past the sweet spot (release by ' + fmt(sweet) + '). Still inside the window, but you\'ll have less runway — lean harder on preorders and swaps.</div>';
+    } else {
+      html += '<div class="warn good">✓ Nicely inside the ' + w.label + ' buy window.</div>';
+    }
+  }
+  var draftDue = addDays(rd, -56);
+  var today = new Date(); today.setHours(0,0,0,0);
+  if (draftDue < addDays(today, 7)) {
+    html += '<div class="warn note">✍️ Draft-done lands ' + fmt(draftDue) + ' — that\'s basically now. Consider a novella-length book for this slot, or trim scope.</div>';
+  }
+  state.books.slice(0, state.count).forEach(function(other, j){
+    if (j === idx) return;
+    var od = parseDate(other.date);
+    if (od && Math.abs((od - rd) / 86400000) < 14 && j < idx) {
+      html += '<div class="warn note">📚 Within two weeks of Book ' + (j+1) + '. Doable, but stagger your newsletter sends so you\'re not blasting the same list twice in one week.</div>';
+    }
+  });
+  return html;
+}
+
+function renderBooks() {
+  var wrap = document.getElementById('books');
+  wrap.innerHTML = "";
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  state.books.slice(0, state.count).forEach(function(b, i){
+    var w = WAVES[b.wave] || WAVES.none;
+    var card = document.createElement('div');
+    card.className = "book-card " + w.cls;
+
+    var head = '<div class="bc-head"><span>' + w.emoji + ' Book ' + (i+1) + (b.title ? ': ' + b.title : '') + '</span><span class="wavelabel">' + (b.wave !== "none" ? w.label : 'No wave picked yet') + '</span></div>';
+
+    var body = '<div class="bc-body">';
+    body += '<div class="form-row">';
+    body += '<div><label>Working title</label><input type="text" data-i="' + i + '" data-f="title" value="' + b.title.replace(/"/g,'&quot;') + '" placeholder="Book ' + (i+1) + '"></div>';
+    body += '<div><label>Holiday wave</label><select data-i="' + i + '" data-f="wave">';
+    Object.keys(WAVES).forEach(function(k){
+      body += '<option value="' + k + '"' + (b.wave === k ? ' selected' : '') + '>' + (k === "none" ? "Pick a wave…" : WAVES[k].emoji + " " + WAVES[k].label) + '</option>';
+    });
+    body += '</select></div>';
+    body += '<div><label>Release date</label><input type="date" data-i="' + i + '" data-f="date" value="' + b.date + '"></div>';
+    body += '</div>';
+
+    body += bookWarnings(b, i);
+
+    var rd = parseDate(b.date);
+    if (rd) {
+      body += '<div class="timeline">';
+      MILESTONES.forEach(function(m){
+        var d = addDays(rd, m[0]);
+        var cls = "ms" + (m[0] === 0 ? " launch" : "") + (d < today && m[0] !== 0 ? " past" : "");
+        body += '<div class="' + cls + '"><div class="msdate">' + fmt(d) + '</div><div class="mslabel"><b>' + m[1] + '</b><span class="sub">' + m[2] + '</span></div></div>';
+      });
+      body += '</div>';
+    } else {
+      body += '<p class="empty">Set a release date to roll out this book\'s full timeline.</p>';
+    }
+    body += '</div>';
+
+    card.innerHTML = head + body;
+    wrap.appendChild(card);
+  });
+
+  wrap.querySelectorAll('input, select').forEach(function(el){
+    el.addEventListener('change', function(){
+      state.books[+el.dataset.i][el.dataset.f] = el.value;
+      saveAll(); renderAll();
+    });
+  });
+}
+
+function renderChannels() {
+  var wrap = document.getElementById('chanGrid');
+  wrap.innerHTML = "";
+  CHANNELS.forEach(function(c){
+    var sel = state.channels.indexOf(c[0]) >= 0;
+    var div = document.createElement('div');
+    div.className = "chan" + (sel ? " selected" : "");
+    div.innerHTML = '<span class="cname"><b>' + (sel ? "✓ " : "") + c[0] + '</b>' + c[1] + '</span>';
+    div.onclick = function(){
+      var i = state.channels.indexOf(c[0]);
+      if (i >= 0) state.channels.splice(i,1); else state.channels.push(c[0]);
+      saveAll(); renderChannels();
+    };
+    wrap.appendChild(div);
+  });
+}
+
+function renderMaster() {
+  var items = [];
+  state.books.slice(0, state.count).forEach(function(b, i){
+    var rd = parseDate(b.date);
+    if (!rd) return;
+    var w = WAVES[b.wave] || WAVES.none;
+    MILESTONES.forEach(function(m){
+      items.push({ d: addDays(rd, m[0]), book: b.title || ("Book " + (i+1)), cls: w.cls, emoji: w.emoji, label: m[1], launch: m[0] === 0 });
+    });
+  });
+  var out = document.getElementById('masterCal');
+  if (!items.length) {
+    out.innerHTML = '<p class="empty">Set at least one release date above and the merged calendar builds itself here.</p>';
+    return;
+  }
+  items.sort(function(a,b){ return a.d - b.d; });
+  var byMonth = {};
+  items.forEach(function(it){
+    var k = it.d.toLocaleDateString("en-US", { month:"long", year:"numeric" });
+    (byMonth[k] = byMonth[k] || []).push(it);
+  });
+  var html = "";
+  Object.keys(byMonth).forEach(function(mon){
+    html += "<h3>" + mon + "</h3><table><tbody>";
+    byMonth[mon].forEach(function(it){
+      html += "<tr><td style='white-space:nowrap;'><b>" + fmt(it.d) + "</b></td>" +
+        "<td><span class='pill " + it.cls + "'>" + it.emoji + " " + it.book + "</span></td>" +
+        "<td>" + (it.launch ? "<b>🚀 " + it.label + "</b>" : it.label) + "</td></tr>";
+    });
+    html += "</tbody></table>";
+  });
+  out.innerHTML = html;
+}
+
+function renderAll() {
+  renderCount();
+  renderBooks();
+  renderChannels();
+  renderMaster();
+}
+
+loadAll();
+renderAll();
+</script>
+</body>
+</html>

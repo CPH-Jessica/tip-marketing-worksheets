@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INSTRUCTOR — Q4 Holiday Release Workshop Command Center | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-dark: #d4604a;
+    --navy: #1B2A4A;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --gold-light: #ecdcae;
+    --sage: #7A9E7E;
+    --text: #2D2D2D;
+    --gray: #666;
+    --light-gray: #ece7df;
+    --border: #D4CFC7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.65; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 34px 24px; text-align: center; border-bottom: 4px solid var(--gold); }
+  header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  header .kicker { color: var(--coral); font-size:0.85em; text-transform:uppercase; letter-spacing:2px; }
+  header h1 { font-size: 2em; letter-spacing: 0.5px; margin:6px 0; }
+  header .subtitle { color: #cfd6e2; font-size: 1em; margin-top: 8px; font-style: italic; }
+  .teach-badge { display:inline-block; margin-top:14px; background: var(--gold); color: var(--navy); font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; font-weight:bold; }
+
+  nav.toc { position: sticky; top: 0; background: rgba(255,248,240,0.96); backdrop-filter: blur(4px); border-bottom:1px solid var(--border); padding:10px 20px; z-index:20; font-size:0.82em; }
+  nav.toc .inner { max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; }
+  nav.toc a { color: var(--navy); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }
+  nav.toc a:hover { border-color: var(--coral); color: var(--coral-dark); }
+  nav.toc .clock { margin-left:auto; font-weight:bold; color:var(--coral-dark); font-size:1.05em; display:none; }
+
+  .section { background: white; border-radius: 8px; padding: 26px 30px; margin: 22px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section > h2 { color: var(--navy); font-size: 1.5em; margin-bottom: 4px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; }
+  h3 { color: var(--coral-dark); font-size:1.12em; margin:20px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul, ol { margin: 6px 0 12px 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--navy); }
+  .helptext { color: var(--gray); font-size: 0.93em; margin: 6px 0 12px; }
+
+  label { display:block; font-weight:bold; margin:12px 0 5px; font-size:0.95em; }
+  input[type="text"], input[type="date"], input[type="time"] { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:5px; font-size:1em; font-family:inherit; background:var(--cream); color:var(--text); }
+  input:focus { outline:none; border-color:var(--coral); box-shadow:0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display:flex; gap:18px; flex-wrap:wrap; }
+  .form-row > div { flex:1; min-width:200px; }
+
+  /* Checklists */
+  .check { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:7px; cursor:pointer; transition:background 0.15s; }
+  .check:hover { background:var(--cream); }
+  .check input { margin-top:5px; accent-color: var(--coral); width:17px; height:17px; cursor:pointer; }
+  .check .ct { flex:1; }
+  .check .ct b { color:var(--navy); }
+  .check .ct .sub { display:block; color:var(--gray); font-size:0.88em; }
+  .check.done .ct { opacity:0.55; }
+  .check.done .ct b { text-decoration: line-through; }
+  .progress { height:10px; background:var(--light-gray); border-radius:6px; overflow:hidden; margin:8px 0 4px; }
+  .progress .bar { height:100%; background: linear-gradient(90deg, var(--coral), var(--gold)); width:0; transition: width 0.3s; }
+  .progress-label { font-size:0.82em; color:var(--gray); margin-bottom:8px; }
+
+  /* Timer */
+  .timerbox { background:var(--navy); color:white; border-radius:10px; padding:20px 24px; margin:14px 0; text-align:center; }
+  .timerbox .elapsed { font-size:2.4em; font-weight:bold; color:var(--gold); font-variant-numeric: tabular-nums; }
+  .timerbox .cue { color:#cfd6e2; font-size:0.95em; margin-top:4px; }
+  .timerbox .cue b { color:white; }
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; margin: 6px 4px 0; }
+  .btn:hover { background: var(--coral-dark); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background:#c1962f; }
+  .btn-ghost { background:transparent; border:2px solid var(--coral); color:var(--coral); padding:10px 24px; }
+  .btn-ghost:hover { background:rgba(232,115,90,0.1); }
+
+  /* Beats */
+  .beat { border-left:4px solid var(--gold); background:#fffdf8; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; transition: box-shadow 0.3s, border-color 0.3s; }
+  .beat.now { border-left-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,115,90,0.25); background:#fff6f2; }
+  .beat.donebeat { opacity:0.6; }
+  .beat .beathead { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .beat .time { display:inline-block; background:var(--navy); color:white; font-size:0.72em; letter-spacing:1px; padding:3px 10px; border-radius:12px; }
+  .beat.now .time { background:var(--coral); }
+  .beat .beathead h3 { margin:0; flex:1; }
+  .beat .beathead label.donechk { display:flex; align-items:center; gap:6px; font-size:0.8em; color:var(--gray); font-weight:normal; margin:0; cursor:pointer; }
+  .beat .beathead label.donechk input { accent-color: var(--sage); width:16px; height:16px; }
+  .say, .do, .ask { border-radius:6px; padding:10px 14px; margin:8px 0; font-size:0.97em; }
+  .say { background:#fdf2ef; border-left:3px solid var(--coral); }
+  .do  { background:#eef4ef; border-left:3px solid var(--sage); }
+  .ask { background:#f2ecfb; border-left:3px solid #7b64ab; }
+  .say .lbl, .do .lbl, .ask .lbl { display:block; font-size:0.7em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:3px; }
+  .say .lbl { color:var(--coral-dark); }
+  .do .lbl  { color:#4a7a52; }
+  .ask .lbl { color:#6b5b8a; }
+  .say .quote { font-style:italic; }
+
+  .qa { margin:10px 0; }
+  .qa .q { font-weight:bold; color:var(--navy); }
+  .qa .a { color:var(--text); margin-left:2px; }
+
+  .callout-box { background:var(--navy); color:#f4f1ea; border-radius:8px; padding:18px 22px; margin:16px 0; }
+  .callout-box h3 { color:var(--gold); margin-top:0; }
+  .callout-box a { color:var(--gold-light); }
+
+  .linkbtn { display:inline-block; background:var(--coral); color:white; text-decoration:none; padding:9px 18px; border-radius:6px; font-size:0.9em; margin:4px 6px 4px 0; }
+  .linkbtn:hover { background:var(--coral-dark); }
+  .linkbtn.gold { background:var(--gold); color:var(--navy); }
+  .linkbtn.navy { background:var(--navy); }
+
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.92em; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--light-gray); vertical-align:top; }
+  th { background:var(--navy); color:white; font-size:0.85em; letter-spacing:0.5px; }
+  tr:nth-child(even) td { background:var(--cream); }
+
+  .savebar { text-align:center; font-size:0.8em; color:var(--gray); margin-top:6px; }
+  .savebar a { color:var(--coral); cursor:pointer; }
+  footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+  .print-wrap { text-align:center; margin: 26px 0; }
+
+  @media print {
+    nav.toc, .print-wrap, .no-print, .btn, .savebar, .timerbox { display:none !important; }
+    body { background:white; font-size:10.5pt; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    header { background:white; color:var(--navy); border-bottom:3px solid var(--gold); }
+    header .brand, header .subtitle { color:var(--navy); }
+    .callout-box { background:white; color:var(--navy); border:2px solid var(--navy); }
+    .callout-box h3 { color:var(--coral-dark); }
+    .beat, .say, .do, .ask { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <div class="kicker">Instructor Command Center &mdash; Not for Students</div>
+  <h1>Q4 Holiday Release Workshop</h1>
+  <div class="subtitle">Late July 2026 &middot; Live in the community &middot; ~75 minutes</div>
+  <div class="teach-badge">Your Script, Timer &amp; Checklists</div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#setup">Setup</a>
+    <a href="#prechecks">Pre-flight</a>
+    <a href="#runofshow">Run of Show</a>
+    <a href="#chat">Chat Prompts</a>
+    <a href="#qa">Q&amp;A Cheat Sheet</a>
+    <a href="#after">After-Show</a>
+    <a href="#links">Links</a>
+    <span class="clock" id="navClock">00:00</span>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- SETUP -->
+  <div class="section" id="setup">
+    <h2>&#128197; Session Setup</h2>
+    <p class="helptext">Fill this in once you've picked the date &mdash; it saves in this browser.</p>
+    <div class="form-row">
+      <div><label>Workshop date</label><input type="date" id="sDate"></div>
+      <div><label>Start time</label><input type="time" id="sTime"></div>
+      <div><label>Where you're going live</label><input type="text" id="sWhere" placeholder="Skool live / Zoom link"></div>
+    </div>
+    <div class="callout-box">
+      <h3>The one-sentence promise</h3>
+      <p>&ldquo;By the end of this workshop you will know exactly which holiday books you're releasing this fall, what tropes go on their covers, and what you're doing every week between now and launch.&rdquo; Say it at the top; deliver it at the end.</p>
+    </div>
+  </div>
+
+  <!-- PREFLIGHT -->
+  <div class="section" id="prechecks">
+    <h2>&#9989; Pre-flight Checklist</h2>
+    <div class="progress"><div class="bar" id="preBar"></div></div>
+    <div class="progress-label" id="preLabel"></div>
+    <div id="preList"></div>
+  </div>
+
+  <!-- RUN OF SHOW -->
+  <div class="section" id="runofshow">
+    <h2>&#127908; Run of Show &mdash; 75 Minutes</h2>
+    <p class="helptext">Hit <strong>Start Session</strong> when you go live. The timer highlights the beat you should be in; check off beats as you finish them.</p>
+    <div class="timerbox">
+      <div class="elapsed" id="bigClock">00:00</div>
+      <div class="cue" id="timerCue">Timer not running</div>
+      <button class="btn btn-gold" id="startBtn" onclick="toggleTimer()">&#9654; Start Session</button>
+      <button class="btn btn-ghost" onclick="resetTimer()">Reset</button>
+    </div>
+    <div id="beats"></div>
+  </div>
+
+  <!-- CHAT PROMPTS -->
+  <div class="section" id="chat">
+    <h2>&#128172; Chat Engagement Prompts</h2>
+    <p class="helptext">Drop one in whenever energy dips. Copy-paste ready.</p>
+    <ul>
+      <li>&ldquo;Type &#127875;, &#127810;, or &#127876; for the wave you're most excited about!&rdquo;</li>
+      <li>&ldquo;What's the coziest holiday book you read LAST year? Drop the title &mdash; that's market research.&rdquo;</li>
+      <li>&ldquo;Scale of 1&ndash;10: how done is your Q4 draft right now? No judgment, this room is a judgment-free pumpkin patch.&rdquo;</li>
+      <li>&ldquo;Drop your wrapper + trope stack in the chat and I'll react to a few live.&rdquo;</li>
+      <li>&ldquo;Who's team ONE great book and who's team FULL Q4 RUN? Defend yourself. &#128517;&rdquo;</li>
+      <li>&ldquo;If you had to release a Christmas book November 10, what's today's date minus 8 weeks? Look at your calendar. Feel that? That's why we're here in July.&rdquo;</li>
+    </ul>
+  </div>
+
+  <!-- QA -->
+  <div class="section" id="qa">
+    <h2>&#10067; Q&amp;A Cheat Sheet</h2>
+    <div class="qa"><p class="q">&ldquo;Is it too late to write a Christmas book?&rdquo;</p><p class="a">No &mdash; it's July. A 25&ndash;30k novella drafted in August, edited in September, released November 1&ndash;10 is comfortably on schedule. It's too late in <em>October</em>. That's the whole point of tonight.</p></div>
+    <div class="qa"><p class="q">&ldquo;Do holiday books die after the holiday?&rdquo;</p><p class="a">They hibernate, they don't die. They come back every single year with zero extra work &mdash; a holiday book is an annuity. Plus KU readers binge them all season.</p></div>
+    <div class="qa"><p class="q">&ldquo;Can I just put a wreath on the cover of a regular book?&rdquo;</p><p class="a">Readers can smell it. The wrapper has to do plot work &mdash; if you can delete the holiday and the story survives, seasonal readers will one-star the costume.</p></div>
+    <div class="qa"><p class="q">&ldquo;Which wave sells best?&rdquo;</p><p class="a">Christmas, by a mile &mdash; but it's also the most crowded. Spooky and cozy autumn have thinner shelves, so a well-positioned book stands out faster. Best answer: the wave that fits your existing catalog and voice.</p></div>
+    <div class="qa"><p class="q">&ldquo;What if I miss my window?&rdquo;</p><p class="a">Decide on purpose: either compress scope (novella, not novel) or slide to next year and be the first preorder of NEXT season. The only wrong move is releasing December 23rd to silence.</p></div>
+    <div class="qa"><p class="q">&ldquo;Do I need all three books?&rdquo;</p><p class="a">Absolutely not. One well-marketed holiday release with a real runway beats three rushed ones. The 3-book run is for authors with a novella pipeline already humming.</p></div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="section" id="after">
+    <h2>&#127873; After-Show &amp; Premium Delivery</h2>
+    <div class="progress"><div class="bar" id="postBar"></div></div>
+    <div class="progress-label" id="postLabel"></div>
+    <div id="postList"></div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="section" id="links">
+    <h2>&#128279; Everything You'll Share</h2>
+    <h3>Student-facing pages</h3>
+    <a class="linkbtn" href="signup.html" target="_blank" rel="noopener">Sign-up Page</a>
+    <a class="linkbtn" href="holiday-trope-workbook.html" target="_blank" rel="noopener">Holiday Trope Workbook</a>
+    <a class="linkbtn" href="q4-marketing-planner.html" target="_blank" rel="noopener">Q4 Marketing Planner</a>
+    <h3>Your dashboards</h3>
+    <a class="linkbtn navy" href="https://dashboard.mailerlite.com/forms/191857508304815204/overview" target="_blank" rel="noopener">MailerLite: Signup Form</a>
+    <a class="linkbtn navy" href="https://dashboard.mailerlite.com/subscribers?group=191857501050767013" target="_blank" rel="noopener">MailerLite: Workshop Group</a>
+    <h3>Class tools that pair well</h3>
+    <a class="linkbtn gold" href="https://cph-jessica.github.io/tip-tools/author-tools/trope-compatibility-checker.html" target="_blank" rel="noopener">Trope Compatibility Checker</a>
+    <a class="linkbtn gold" href="https://cph-jessica.github.io/tip-tools/author-tools/trope-bible-builder.html" target="_blank" rel="noopener">Trope Bible &amp; Builder</a>
+    <a class="linkbtn gold" href="https://cph-jessica.github.io/tip-marketing-worksheets/trope-marketing/week-1-trope-stack-worksheet.html" target="_blank" rel="noopener">Week 1: Trope Stack Worksheet</a>
+  </div>
+
+  <div class="print-wrap">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+    <div class="savebar">Checkboxes, dates &amp; timer state autosave in this browser. <a onclick="clearAll()">Reset everything</a></div>
+  </div>
+
+</div>
+
+<footer>
+  The Invisible Pen &middot; Instructor materials &mdash; not for distribution
+</footer>
+
+<script>
+var PRE = [
+  ["Announce + pin the workshop post in the community", "Include the signup link and 'everyone welcome live, premium gets replay + tools'."],
+  ["Send the date announcement email to the workshop group", "MailerLite → Q4 Holiday Release Workshop group."],
+  ["Click-test all three student links in an incognito window", "Signup form, trope workbook, marketing planner — submit a test signup."],
+  ["Confirm your test signup landed in the MailerLite group", "Check the group; delete the test subscriber after."],
+  ["Prep your own example book for the live play", "Pick a real (or realistic) premise so the demo has stakes."],
+  ["Set up replay recording", "Hit record BEFORE the welcome — premium replay depends on it."],
+  ["Screen-share dry run", "Workbook + planner open in separate tabs, font zoomed to 125%."],
+  ["Water, notes, do-not-disturb on", "You know the drill."]
+];
+
+var POST = [
+  ["Stop recording + upload the replay to the premium space", "Same-day if possible — momentum is the product."],
+  ["Post the replay + toolkit links for premium members", "Trope Workbook + Q4 Planner links, framed as 'yours to reuse every year'."],
+  ["Email the workshop group: thank-you + replay info", "Everyone gets the thank-you; premium framing for the replay + tools."],
+  ["Follow up with 'Not sure yet' signups", "Check the q4_focus field in MailerLite — those folks need a nudge to pick a wave."],
+  ["Post an accountability thread: 'Drop your Q4 lineup'", "Turns the workshop into an ongoing community thread through December."],
+  ["Note what to improve for the next workshop", "While it's fresh — two sentences is enough."]
+];
+
+var BEATS = [
+  { at: 0, dur: 5, title: "Welcome & the Q4 Promise",
+    say: "It is July. Somewhere out there an author is going to start her Christmas book on November 1st and wonder why nobody bought it. That will not be you. By the end of tonight you'll know exactly what you're releasing this fall, what goes on the cover, and what you're doing every week until launch.",
+    doo: "Welcome people by name as they arrive. State the one-sentence promise. Mention: everyone gets the live session; premium members get the replay plus the two interactive tools to keep.",
+    ask: "Type 🎃, 🍂, or 🎄 for the wave you're most drawn to right now." },
+  { at: 5, dur: 10, title: "The Q4 Map — Three Waves & Buy Windows",
+    say: "Holiday readers are the most punctual buyers in publishing. Spooky readers show up September 1st and vanish November 1st. Christmas readers start shopping October 1st — yes, October — and buy through December 20th. The window is the strategy. Everything else is details.",
+    doo: "Walk the three waves: Spooky (buy Sept 1–Oct 31, release by Oct 1), Cozy Autumn (Sept 15–Nov 25, release by Oct 20), Christmas (Oct 1–Dec 20, release by Nov 15, sweet spot Nov 1–10). Then work one backward on screen: Nov 10 release means draft done Sept 15 — which means August is a writing month.",
+    ask: "Look at your actual calendar. Which of these windows can your writing pace really hit? Be honest in the chat." },
+  { at: 15, dur: 10, title: "Anatomy of a Holiday Book — Wrapper + Stack",
+    say: "A holiday book is a normal trope stack wearing a seasonal costume. The wrapper — snowed in, haunted inn, pumpkin patch — puts you on the seasonal shelf. The core tropes underneath — grumpy/sunshine, second chance — are why the reader stays. Wreath-on-the-cover books fail because the costume has no body inside.",
+    doo: "Show 2–3 real bestseller examples from this year's holiday charts and name their wrapper + stack out loud. The formula clicks fastest through examples.",
+    ask: "Name a holiday romance you loved — what was its wrapper, and what was the real trope underneath?" },
+  { at: 25, dur: 15, title: "LIVE PLAY — Build a Holiday Trope Stack",
+    say: "Open the Holiday Trope Workbook — link's in the chat. We're building one together right now, then you build yours.",
+    doo: "Share your screen. Build YOUR example book start to finish: pick the wave, one wrapper, up to three core tropes — then read the generated search phrases and positioning line out loud. Then give everyone 5 quiet minutes to build their own while you react to stacks posted in chat.",
+    ask: "Drop your wrapper + stack in the chat — I'll react to as many as I can." },
+  { at: 40, dur: 15, title: "LIVE PLAY — Backward-Plan a Launch",
+    say: "A release date isn't a plan — it's a deadline with a costume on. Watch what happens when I give this book a real date.",
+    doo: "Open the Q4 Marketing Planner. Enter your example book, pick the wave, set a release date — walk the generated timeline out loud, especially draft-done and ARC dates. Show the warning that appears if you set a Christmas book to Dec 18. Then have everyone enter their book and date.",
+    ask: "What's YOUR draft-done date? Post it. That number is the whole workshop." },
+  { at: 55, dur: 10, title: "Pick Your Plan — 1, 2, or 3 Books",
+    say: "You do not need three books. You need the right number for your pace. One great holiday book with a real runway beats three rushed ones — and a holiday book comes back every year like an annuity.",
+    doo: "Lay out the three commitment levels: 1 book (pick your best-fit wave), 2 books (usually Autumn + Christmas), full run (for authors with a novella pipeline). Have each person post their commitment in the chat — public commitment is the retention hook.",
+    ask: "Type your commitment: ONE, TWO, or FULL RUN — and which waves." },
+  { at: 65, dur: 10, title: "Q&A + Replay & Tools",
+    say: "Questions — anything Q4. And before you go: premium members, the replay of tonight plus both interactive tools land in the premium space tomorrow. They're yours to reuse every single year — this workshop is an annuity too.",
+    doo: "Work the Q&A cheat sheet below for the common ones. Close with the accountability thread announcement: 'Drop your Q4 lineup' thread opens tonight.",
+    ask: "What's the ONE thing that could stop your Q4 plan? Let's solve a few live." }
+];
+
+var state = { sDate:"", sTime:"", sWhere:"", pre:[], post:[], beatsDone:[], startedAt:null };
+var KEY = "tip-q4-instructor";
+var tick = null;
+
+function saveAll() {
+  state.sDate = document.getElementById('sDate').value;
+  state.sTime = document.getElementById('sTime').value;
+  state.sWhere = document.getElementById('sWhere').value;
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+}
+function loadAll() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) { var s = JSON.parse(raw); if (s) state = Object.assign(state, s); }
+  } catch(e) {}
+  document.getElementById('sDate').value = state.sDate || "";
+  document.getElementById('sTime').value = state.sTime || "";
+  document.getElementById('sWhere').value = state.sWhere || "";
+}
+function clearAll() {
+  if (!confirm("Reset all checkboxes, session info, and the timer?")) return;
+  try { localStorage.removeItem(KEY); } catch(e) {}
+  location.reload();
+}
+
+function renderChecklist(items, doneArr, listId, barId, labelId, arrName) {
+  var wrap = document.getElementById(listId);
+  wrap.innerHTML = "";
+  items.forEach(function(it, i){
+    var done = doneArr.indexOf(i) >= 0;
+    var div = document.createElement('div');
+    div.className = "check" + (done ? " done" : "");
+    div.innerHTML = '<input type="checkbox"' + (done ? ' checked' : '') + '><div class="ct"><b>' + it[0] + '</b><span class="sub">' + it[1] + '</span></div>';
+    div.onclick = function(e){
+      e.preventDefault();
+      var idx = doneArr.indexOf(i);
+      if (idx >= 0) doneArr.splice(idx,1); else doneArr.push(i);
+      saveAll();
+      renderChecklist(items, doneArr, listId, barId, labelId, arrName);
+    };
+    wrap.appendChild(div);
+  });
+  var pct = Math.round(100 * doneArr.length / items.length);
+  document.getElementById(barId).style.width = pct + "%";
+  document.getElementById(labelId).textContent = doneArr.length + " of " + items.length + " done";
+}
+
+function renderBeats(elapsedMin) {
+  var wrap = document.getElementById('beats');
+  wrap.innerHTML = "";
+  BEATS.forEach(function(b, i){
+    var done = state.beatsDone.indexOf(i) >= 0;
+    var isNow = elapsedMin !== null && !done && elapsedMin >= b.at && elapsedMin < b.at + b.dur;
+    var div = document.createElement('div');
+    div.className = "beat" + (isNow ? " now" : "") + (done ? " donebeat" : "");
+    var mm = String(Math.floor(b.at/60)) + ":" + String(b.at%60).padStart(2,"0");
+    div.innerHTML =
+      '<div class="beathead"><span class="time">' + mm + ' · ' + b.dur + ' min</span><h3>' + b.title + '</h3>' +
+      '<label class="donechk"><input type="checkbox" data-i="' + i + '"' + (done ? ' checked' : '') + '> done</label></div>' +
+      '<div class="say"><span class="lbl">Say</span><span class="quote">&ldquo;' + b.say + '&rdquo;</span></div>' +
+      '<div class="do"><span class="lbl">Do</span>' + b.doo + '</div>' +
+      '<div class="ask"><span class="lbl">Ask the room</span>' + b.ask + '</div>';
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll('.donechk input').forEach(function(cb){
+    cb.addEventListener('change', function(){
+      var i = +cb.dataset.i;
+      var idx = state.beatsDone.indexOf(i);
+      if (idx >= 0) state.beatsDone.splice(idx,1); else state.beatsDone.push(i);
+      saveAll();
+      renderBeats(currentElapsedMin());
+    });
+  });
+}
+
+function currentElapsedMin() {
+  if (!state.startedAt) return null;
+  return (Date.now() - state.startedAt) / 60000;
+}
+
+function fmtClock(min) {
+  var total = Math.max(0, Math.floor(min * 60));
+  var m = Math.floor(total / 60), s = total % 60;
+  return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+}
+
+function updateClock() {
+  var el = currentElapsedMin();
+  if (el === null) return;
+  var t = fmtClock(el);
+  document.getElementById('bigClock').textContent = t;
+  var nav = document.getElementById('navClock');
+  nav.style.display = "inline";
+  nav.textContent = t;
+  var cur = null, next = null;
+  for (var i = 0; i < BEATS.length; i++) {
+    if (el >= BEATS[i].at && el < BEATS[i].at + BEATS[i].dur) cur = BEATS[i];
+    if (BEATS[i].at > el && !next) next = BEATS[i];
+  }
+  var cue = cur ? "Now: <b>" + cur.title + "</b>" : (el >= 75 ? "<b>Past 75 minutes — land the plane 🛬</b>" : "");
+  if (next && cur) cue += " · next: " + next.title + " at " + fmtClock(next.at) ;
+  document.getElementById('timerCue').innerHTML = cue || "Session running";
+  if (Math.floor(el * 60) % 15 === 0) renderBeats(el);
+}
+
+function toggleTimer() {
+  if (state.startedAt) {
+    if (!confirm("Stop the session timer?")) return;
+    state.startedAt = null;
+    clearInterval(tick); tick = null;
+    document.getElementById('bigClock').textContent = "00:00";
+    document.getElementById('timerCue').textContent = "Timer not running";
+    document.getElementById('navClock').style.display = "none";
+    document.getElementById('startBtn').innerHTML = "&#9654; Start Session";
+  } else {
+    state.startedAt = Date.now();
+    document.getElementById('startBtn').innerHTML = "&#9632; Stop";
+    tick = setInterval(updateClock, 1000);
+    updateClock();
+  }
+  saveAll();
+  renderBeats(currentElapsedMin());
+}
+
+function resetTimer() {
+  if (!confirm("Reset the timer to 00:00?")) return;
+  state.startedAt = null;
+  clearInterval(tick); tick = null;
+  document.getElementById('bigClock').textContent = "00:00";
+  document.getElementById('timerCue').textContent = "Timer not running";
+  document.getElementById('navClock').style.display = "none";
+  document.getElementById('startBtn').innerHTML = "&#9654; Start Session";
+  saveAll();
+  renderBeats(null);
+}
+
+['sDate','sTime','sWhere'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', saveAll);
+});
+
+loadAll();
+renderChecklist(PRE, state.pre, 'preList', 'preBar', 'preLabel', 'pre');
+renderChecklist(POST, state.post, 'postList', 'postBar', 'postLabel', 'post');
+if (state.startedAt) {
+  document.getElementById('startBtn').innerHTML = "&#9632; Stop";
+  tick = setInterval(updateClock, 1000);
+  updateClock();
+}
+renderBeats(currentElapsedMin());
+</script>
+</body>
+</html>

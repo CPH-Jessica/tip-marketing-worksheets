@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holiday Trope Workbook — Q4 Release Workshop | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a999;
+    --coral-dark: #d4604a;
+    --navy: #1B2A4A;
+    --cream: #FFF8F0;
+    --gold: #D4A853;
+    --gold-light: #ecdcae;
+    --sage: #7A9E7E;
+    --text: #2D2D2D;
+    --gray: #666;
+    --light-gray: #ece7df;
+    --border: #D4CFC7;
+    --spooky: #6b3fa0;
+    --pumpkin: #C46A2B;
+    --pine: #2F5D3A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+  .container { max-width: 940px; margin: 0 auto; padding: 20px; }
+  header { background: var(--navy); color: white; padding: 34px 20px; text-align: center; border-bottom: 4px solid var(--coral); }
+  header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  header h1 { font-size: 1.9em; letter-spacing: 0.5px; }
+  header .subtitle { color: var(--coral-light); font-size: 1em; margin-top: 8px; font-style: italic; }
+  header .weektag { display:inline-block; margin-top:14px; background: var(--coral); color:white; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+
+  .intro-box { background: white; border-left: 4px solid var(--coral); padding: 20px 22px; margin: 24px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .intro-box p { margin-bottom: 8px; }
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  .section { background: white; border-radius: 8px; padding: 26px 28px; margin: 22px 0; border: 1px solid var(--light-gray); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .section > h2 { color: var(--navy); font-size: 1.4em; margin-bottom: 6px; border-bottom: 2px solid var(--coral); padding-bottom: 8px; }
+  .section .step { color: var(--sage); font-size:0.75em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; }
+  .helptext { color: var(--gray); font-size: 0.94em; margin: 8px 0 14px; }
+
+  label { display: block; font-weight: bold; margin: 14px 0 5px; font-size: 0.95em; }
+  input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .form-row > div { flex: 1; min-width: 220px; }
+
+  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: var(--coral-dark); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: #c1962f; }
+  .center { text-align:center; }
+
+  /* Theme tabs */
+  .theme-tabs { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin:14px 0; }
+  .theme-tab { border-radius:10px; padding:16px; color:white; cursor:pointer; border:3px solid transparent; transition: all 0.15s; text-align:center; }
+  .theme-tab .emoji { font-size:1.5em; }
+  .theme-tab h3 { font-size:1.05em; margin-top:4px; }
+  .theme-tab .win { font-size:0.76em; opacity:0.9; margin-top:3px; }
+  .theme-tab.spooky { background: linear-gradient(160deg, #3d2a4a, var(--spooky) 130%); }
+  .theme-tab.autumn { background: linear-gradient(160deg, #7a4a1f, var(--pumpkin)); }
+  .theme-tab.christmas { background: linear-gradient(160deg, #1f3d2a, var(--pine)); }
+  .theme-tab.active { border-color: var(--gold); box-shadow: 0 4px 14px rgba(0,0,0,0.2); transform: translateY(-2px); }
+  .theme-tab .done-dot { display:none; font-size:0.75em; background:var(--gold); color:var(--navy); border-radius:12px; padding:1px 10px; margin-top:6px; font-weight:bold; }
+  .theme-tab.has-stack .done-dot { display:inline-block; }
+
+  .timing-strip { display:flex; flex-wrap:wrap; gap:12px; margin:10px 0; }
+  .timing-strip .t { flex:1; min-width:160px; background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:11px 14px; }
+  .timing-strip .t .k { font-size:0.7em; text-transform:uppercase; letter-spacing:1.5px; color:var(--sage); font-weight:bold; }
+  .timing-strip .t .v { color:var(--navy); font-weight:bold; font-size:0.98em; }
+
+  /* Chip pickers */
+  .cat-label { color: var(--sage); font-size: 0.78em; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 8px; padding-bottom:4px; border-bottom:1px dashed var(--border); }
+  .trope-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; }
+  .trope { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 2px solid var(--light-gray); border-radius: 7px; cursor: pointer; transition: all 0.15s; background:white; }
+  .trope:hover { border-color: var(--coral-light); background: var(--cream); }
+  .trope.selected { border-color: var(--coral); background: rgba(232,115,90,0.08); }
+  .trope .tname { flex:1; font-size:0.92em; }
+  .selcount { color:var(--coral); font-weight:bold; font-size:0.92em; margin:14px 0 2px; }
+
+  .result-card { background: var(--cream); border:1px solid var(--gold-light); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:16px 18px; margin:14px 0; }
+  .result-card h3 { color:var(--navy); font-size:1.05em; margin-bottom:8px; }
+  .searchline { background:white; border:1px solid var(--light-gray); border-radius:6px; padding:9px 12px; margin:6px 0; font-family: 'Courier New', monospace; font-size:0.92em; color:var(--navy); display:flex; align-items:center; gap:8px; }
+  .searchline::before { content:"\1F50D"; font-size:0.95em; }
+  .taghash { color:var(--coral-dark); font-weight:bold; }
+  .hashwrap { line-height:2; }
+  .positioning { font-size:1.12em; line-height:1.7; color:var(--navy); background:white; border:1px dashed var(--coral); border-radius:8px; padding:16px 18px; }
+  .positioning b { color:var(--coral-dark); }
+
+  .callout { border-radius:8px; padding:14px 18px; margin:14px 0; font-size:0.94em; }
+  .callout.beginner { background:#eef4ef; border-left:4px solid var(--sage); }
+  .callout.pro { background:#f2ecfb; border-left:4px solid #7b64ab; }
+  .callout .tag { display:block; font-size:0.72em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .callout.beginner .tag { color:#4a7a52; }
+  .callout.pro .tag { color:#6b5b8a; }
+
+  /* Lineup table */
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.93em; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--light-gray); vertical-align:top; }
+  th { background:var(--navy); color:white; font-size:0.85em; letter-spacing:0.5px; }
+  tr:nth-child(even) td { background:var(--cream); }
+  .empty-lineup { color:var(--gray); font-style:italic; }
+
+  .savebar { text-align:center; font-size:0.8em; color:var(--gray); margin-top:6px; }
+  .savebar a { color:var(--coral); cursor:pointer; }
+
+  footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
+  footer a { color: var(--coral); }
+  .print-wrap { text-align:center; margin: 26px 0; }
+
+  @media print {
+    body { background:white; font-size:10.5pt; }
+    .btn, .print-wrap, .no-print, .savebar, .trope:not(.selected) { display:none !important; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    header { background:white; color:var(--navy); border-bottom:3px solid var(--coral); }
+    header .brand, header .subtitle, header .weektag { color:var(--navy); background:none; }
+    .theme-tabs { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">The Invisible Pen</div>
+  <h1>Holiday Trope Workbook</h1>
+  <div class="subtitle">Build a seasonal trope stack for each of your Q4 releases</div>
+  <div class="weektag">Q4 Holiday Release Workshop</div>
+</header>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p><strong>Holiday readers search in season-speak.</strong> They don't look for "a romance in October" &mdash; they type <em>snowed in grumpy sunshine Christmas romance</em>. A holiday book is a normal trope stack wearing a seasonal costume: one <strong>seasonal wrapper</strong> (the holiday hook) plus two or three <strong>core tropes</strong> (the relationship engine).</p>
+    <p>Work one wave at a time below. Your picks save automatically in this browser, and every completed wave lands in <strong>Your Q4 Lineup</strong> at the bottom &mdash; print it when you're done.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <div class="step">Step 1</div>
+    <h2>Your Books' Home Base</h2>
+    <p class="helptext">Set once &mdash; applies to every wave you build.</p>
+    <div class="form-row">
+      <div>
+        <label for="penName">Pen name (optional)</label>
+        <input type="text" id="penName" placeholder="Your author name" onchange="saveAll()">
+      </div>
+      <div>
+        <label for="genre">Your genre / subgenre</label>
+        <select id="genre" onchange="refreshTheme(); saveAll()">
+          <option value="Contemporary Romance">Contemporary Romance</option>
+          <option value="Small Town Romance">Small Town Romance</option>
+          <option value="Romantic Comedy">Romantic Comedy</option>
+          <option value="Clean &amp; Wholesome Romance">Clean &amp; Wholesome Romance</option>
+          <option value="Paranormal Romance">Paranormal Romance</option>
+          <option value="Romantasy / Fantasy Romance">Romantasy / Fantasy Romance</option>
+          <option value="Romantic Suspense">Romantic Suspense</option>
+          <option value="Historical / Regency Romance">Historical / Regency Romance</option>
+          <option value="Cozy Mystery">Cozy Mystery</option>
+          <option value="Women's Fiction">Women's Fiction</option>
+        </select>
+      </div>
+      <div>
+        <label for="heat">Heat level</label>
+        <select id="heat" onchange="refreshTheme(); saveAll()">
+          <option value="clean">Clean / closed door (1&ndash;2)</option>
+          <option value="warm">Warm / on-page but soft (3)</option>
+          <option value="spicy">Spicy / open door (4&ndash;5)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <div class="step">Step 2</div>
+    <h2>Pick a Wave to Build</h2>
+    <p class="helptext">Click a wave to work on it. Build one, two, or all three &mdash; each keeps its own stack.</p>
+    <div class="theme-tabs" id="themeTabs"></div>
+    <div class="timing-strip" id="timingStrip"></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <div class="step">Step 3</div>
+    <h2 id="wrapperHead">Choose Your Seasonal Wrapper</h2>
+    <p class="helptext">The wrapper is the holiday hook &mdash; the setting or premise that puts your book on the seasonal shelf. <strong>Pick exactly one.</strong></p>
+    <div class="trope-grid" id="wrapperGrid"></div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="section">
+    <div class="step">Step 4</div>
+    <h2>Stack Your Core Tropes</h2>
+    <p class="helptext">The relationship engine underneath the costume. <strong>Pick up to three.</strong> These carry the emotional promise; the wrapper just sets the stage.</p>
+    <div class="trope-grid" id="coreGrid"></div>
+    <div class="selcount" id="coreCount">0 of 3 selected</div>
+    <div class="callout beginner">
+      <span class="tag">If you're new to this</span>
+      One proven pairing beats three clever ones. <em>Grumpy/sunshine + forced proximity</em> under almost any wrapper is a Q4 bestseller pattern for a reason.
+    </div>
+    <div class="callout pro">
+      <span class="tag">Leveling up</span>
+      Make the wrapper do plot work, not just decoration. "Snowed in" should be the <em>reason</em> the forced proximity happens &mdash; if you could delete the holiday and the story survives, the seasonal readers will feel it.
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section">
+    <div class="step">Step 5</div>
+    <h2>Your Seasonal Stack, Translated</h2>
+    <p class="helptext">Everything below regenerates as you click &mdash; these are the words to use in your subtitle, keywords, hashtags, and ad copy.</p>
+    <div id="genOut"><p class="empty-lineup">Pick a wrapper and at least one core trope above to generate your stack.</p></div>
+  </div>
+
+  <!-- LINEUP -->
+  <div class="section">
+    <h2>Your Q4 Lineup</h2>
+    <p class="helptext">Every wave with a completed stack shows up here. This is page one of your marketing plan.</p>
+    <div id="lineupOut"></div>
+    <div class="callout beginner">
+      <span class="tag">Next step</span>
+      Take this lineup into the <a href="q4-marketing-planner.html">Q4 Marketing Planner</a> and turn each release into a dated, week-by-week timeline.
+    </div>
+  </div>
+
+  <div class="print-wrap">
+    <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+    <div class="savebar">Your work autosaves in this browser. <a onclick="clearAll()">Start over</a></div>
+  </div>
+
+</div>
+
+<footer>
+  The Invisible Pen &middot; Q4 Holiday Release Workshop &middot; <a href="https://cph-jessica.github.io/tip-marketing-worksheets/">Worksheet Library</a>
+</footer>
+
+<script>
+var THEMES = {
+  spooky: {
+    label: "Spooky Season", emoji: "🎃", cls: "spooky",
+    buy: "Sept 1 – Oct 31", releaseBy: "Oct 1", sweet: "Sept 15 – 25",
+    kw: "halloween", adj: "spooky",
+    promise: "shivers with their swoon",
+    tags: ["SpookySeason","HalloweenRomance","WitchyRomance","FallReads"],
+    wrappers: [
+      ["Haunted inn / house", "haunted house"],
+      ["Witchy heroine", "witch"],
+      ["Ghost hero(ine)", "ghost"],
+      ["Monster romance", "monster"],
+      ["Vampire / werewolf", "vampire"],
+      ["Gothic manor", "gothic"],
+      ["Cursed family / town", "cursed"],
+      ["Halloween festival", "halloween festival"],
+      ["Costume party mix-up", "masquerade"],
+      ["Paranormal investigator", "paranormal"],
+      ["Pumpkin farm at night", "pumpkin patch"],
+      ["Cemetery keeper", "graveyard"]
+    ]
+  },
+  autumn: {
+    label: "Cozy Autumn", emoji: "🍂", cls: "autumn",
+    buy: "Sept 15 – Nov 25", releaseBy: "Oct 20", sweet: "Oct 1 – 15",
+    kw: "fall", adj: "cozy autumn",
+    promise: "sweater-weather comfort",
+    tags: ["CozyFallReads","AutumnRomance","SmallTownRomance","PumpkinSpice"],
+    wrappers: [
+      ["Harvest festival", "harvest festival"],
+      ["Apple orchard", "apple orchard"],
+      ["Pumpkin patch", "pumpkin patch"],
+      ["Cider mill / bakery", "cider mill"],
+      ["Small-town bake-off", "baking competition"],
+      ["Teacher, back to school", "teacher"],
+      ["Football season", "football"],
+      ["County fair", "county fair"],
+      ["Bookshop in fall", "bookshop"],
+      ["Thanksgiving homecoming", "thanksgiving"],
+      ["Cabin weekend", "cabin"],
+      ["Bonfire nights", "bonfire"]
+    ]
+  },
+  christmas: {
+    label: "Christmas & Holiday", emoji: "🎄", cls: "christmas",
+    buy: "Oct 1 – Dec 20", releaseBy: "Nov 15", sweet: "Nov 1 – 10",
+    kw: "christmas", adj: "holiday",
+    promise: "twinkle-light magic",
+    tags: ["ChristmasRomance","HolidayRomance","SnowedIn","ChristmasBooks"],
+    wrappers: [
+      ["Snowed in", "snowed in"],
+      ["Christmas tree farm", "christmas tree farm"],
+      ["Holiday bake-off", "christmas baking"],
+      ["Secret Santa", "secret santa"],
+      ["Small-town Christmas festival", "christmas festival"],
+      ["Big-city exec comes home", "coming home for christmas"],
+      ["Innkeeper at the holidays", "christmas inn"],
+      ["Christmas wedding", "christmas wedding"],
+      ["Scrooge hero, sunshine heroine", "grumpy christmas"],
+      ["Mistletoe pact", "mistletoe"],
+      ["Holiday market", "holiday market"],
+      ["New Year's Eve countdown", "new years eve"]
+    ]
+  }
+};
+
+var CORE_TROPES = [
+  "Grumpy / Sunshine", "Enemies to Lovers", "Second Chance", "Fake Dating",
+  "Forced Proximity", "Small Town", "Single Dad / Mom", "Friends to Lovers",
+  "Fated Mates", "Brother's Best Friend", "Marriage of Convenience", "Opposites Attract",
+  "Secret Identity", "Age Gap", "Bodyguard / Protector", "Boss & Employee",
+  "Childhood Sweethearts", "Love Triangle (resolved)"
+];
+
+var HEAT_TAGS = {
+  clean: ["CleanRomance","SweetRomance"],
+  warm: ["ContemporaryRomance","RomanceReader"],
+  spicy: ["SpicyRomance","BookTok"]
+};
+var HEAT_PROMISE = {
+  clean: "and a kiss worth waiting for",
+  warm: "and slow-burn heat",
+  spicy: "and plenty of spice"
+};
+
+var state = {
+  penName: "", genre: "Contemporary Romance", heat: "clean",
+  current: "spooky",
+  waves: { spooky: {wrapper:null, tropes:[]}, autumn: {wrapper:null, tropes:[]}, christmas: {wrapper:null, tropes:[]} }
+};
+
+var KEY = "tip-q4-trope-workbook";
+
+function saveAll() {
+  state.penName = document.getElementById('penName').value;
+  state.genre = document.getElementById('genre').value;
+  state.heat = document.getElementById('heat').value;
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function loadAll() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) {
+      var s = JSON.parse(raw);
+      if (s && s.waves) { state = s; }
+    }
+  } catch(e) {}
+  document.getElementById('penName').value = state.penName || "";
+  document.getElementById('genre').value = state.genre || "Contemporary Romance";
+  document.getElementById('heat').value = state.heat || "clean";
+}
+
+function clearAll() {
+  if (!confirm("Clear everything and start over?")) return;
+  try { localStorage.removeItem(KEY); } catch(e) {}
+  location.reload();
+}
+
+function buildTabs() {
+  var wrap = document.getElementById('themeTabs');
+  wrap.innerHTML = "";
+  Object.keys(THEMES).forEach(function(k){
+    var t = THEMES[k];
+    var w = state.waves[k];
+    var div = document.createElement('div');
+    div.className = "theme-tab " + t.cls + (state.current === k ? " active" : "") + (w.wrapper && w.tropes.length ? " has-stack" : "");
+    div.innerHTML = '<div class="emoji">' + t.emoji + '</div><h3>' + t.label + '</h3><div class="win">Release by ' + t.releaseBy + '</div><span class="done-dot">Stack built ✓</span>';
+    div.onclick = function(){ state.current = k; saveAll(); refreshTheme(); };
+    wrap.appendChild(div);
+  });
+}
+
+function refreshTheme() {
+  buildTabs();
+  var k = state.current, t = THEMES[k], w = state.waves[k];
+
+  document.getElementById('timingStrip').innerHTML =
+    '<div class="t"><div class="k">Readers buy</div><div class="v">' + t.buy + '</div></div>' +
+    '<div class="t"><div class="k">Release by</div><div class="v">' + t.releaseBy + '</div></div>' +
+    '<div class="t"><div class="k">Launch sweet spot</div><div class="v">' + t.sweet + '</div></div>';
+
+  document.getElementById('wrapperHead').textContent = "Choose Your " + t.label + " Wrapper";
+
+  var wg = document.getElementById('wrapperGrid');
+  wg.innerHTML = "";
+  t.wrappers.forEach(function(pair){
+    var div = document.createElement('div');
+    div.className = "trope" + (w.wrapper === pair[0] ? " selected" : "");
+    div.innerHTML = '<span class="tname">' + pair[0] + '</span>';
+    div.onclick = function(){
+      w.wrapper = (w.wrapper === pair[0]) ? null : pair[0];
+      saveAll(); refreshTheme();
+    };
+    wg.appendChild(div);
+  });
+
+  var cg = document.getElementById('coreGrid');
+  cg.innerHTML = "";
+  CORE_TROPES.forEach(function(name){
+    var sel = w.tropes.indexOf(name) >= 0;
+    var div = document.createElement('div');
+    div.className = "trope" + (sel ? " selected" : "");
+    div.innerHTML = '<span class="tname">' + name + '</span>';
+    div.onclick = function(){
+      var i = w.tropes.indexOf(name);
+      if (i >= 0) { w.tropes.splice(i,1); }
+      else if (w.tropes.length < 3) { w.tropes.push(name); }
+      saveAll(); refreshTheme();
+    };
+    cg.appendChild(div);
+  });
+  document.getElementById('coreCount').textContent = w.tropes.length + " of 3 selected";
+
+  generate();
+  lineup();
+}
+
+function tagify(s) {
+  return s.replace(/&/g,"And").replace(/[^a-zA-Z0-9 ]/g,"").split(" ").filter(Boolean)
+    .map(function(x){ return x.charAt(0).toUpperCase() + x.slice(1); }).join("");
+}
+
+function wrapperKw(t, w) {
+  var found = t.wrappers.filter(function(p){ return p[0] === w.wrapper; });
+  return found.length ? found[0][1] : "";
+}
+
+function generate() {
+  var k = state.current, t = THEMES[k], w = state.waves[k];
+  var out = document.getElementById('genOut');
+  if (!w.wrapper || !w.tropes.length) {
+    out.innerHTML = '<p class="empty-lineup">Pick a wrapper and at least one core trope above to generate your stack.</p>';
+    return;
+  }
+  var genre = state.genre.replace(/ \/ .*$/, "");
+  var genreShort = genre.toLowerCase().replace("clean & wholesome romance","clean romance").replace("historical / regency romance","regency romance");
+  var kw = wrapperKw(t, w);
+  var tl = w.tropes.map(function(x){ return x.toLowerCase().replace(/ \/ /g," "); });
+
+  var searches = [];
+  searches.push(kw + " " + genreShort);
+  searches.push(tl[0] + " " + t.kw + " romance");
+  if (tl[1]) searches.push(tl[0] + " " + tl[1] + " " + t.adj + " romance");
+  searches.push((state.heat === "clean" ? "clean " : "") + t.kw + " " + tl[0] + " books");
+
+  var hashtags = t.tags.concat(w.tropes.map(tagify)).concat(HEAT_TAGS[state.heat]);
+
+  var tropesBold = w.tropes.map(function(x){ return "<b>" + x.toLowerCase() + "</b>"; });
+  var tropeLine = tropesBold.length === 1 ? tropesBold[0] :
+      tropesBold.slice(0,-1).join(", ") + " and " + tropesBold[tropesBold.length-1];
+  var pos = "A <b>" + w.wrapper.toLowerCase() + "</b> " + genreShort + " with " + tropeLine +
+      " — for readers who want " + t.promise + " " + HEAT_PROMISE[state.heat] + ".";
+
+  var html = "";
+  html += '<div class="result-card"><h3>' + t.emoji + ' Search phrases your readers are typing</h3>';
+  searches.forEach(function(s){ html += '<div class="searchline">' + s + '</div>'; });
+  html += '</div>';
+  html += '<div class="result-card"><h3>#️⃣ Hashtag set</h3><div class="hashwrap">';
+  hashtags.forEach(function(h){ html += '<span class="taghash">#' + h + '</span> '; });
+  html += '</div></div>';
+  html += '<div class="result-card"><h3>📌 Positioning line (subtitle / ad copy / pinned post)</h3><div class="positioning">' + pos + '</div></div>';
+  html += '<div class="result-card"><h3>⏰ Timing reminder</h3><p>Readers shop this wave <b>' + t.buy + '</b>. Release by <b>' + t.releaseBy + '</b>; the launch sweet spot is <b>' + t.sweet + '</b>. Miss the window and this becomes next year’s book — which is fine, but decide that on purpose.</p></div>';
+  out.innerHTML = html;
+}
+
+function lineup() {
+  var rows = "";
+  Object.keys(THEMES).forEach(function(k){
+    var t = THEMES[k], w = state.waves[k];
+    if (w.wrapper && w.tropes.length) {
+      rows += "<tr><td>" + t.emoji + " <b>" + t.label + "</b></td><td>" + w.wrapper + "</td><td>" + w.tropes.join(" + ") + "</td><td>" + t.releaseBy + "</td></tr>";
+    }
+  });
+  var out = document.getElementById('lineupOut');
+  if (!rows) {
+    out.innerHTML = '<p class="empty-lineup">No completed waves yet &mdash; build a stack above and it appears here.</p>';
+  } else {
+    var who = state.penName ? " &mdash; " + state.penName : "";
+    out.innerHTML = '<p><strong>Q4 release lineup' + who + '</strong> &middot; ' + state.genre + '</p>' +
+      '<table><thead><tr><th>Wave</th><th>Seasonal wrapper</th><th>Core trope stack</th><th>Release by</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+}
+
+loadAll();
+refreshTheme();
+</script>
+</body>
+</html>
