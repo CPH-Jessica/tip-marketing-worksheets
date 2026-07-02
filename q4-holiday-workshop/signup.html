@@ -6,14 +6,15 @@
 <title>Q4 Holiday Release Workshop — Sign Up | The Invisible Pen</title>
 <style>
   :root {
-    --coral: #E8735A;
-    --coral-light: #f4a999;
-    --coral-dark: #d4604a;
-    --navy: #1B2A4A;
-    --cream: #FFF8F0;
+    /* The Invisible Pen brand — teal & gold, matched to the community banner */
+    --coral: #C9973B;        /* rich gold — primary buttons & accents */
+    --coral-light: #EBD3A0;  /* soft gold — subtitle text on teal */
+    --coral-dark: #A87A28;   /* deep gold — hovers & emphasis text */
+    --navy: #0E3E47;         /* deep teal — headers & headings */
+    --cream: #FBF8F1;        /* warm ivory background */
     --gold: #D4A853;
     --gold-light: #ecdcae;
-    --sage: #7A9E7E;
+    --sage: #4E8578;         /* muted teal-green — small labels */
     --text: #2D2D2D;
     --gray: #666;
     --light-gray: #ece7df;
@@ -28,7 +29,7 @@
   header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
   header h1 { font-size: 2em; letter-spacing: 0.5px; }
   header .subtitle { color: var(--coral-light); font-size: 1.05em; margin-top: 10px; font-style: italic; }
-  header .livetag { display:inline-block; margin-top:16px; background: var(--coral); color:white; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:6px 16px; border-radius:20px; }
+  header .livetag { display:inline-block; margin-top:16px; background: var(--gold); color:var(--navy); font-weight:bold; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:6px 16px; border-radius:20px; }
 
   .intro-box { background: white; border-left: 4px solid var(--coral); padding: 20px 22px; margin: 24px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .intro-box p { margin-bottom: 8px; }
@@ -65,19 +66,19 @@
   label { display: block; font-weight: bold; margin: 14px 0 5px; font-size: 0.95em; }
   label .opt { font-weight:normal; color:var(--gray); font-size:0.88em; }
   input[type="text"], input[type="email"], select { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
-  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(201,151,59,0.25); }
   .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
   .form-row > div { flex: 1; min-width: 220px; }
 
   .focus-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:9px; margin-top:6px; }
   .focus-opt { display:flex; align-items:center; gap:9px; padding:11px 13px; border:2px solid var(--light-gray); border-radius:7px; cursor:pointer; transition:all 0.15s; background:white; }
   .focus-opt:hover { border-color: var(--coral-light); background: var(--cream); }
-  .focus-opt.selected { border-color: var(--coral); background: rgba(232,115,90,0.08); }
+  .focus-opt.selected { border-color: var(--coral); background: rgba(201,151,59,0.12); }
   .focus-opt input { display:none; }
   .focus-opt .fname { font-size:0.93em; }
 
-  .btn { background: var(--coral); color: white; border: none; padding: 14px 34px; border-radius: 6px; font-size: 1.05em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-  .btn:hover { background: var(--coral-dark); }
+  .btn { background: var(--navy); color: white; border: 2px solid var(--gold); padding: 14px 34px; border-radius: 6px; font-size: 1.05em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: #16545F; }
   .btn:disabled { opacity:0.6; cursor:wait; }
   .center { text-align:center; }
 
@@ -87,7 +88,7 @@
   .thanks p { color: var(--gray); max-width: 480px; margin: 0 auto 8px; }
   .thanks .confirm { color: var(--coral-dark); font-weight: bold; }
 
-  .formerr { display:none; background:#fce3dc; border-left:4px solid var(--coral-dark); border-radius:0 8px 8px 0; padding:12px 16px; margin:12px 0; font-size:0.92em; color:var(--coral-dark); }
+  .formerr { display:none; background:#fce3dc; border-left:4px solid #B23A3A; border-radius:0 8px 8px 0; padding:12px 16px; margin:12px 0; font-size:0.92em; color:#8a3524; }
 
   footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
   footer a { color: var(--coral); }
