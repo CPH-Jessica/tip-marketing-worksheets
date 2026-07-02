@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teach Claude Who You Are — The Invisible Pen Worksheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2033;
+    --ink-soft:#5d5266;
+    --paper:#f6f2f4;
+    --card:#ffffff;
+    --mulberry:#8e3b60;
+    --mulberry-dark:#6f2c4a;
+    --sage:#5f7a5a;
+    --sage-tint:#eef3ec;
+    --grey-tint:#f0edf1;
+    --line:#e2d9df;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Karla',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+
+  /* ---------- header ---------- */
+  header{text-align:center;margin-bottom:28px}
+  .eyebrow{
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--mulberry);font-weight:700;margin-bottom:10px;
+  }
+  h1{
+    font-family:'Fraunces',Georgia,serif;font-weight:700;
+    font-size:clamp(30px,5vw,44px);line-height:1.15;margin-bottom:12px;
+  }
+  header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:17px}
+
+  /* ---------- progress ---------- */
+  .progress{display:flex;gap:6px;margin:26px 0 30px;justify-content:center;flex-wrap:wrap}
+  .progress button{
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    padding:8px 14px;border-radius:999px;font-family:'Karla',sans-serif;
+    font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;
+  }
+  .progress button:hover{border-color:var(--mulberry)}
+  .progress button.active{background:var(--mulberry);border-color:var(--mulberry);color:#fff;font-weight:700}
+  .progress button.done{border-color:var(--sage);color:var(--sage)}
+  .progress button.done::before{content:"✓ "}
+  .progress button:focus-visible,.btn:focus-visible,.toggle button:focus-visible,textarea:focus-visible,input:focus-visible{
+    outline:3px solid var(--mulberry);outline-offset:2px;
+  }
+
+  /* ---------- panels ---------- */
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.panel{animation:none}}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;margin-bottom:20px;
+  }
+  .step-label{
+    font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--mulberry);font-weight:700;margin-bottom:6px;
+  }
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:26px;margin-bottom:8px}
+  .why{color:var(--ink-soft);margin-bottom:20px;font-size:16px}
+
+  /* ---------- demo (signature element) ---------- */
+  .demo{
+    border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;margin-bottom:26px;
+  }
+  .demo-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 18px;background:var(--paper);border-bottom:1px solid var(--line);flex-wrap:wrap;
+  }
+  .demo-head .prompt{font-size:14px;color:var(--ink-soft)}
+  .demo-head .prompt strong{color:var(--ink)}
+  .toggle{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+  .toggle button{
+    border:none;background:transparent;padding:7px 16px;font-family:'Karla',sans-serif;
+    font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .toggle button.on-without{background:var(--ink-soft);color:#fff}
+  .toggle button.on-with{background:var(--sage);color:#fff}
+  .demo-body{padding:18px}
+  .demo-body .tag{
+    display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:12px;
+  }
+  .demo-body.without{background:var(--grey-tint)}
+  .demo-body.without .tag{background:#dcd6df;color:var(--ink-soft)}
+  .demo-body.with{background:var(--sage-tint)}
+  .demo-body.with .tag{background:var(--sage);color:#fff}
+  .demo-body p{font-size:15px;margin-bottom:10px}
+  .demo-body p:last-child{margin-bottom:0}
+  .demo-note{
+    padding:12px 18px;font-size:14px;color:var(--ink-soft);
+    border-top:1px dashed var(--line);background:#fff;
+  }
+  .demo-note strong{color:var(--mulberry)}
+
+  /* ---------- fields ---------- */
+  .field{margin-bottom:18px}
+  label{display:block;font-weight:700;font-size:15px;margin-bottom:4px}
+  .hint{font-size:13px;color:var(--ink-soft);margin-bottom:6px}
+  textarea,input[type="text"]{
+    width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+    font-family:'Karla',sans-serif;font-size:15px;color:var(--ink);background:#fff;resize:vertical;
+  }
+  textarea{min-height:74px}
+  textarea:focus,input:focus{border-color:var(--mulberry)}
+
+  /* ---------- nav ---------- */
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:8px}
+  .btn{
+    border:none;border-radius:999px;padding:12px 26px;font-family:'Karla',sans-serif;
+    font-size:15px;font-weight:700;cursor:pointer;transition:transform .1s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--mulberry);color:#fff}
+  .btn-primary:hover{background:var(--mulberry-dark)}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink-soft)}
+
+  /* ---------- results ---------- */
+  .output-box{
+    background:var(--ink);color:#f3edf0;border-radius:var(--radius);
+    padding:22px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    font-size:13.5px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word;
+    max-height:480px;overflow:auto;margin-bottom:16px;
+  }
+  .copy-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .copied-msg{color:var(--sage);font-weight:700;font-size:14px;opacity:0;transition:opacity .2s}
+  .copied-msg.show{opacity:1}
+  .paste-steps{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);font-size:15px;color:var(--ink-soft)}
+  .paste-steps strong{color:var(--ink)}
+  .missing-note{font-size:14px;color:var(--mulberry);margin-bottom:12px}
+
+  footer{text-align:center;margin-top:36px;font-size:13px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">The Invisible Pen · Setup Worksheet</div>
+    <h1>Teach Claude Who You Are</h1>
+    <p>Claude gives generic advice to strangers and specific advice to people it knows. This worksheet builds your author profile in five short steps — then hands you one block of text to paste into your Claude settings.</p>
+  </header>
+
+  <nav class="progress" aria-label="Worksheet steps">
+    <button data-goto="0" class="active">1 · Who I Am</button>
+    <button data-goto="1">2 · My Business</button>
+    <button data-goto="2">3 · How I Work</button>
+    <button data-goto="3">4 · Current Focus</button>
+    <button data-goto="4">5 · Hard Rules</button>
+    <button data-goto="5">Your Profile</button>
+  </nav>
+
+  <!-- ============ STEP 1 ============ -->
+  <section class="panel active" data-panel="0">
+    <div class="card">
+      <div class="step-label">Step 1 of 5</div>
+      <h2>Who I Am</h2>
+      <p class="why">Claude can't see your career. If it doesn't know you're a working indie author, it answers like you're a hobbyist — or worse, like you're querying agents in 2009. Watch the difference one sentence makes:</p>
+
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="prompt">You ask: <strong>"Help me plan my next book release."</strong></div>
+          <div class="toggle" role="group" aria-label="Toggle demo answer">
+            <button class="t-without on-without">Without setup</button>
+            <button class="t-with">With setup</button>
+          </div>
+        </div>
+        <div class="demo-body without">
+          <span class="tag">Claude, guessing</span>
+          <p>"Congratulations on finishing your book! First, you'll want to decide between traditional and self-publishing. If traditional, research literary agents and prepare query letters. You might also consider hiring an editor, thinking about cover design, and building an author platform on social media..."</p>
+          <p><em>Polite. Generic. Useless — it's explaining publishing to a publisher.</em></p>
+        </div>
+        <div class="demo-body with" hidden>
+          <span class="tag">Claude, knowing you</span>
+          <p>"Since this is book three in your small-town series and your income depends on read-through, let's build the release around your backlist: preorder timed to a promo on book one, ARC team briefed two weeks out, and your newsletter sequence teasing the returning characters your readers already love. Want the week-by-week plan?"</p>
+          <p><em>It skipped the beginner lecture and went straight to strategy.</em></p>
+        </div>
+        <div class="demo-note"><strong>Why it matters:</strong> one sentence about who you are deletes an entire category of wrong answers.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input type="text" id="f-name" data-key="name" placeholder="Jessica">
+      </div>
+      <div class="field">
+        <label for="f-role">What you do, in one sentence</label>
+        <div class="hint">Example: "a romance author publishing under multiple pen names."</div>
+        <input type="text" id="f-role" data-key="role" placeholder="an indie author writing cozy mysteries...">
+      </div>
+      <div class="field">
+        <label for="f-structure">Your business structure</label>
+        <div class="hint">Solo author? Publishing operation? Freelancer with author work on the side?</div>
+        <input type="text" id="f-structure" data-key="structure" placeholder="a solo author operation">
+      </div>
+      <div class="field">
+        <label for="f-income">Where your primary income comes from</label>
+        <div class="hint">Fiction sales, coaching, courses, a day job, a mix — be specific.</div>
+        <input type="text" id="f-income" data-key="income" placeholder="fiction sales, mostly Kindle Unlimited">
+      </div>
+    </div>
+    <div class="nav">
+      <span></span>
+      <button class="btn btn-primary" data-next>Next: My Business →</button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2 ============ -->
+  <section class="panel" data-panel="1">
+    <div class="card">
+      <div class="step-label">Step 2 of 5</div>
+      <h2>How My Business Is Structured</h2>
+      <p class="why">If you write under more than one name, use more than one platform, or work with anyone at all, Claude needs the map. Otherwise every task starts with twenty questions — or a wrong guess.</p>
+
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="prompt">You ask: <strong>"Draft an email to my readers about the new release."</strong></div>
+          <div class="toggle" role="group" aria-label="Toggle demo answer">
+            <button class="t-without on-without">Without setup</button>
+            <button class="t-with">With setup</button>
+          </div>
+        </div>
+        <div class="demo-body without">
+          <span class="tag">Claude, guessing</span>
+          <p>"Here's a draft! <em>Subject: Exciting News! 🎉</em> — Dear Valued Reader, I am thrilled to announce my latest novel is now available..."</p>
+          <p><em>Which pen name? Which list? Which voice? It wrote a press release for a stranger.</em></p>
+        </div>
+        <div class="demo-body with" hidden>
+          <span class="tag">Claude, knowing you</span>
+          <p>"This one's going to the Claire Sutton list on MailerLite, so I kept it warm and chatty — like a letter from a friend in Millbrook. Subject line options below, plus a P.S. plugging the series starter for new subscribers."</p>
+          <p><em>Right pen name, right platform, right voice — first try.</em></p>
+        </div>
+        <div class="demo-note"><strong>Why it matters:</strong> the map of your business turns "draft an email" from a guessing game into a one-step task.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-components">The main components of your work</label>
+        <div class="hint">Pen names, businesses, series, products, services. List them plainly.</div>
+        <textarea id="f-components" data-key="components" placeholder="Pen name 1: sweet small-town romance. Pen name 2: cozy mystery. Plus a monthly reader newsletter."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-people">Key people involved</label>
+        <div class="hint">First name and role is enough. "Just me" is a perfectly good answer.</div>
+        <textarea id="f-people" data-key="people" placeholder="Maria — cover designer. Dan — my husband, handles the bookkeeping."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-platforms">Platforms you use regularly</label>
+        <div class="hint">Amazon KDP, BookFunnel, MailerLite, Substack, Skool, Canva — whatever's real for you.</div>
+        <textarea id="f-platforms" data-key="platforms" placeholder="Amazon KDP, MailerLite, BookFunnel, Facebook reader group"></textarea>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" data-prev>← Back</button>
+      <button class="btn btn-primary" data-next>Next: How I Work →</button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 3 ============ -->
+  <section class="panel" data-panel="2">
+    <div class="card">
+      <div class="step-label">Step 3 of 5</div>
+      <h2>How I Work Best With You</h2>
+      <p class="why">Left to its defaults, Claude tends to compliment first, hedge often, and explain at length. Some people love that. If you don't, say so once — here — instead of correcting it in every chat.</p>
+
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="prompt">You ask: <strong>"What do you think of this blurb?"</strong></div>
+          <div class="toggle" role="group" aria-label="Toggle demo answer">
+            <button class="t-without on-without">Without setup</button>
+            <button class="t-with">With setup</button>
+          </div>
+        </div>
+        <div class="demo-body without">
+          <span class="tag">Claude, guessing</span>
+          <p>"This is a lovely blurb with real emotional resonance! You clearly have a gift for character. That said, if you wanted to consider a small tweak — and this is entirely optional — you might possibly explore whether the second paragraph could perhaps be slightly tightened..."</p>
+          <p><em>Three compliments deep and it still hasn't told you what's wrong.</em></p>
+        </div>
+        <div class="demo-body with" hidden>
+          <span class="tag">Claude, knowing you</span>
+          <p>"The hook is buried. Your best line — 'the last man she should trust is the only one who knows the truth' — is in paragraph three. Lead with it. Also, you name four characters in six sentences; readers can hold two. Fix those and this converts."</p>
+          <p><em>Direct, specific, done. Because you told it that's how you take feedback.</em></p>
+        </div>
+        <div class="demo-note"><strong>Why it matters:</strong> feedback style is a setting, not a personality trait Claude has to guess.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-comm">Communication style</label>
+        <div class="hint">Bullet points or prose? Short or thorough? Should Claude ask questions first, or attempt and adjust?</div>
+        <textarea id="f-comm" data-key="comm" placeholder="Short answers first, detail on request. Attempt first, then adjust — don't ask three questions before starting."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-feedback">Feedback style</label>
+        <div class="hint">Direct and blunt, or diplomatic? Flag problems, or just fix them?</div>
+        <textarea id="f-feedback" data-key="feedback" placeholder="Blunt. Lead with the biggest problem. Skip the compliment sandwich."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-peeves">What you cannot stand</label>
+        <div class="hint">Filler phrases, over-explaining, specific words, emoji, whatever grates.</div>
+        <textarea id="f-peeves" data-key="peeves" placeholder="'I hope this helps!', explaining things I didn't ask about, starting every answer with a restatement of my question."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-pushback">When Claude should push back</label>
+        <div class="hint">Give it permission — even obligation — to disagree. When do you want to be challenged?</div>
+        <textarea id="f-pushback" data-key="pushback" placeholder="If I'm about to make a decision that hurts read-through or contradicts my own brand rules, say so plainly."></textarea>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" data-prev>← Back</button>
+      <button class="btn btn-primary" data-next>Next: Current Focus →</button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 4 ============ -->
+  <section class="panel" data-panel="3">
+    <div class="card">
+      <div class="step-label">Step 4 of 5</div>
+      <h2>What I'm Currently Building</h2>
+      <p class="why">Claude will happily brainstorm forty directions for you. Priorities tell it which three you actually need — and which shiny objects to leave on the shelf.</p>
+
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="prompt">You ask: <strong>"Give me ideas to grow my author income."</strong></div>
+          <div class="toggle" role="group" aria-label="Toggle demo answer">
+            <button class="t-without on-without">Without setup</button>
+            <button class="t-with">With setup</button>
+          </div>
+        </div>
+        <div class="demo-body without">
+          <span class="tag">Claude, guessing</span>
+          <p>"Great question! You could start a podcast, launch a Patreon, try TikTok, write in a new genre, create merchandise, offer editing services, teach a course, start a YouTube channel..."</p>
+          <p><em>Twelve ideas. Eleven of them are distractions from the book you're supposed to be finishing.</em></p>
+        </div>
+        <div class="demo-body with" hidden>
+          <span class="tag">Claude, knowing you</span>
+          <p>"Your 90-day focus is finishing book three, so the highest-leverage moves are ones that pay off at launch: a preorder push on your existing list, a series-starter promo stack for release week, and a read-through audit of books one and two. You've said audio is not a priority right now, so I'm leaving it off the list."</p>
+          <p><em>It filtered its own ideas through your priorities — including the "not right now" list.</em></p>
+        </div>
+        <div class="demo-note"><strong>Why it matters:</strong> "not a priority" is some of the most valuable information you can give an eager assistant.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-focus">Right now I'm focused on</label>
+        <div class="hint">Active projects and what matters most in the next 90 days.</div>
+        <textarea id="f-focus" data-key="focus" placeholder="Finishing book 3 of the Millbrook series and relaunching my newsletter welcome sequence."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-secondary">Secondary focus</label>
+        <div class="hint">Anything running in the background.</div>
+        <textarea id="f-secondary" data-key="secondary" placeholder="Slowly outlining a new cozy mystery series for next year."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-notnow">Not a priority right now</label>
+        <div class="hint">Things Claude should deprioritize if they come up.</div>
+        <textarea id="f-notnow" data-key="notnow" placeholder="Audiobooks, translations, social media growth beyond my Facebook group."></textarea>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" data-prev>← Back</button>
+      <button class="btn btn-primary" data-next>Next: Hard Rules →</button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 5 ============ -->
+  <section class="panel" data-panel="4">
+    <div class="card">
+      <div class="step-label">Step 5 of 5</div>
+      <h2>Hard Rules</h2>
+      <p class="why">Preferences are suggestions; hard rules are law. This is where you ban the phrases that make your skin crawl and lock in the format you want when you haven't specified one.</p>
+
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="prompt">You ask: <strong>"Write my newsletter intro."</strong></div>
+          <div class="toggle" role="group" aria-label="Toggle demo answer">
+            <button class="t-without on-without">Without setup</button>
+            <button class="t-with">With setup</button>
+          </div>
+        </div>
+        <div class="demo-body without">
+          <span class="tag">Claude, guessing</span>
+          <p>"In today's fast-paced world, readers are looking for stories that let them dive into a cozy escape! Let's unpack what makes this month special... 📚✨"</p>
+          <p><em>Three banned phrases and two emoji in one breath.</em></p>
+        </div>
+        <div class="demo-body with" hidden>
+          <span class="tag">Claude, knowing you</span>
+          <p>"October in Millbrook means the maple stand opens and Delia's inn is fully booked — and this month, so is my writing schedule. Here's what's coming, including a sneak peek at chapter one."</p>
+          <p><em>No filler, no emoji, straight into your voice — because the rules said so.</em></p>
+        </div>
+        <div class="demo-note"><strong>Why it matters:</strong> a "never" list is the fastest edit you'll ever make — you make it once and it applies forever.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-never">Never</label>
+        <div class="hint">Absolute don'ts: phrases, assumptions, formats, content types.</div>
+        <textarea id="f-never" data-key="never" placeholder="Never use emoji in my drafts. Never use 'dive into', 'unpack', or 'in today's world'. Never assume I want to expand to a new platform."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-always">Always</label>
+        <div class="hint">Non-negotiables Claude must always do in your context.</div>
+        <textarea id="f-always" data-key="always" placeholder="Always ask which pen name before drafting fiction. Always keep reader emails under 300 words."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-format">Format default</label>
+        <div class="hint">When you haven't specified: length, structure, tone baseline.</div>
+        <textarea id="f-format" data-key="format" placeholder="Default to short prose answers. Bullets only for lists of 4+. Plain, warm, professional tone."></textarea>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" data-prev>← Back</button>
+      <button class="btn btn-primary" data-next>Build My Profile →</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="panel" data-panel="5">
+    <div class="card">
+      <div class="step-label">Finished</div>
+      <h2>Your Claude Profile</h2>
+      <p class="why">This is your profile, assembled from your answers. Copy it, paste it into Claude, and every conversation starts with Claude already knowing you.</p>
+      <p class="missing-note" id="missing-note" hidden></p>
+      <div class="output-box" id="output"></div>
+      <div class="copy-row">
+        <button class="btn btn-primary" id="copy-btn">Copy to clipboard</button>
+        <button class="btn btn-ghost" id="download-btn">Download as text file</button>
+        <span class="copied-msg" id="copied-msg">Copied! Now paste it into your Claude settings.</span>
+      </div>
+      <p class="hint" style="margin-top:10px">Tip: download a copy before you close or refresh this page — the form doesn't save your answers.</p>
+      <div class="paste-steps">
+        <strong>Where to paste it:</strong> In Claude, open <strong>Settings → Profile</strong> and paste this into the box labeled <strong>"What personal preferences should Claude consider in responses?"</strong> Save, then start a <strong>new conversation</strong> — the profile applies to new chats, not old ones. You can come back and update it any time your business changes.
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" data-prev>← Back to edit</button>
+      <span></span>
+    </div>
+  </section>
+
+  <footer>The Invisible Pen · Teach Claude Who You Are · Worksheet 1</footer>
+</div>
+
+<script>
+(function(){
+  var current = 0;
+  var panels = document.querySelectorAll('.panel');
+  var tabs = document.querySelectorAll('.progress button');
+  var answers = {}; // in-memory only
+
+  // capture inputs
+  document.querySelectorAll('[data-key]').forEach(function(el){
+    el.addEventListener('input', function(){ answers[el.dataset.key] = el.value.trim(); });
+  });
+
+  function panelHasContent(idx){
+    var panel = panels[idx];
+    var fields = panel.querySelectorAll('[data-key]');
+    for (var i=0;i<fields.length;i++){ if (fields[i].value.trim()) return true; }
+    return fields.length === 0 ? false : false;
+  }
+
+  function goTo(idx){
+    current = idx;
+    panels.forEach(function(p,i){ p.classList.toggle('active', i===idx); });
+    tabs.forEach(function(t,i){
+      t.classList.toggle('active', i===idx);
+      if (i < 5) t.classList.toggle('done', i!==idx && panelHasContent(i));
+    });
+    if (idx === 5) buildOutput();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ goTo(parseInt(t.dataset.goto,10)); }); });
+  document.querySelectorAll('[data-next]').forEach(function(b){ b.addEventListener('click', function(){ goTo(Math.min(current+1,5)); }); });
+  document.querySelectorAll('[data-prev]').forEach(function(b){ b.addEventListener('click', function(){ goTo(Math.max(current-1,0)); }); });
+
+  // demo toggles
+  document.querySelectorAll('[data-demo]').forEach(function(demo){
+    var bw = demo.querySelector('.t-without');
+    var bwith = demo.querySelector('.t-with');
+    var without = demo.querySelector('.demo-body.without');
+    var withEl = demo.querySelector('.demo-body.with');
+    bw.addEventListener('click', function(){
+      without.hidden = false; withEl.hidden = true;
+      bw.classList.add('on-without'); bwith.classList.remove('on-with');
+    });
+    bwith.addEventListener('click', function(){
+      without.hidden = true; withEl.hidden = false;
+      bwith.classList.add('on-with'); bw.classList.remove('on-without');
+    });
+  });
+
+  function val(key, fallback){
+    return answers[key] && answers[key].length ? answers[key] : fallback;
+  }
+
+  function buildOutput(){
+    var missing = [];
+    function v(key, label){
+      if (answers[key] && answers[key].length) return answers[key];
+      missing.push(label);
+      return '[' + label + ' — fill this in]';
+    }
+
+    var text =
+'WHO I AM\n' +
+v('name','Your name') + ' is ' + v('role','what you do') + '. I run/work as ' + v('structure','business structure') + '. My primary income comes from ' + v('income','primary income') + '.\n\n' +
+'HOW MY BUSINESS IS STRUCTURED\n' +
+'My work includes: ' + v('components','main components') + '.\n' +
+'Key people involved: ' + v('people','key people') + '.\n' +
+'Platforms I use regularly: ' + v('platforms','platforms') + '.\n\n' +
+'HOW I WORK BEST WITH YOU\n' +
+'Communication style: ' + v('comm','communication style') + '\n' +
+'Feedback style: ' + v('feedback','feedback style') + '\n' +
+'What I cannot stand: ' + v('peeves','pet peeves') + '\n' +
+'When to push back: ' + v('pushback','when to push back') + '\n\n' +
+'WHAT I\'M CURRENTLY BUILDING\n' +
+'Right now I\'m focused on: ' + v('focus','current focus') + '.\n' +
+'Secondary focus: ' + v('secondary','secondary focus') + '.\n' +
+'Not a priority right now: ' + v('notnow','not a priority') + '.\n\n' +
+'HARD RULES\n' +
+'Never: ' + v('never','never list') + '\n' +
+'Always: ' + v('always','always list') + '\n' +
+'Format default: ' + v('format','format default');
+
+    document.getElementById('output').textContent = text;
+    var note = document.getElementById('missing-note');
+    if (missing.length){
+      note.hidden = false;
+      note.textContent = 'Heads up — ' + missing.length + ' blank' + (missing.length>1?'s':'') + ' left: ' + missing.join(', ') + '. You can go back and fill them, or edit the bracketed lines after pasting.';
+    } else {
+      note.hidden = true;
+    }
+  }
+
+  // copy
+  document.getElementById('copy-btn').addEventListener('click', function(){
+    var text = document.getElementById('output').textContent;
+    var done = function(){
+      var msg = document.getElementById('copied-msg');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  });
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  }
+
+  // download as .txt
+  document.getElementById('download-btn').addEventListener('click', function(){
+    var text = document.getElementById('output').textContent;
+    var blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'my-claude-profile.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+})();
+</script>
+</body>
+</html>
