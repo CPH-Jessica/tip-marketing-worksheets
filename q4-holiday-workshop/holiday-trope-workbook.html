@@ -6,14 +6,15 @@
 <title>Holiday Trope Workbook — Q4 Release Workshop | The Invisible Pen</title>
 <style>
   :root {
-    --coral: #E8735A;
-    --coral-light: #f4a999;
-    --coral-dark: #d4604a;
-    --navy: #1B2A4A;
-    --cream: #FFF8F0;
+    /* The Invisible Pen brand — teal & gold, matched to the community banner */
+    --coral: #C9973B;        /* rich gold — accents & selections */
+    --coral-light: #EBD3A0;  /* soft gold */
+    --coral-dark: #A87A28;   /* deep gold — emphasis text */
+    --navy: #0E3E47;         /* deep teal — headers & headings */
+    --cream: #FBF8F1;        /* warm ivory background */
     --gold: #D4A853;
     --gold-light: #ecdcae;
-    --sage: #7A9E7E;
+    --sage: #4E8578;         /* muted teal-green — small labels */
     --text: #2D2D2D;
     --gray: #666;
     --light-gray: #ece7df;
@@ -29,7 +30,7 @@
   header .brand { color: var(--gold); font-size: 0.8em; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
   header h1 { font-size: 1.9em; letter-spacing: 0.5px; }
   header .subtitle { color: var(--coral-light); font-size: 1em; margin-top: 8px; font-style: italic; }
-  header .weektag { display:inline-block; margin-top:14px; background: var(--coral); color:white; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+  header .weektag { display:inline-block; margin-top:14px; background: var(--gold); color:var(--navy); font-weight:bold; font-size:0.72em; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
 
   .intro-box { background: white; border-left: 4px solid var(--coral); padding: 20px 22px; margin: 24px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .intro-box p { margin-bottom: 8px; }
@@ -42,12 +43,12 @@
 
   label { display: block; font-weight: bold; margin: 14px 0 5px; font-size: 0.95em; }
   input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
-  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(232,115,90,0.15); }
+  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(201,151,59,0.25); }
   .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
   .form-row > div { flex: 1; min-width: 220px; }
 
-  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-  .btn:hover { background: var(--coral-dark); }
+  .btn { background: var(--navy); color: white; border: 2px solid var(--gold); padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn:hover { background: #16545F; }
   .btn-gold { background: var(--gold); color: var(--navy); }
   .btn-gold:hover { background: #c1962f; }
   .center { text-align:center; }
@@ -75,7 +76,7 @@
   .trope-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; }
   .trope { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 2px solid var(--light-gray); border-radius: 7px; cursor: pointer; transition: all 0.15s; background:white; }
   .trope:hover { border-color: var(--coral-light); background: var(--cream); }
-  .trope.selected { border-color: var(--coral); background: rgba(232,115,90,0.08); }
+  .trope.selected { border-color: var(--coral); background: rgba(201,151,59,0.12); }
   .trope .tname { flex:1; font-size:0.92em; }
   .selcount { color:var(--coral); font-weight:bold; font-size:0.92em; margin:14px 0 2px; }
 

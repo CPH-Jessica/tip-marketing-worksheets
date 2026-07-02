@@ -6,13 +6,14 @@
 <title>INSTRUCTOR — Q4 Holiday Release Workshop Command Center | The Invisible Pen</title>
 <style>
   :root {
-    --coral: #E8735A;
-    --coral-dark: #d4604a;
-    --navy: #1B2A4A;
-    --cream: #FFF8F0;
+    /* The Invisible Pen brand — teal & gold, matched to the community banner */
+    --coral: #C9973B;        /* rich gold — accents */
+    --coral-dark: #A87A28;   /* deep gold — emphasis text */
+    --navy: #0E3E47;         /* deep teal — headers & headings */
+    --cream: #FBF8F1;        /* warm ivory background */
     --gold: #D4A853;
     --gold-light: #ecdcae;
-    --sage: #7A9E7E;
+    --sage: #4E8578;         /* muted teal-green — small labels */
     --text: #2D2D2D;
     --gray: #666;
     --light-gray: #ece7df;
@@ -45,7 +46,7 @@
 
   label { display:block; font-weight:bold; margin:12px 0 5px; font-size:0.95em; }
   input[type="text"], input[type="date"], input[type="time"] { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:5px; font-size:1em; font-family:inherit; background:var(--cream); color:var(--text); }
-  input:focus { outline:none; border-color:var(--coral); box-shadow:0 0 0 2px rgba(232,115,90,0.15); }
+  input:focus { outline:none; border-color:var(--coral); box-shadow:0 0 0 2px rgba(201,151,59,0.25); }
   .form-row { display:flex; gap:18px; flex-wrap:wrap; }
   .form-row > div { flex:1; min-width:200px; }
 
@@ -67,8 +68,8 @@
   .timerbox .elapsed { font-size:2.4em; font-weight:bold; color:var(--gold); font-variant-numeric: tabular-nums; }
   .timerbox .cue { color:#cfd6e2; font-size:0.95em; margin-top:4px; }
   .timerbox .cue b { color:white; }
-  .btn { background: var(--coral); color: white; border: none; padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; margin: 6px 4px 0; }
-  .btn:hover { background: var(--coral-dark); }
+  .btn { background: var(--navy); color: white; border: 2px solid var(--gold); padding: 12px 26px; border-radius: 6px; font-size: 1em; cursor: pointer; font-family: inherit; margin: 6px 4px 0; }
+  .btn:hover { background: #16545F; }
   .btn-gold { background: var(--gold); color: var(--navy); }
   .btn-gold:hover { background:#c1962f; }
   .btn-ghost { background:transparent; border:2px solid var(--coral); color:var(--coral); padding:10px 24px; }
@@ -76,7 +77,7 @@
 
   /* Beats */
   .beat { border-left:4px solid var(--gold); background:#fffdf8; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; transition: box-shadow 0.3s, border-color 0.3s; }
-  .beat.now { border-left-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,115,90,0.25); background:#fff6f2; }
+  .beat.now { border-left-color: var(--coral); box-shadow: 0 0 0 3px rgba(201,151,59,0.4); background:#fdf7ea; }
   .beat.donebeat { opacity:0.6; }
   .beat .beathead { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .beat .time { display:inline-block; background:var(--navy); color:white; font-size:0.72em; letter-spacing:1px; padding:3px 10px; border-radius:12px; }
@@ -85,7 +86,7 @@
   .beat .beathead label.donechk { display:flex; align-items:center; gap:6px; font-size:0.8em; color:var(--gray); font-weight:normal; margin:0; cursor:pointer; }
   .beat .beathead label.donechk input { accent-color: var(--sage); width:16px; height:16px; }
   .say, .do, .ask { border-radius:6px; padding:10px 14px; margin:8px 0; font-size:0.97em; }
-  .say { background:#fdf2ef; border-left:3px solid var(--coral); }
+  .say { background:#fbf3e2; border-left:3px solid var(--coral); }
   .do  { background:#eef4ef; border-left:3px solid var(--sage); }
   .ask { background:#f2ecfb; border-left:3px solid #7b64ab; }
   .say .lbl, .do .lbl, .ask .lbl { display:block; font-size:0.7em; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:3px; }
