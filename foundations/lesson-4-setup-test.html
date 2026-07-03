@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4: Setup Test & Troubleshooting — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4a574;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            font-size: 1.3rem;
+            color: #2d2a26;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ece8e1;
+        }
+        .section p { margin-bottom: 1rem; color: #4a463f; }
+
+        .step-card {
+            background: #faf8f5;
+            border-left: 4px solid #d4a574;
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .step-card h3 {
+            font-size: 1rem;
+            color: #2d2a26;
+            margin-bottom: 0.5rem;
+        }
+        .step-card p { margin-bottom: 0.5rem; color: #4a463f; font-size: 0.95rem; }
+        .step-card .prompt-text {
+            background: #2d2a26;
+            color: #e8e4de;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .step-card .prompt-text:hover::after {
+            content: 'Click to copy';
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: #d4a574;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .comparison-card {
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .before-card {
+            background: #f5f0ea;
+            border: 1px solid #ece8e1;
+        }
+        .after-card {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        .comparison-card h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        .before-card h3 { color: #7a756e; }
+        .after-card h3 { color: #2e7d32; }
+        .comparison-card textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Georgia', serif;
+            font-size: 0.85rem;
+            resize: vertical;
+            background: #fff;
+            color: #2d2a26;
+            line-height: 1.6;
+        }
+        .comparison-card textarea:focus { outline: none; border-color: #d4a574; }
+
+        /* Checklist */
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0ece6;
+            cursor: pointer;
+        }
+        .check-item:last-child { border-bottom: none; }
+        .check-item:hover { background: #faf8f5; border-radius: 8px; }
+        .check-item input[type="checkbox"] {
+            width: 20px; height: 20px; margin-top: 2px;
+            accent-color: #d4a574; cursor: pointer; flex-shrink: 0;
+        }
+        .check-item label { cursor: pointer; flex: 1; }
+        .check-item label strong { display: block; color: #2d2a26; }
+        .check-item label span { font-size: 0.9rem; color: #7a756e; }
+        .check-item.checked label strong { text-decoration: line-through; color: #b0a99f; }
+
+        .result-badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .badge-pass { background: #e8f5e9; color: #2e7d32; }
+        .badge-partial { background: #fff3e0; color: #e65100; }
+        .badge-miss { background: #fce4ec; color: #c62828; }
+
+        /* Troubleshooting */
+        .trouble-item {
+            background: #faf8f5;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #ece8e1;
+        }
+        .trouble-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #2d2a26;
+        }
+        .trouble-header:hover { background: #f5f0ea; }
+        .trouble-arrow { transition: transform 0.2s; color: #d4a574; }
+        .trouble-body {
+            padding: 0 1.25rem 1rem;
+            display: none;
+            color: #4a463f;
+            font-size: 0.95rem;
+        }
+        .trouble-item.open .trouble-body { display: block; }
+        .trouble-item.open .trouble-arrow { transform: rotate(90deg); }
+
+        .week-assignment {
+            background: #f5f0ea;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .week-assignment h3 { color: #d4a574; margin-bottom: 0.75rem; }
+        .week-assignment ol { margin-left: 1.25rem; color: #4a463f; }
+        .week-assignment li { margin-bottom: 0.5rem; }
+
+        .progress-bar {
+            background: #ece8e1;
+            border-radius: 20px;
+            height: 12px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #d4a574, #c4956a);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7a756e;
+            margin-top: 0.5rem;
+        }
+
+        .tip-box {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+        .tip-box strong { color: #f9a825; }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #d4a574;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .btn:hover { background: #c4956a; }
+
+        .copied-toast {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2d2a26; color: #fff;
+            padding: 0.75rem 1.5rem; border-radius: 8px;
+            font-family: 'Georgia', serif; opacity: 0;
+            transition: all 0.3s ease; z-index: 100;
+        }
+        .copied-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .footer {
+            text-align: center; padding: 2rem 0 1rem;
+            color: #b0a99f; font-size: 0.85rem;
+        }
+        .footer a { color: #d4a574; text-decoration: none; }
+
+        @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+        @media print {
+            body { padding: 0; background: #fff; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+            .btn, .copied-toast { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen</div>
+            <h1>Lesson 4: Setup Test & Troubleshooting</h1>
+            <div class="subtitle">Foundations of Claude — Week 1</div>
+        </div>
+
+        <!-- BEFORE/AFTER TEST -->
+        <div class="section">
+            <h2>The Before & After Test</h2>
+            <p>This is the payoff. Follow these three steps exactly. You're going to see the difference your preferences make.</p>
+
+            <div class="step-card">
+                <h3>Step 1: The "Before" Test</h3>
+                <p>Open Claude (<a href="https://claude.ai" target="_blank">claude.ai</a>). Start a <strong>new conversation</strong>. Make sure your preferences are NOT pasted in yet. Type this exact prompt:</p>
+                <div class="prompt-text" onclick="copyPrompt(this)">I'm an author working on a romance novel. Can you help me brainstorm a scene where my hero and heroine meet for the first time?</div>
+                <p style="margin-top: 0.75rem;">Copy the response Claude gives you and paste it in the "Before" box below.</p>
+            </div>
+
+            <div class="step-card">
+                <h3>Step 2: Install Your Preferences</h3>
+                <p>Now paste your preferences from Lesson 3 into Claude. Go to <strong>Settings → Personal Preferences</strong> and paste the full text. Save it.</p>
+            </div>
+
+            <div class="step-card">
+                <h3>Step 3: The "After" Test</h3>
+                <p>Start a <strong>new conversation</strong> (not the same chat). Type the exact same prompt. Copy the response into the "After" box below.</p>
+                <div class="prompt-text" onclick="copyPrompt(this)">I'm an author working on a romance novel. Can you help me brainstorm a scene where my hero and heroine meet for the first time?</div>
+            </div>
+        </div>
+
+        <!-- COMPARISON -->
+        <div class="section">
+            <h2>Compare Your Results</h2>
+            <p>Paste both responses below. Look at the differences.</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card before-card">
+                    <h3>Before Preferences</h3>
+                    <textarea placeholder="Paste Claude's response from Step 1 here..."></textarea>
+                </div>
+                <div class="comparison-card after-card">
+                    <h3>After Preferences</h3>
+                    <textarea placeholder="Paste Claude's response from Step 3 here..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSTIC CHECKLIST -->
+        <div class="section">
+            <h2>Diagnostic Checklist</h2>
+            <p>Check each item that's true about Claude's "After" response. If you can check 4 or more, your setup is working.</p>
+
+            <div class="progress-bar"><div class="progress-fill" id="diagProgress"></div></div>
+            <div class="progress-text" id="diagText">0 of 6 checks passed</div>
+
+            <div style="margin-top: 1rem;">
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>Claude knows your genre</strong>
+                        <span>The response references your specific genre, not generic "romance."</span>
+                    </label>
+                </div>
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>Heat level matches</strong>
+                        <span>If you write at heat 4-5, the brainstorm isn't pitching a Hallmark meet-cute. If you write sweet, it's not pushing spice.</span>
+                    </label>
+                </div>
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>Tone matches your instructions</strong>
+                        <span>If you said "be direct," there's no wishy-washy preamble. If you said "warm and encouraging," it's not cold and clinical.</span>
+                    </label>
+                </div>
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>Claude asks smart follow-ups</strong>
+                        <span>Questions show it already has context. Not "what genre?" but "which pen name is this for?" or "what's the emotional core of this book?"</span>
+                    </label>
+                </div>
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>No violations of your rules</strong>
+                        <span>If you banned purple prose, there's no purple prose. If you said single POV, it doesn't suggest dual POV.</span>
+                    </label>
+                </div>
+                <div class="check-item" onclick="toggleDiag(this)">
+                    <input type="checkbox">
+                    <label>
+                        <strong>Noticeably different from the "Before"</strong>
+                        <span>Side by side, the after response should clearly show Claude knows you. Not just generic help — personalized help.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center;" id="diagResult"></div>
+        </div>
+
+        <!-- TROUBLESHOOTING -->
+        <div class="section">
+            <h2>Troubleshooting</h2>
+            <p>If your "After" response isn't there yet, click the problem that matches what you're seeing.</p>
+
+            <div class="trouble-item" onclick="toggleTrouble(this)">
+                <div class="trouble-header">
+                    Claude is ignoring my rules
+                    <span class="trouble-arrow">▶</span>
+                </div>
+                <div class="trouble-body">
+                    <p>Your rules are probably buried in a wall of text, or they're phrased as suggestions instead of instructions.</p>
+                    <p><strong>Fix:</strong> Rephrase suggestions as directives. "It would be nice if you didn't use purple prose" becomes "Never use purple prose." Move rules to their own clearly labeled section with a header like "## Rules" so Claude can't miss them.</p>
+                </div>
+            </div>
+
+            <div class="trouble-item" onclick="toggleTrouble(this)">
+                <div class="trouble-header">
+                    The tone is off
+                    <span class="trouble-arrow">▶</span>
+                </div>
+                <div class="trouble-body">
+                    <p>Your relationship section is probably too vague. "Be my writing partner" is vague. Claude doesn't know what that means for you.</p>
+                    <p><strong>Fix:</strong> Add specific tone instructions. "Be direct, opinionated, and don't ask permission before giving feedback" is specific. "Don't hedge. Don't say 'you might consider.' Say 'this isn't working because.'"</p>
+                </div>
+            </div>
+
+            <div class="trouble-item" onclick="toggleTrouble(this)">
+                <div class="trouble-header">
+                    Claude forgets my pen name differences
+                    <span class="trouble-arrow">▶</span>
+                </div>
+                <div class="trouble-body">
+                    <p>Your pen names are listed without enough differentiation. Just names and genres isn't always enough.</p>
+                    <p><strong>Fix:</strong> Add heat level AND a one-line voice description for each pen name. "Sarah Westbrook — small-town romance, heat 3, warm and grounded tone. Raven Cole — dark fantasy romance, heat 5, atmospheric and intense." The more separation, the better Claude switches.</p>
+                </div>
+            </div>
+
+            <div class="trouble-item" onclick="toggleTrouble(this)">
+                <div class="trouble-header">
+                    Claude is too cautious / restricted
+                    <span class="trouble-arrow">▶</span>
+                </div>
+                <div class="trouble-body">
+                    <p>You wrote twenty rules and zero permissions. Claude is playing it safe because all it knows is what NOT to do.</p>
+                    <p><strong>Fix:</strong> Balance "never do" with "always do." Add instructions like "Always give direct feedback. Always start in the action. Always match my pen name voice. Be proactive — if you can help, say so." Give Claude room to be useful.</p>
+                </div>
+            </div>
+
+            <div class="trouble-item" onclick="toggleTrouble(this)">
+                <div class="trouble-header">
+                    Response looks the same as before
+                    <span class="trouble-arrow">▶</span>
+                </div>
+                <div class="trouble-body">
+                    <p>Two possible causes: your preferences didn't save, or you continued the old conversation instead of starting a new one.</p>
+                    <p><strong>Fix:</strong> Go to Settings → Personal Preferences and verify your text is there. Then start a completely new conversation — not the same chat window. Preferences only load at the start of a new conversation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEEK 1 FINAL ASSIGNMENT -->
+        <div class="section">
+            <h2>Your Week 1 Final Assignment</h2>
+            <div class="week-assignment">
+                <h3>Before You Move to Week 2</h3>
+                <ol>
+                    <li><strong>Have at least 3 real conversations</strong> with Claude using your new preferences. Not test conversations — real ones. Ask it to help with something you're actually working on.</li>
+                    <li><strong>Adjust your preferences at least once.</strong> After those 3 conversations, go back and tweak what isn't working. Preferences are a living document.</li>
+                    <li><strong>Share one surprise</strong> in the Skool community. Something Claude did that you didn't expect — good or bad.</li>
+                </ol>
+            </div>
+
+            <div class="tip-box">
+                <strong>Coming in Week 2:</strong> We build skills — pen name voice, beta reader, editing. Your preferences tell Claude who you are. Skills tell Claude how to do the work.
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; background: #f5f0ea;">
+            <h2 style="border: none;">Week 1 Complete</h2>
+            <p>You did the hard part. Setup is never the fun part. But everything fun that's coming? It's built on what you just did. See you in Week 2.</p>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — The Invisible Pen</p>
+            <p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p>
+        </div>
+    </div>
+
+    <div class="copied-toast" id="toast">Copied to clipboard</div>
+
+    <script>
+        function copyPrompt(el) {
+            navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
+        function toggleDiag(item) {
+            const cb = item.querySelector('input[type="checkbox"]');
+            if (event.target !== cb) cb.checked = !cb.checked;
+            item.classList.toggle('checked', cb.checked);
+            updateDiag();
+        }
+
+        function updateDiag() {
+            const total = 6;
+            const checked = document.querySelectorAll('.check-item input:checked').length;
+            const pct = Math.round((checked / total) * 100);
+            document.getElementById('diagProgress').style.width = pct + '%';
+            document.getElementById('diagText').textContent = checked + ' of ' + total + ' checks passed';
+
+            const result = document.getElementById('diagResult');
+            if (checked >= 5) {
+                result.innerHTML = '<span class="result-badge badge-pass">Excellent</span> Your setup is working. You\'re ready for Week 2.';
+            } else if (checked >= 3) {
+                result.innerHTML = '<span class="result-badge badge-partial">Getting There</span> Solid start. Check the troubleshooting section for what\'s missing, adjust, and test again.';
+            } else if (checked > 0) {
+                result.innerHTML = '<span class="result-badge badge-miss">Needs Work</span> Go back to your preferences and add more detail. Check the troubleshooting section below.';
+            } else {
+                result.innerHTML = '';
+            }
+        }
+
+        function toggleTrouble(item) {
+            item.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

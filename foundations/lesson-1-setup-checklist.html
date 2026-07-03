@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1: Account Setup Checklist — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4a574;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            color: #2d2a26;
+            margin-bottom: 0.25rem;
+        }
+        .header .subtitle {
+            font-size: 1rem;
+            color: #7a756e;
+            font-style: italic;
+        }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            font-size: 1.3rem;
+            color: #2d2a26;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ece8e1;
+        }
+        .section p {
+            margin-bottom: 1rem;
+            color: #4a463f;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0ece6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-item:hover { background: #faf8f5; border-radius: 8px; }
+        .checklist-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            accent-color: #d4a574;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+        .checklist-item label strong {
+            display: block;
+            color: #2d2a26;
+            font-size: 1rem;
+        }
+        .checklist-item label span {
+            font-size: 0.9rem;
+            color: #7a756e;
+        }
+        .checklist-item.checked label strong {
+            text-decoration: line-through;
+            color: #b0a99f;
+        }
+        .ecosystem-card {
+            background: #faf8f5;
+            border-left: 3px solid #d4a574;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .ecosystem-card h3 {
+            font-size: 1rem;
+            color: #2d2a26;
+            margin-bottom: 0.25rem;
+        }
+        .ecosystem-card p {
+            font-size: 0.9rem;
+            color: #7a756e;
+            margin-bottom: 0;
+        }
+        .ecosystem-card .tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 0.4rem;
+            font-weight: bold;
+        }
+        .tag-now { background: #e8f5e9; color: #2e7d32; }
+        .tag-week3 { background: #fff3e0; color: #e65100; }
+        .tag-advanced { background: #f3e5f5; color: #7b1fa2; }
+        .progress-bar {
+            background: #ece8e1;
+            border-radius: 20px;
+            height: 12px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #d4a574, #c4956a);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7a756e;
+            margin-top: 0.5rem;
+        }
+        .tip-box {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+        .tip-box strong {
+            color: #f9a825;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem 0 1rem;
+            color: #b0a99f;
+            font-size: 0.85rem;
+        }
+        .footer a {
+            color: #d4a574;
+            text-decoration: none;
+        }
+        @media print {
+            body { padding: 0; background: #fff; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen</div>
+            <h1>Lesson 1: Account Setup Checklist</h1>
+            <div class="subtitle">Foundations of Claude — Week 1</div>
+        </div>
+
+        <div class="section">
+            <h2>Your Setup Checklist</h2>
+            <p>Complete each step below. Check them off as you go — your progress saves automatically in this browser.</p>
+
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText">0 of 6 complete</div>
+
+            <div style="margin-top: 1.5rem;">
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c1">
+                    <label for="c1">
+                        <strong>Go to claude.ai</strong>
+                        <span>Open your browser and navigate to <a href="https://claude.ai" target="_blank">claude.ai</a></span>
+                    </label>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c2">
+                    <label for="c2">
+                        <strong>Create your account</strong>
+                        <span>Sign up with your email. Use the email you want associated with your author business.</span>
+                    </label>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c3">
+                    <label for="c3">
+                        <strong>Verify your email</strong>
+                        <span>Check your inbox and click the verification link. Check spam if you don't see it.</span>
+                    </label>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c4">
+                    <label for="c4">
+                        <strong>Log in and explore the interface</strong>
+                        <span>Start a conversation. Type something simple like "Tell me about yourself." Get comfortable with the layout.</span>
+                    </label>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c5">
+                    <label for="c5">
+                        <strong>Upgrade to Claude Pro ($20/month) — recommended</strong>
+                        <span>Go to Settings and upgrade. Pro gives you more messages, better models, and priority access. You'll need this for the work we're doing.</span>
+                    </label>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <input type="checkbox" id="c6">
+                    <label for="c6">
+                        <strong>Find your Settings and Personal Preferences</strong>
+                        <span>Click your profile icon (bottom left) > Settings. Locate the "Personal Preferences" section. Don't fill it in yet — that's Lesson 3. Just know where it is.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>Tip:</strong> If you're on the free tier and want to test before committing to Pro, that's fine. But you will hit message limits during this class. Pro pays for itself the first week.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Claude Ecosystem — Quick Reference</h2>
+            <p>You don't need all of these right now. This is your cheat sheet for what exists and when you'll use it.</p>
+
+            <div class="ecosystem-card">
+                <h3>Claude Chat (claude.ai)</h3>
+                <p>The website. Type and go. This is home base for Weeks 1-2.</p>
+                <span class="tag tag-now">START HERE</span>
+            </div>
+
+            <div class="ecosystem-card">
+                <h3>Claude Desktop App</h3>
+                <p>Downloadable app for Mac/PC. Same Claude, but with Projects for organized workflows.</p>
+                <span class="tag tag-week3">WEEK 3</span>
+            </div>
+
+            <div class="ecosystem-card">
+                <h3>Claude Code</h3>
+                <p>Command-line tool for developers. Not needed for this class.</p>
+                <span class="tag tag-advanced">ADVANCED</span>
+            </div>
+
+            <div class="ecosystem-card">
+                <h3>Claude Cowork</h3>
+                <p>Desktop agent that manages files, runs tasks, and automates workflows. Jessica uses this daily.</p>
+                <span class="tag tag-advanced">ADVANCED</span>
+            </div>
+
+            <div class="ecosystem-card">
+                <h3>Claude in Chrome</h3>
+                <p>Browser extension that lets Claude see and interact with your screen.</p>
+                <span class="tag tag-advanced">ADVANCED</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Your 4-Week Roadmap</h2>
+            <div class="ecosystem-card" style="border-left-color: #2e7d32;">
+                <h3>Week 1: Setup & Identity</h3>
+                <p>Teach Claude who you are — personality, preferences, genre, pen names.</p>
+                <span class="tag tag-now">YOU ARE HERE</span>
+            </div>
+            <div class="ecosystem-card" style="border-left-color: #1565c0;">
+                <h3>Week 2: Skills</h3>
+                <p>Build pen name voice skills, beta reader skills, editing skills.</p>
+            </div>
+            <div class="ecosystem-card" style="border-left-color: #e65100;">
+                <h3>Week 3: Writing Pipeline</h3>
+                <p>Set up Projects, insert skills, build your writing workflow.</p>
+            </div>
+            <div class="ecosystem-card" style="border-left-color: #7b1fa2;">
+                <h3>Week 4: Everything Together</h3>
+                <p>Live book development with everything working as a system.</p>
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; background: #f5f0ea;">
+            <h2 style="border: none;">Ready for Lesson 2?</h2>
+            <p>Once your checklist is complete, head to Lesson 2 where we'll take a personality quiz that teaches Claude how you think. (It's more useful than the ones in magazines.)</p>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — The Invisible Pen</p>
+            <p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleCheck(item) {
+            const cb = item.querySelector('input[type="checkbox"]');
+            if (event.target !== cb) cb.checked = !cb.checked;
+            item.classList.toggle('checked', cb.checked);
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('.checklist-item input[type="checkbox"]').length;
+            const checked = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked').length;
+            const pct = Math.round((checked / total) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = checked + ' of ' + total + ' complete';
+        }
+    </script>
+</body>
+</html>
