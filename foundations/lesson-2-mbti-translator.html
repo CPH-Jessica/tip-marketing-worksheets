@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2: MBTI-to-Claude Translator — Foundations of Claude</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf8f5;
+            color: #2d2a26;
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #d4a574;
+        }
+        .header .brand {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4a574;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 { font-size: 1.8rem; color: #2d2a26; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; color: #7a756e; font-style: italic; }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            font-size: 1.3rem;
+            color: #2d2a26;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ece8e1;
+        }
+        .section p { margin-bottom: 1rem; color: #4a463f; }
+
+        /* MBTI Selector */
+        .mbti-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .mbti-pair {
+            background: #faf8f5;
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid #ece8e1;
+        }
+        .mbti-pair h3 {
+            font-size: 0.9rem;
+            color: #7a756e;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .mbti-options { display: flex; gap: 0.5rem; }
+        .mbti-btn {
+            flex: 1;
+            padding: 0.6rem 0.5rem;
+            border: 2px solid #ece8e1;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
+            font-size: 0.85rem;
+            color: #4a463f;
+        }
+        .mbti-btn:hover { border-color: #d4a574; }
+        .mbti-btn.selected {
+            border-color: #d4a574;
+            background: #d4a574;
+            color: #fff;
+            font-weight: bold;
+        }
+        .mbti-btn strong { display: block; font-size: 1.1rem; }
+
+        .type-display {
+            text-align: center;
+            padding: 1rem;
+            background: #faf8f5;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #ece8e1;
+        }
+        .type-display .type-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #d4a574;
+            letter-spacing: 4px;
+        }
+        .type-display .type-label {
+            font-size: 0.9rem;
+            color: #7a756e;
+            margin-top: 0.25rem;
+        }
+
+        /* Generated paragraph */
+        .generated-output {
+            background: #faf8f5;
+            border: 2px solid #d4a574;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        .generated-output h3 {
+            font-size: 1rem;
+            color: #d4a574;
+            margin-bottom: 0.75rem;
+        }
+        .generated-output p {
+            color: #2d2a26;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+
+        /* Custom textarea */
+        .custom-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid #ece8e1;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            color: #2d2a26;
+            line-height: 1.7;
+            resize: vertical;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+        .custom-area:focus { outline: none; border-color: #d4a574; }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #d4a574;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.75rem;
+        }
+        .btn:hover { background: #c4956a; }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #d4a574;
+            color: #d4a574;
+        }
+        .btn-outline:hover { background: #d4a574; color: #fff; }
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        .tip-box {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+        .tip-box strong { color: #f9a825; }
+
+        .example-box {
+            background: #f5f0ea;
+            border-left: 3px solid #d4a574;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1rem;
+        }
+        .example-box h4 { font-size: 0.9rem; color: #d4a574; margin-bottom: 0.5rem; }
+        .example-box p { font-size: 0.9rem; color: #4a463f; margin-bottom: 0; font-style: italic; }
+
+        .copied-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2d2a26;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .copied-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0 1rem;
+            color: #b0a99f;
+            font-size: 0.85rem;
+        }
+        .footer a { color: #d4a574; text-decoration: none; }
+
+        @media print {
+            body { padding: 0; background: #fff; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+            .btn, .copied-toast { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">The Invisible Pen</div>
+            <h1>Lesson 2: MBTI-to-Claude Translator</h1>
+            <div class="subtitle">Foundations of Claude — Week 1</div>
+        </div>
+
+        <div class="section">
+            <h2>Step 1: Select Your Type</h2>
+            <p>Click one option from each pair. If you haven't taken the assessment yet, go to <a href="https://16personalities.com" target="_blank">16personalities.com</a> first — it's free and takes about 10 minutes.</p>
+
+            <div class="mbti-grid">
+                <div class="mbti-pair">
+                    <h3>Energy</h3>
+                    <div class="mbti-options">
+                        <button class="mbti-btn" data-pair="ei" data-val="E" onclick="selectMBTI(this)">
+                            <strong>E</strong>Extravert
+                        </button>
+                        <button class="mbti-btn" data-pair="ei" data-val="I" onclick="selectMBTI(this)">
+                            <strong>I</strong>Introvert
+                        </button>
+                    </div>
+                </div>
+                <div class="mbti-pair">
+                    <h3>Information</h3>
+                    <div class="mbti-options">
+                        <button class="mbti-btn" data-pair="sn" data-val="S" onclick="selectMBTI(this)">
+                            <strong>S</strong>Sensing
+                        </button>
+                        <button class="mbti-btn" data-pair="sn" data-val="N" onclick="selectMBTI(this)">
+                            <strong>N</strong>Intuitive
+                        </button>
+                    </div>
+                </div>
+                <div class="mbti-pair">
+                    <h3>Decisions</h3>
+                    <div class="mbti-options">
+                        <button class="mbti-btn" data-pair="tf" data-val="T" onclick="selectMBTI(this)">
+                            <strong>T</strong>Thinking
+                        </button>
+                        <button class="mbti-btn" data-pair="tf" data-val="F" onclick="selectMBTI(this)">
+                            <strong>F</strong>Feeling
+                        </button>
+                    </div>
+                </div>
+                <div class="mbti-pair">
+                    <h3>Structure</h3>
+                    <div class="mbti-options">
+                        <button class="mbti-btn" data-pair="jp" data-val="J" onclick="selectMBTI(this)">
+                            <strong>J</strong>Judging
+                        </button>
+                        <button class="mbti-btn" data-pair="jp" data-val="P" onclick="selectMBTI(this)">
+                            <strong>P</strong>Perceiving
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="type-display">
+                <div class="type-code" id="typeCode">_ _ _ _</div>
+                <div class="type-label" id="typeLabel">Select all four to see your type</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Your Generated Working-Style Paragraph</h2>
+            <p>Once you've selected all four letters, your personalized paragraph appears below. This is a starting point — edit it to sound like you.</p>
+
+            <div class="generated-output" id="generatedOutput">
+                <h3>Your Working-Style Paragraph</h3>
+                <p id="generatedText"></p>
+            </div>
+
+            <div id="emptyState" style="text-align: center; padding: 2rem; color: #b0a99f;">
+                Select all four preferences above to generate your paragraph.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Make It Yours</h2>
+            <p>The generated paragraph is a template. Edit it below until it sounds like you — not a textbook. When you're happy with it, copy it. You'll paste this into your Claude preferences in Lesson 3.</p>
+
+            <textarea class="custom-area" id="customParagraph" placeholder="Your working-style paragraph will appear here after Step 2. Edit it until it sounds like you."></textarea>
+
+            <div class="btn-row">
+                <button class="btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <button class="btn btn-outline" onclick="resetToGenerated()">Reset to Generated</button>
+            </div>
+
+            <div class="tip-box" style="margin-top: 1rem;">
+                <strong>Tip:</strong> The best paragraphs answer this question: "How do I work best, and what drives me crazy?" If your paragraph doesn't answer that, keep editing.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Examples by Type</h2>
+            <p>Here are three examples to show you what good working-style paragraphs look like. Yours doesn't need to match these — just use them as inspiration.</p>
+
+            <div class="example-box">
+                <h4>INFJ — The Visionary Advisor</h4>
+                <p>"I'm an INFJ. I process by thinking out loud — conversation IS my processing. I'm visionary and values-driven. I need to understand WHY before I care about HOW. When I'm brainstorming, ride the wave with me — don't try to organize it yet. When I shift to execution mode, I want clear next steps with no fluff. I make autonomous decisions and own them. I need a thinking partner who pushes back — not a yes-machine."</p>
+            </div>
+
+            <div class="example-box">
+                <h4>ISTJ — The Practical Builder</h4>
+                <p>"I'm an ISTJ. Give me specifics before big picture. When I ask for help with a scene, start with the concrete problem, not the thematic implications. I like clear checklists and step-by-step processes. Don't give me abstract suggestions — tell me exactly what to change and where. I respect structure and deadlines. If I ask for a plan, give me a plan with dates."</p>
+            </div>
+
+            <div class="example-box">
+                <h4>ENFP — The Idea Generator</h4>
+                <p>"I'm an ENFP. I come up with ten ideas before breakfast and need help narrowing to the best one. When I'm excited about a new direction, help me evaluate it honestly before I abandon my current project. I need someone to keep me focused without killing my energy. Start with the exciting possibility, then ground me in what's realistic."</p>
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; background: #f5f0ea;">
+            <h2 style="border: none;">Save This for Lesson 3</h2>
+            <p>Don't paste it into Claude yet. In Lesson 3, we're building your full preferences file, and this paragraph goes into the Personality section. Copy it now so you have it ready.</p>
+        </div>
+
+        <div class="footer">
+            <p>Foundations of Claude — The Invisible Pen</p>
+            <p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p>
+        </div>
+    </div>
+
+    <div class="copied-toast" id="toast">Copied to clipboard</div>
+
+    <script>
+        const selections = { ei: null, sn: null, tf: null, jp: null };
+
+        const typeNames = {
+            'INTJ': 'The Architect', 'INTP': 'The Thinker', 'ENTJ': 'The Commander', 'ENTP': 'The Debater',
+            'INFJ': 'The Advocate', 'INFP': 'The Mediator', 'ENFJ': 'The Protagonist', 'ENFP': 'The Campaigner',
+            'ISTJ': 'The Inspector', 'ISFJ': 'The Protector', 'ESTJ': 'The Executive', 'ESFJ': 'The Consul',
+            'ISTP': 'The Craftsperson', 'ISFP': 'The Adventurer', 'ESTP': 'The Entrepreneur', 'ESFP': 'The Entertainer'
+        };
+
+        const fragments = {
+            E: {
+                energy: "I think out loud and process by talking things through.",
+                claude: "When I'm brainstorming, engage actively — bounce ideas with me, don't just listen."
+            },
+            I: {
+                energy: "I process internally before I'm ready to discuss.",
+                claude: "Give me fully formed options to react to rather than open-ended brainstorming. I'll tell you what resonates."
+            },
+            S: {
+                info: "I'm a details-first person. I need specifics before the big picture makes sense.",
+                claude: "Start with the concrete — what exactly needs to change, where, and how. Save the thematic analysis for after."
+            },
+            N: {
+                info: "I'm a big-picture thinker. I need the vision before the details matter.",
+                claude: "Start with the why and the overall direction. Once I see where we're going, I'll ask for specifics."
+            },
+            T: {
+                decisions: "I make decisions based on logic and evidence.",
+                claude: "Give me your reasoning, not just your opinion. If something isn't working, tell me why with specifics. Don't soften feedback to spare feelings — I want accuracy."
+            },
+            F: {
+                decisions: "I make decisions based on values and emotional resonance.",
+                claude: "Start with how it feels before you analyze why. If a scene isn't landing emotionally, that matters more than whether it's structurally correct."
+            },
+            J: {
+                structure: "I like structure, plans, and clear deadlines.",
+                claude: "Give me organized, step-by-step plans. When I ask what's next, give me a concrete action — not options to explore."
+            },
+            P: {
+                structure: "I work best with flexibility and room to adapt.",
+                claude: "Give me options, not mandates. I like to explore before committing. Don't lock me into a plan too early."
+            }
+        };
+
+        function selectMBTI(btn) {
+            const pair = btn.dataset.pair;
+            const val = btn.dataset.val;
+            selections[pair] = val;
+
+            document.querySelectorAll(`.mbti-btn[data-pair="${pair}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            updateType();
+        }
+
+        function updateType() {
+            const allSelected = Object.values(selections).every(v => v !== null);
+            const code = (selections.ei || '_') + (selections.sn || '_') + (selections.tf || '_') + (selections.jp || '_');
+            document.getElementById('typeCode').textContent = code;
+
+            if (allSelected) {
+                const name = typeNames[code] || '';
+                document.getElementById('typeLabel').textContent = name;
+                generateParagraph(code);
+            } else {
+                document.getElementById('typeLabel').textContent = 'Select all four to see your type';
+                document.getElementById('generatedOutput').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function generateParagraph(code) {
+            const e = fragments[code[0]];
+            const s = fragments[code[1]];
+            const t = fragments[code[2]];
+            const j = fragments[code[3]];
+
+            const para = `I'm ${code === 'INFJ' ? 'an' : (/^[AEIOU]/.test(code) ? 'an' : 'a')} ${code}. ${e.energy} ${s.info} ${t.decisions} ${j.structure} ${e.claude} ${s.claude} ${t.claude} ${j.claude}`;
+
+            document.getElementById('generatedText').textContent = para;
+            document.getElementById('generatedOutput').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+
+            const custom = document.getElementById('customParagraph');
+            if (!custom.dataset.edited) {
+                custom.value = para;
+            }
+        }
+
+        function resetToGenerated() {
+            const gen = document.getElementById('generatedText').textContent;
+            if (gen) {
+                document.getElementById('customParagraph').value = gen;
+                document.getElementById('customParagraph').dataset.edited = '';
+            }
+        }
+
+        document.getElementById('customParagraph').addEventListener('input', function() {
+            this.dataset.edited = 'true';
+        });
+
+        function copyToClipboard() {
+            const text = document.getElementById('customParagraph').value;
+            if (!text.trim()) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+    </script>
+</body>
+</html>
