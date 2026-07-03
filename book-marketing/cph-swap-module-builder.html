@@ -137,6 +137,13 @@
     <p class="hint">Genre-matched to this pen name from your BookFunnel feed. Tick and add. <span class="needcover">needs cover</span> = paste the banner image (BookFunnel's page is unreachable from here).</p>
     <div id="candList"></div>
     <button class="btn btn-ghost btn-sm" id="addCandBtn" onclick="addChecked()">+ Add ticked candidates</button>
+    <details>
+      <summary>Import swaps JSON (from the PC swap crawler)</summary>
+      <p class="hint">Run <code>node pull-swaps.js</code> in <code>swap-agent\</code> on your PC, then load its <code>output\composer-import.json</code> here. Modules are added to each pen name automatically; "unassigned" ones go to the current pen name for you to sort.</p>
+      <input type="file" id="fImport" accept=".json,application/json" style="margin:6px 0;">
+      <div class="btnbar"><button class="btn btn-ghost btn-sm" onclick="importSwapsJson()">Import file</button></div>
+      <p class="hint" id="importStatus"></p>
+    </details>
     <details><summary>Auto-excluded (off-genre) — <span id="exCount"></span></summary><div id="exList"></div></details>
     <details><summary>Add BookClicker / BookSwappy mention swaps</summary>
       <p class="hint">Those live on platforms I can't reach here. Grab each partner's cover + tracking link and paste above as a <em>Cover tile</em>. In a Cowork/browser session, your booking-retriever skill can auto-pull them.</p></details>
@@ -420,6 +427,33 @@ function doExport(){
 }
 function copyExport(){const bx=document.getElementById('exportBox');if(!bx.value)doExport();bx.select();document.execCommand('copy');}
 function downloadExport(){if(!document.getElementById('exportBox').value)doExport();const blob=new Blob([document.getElementById('exportBox').value],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=current+'-swaps.html';a.click();}
+
+/* ---------- import from the PC swap crawler (swap-agent/pull-swaps.js) ---------- */
+function importSwapsJson(){
+  const f=document.getElementById('fImport').files[0];
+  const st=document.getElementById('importStatus');
+  if(!f){st.textContent='Choose the composer-import.json file first.';return;}
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      let added=0;
+      for(const [penKey,mods] of Object.entries(data)){
+        const target=BRANDS[penKey]?penKey:current; // unknown/"unassigned" → current pen
+        modules[target]=modules[target]||[];
+        for(const m of (Array.isArray(mods)?mods:[])){
+          if(!m||!m.link)continue;
+          if(modules[target].some(x=>x.link===m.link))continue; // dedupe by link
+          modules[target].push({cover:m.cover||'',link:m.link,type:m.type==='banner'?'banner':(m.type==='featured'?'featured':'tile'),title:(m.title||'').slice(0,120),blurb:m.blurb||''});
+          added++;
+        }
+      }
+      save();render();
+      st.textContent='Imported '+added+' swap module(s). Switch pen names to review each set.';
+    }catch(e){st.textContent='Could not read that file: '+e.message;}
+  };
+  r.readAsText(f);
+}
 
 /* ---------- AI opening note (calls Claude directly from the browser) ---------- */
 function setStatus(s){document.getElementById('genStatus').textContent=s;}

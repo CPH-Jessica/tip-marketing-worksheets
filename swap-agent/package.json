@@ -1,0 +1,14 @@
+{
+  "name": "cph-swap-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Clark Publishing House swap crawler (pull confirmed swaps) and harvester (book free mention swaps) for BookClicker, BookSwappy, and BookFunnel.",
+  "scripts": {
+    "login": "node login.js",
+    "pull": "node pull-swaps.js",
+    "book": "node book-swaps.js"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}
