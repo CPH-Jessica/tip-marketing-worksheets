@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savage Saints Dispatch — Marina's Newsletter Directions</title>
+<style>
+  :root{--red:#8f1d22;--red-dk:#6e1519;--ink:#23201f;--paper:#faf6f1;--card:#ffffff;--line:#e5dcd2;--gold:#b98a3c;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Montserrat','Segoe UI',Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6}
+  header{background:linear-gradient(135deg,#1c1a19,#3a1113);color:#fff;padding:34px 24px;text-align:center}
+  header h1{font-size:1.7rem;letter-spacing:.06em;text-transform:uppercase}
+  header p{color:#d9c9b8;margin-top:8px;font-size:.95rem}
+  .rule-banner{background:var(--red);color:#fff;text-align:center;padding:12px 18px;font-weight:600;font-size:.98rem}
+  nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;background:#fff;border-bottom:2px solid var(--line);padding:10px;position:sticky;top:0;z-index:5}
+  nav button{border:1px solid var(--line);background:#f4ede4;padding:9px 14px;border-radius:20px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--ink)}
+  nav button.active{background:var(--red);color:#fff;border-color:var(--red)}
+  main{max-width:880px;margin:0 auto;padding:28px 18px 80px}
+  section{display:none}
+  section.active{display:block}
+  h2{font-size:1.35rem;margin:6px 0 14px;color:var(--red-dk)}
+  h3{font-size:1.05rem;margin:22px 0 8px;color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+  .num{flex:0 0 32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .check{display:flex;gap:10px;align-items:flex-start;padding:9px 4px;border-bottom:1px dashed var(--line)}
+  .check:last-child{border-bottom:none}
+  .check input{margin-top:5px;transform:scale(1.25);accent-color:var(--red)}
+  .check label{cursor:pointer}
+  .prompt-box{background:#221f1e;color:#f3ece2;border-radius:10px;padding:18px;font-family:Consolas,Menlo,monospace;font-size:.83rem;white-space:pre-wrap;position:relative;margin:10px 0}
+  .copy-btn{position:absolute;top:10px;right:10px;background:var(--gold);color:#221f1e;border:none;border-radius:6px;padding:6px 12px;font-weight:700;cursor:pointer;font-family:inherit}
+  .copy-btn:active{transform:scale(.96)}
+  .tip{background:#f6efe2;border-left:4px solid var(--gold);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.92rem}
+  .warn{background:#fbeaea;border-left:4px solid var(--red);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.92rem}
+  .pill-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+  @media(max-width:640px){.pill-grid{grid-template-columns:1fr}}
+  .pill{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.9rem}
+  .pill b{color:var(--red-dk)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0}
+  td,th{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f4ede4}
+  footer{text-align:center;color:#8a7f74;font-size:.85rem;padding:22px}
+  .progress{font-size:.8rem;color:#8a7f74;margin-left:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Savage Saints Dispatch</h1>
+  <p>Marina's step-by-step newsletter system &middot; Marge Moore &middot; Iron Quill Media &middot; built with The Invisible Pen</p>
+</header>
+<div class="rule-banner">The one rule that never changes: Claude builds the draft. YOU press send. Nothing reaches your readers until you've seen it with your own eyes.</div>
+<nav id="nav"></nav>
+<main id="main"></main>
+<footer>Draft with Claude, review with your eyes, send with your finger. — The Invisible Pen 🦋<br>Questions? Ask Jessica. Better a day late than a wrong send.</footer>
+<script>
+const SECTIONS = [
+{id:'start',title:'Start Here',html:`
+<h2>Welcome, Marina</h2>
+<div class="card">
+<p>This page walks you through everything: sending your weekly <b>Savage Saints Dispatch</b>, and running newsletter swaps on <b>BookFunnel</b> and <b>Bookswappy</b>. You never stare at a blank page — you tell your Claude what's new, it builds the draft, you review and send.</p>
+<h3>How this works with your Claude (Cowork)</h3>
+<div class="step"><div class="num">1</div><div>Install your three skill files in Claude (Jessica gave you these): <b>savage-saints-dispatch</b>, <b>bookfunnel-swaps</b>, <b>bookswappy-swaps</b>. Once installed, Claude already knows your account, your template, your books, and the rules.</div></div>
+<div class="step"><div class="num">2</div><div>Make sure your <b>MailerLite (Iron Quill Media)</b> is connected in Claude's connector settings.</div></div>
+<div class="step"><div class="num">3</div><div>Use the tabs above. Each tab has prompts you can copy and paste straight into Claude.</div></div>
+</div>
+<div class="tip"><b>Your world at a glance:</b> Pen name <b>Marge Moore</b> · dark MC romance · series <b>Savage Saints</b> · featured book <b>Patron Saint</b> · free prequel <b>Mean Enough</b> (your reader magnet on BookFunnel) · newsletter group <b>"Marge MC Romance"</b> in MailerLite.</div>`},
+{id:'setup',title:'One-Time Setup',html:`
+<h2>One-time setup checklist</h2>
+<div class="card" data-checklist="setup">
+<div class="check"><input type="checkbox" id="s1"><label for="s1"><b>MailerLite connected in Claude</b> — and it's the <b>Iron Quill Media</b> account, not any other.</label></div>
+<div class="check"><input type="checkbox" id="s2"><label for="s2"><b>Sender email verified</b> — marge.moore.author@ironquillmedia.com. Until this is done, nothing can send. (Jessica is helping with this.)</label></div>
+<div class="check"><input type="checkbox" id="s3"><label for="s3"><b>Weekly template exists</b> — a draft named "WEEKLY TEMPLATE - Duplicate Me (Savage Saints Dispatch)" in Campaigns &rarr; Drafts, with your header, logo, colors, Montserrat font, and footer.</label></div>
+<div class="check"><input type="checkbox" id="s4"><label for="s4"><b>Images uploaded</b> — Dispatch header, Marge Moore logo, and both covers are in MailerLite's File manager.</label></div>
+<div class="check"><input type="checkbox" id="s5"><label for="s5"><b>Sign-up landing page live</b> — adds new readers to the "Marge MC Romance" group. (Finishing with Jessica.)</label></div>
+<div class="check"><input type="checkbox" id="s6"><label for="s6"><b>Mean Enough on BookFunnel</b> — landing page live, MailerLite integration connected so signups flow in automatically. (Done in your June 18 session.)</label></div>
+<div class="check"><input type="checkbox" id="s7"><label for="s7"><b>Three skills installed</b> in your Claude — savage-saints-dispatch, bookfunnel-swaps, bookswappy-swaps.</label></div>
+<div class="check"><input type="checkbox" id="s8"><label for="s8"><b>Bookswappy account created</b> — see the Bookswappy tab for the full setup walkthrough.</label></div>
+</div>
+<div class="warn">If any box above is stuck, don't fight it alone — message Jessica. That's what coaching is for.</div>`},
+{id:'weekly',title:'Weekly Newsletter',html:`
+<h2>Build this week's Dispatch</h2>
+<div class="card">
+<h3>Your five content pillars — pick 3–4 per issue</h3>
+<div class="pill-grid">
+<div class="pill"><b>From the Desert</b> — a short, intimate note or 1–2 paragraphs of world-building micro-fiction. The "club feels like home" vibe.</div>
+<div class="pill"><b>Dispatch Intel</b> — teasers, trope hints, cover reveals, release dates. Keep it possessive: "He's coming for you in September…"</div>
+<div class="pill"><b>Exclusive Ride</b> — the money-maker: an 800–1500 word deleted scene, alt POV, or after-the-epilogue. Gate the best ones behind the list.</div>
+<div class="pill"><b>Club Poll / Reader Confessions</b> — "Which Saint gets his own book next?" or a spicy reader quote (with permission).</div>
+<div class="pill"><b>Playlist Drop</b> — a Spotify link matching the month's tone (industrial, southern rock, dark country).</div>
+<div class="pill"><b>Every issue</b> — your featured book: cover + one-line hook + button.</div>
+</div>
+</div>
+<div class="card">
+<h3>Step 1 — Copy the Weekly Master Prompt</h3>
+<p>Fill in the [SQUARE BRACKETS] with this week's real details. Delete the pillars you're skipping. Then paste the whole thing to your Claude.</p>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>You have my MailerLite connected — the Iron Quill Media account for my pen name Marge Moore (dark MC romance, Savage Saints). Build this week's "Savage Saints Dispatch" as a DRAFT campaign. Do NOT send or schedule it. Start by duplicating my saved draft "WEEKLY TEMPLATE - Duplicate Me" so the header, logo, colors, Montserrat font, and footer are already set. Audience: the group "Marge MC Romance."
+
+Fill in 3–4 of these pillars this week (delete the ones I skip):
+1) FROM THE DESERT — short note or 1–2 paragraphs of micro-fiction:
+   [TYPE the vibe / what's on my mind]
+2) DISPATCH INTEL — teasers, cover reveal, release date, kept possessive:
+   [TYPE the news]
+3) EXCLUSIVE RIDE — gated bonus (deleted scene / alt POV / after-epilogue):
+   [PASTE the scene, OR say "link only" and PASTE the link]
+4) CLUB POLL / READER CONFESSIONS:
+   [TYPE the poll question + link, or a reader quote]
+5) PLAYLIST DROP: [PASTE Spotify link]
+
+Featured book + button: [TITLE] — [PASTE one-line hook] — link: [PASTE link]
+
+This week's swaps to include (from my swap tracker — skip if none):
+[PASTE partner book titles + links + covers]
+
+Give me 3 short, possessive subject-line options (under ~45 characters).
+Use ONLY the words, scenes, titles, and links I pasted. Do NOT invent scenes, blurbs, prices, or links. If something is missing, ask me.
+Confirm it's saved as a DRAFT and give me the link to preview and send.</div>
+</div>
+<div class="card">
+<h3>Step 2 — Claude builds the draft</h3>
+<p>Claude duplicates your template, fills in your pillars, adds your featured book and swaps, and gives you a preview link. It will not send — ever.</p>
+<h3>Step 3 — You review and send</h3>
+<p>Go to the <b>Review &amp; Send</b> tab and run the checklist. When it's perfect, YOU press Send or Schedule.</p>
+</div>`},
+{id:'review',title:'Review & Send',html:`
+<h2>Before you press send — every single time</h2>
+<div class="card" data-checklist="review">
+<div class="check"><input type="checkbox" id="r1"><label for="r1">Open the draft in MailerLite and <b>read every word once</b>.</label></div>
+<div class="check"><input type="checkbox" id="r2"><label for="r2"><b>Click every link.</b> Every one. Buy links, swap links, playlist link, bonus scene link.</label></div>
+<div class="check"><input type="checkbox" id="r3"><label for="r3">Confirm every swap book you promised this week is actually in the email — title, cover, link.</label></div>
+<div class="check"><input type="checkbox" id="r4"><label for="r4">Preview &rarr; <b>"Send a test email"</b> to yourself. Check it on your phone too.</label></div>
+<div class="check"><input type="checkbox" id="r5"><label for="r5">Pick one of the three subject lines. Short and possessive wins.</label></div>
+<div class="check"><input type="checkbox" id="r6"><label for="r6">Audience is the <b>"Marge MC Romance"</b> group.</label></div>
+<div class="check"><input type="checkbox" id="r7"><label for="r7">Fix anything: edit in MailerLite directly, or tell Claude "change this line to…" and re-check.</label></div>
+<div class="check"><input type="checkbox" id="r8"><label for="r8">All good? <b>YOU press Send</b> (or Schedule). Then reset this checklist for next week.</label></div>
+</div>
+<div class="warn"><b>If anything looks off, stop and ask Jessica before you send.</b> Better a day late than a wrong send.</div>
+<div class="tip">After the send: go to the Bookswappy tab, Part 4 — confirm your completed swaps the same day.</div>`},
+{id:'bookfunnel',title:'BookFunnel Swaps',html:`
+<h2>BookFunnel — signup swaps that grow your list</h2>
+<div class="card">
+<p><b>What's already set up:</b> your BookFunnel account (Mid-list, annual), the <b>Mean Enough</b> landing page, and the MailerLite integration — signups flow automatically into your "Marge MC Romance" group.</p>
+<p><b>What you want:</b> newsletter <b>SIGNUP</b> swaps (they build your list). Not sales swaps — you're list-building right now.</p>
+<div class="tip">BookFunnel's dashboard is <b>slow</b>. Pages can take 15–20 seconds. That's normal — wait before assuming something broke.</div>
+</div>
+<div class="card">
+<h3>Find new swaps — paste this to Claude</h3>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookfunnel-swaps skill. Help me find newsletter SIGNUP swaps (not sales swaps) on BookFunnel for my pen name Marge Moore — dark MC romance, Savage Saints series, reader magnet "Mean Enough." Search author swaps and group promos with my genres: Romance / Bad Boy / Dark (dark romance, MC, mafia). Skip sweet/clean, cozy, and erotica. Show me each candidate — partner, book, genre, dates — and I'll pick. Don't request or accept anything until I say yes. When I approve one, include a note that I'm a new author building my list, and suggest a share date.</div>
+<h3>Pull links before a Dispatch — paste this to Claude</h3>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookfunnel-swaps skill. Pull all my BookFunnel swaps for [DATE RANGE]. For each: event name, dates, status, partner author + book, MY tracking link, and the PARTNER's tracking link (that's what goes in my newsletter — keep the ?tid= exactly as shown, never retype a link). Note which are 1-to-1 swaps (two links) and which are group swaps (one shared landing-page link). Give me a simple table I can keep, and flag anything expired, missing a link, or wrong-genre. If a swap says Approved but has no link, remind me to check my email for the BookFunnel notification.</div>
+</div>
+<div class="card">
+<h3>The swap rules</h3>
+<table>
+<tr><th>Rule</th><th>Why</th></tr>
+<tr><td>Free swaps only</td><td>Anything asking for money — stop and ask Jessica first.</td></tr>
+<tr><td>Genre-match every swap</td><td>Your readers signed up for dark MC romance. Wrong-genre books burn trust.</td></tr>
+<tr><td>Use links exactly as shown</td><td>The ?tid= tracking links are how swaps get credited. Never retype or shorten.</td></tr>
+<tr><td>Keep every promise</td><td>If you booked it, it goes in the issue you promised. Your reputation with other authors depends on it.</td></tr>
+</table>
+</div>`},
+{id:'bookswappy',title:'Bookswappy',html:`
+<h2>Bookswappy — setup, then swaps</h2>
+<div class="card">
+<h3>Part 1 — One-time setup</h3>
+<div class="step"><div class="num">1</div><div>Go to <b>bookswappy.com</b> and create one account with your author email. Claude can walk you through every screen — paste the setup prompt below.</div></div>
+<div class="step"><div class="num">2</div><div>Add your newsletter as a list. Suggested name: <b>"Marge Moore — Savage Saints Dispatch (Dark MC Romance)"</b> — the genre in the name helps the right partners find you.</div></div>
+<div class="step"><div class="num">3</div><div><b>Honest numbers only.</b> Your subscriber count comes from the real "Marge MC Romance" group in MailerLite. If your list is new and has no send history, don't guess an open rate — leave it honest. Real numbers protect your reputation in swap circles.</div></div>
+<div class="step"><div class="num">4</div><div>Add your books: <b>Patron Saint</b>, and <b>Mean Enough</b> where a free book is wanted — with your exact links.</div></div>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookswappy-swaps skill. Walk me through setting up my Bookswappy account step by step — I'll do the typing for passwords. Then help me add my newsletter list (name it "Marge Moore — Savage Saints Dispatch (Dark MC Romance)") using my REAL subscriber count from the "Marge MC Romance" group in MailerLite — pull the actual number, don't estimate. Genres: dark romance, MC, mafia, bad boy. Then add my books Patron Saint and Mean Enough — I'll paste the links. If any screen doesn't match what you expect, describe what you see and ask me.</div>
+</div>
+<div class="card">
+<h3>Part 2 — Find &amp; book swaps</h3>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookswappy-swaps skill. Find swap partners on Bookswappy that fit dark MC romance (dark romance, MC, mafia, bad boy — no sweet/clean, no cozy, no erotica). Show me each candidate with partner, book, list size, open rate, and date — I'll pick. Book nothing without my yes. When I approve one, include a short note that I'm a new author building my list, and propose a share date. Add every booked swap to my swap tracker with the date and which Dispatch issue it belongs in.</div>
+<h3>Part 3 — Before each Dispatch</h3>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookswappy-swaps skill. Pull everything for my swaps due the week of [DATE]: partner book title, author, promo link, cover. Use the links exactly as the platform shows them. Stage the swap section so we can drop it into this week's Savage Saints Dispatch draft.</div>
+<h3>Part 4 — After you send (close the loop)</h3>
+<div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Use your bookswappy-swaps skill. I just sent this week's Savage Saints Dispatch. Open the sent campaign in MailerLite and verify each partner book I promised actually appears — title, link, cover. For every one you can verify in the sent email, help me mark the swap complete on Bookswappy today. If any promised book is missing, do NOT confirm it — tell me right away and we'll decide the make-good.</div>
+<div class="warn"><b>Never confirm a swap you can't see in the actual sent email.</b> And confirm the good ones same-day — unconfirmed swaps quietly damage your standing with other authors.</div>
+</div>`},
+{id:'rules',title:'Rules & Help',html:`
+<h2>The rules that protect your readers</h2>
+<div class="card">
+<div class="step"><div class="num">1</div><div><b>Claude drafts; you send.</b> Always. Nothing reaches your list until you've reviewed it.</div></div>
+<div class="step"><div class="num">2</div><div><b>Never let Claude invent your world.</b> Scenes, titles, blurbs, prices, and links must be the real ones you pasted. If you don't have it, don't send it. A boring true line beats a shiny made-up one.</div></div>
+<div class="step"><div class="num">3</div><div><b>Click every link before you send.</b></div></div>
+<div class="step"><div class="num">4</div><div><b>Real numbers only</b> — subscriber counts and open rates come from MailerLite, never from memory.</div></div>
+<div class="step"><div class="num">5</div><div><b>If a tool errors twice, stop.</b> Don't let Claude try workaround after workaround on a live platform. Screenshot it, ask Jessica.</div></div>
+</div>
+<h2>If something goes wrong</h2>
+<div class="card">
+<table>
+<tr><th>Problem</th><th>Fix</th></tr>
+<tr><td>"Claude can't see MailerLite"</td><td>The connector isn't linked in that chat. Reconnect MailerLite in your Claude connector settings, then try again.</td></tr>
+<tr><td>It built in the wrong account</td><td>Make sure the connected MailerLite is <b>Iron Quill Media</b>.</td></tr>
+<tr><td>Images didn't show up</td><td>They're in MailerLite's File manager — tell Claude to use the ones already there.</td></tr>
+<tr><td>BookFunnel page seems frozen</td><td>It's slow. Wait 15–20 seconds before retrying.</td></tr>
+<tr><td>A swap partner's book is missing from a sent email</td><td>Don't confirm the swap. Tell Jessica — usually the fix is a slot in next week's issue plus a note to the partner.</td></tr>
+<tr><td>Anything else that feels off</td><td>Stop and message Jessica. Better a day late than a wrong send.</td></tr>
+</table>
+</div>
+<div class="tip">You've got this. Draft with Claude, review with your eyes, send with your finger. — The Invisible Pen</div>`}
+];
+const nav=document.getElementById('nav'),main=document.getElementById('main');
+SECTIONS.forEach((s,i)=>{
+  const b=document.createElement('button');b.textContent=s.title;b.onclick=()=>show(s.id);b.id='nav-'+s.id;nav.appendChild(b);
+  const sec=document.createElement('section');sec.id=s.id;sec.innerHTML=s.html;main.appendChild(sec);
+});
+function show(id){
+  SECTIONS.forEach(s=>{document.getElementById(s.id).classList.toggle('active',s.id===id);document.getElementById('nav-'+s.id).classList.toggle('active',s.id===id);});
+  try{localStorage.setItem('ssd-tab',id);}catch(e){}
+  window.scrollTo({top:0});
+}
+function copyPrompt(btn){
+  const text=btn.parentElement.innerText.replace(/^Copy\n?/,'');
+  navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1600);})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1600);});
+}
+document.querySelectorAll('[data-checklist] input[type=checkbox]').forEach(cb=>{
+  const key='ssd-'+cb.id;
+  try{cb.checked=localStorage.getItem(key)==='1';}catch(e){}
+  cb.addEventListener('change',()=>{try{localStorage.setItem(key,cb.checked?'1':'0');}catch(e){}});
+});
+let start='start';try{start=localStorage.getItem('ssd-tab')||'start';}catch(e){}
+if(!SECTIONS.some(s=>s.id===start))start='start';
+show(start);
+</script>
+</body>
+</html>
