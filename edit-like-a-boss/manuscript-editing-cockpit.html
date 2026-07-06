@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Manuscript Editing Cockpit</title>
+<title>Story Clinic — Edit Like a Boss</title>
 <style>
   /* ============================================================
      MANUSCRIPT EDITING COCKPIT
@@ -163,11 +163,19 @@
   .howto-card.best{background:#fbeede;border-color:var(--gold)}
   .howto-card .hk{font-family:Georgia,serif;font-weight:700;color:var(--plum);font-size:14.5px;margin-bottom:5px}
   .howto-card p{margin:0;font-size:13px;color:#5A554F}
+  .subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .stab{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:13.5px;font-family:inherit;transition:.13s}
+  .stab:hover{border-color:var(--rose-soft)}
+  .stab.on{background:var(--plum);border-color:var(--plum);color:#fff}
+  .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
+  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
+  .charbar i.on1{background:#F0A78F}.charbar i.on2{background:var(--rose)}.charbar i.on3{background:var(--bad)}
+  .benchband{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
   <div class="topbar">
-    <span class="logo">Manuscript Editing <b>Cockpit</b></span>
+    <span class="logo">Story <b>Clinic</b></span>
     <span class="tag" id="brandTag"></span>
     <span class="spacer"></span>
     <button onclick="exportState()">Save file</button>
@@ -180,8 +188,9 @@
     <button class="tab on" data-v="setup">1 · Manuscript</button>
     <button class="tab" data-v="scan">2 · Auto-Scan <span class="badge hidden" id="scanBadge">0</span></button>
     <button class="tab" data-v="passes">3 · Editing Passes</button>
-    <button class="tab" data-v="sat">4 · Satisfaction</button>
-    <button class="tab" data-v="report">5 · Report</button>
+    <button class="tab" data-v="reports">4 · Story Reports</button>
+    <button class="tab" data-v="sat">5 · Satisfaction</button>
+    <button class="tab" data-v="report">6 · Fix-It Report</button>
   </div>
 
   <div class="wrap">
@@ -190,8 +199,8 @@
     <div class="view on" id="v-setup">
 
       <div class="panel intro">
-        <h2>Welcome to your Editing Cockpit</h2>
-        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>. It runs the whole editing system on one screen: instant offline checks against the AI banned-word list, ready-to-paste prompts for all 12 reasoning passes, a reader-satisfaction tracker, and one exportable fix-it report with before &amp; after edits.</p>
+        <h2>Welcome to the Story Clinic</h2>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b> — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 12 editing passes, four <b>story lab reports</b> (plot, character, pacing, conflict), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits.</p>
         <div class="howto">
           <div class="howto-card best">
             <div class="hk">★ Best way to use it</div>
@@ -274,7 +283,23 @@
       </div>
     </div>
 
-    <!-- ===================== 4 · SATISFACTION ===================== -->
+    <!-- ===================== 4 · STORY REPORTS ===================== -->
+    <div class="view" id="v-reports">
+      <div class="panel">
+        <h2>Story Lab Reports <span class="pill">instant offline read + AI deep-dive</span></h2>
+        <p class="sub">Four whole-book reports, the kind bestseller-analysis dashboards charge for. Each one gives you an <b>instant offline read</b> computed right here from your chapters (nothing uploaded), plus a <b>copy-paste prompt</b> for the full deep-dive in your AI tool. Paste back what your AI returns and it's folded into your Fix-It report.</p>
+        <div id="anaStats" style="margin-bottom:4px"></div>
+        <div class="subtabs" id="anaTabs">
+          <button class="stab on" data-a="plot">📈 Plot</button>
+          <button class="stab" data-a="character">🎭 Character</button>
+          <button class="stab" data-a="pacing">⏱ Pacing</button>
+          <button class="stab" data-a="conflict">⚔️ Conflict</button>
+        </div>
+        <div id="anaBody"></div>
+      </div>
+    </div>
+
+    <!-- ===================== 5 · SATISFACTION ===================== -->
     <div class="view" id="v-sat">
       <div class="panel">
         <details class="explain">
@@ -327,7 +352,7 @@
     <!-- ===================== 5 · REPORT ===================== -->
     <div class="view" id="v-report">
       <div class="panel">
-        <h2>Editorial report</h2>
+        <h2>Fix-It report</h2>
         <p class="sub">Paste back what your AI returned for each pass. The cockpit folds it together with the auto-scan and the satisfaction read into one report. <b>Download the Fix-It report (.html)</b> and open it on your own computer — every issue becomes a card with the before text, why it matters, and the fix.</p>
         <div id="reportNotes"></div>
         <div class="toolbar">
@@ -432,7 +457,7 @@ const PASSES = [
 /* ============================================================
    STATE
    ============================================================ */
-let state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{}};
+let state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
 let hidden={};
 
 function save(){
@@ -444,6 +469,7 @@ function save(){
 function val(id){const e=document.getElementById(id);return e?e.value:'';}
 function load(){
   try{const raw=localStorage.getItem(STORE);if(raw)state=JSON.parse(raw);}catch(e){}
+  state.chapters=state.chapters||[];state.beats=state.beats||[];state.passNotes=state.passNotes||{};state.analysisNotes=state.analysisNotes||{};
   // pen-name dropdown
   const sel=document.getElementById('penName');
   sel.innerHTML=Object.entries(PENS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
@@ -466,6 +492,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
   t.classList.add('on'); document.getElementById('v-'+t.dataset.v).classList.add('on');
   if(t.dataset.v==='scan')renderScan();
   if(t.dataset.v==='passes')renderPasses();
+  if(t.dataset.v==='reports')renderAnalyses();
   if(t.dataset.v==='sat'){renderLegend();renderChart();renderBeatTable();renderDiag();}
   if(t.dataset.v==='report')renderReport();
 });
@@ -861,6 +888,296 @@ function renderDiag(){
 }
 
 /* ============================================================
+   STORY REPORTS ENGINE — Plot · Character · Pacing · Conflict
+   Offline reads computed in-browser (nothing uploaded), modeled
+   on bestseller-pattern dashboards: emotional arc, pacing curve,
+   conflict line, character presence bars — plus one deep-dive
+   AI prompt per report.
+   ============================================================ */
+const POSW=new Set("love loved loves loving laugh laughed laughing laughter smile smiled smiling grin grinned grinning kiss kissed kisses kissing warm warmth hope hoped hopeful joy happy happiness safe sweet beautiful gorgeous gentle comfort comforted comforting home friend friends trust trusted win won celebrate celebrated celebration relief relieved hug hugged hugging tender delight delighted promise promised perfect soft sunshine bright peace peaceful calm charming lovely wonderful amazing thrilled excited excitement eager alive butterflies blush blushed giggle giggled tease teased teasing playful fun funny glad grateful gratitude bliss adore adored cherish cherished devoted devotion beloved darling sweetheart honey happily forever wedding married marry proposal".split(" "));
+const NEGATIVEW=new Set("fear feared fears afraid scared terrified terror angry anger furious fury rage raged cry cried crying tears sob sobbed sobbing dead death die died dying blood bled bleeding pain painful hurt hurts hurting alone lonely loneliness lost lose losing loss hate hated hates hating scream screamed screaming shout shouted shouting broke broken wrong danger dangerous threat threatened threatening panic panicked dread grief grieving ache ached aching bitter bitterly enemy enemies fight fought fighting lie lied lies liar betray betrayed betrayal cheat cheated cheating worry worried worse worst sick nightmare nightmares horror horrible terrible awful miserable misery despair desperate desperately empty numb regret regretted shame ashamed guilt guilty jealous jealousy slam slammed snapped glare glared accused refuse refused refusing warn warned wound wounded weapon knife gun war trap trapped attack attacked cruel harsh ruin ruined destroy destroyed shatter shattered abandoned divorce funeral grave".split(" "));
+const CONFLICTW=new Set("argue argued argues arguing argument fight fights fought fighting shout shouted shouting yell yelled yelling slam slammed snap snapped glare glared storm stormed demand demanded demands refuse refused refuses accuse accused accuses threat threaten threatened threatening warn warned warning confront confronted confrontation clash clashed grab grabbed shove shoved scream screamed hiss hissed snarl snarled fist fists blood weapon gun knife wound wounded danger dangerous risk risked risky secret secrets lie lied lies liar betray betrayed betrayal cheat cheated steal stole stolen escape escaped chase chased trap trapped attack attacked defend defended enemy enemies rival rivals jealous jealousy fury furious rage battle war struggle struggled struggling resist resisted forbid forbidden ultimatum blackmail revenge feud dare dared challenge challenged deadline".split(" "));
+
+function toks(s){return s.toLowerCase().match(/[a-z']+/g)||[];}
+function lexScores(seg){let p=0,n=0,c=0;toks(seg.text).forEach(t=>{if(POSW.has(t))p++;if(NEGATIVEW.has(t))n++;if(CONFLICTW.has(t))c++;});return{p,n,c};}
+function mkSeg(paras,w){
+  const counts={};paras.forEach(p=>counts[p.ci]=(counts[p.ci]||0)+wc(p.t));
+  const ci=+Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+  return {text:paras.map(p=>p.t).join('\n\n'),w,ci,paraCount:paras.length};
+}
+function buildSegments(target){
+  target=target||40;
+  const paras=[];
+  state.chapters.forEach((c,ci)=>c.text.split(/\n{2,}/).forEach(p=>{const t=p.trim();if(t)paras.push({t,ci});}));
+  if(!paras.length)return[];
+  const tot=paras.reduce((a,p)=>a+wc(p.t),0);
+  const per=Math.max(50,Math.floor(tot/target));
+  const segs=[];let cur=[],cw=0;
+  paras.forEach(p=>{cur.push(p);cw+=wc(p.t);if(cw>=per){segs.push(mkSeg(cur,cw));cur=[];cw=0;}});
+  if(cur.length)segs.push(mkSeg(cur,cw));
+  let run=0;const tw=segs.reduce((a,s)=>a+s.w,0);
+  segs.forEach(s=>{s.pct=tw?Math.round(run/tw*100):0;run+=s.w;s.lex=lexScores(s);});
+  return segs;
+}
+function smoothArr(a,k){k=k||1;return a.map((v,i)=>{let s=0,c=0;for(let j=i-k;j<=i+k;j++){if(j>=0&&j<a.length){s+=a[j];c++;}}return s/c;});}
+function emotionalArc(segs){
+  const raw=segs.map(s=>(s.lex.p-s.lex.n)/Math.max(1,s.w)*1000);
+  const sm=smoothArr(raw,1);
+  const mx=Math.max(0.001,...sm.map(Math.abs));
+  return sm.map(v=>v/mx);
+}
+function dialogueRatio(text){
+  const m=text.match(/"[^"\n]{2,600}"|“[^”\n]{2,600}”/g)||[];
+  const dw=m.reduce((a,q)=>a+wc(q),0);
+  const tw=wc(text);return tw?dw/tw:0;
+}
+function paceScore(seg){
+  const sents=seg.text.split(/(?<=[.!?…])\s+/).filter(s=>s.trim());
+  const asl=sents.length?seg.w/sents.length:seg.w;
+  const dr=dialogueRatio(seg.text);
+  const shortFrac=sents.length?sents.filter(s=>wc(s)<=7).length/sents.length:0;
+  const app=seg.paraCount?seg.w/seg.paraCount:seg.w;
+  const p=5+(13-asl)*0.30+(dr-0.28)*7+shortFrac*3-(app>110?1:0);
+  return Math.max(0,Math.min(10,p));
+}
+function paceCurve(segs){return smoothArr(segs.map(paceScore),1);}
+function conflictCurve(segs){
+  const raw=segs.map(s=>s.lex.c/Math.max(1,s.w)*1000);
+  const sm=smoothArr(raw,1);
+  const mx=Math.max(0.001,...sm);
+  return sm.map(v=>v/mx*10);
+}
+function extremaOf(vals,n){
+  n=n||3;const pk=[],vl=[];
+  for(let i=1;i<vals.length-1;i++){
+    if(vals[i]>=vals[i-1]&&vals[i]>=vals[i+1])pk.push(i);
+    if(vals[i]<=vals[i-1]&&vals[i]<=vals[i+1])vl.push(i);
+  }
+  pk.sort((a,b)=>vals[b]-vals[a]);vl.sort((a,b)=>vals[a]-vals[b]);
+  return{peaks:pk.slice(0,n),valleys:vl.slice(0,n)};
+}
+function miniChart(vals,o){
+  o=o||{};const W=1000,H=280,pl=42,pr=16,pt=18,pb=40,pw=W-pl-pr,ph=H-pt-pb;
+  const mn=o.min!==undefined?o.min:Math.min(...vals),mx=o.max!==undefined?o.max:Math.max(...vals);
+  const x=i=>pl+(vals.length>1?i/(vals.length-1):0.5)*pw;
+  const y=v=>pt+ph-((v-mn)/Math.max(0.0001,mx-mn))*ph;
+  let s='';
+  if(o.bands){
+    s+=`<rect x="${pl}" y="${pt}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="${o.color||'#E8735A'}" opacity="0.10"/>`;
+    s+=`<rect x="${pl}" y="${(pt+ph*0.8).toFixed(1)}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="#1B2A4A" opacity="0.10"/>`;
+  }
+  [0,25,50,75,100].forEach(p=>{const xx=pl+p/100*pw;s+=`<line x1="${xx}" y1="${pt}" x2="${xx}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">${p}%</text>`;});
+  if(o.neutral!==undefined){const yy=y(o.neutral);s+=`<line x1="${pl}" y1="${yy.toFixed(1)}" x2="${W-pr}" y2="${yy.toFixed(1)}" stroke="#A89F90" stroke-dasharray="5 5"/>`;}
+  (o.ylab||[]).forEach(l=>{s+=`<text x="${pl-8}" y="${(y(l.v)+4).toFixed(1)}" font-size="11" fill="#A89F90" text-anchor="end">${l.t}</text>`;});
+  const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="${o.color||'#E8735A'}" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  (o.marks||[]).forEach(m=>{s+=`<circle cx="${x(m.i).toFixed(1)}" cy="${y(vals[m.i]).toFixed(1)}" r="5.5" fill="#fff" stroke="${m.c||o.color||'#E8735A'}" stroke-width="2.5"/>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:linear-gradient(180deg,#FFFDF8,#FCF6EE);border:1px solid #D9D0C4;border-radius:12px">${s}</svg>`;
+}
+const NAME_STOP=new Set("The A An And But Or Nor So Yet Then When While After Before Because If As At On In Of To For With From By Not No Yes Oh Okay Ok Well Now Just Still Even Every Some Any All Both Each Chapter Prologue Epilogue She He They It We You I Her His Their My Your Our Its Him Them Us Me Mine Yours Mr Mrs Ms Miss Dr Doctor Aunt Uncle Grandma Grandpa Mom Dad Mama Papa Momma Daddy Mother Father Sir Madam Lord Lady God Jesus Christ Lord Monday Tuesday Wednesday Thursday Friday Saturday Sunday January February March April June July August September October November December Christmas Thanksgiving Halloween Easter Valentine Main Street Avenue Road Park Lake River County North South East West Saint America American English French Spanish Italian York Los Texas California Instagram Facebook Google TikTok Twitter What Why How Who Whom Where Which Whose There Here This That These Those Something Someone Anyone Everyone Nothing Nobody Everything Everybody Maybe Please Thanks Thank Sorry Hey Hi Hello Goodbye Wait Stop Look Listen Come Fine Right Sure Great Good Damn Jesus Don Didn Wasn Isn Aren Won Can Couldn Wouldn Shouldn Let Its Later Soon Once Suddenly Finally Meanwhile Inside Outside Behind Above Below Across Around Beyond Instead Almost Together Tonight Today Tomorrow Yesterday Somewhere Anywhere Everywhere Nowhere Except Without Within During Despite Although Though Since Until Unless Whatever Whenever Wherever Somehow Perhaps Really Honestly Seriously Apparently Eventually Slowly Carefully Never Always Enough Nothing Besides However Anyway Actually Probably Definitely Course Thanks".split(" "));
+function detectCharacters(){
+  const mid={},cap={};
+  state.chapters.forEach(c=>{
+    c.text.split(/(?<=[.!?…"”])\s+|\n+/).forEach(s=>{
+      s.trim().split(/\s+/).forEach((wd,wi)=>{
+        const m=wd.match(/^["'“‘(]*([A-Z][a-z]{2,})['’]?s?[,.!?;:"'”)\-—…]*$/);
+        if(!m)return;const name=m[1];
+        if(NAME_STOP.has(name))return;
+        cap[name]=(cap[name]||0)+1;
+        if(wi>0)mid[name]=(mid[name]||0)+1;
+      });
+    });
+  });
+  const allText=state.chapters.map(c=>c.text).join('\n');
+  // a name either recurs mid-sentence, or recurs capitalized while its
+  // lowercase form never appears (the classic proper-noun test)
+  const names=Object.keys(cap).filter(n=>(mid[n]||0)>=2||(cap[n]>=4&&countMatches(allText,new RegExp('\\b'+n.toLowerCase()+'\\b','g'))===0));
+  return names.map(n=>{
+    const perChap=state.chapters.map(c=>countMatches(c.text,new RegExp('\\b'+n+'\\b','g')));
+    const total=perChap.reduce((a,b)=>a+b,0);
+    const first=perChap.findIndex(x=>x>0);
+    const last=perChap.length-1-[...perChap].reverse().findIndex(x=>x>0);
+    return{name:n,total,perChap,first,last};
+  }).filter(c=>c.total>=3).sort((a,b)=>b.total-a.total).slice(0,14);
+}
+function levd(a,b){const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];}for(let j=0;j<=b.length;j++){m[0][j]=j;}
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return m[a.length][b.length];}
+function chapTitle(i){return (state.chapters[i]||{}).title||('Chapter '+(i+1));}
+function findsHtml(items){return items.map(([c,ic,t,d])=>`<div class="find ${c}"><div class="ic">${ic}</div><div><div class="ft">${esc(t)}</div><div class="fd">${esc(d)}</div></div></div>`).join('');}
+
+function plotDiag(arc,segs){
+  const items=[];if(arc.length<3)return[['opt','ℹ','Not enough text yet','Add more chapters for a meaningful emotional arc.']];
+  const hi=Math.max(...arc),lo=Math.min(...arc);
+  const iHi=arc.indexOf(hi),iLo=arc.indexOf(lo);
+  const reachHi=hi>=0.6,reachLo=lo<=-0.6;
+  if(reachHi&&reachLo)items.push(['good','✦','Your arc reaches both bands','The emotional line climbs into the top band AND drops into the bottom band — the pattern roughly 90% of bestsellers share. Readers get real highs and real lows.']);
+  else items.push(['rec','📉','The arc doesn\'t reach '+(!reachHi&&!reachLo?'either band':(!reachHi?'the top band':'the bottom band')),'Bestseller emotional arcs almost always push at least one strong high and one strong low into the tinted zones. Find your biggest moment'+(!reachHi?' of joy/connection':' of loss/complication')+' — can it go further?']);
+  if(hi-lo<0.9)items.push(['crit','⚠','Flat emotional line','Very little variation in emotional temperature — flat stretches are where readers drift away. Raise the peaks, deepen the valleys.']);
+  items.push(['opt','⛰','Highest point: '+chapTitle(segs[iHi].ci)+' (~'+segs[iHi].pct+'%)','Your brightest emotional peak. Upward slopes read as resolution/connection (joy, relief, love).']);
+  items.push(['opt','🕳','Lowest point: '+chapTitle(segs[iLo].ci)+' (~'+segs[iLo].pct+'%)','Your darkest valley. If this is your dark moment, it should sit around 70–80% of the book.']);
+  if(arc.length>=10){
+    let turns=0;for(let i=1;i<arc.length-1;i++){if((arc[i]-arc[i-1])*(arc[i+1]-arc[i])<0&&Math.abs(arc[i+1]-arc[i-1])>0.15)turns++;}
+    if(turns<Math.floor(arc.length/8))items.push(['rec','🔄','Few emotional turns ('+turns+')','Bestsellers shift emotional direction regularly — a meaningful turn roughly every 10% of the book. Long one-direction stretches read as predictable.']);
+    else items.push(['good','🔄','Healthy turn rhythm ('+turns+' turns)','The emotional direction keeps changing — that push-pull is what keeps pages turning.']);
+  }
+  return items;
+}
+function pacingDiag(pace,segs){
+  const items=[];if(pace.length<3)return[['opt','ℹ','Not enough text yet','Add more chapters for a meaningful pacing read.']];
+  const iF=pace.indexOf(Math.max(...pace)),iS=pace.indexOf(Math.min(...pace));
+  items.push(['opt','🏃','Fastest stretch: '+chapTitle(segs[iF].ci)+' (~'+segs[iF].pct+'%)','Short sentences, dialogue, quick beats — where readers turn pages quickest.']);
+  items.push(['opt','🐢','Slowest stretch: '+chapTitle(segs[iS].ci)+' (~'+segs[iS].pct+'%)','Longer sentences and description — fine for breathing room, a problem if it lingers.']);
+  let flat=1,flatMax=1,flatAt=0;
+  for(let i=1;i<pace.length;i++){if(Math.abs(pace[i]-pace[i-1])<0.55){flat++;if(flat>flatMax){flatMax=flat;flatAt=i;}}else flat=1;}
+  if(flatMax>=5)items.push(['rec','📏','Flat pacing stretch around '+chapTitle(segs[flatAt].ci),flatMax+' segments in a row at nearly the same pace. Bestsellers change pace roughly every 10% — vary scene length, dialogue density, or sentence rhythm there.']);
+  if(pace.length>=9){
+    const third=Math.floor(pace.length/3);
+    const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+    const mid=avg(pace.slice(third,third*2)),outer=avg(pace.slice(0,third).concat(pace.slice(third*2)));
+    if(outer-mid>1.1)items.push(['rec','🕳','Sagging middle','The middle third runs noticeably slower than the rest. Check those chapters for scenes that stall — cut, compress, or add pressure.']);
+    else items.push(['good','⚖','No sagging middle','The middle third holds its pace against the opening and ending thirds.']);
+  }
+  if(pace[0]<3.4)items.push(['rec','🚪','Slow opening','The first stretch reads slow — heavy setup before a live question. Openings carry the sample-download decision; start inside motion.']);
+  return items;
+}
+function conflictDiag(conf,segs){
+  const items=[];if(conf.length<3)return[['opt','ℹ','Not enough text yet','Add more chapters for a meaningful conflict read.']];
+  const perChap=state.chapters.map(c=>{let n=0;toks(c.text).forEach(t=>{if(CONFLICTW.has(t))n++;});return {d:n/Math.max(1,wc(c.text))*1000};});
+  const quiet=perChap.map((x,i)=>x.d<2.5?chapTitle(i):null).filter(Boolean);
+  if(quiet.length)items.push(['rec','😴','Very quiet chapters: '+quiet.join(', '),'Almost no conflict markers detected. Quiet isn\'t automatically wrong — but "tension on every page" is the rule. Make sure a live question or friction runs under the calm.']);
+  else items.push(['good','⚡','Conflict runs through every chapter','No chapter reads conflict-free — there\'s friction on the page throughout.']);
+  if(conf.length>=9){
+    const third=Math.floor(conf.length/3);
+    const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+    const first=avg(conf.slice(0,third)),last=avg(conf.slice(third*2));
+    if(last>first*1.15)items.push(['good','📈','Stakes escalate','Conflict intensity climbs from the first third to the last — the ratchet is working.']);
+    else items.push(['rec','📉','Escalation check','Conflict intensity in the final third isn\'t clearly higher than the opening. If the climax doesn\'t out-pressure Act 1, the ending will feel small. (The AI deep-dive can judge this properly — intensity isn\'t only word choice.)']);
+  }
+  const iP=conf.indexOf(Math.max(...conf));
+  items.push(['opt','💥','Biggest clash: '+chapTitle(segs[iP].ci)+' (~'+segs[iP].pct+'%)','Your highest concentration of conflict language. If this isn\'t your dark moment or climax, check whether the real one hits harder.']);
+  return items;
+}
+function characterDiag(chars){
+  const items=[];
+  if(!chars.length)return[['opt','ℹ','No recurring names detected','The scan looks for capitalized names used mid-sentence at least 3 times.']];
+  const nch=state.chapters.length;
+  const allText=state.chapters.map(c=>c.text).join('\n\n');
+  const dr=dialogueRatio(allText);
+  const drPct=Math.round(dr*100);
+  if(dr>=0.25&&dr<=0.35)items.push(['good','💬','Dialogue share: '+drPct+'%','Right in the 25–35% band where most bestsellers land.']);
+  else items.push(['rec','💬','Dialogue share: '+drPct+'%',(dr<0.25?'Below':'Above')+' the 25–35% band typical of bestsellers. Not a law — but '+(dr<0.25?'heavy narration slows pace; look for told moments that could be scenes.':'wall-to-wall dialogue can starve interiority and grounding; check for talking heads.')]);
+  for(let i=0;i<chars.length;i++)for(let j=i+1;j<chars.length;j++){
+    const a=chars[i].name,b=chars[j].name;
+    if(chars[i].total>=5&&chars[j].total>=5&&a[0]===b[0]&&(levd(a,b)<=2||a.slice(0,3)===b.slice(0,3)))
+      items.push(['rec','👯','Similar names: '+a+' & '+b,'Two significant characters whose names start alike — readers skim names by shape and WILL mix them up. Consider renaming one.']);
+  }
+  if(nch>=6)chars.forEach(c=>{
+    if(c.total>=8&&c.first<nch/3&&c.last<nch-Math.ceil(nch/3))
+      items.push(['rec','👻','Dropped character: '+c.name,'Prominent early ('+c.total+' mentions, enters '+chapTitle(c.first)+'), then vanishes after '+chapTitle(c.last)+'. Intentional exit, or a dangling thread?']);
+  });
+  const minor=chars.filter(c=>c.total<6).length;
+  if(chars.length>=10&&minor>=5)items.push(['opt','🧑‍🤝‍🧑','Big cast',''+chars.length+' recurring names, several barely used. Every named character costs reader memory — merge or unname walk-ons.']);
+  return items;
+}
+
+const ANA={
+ plot:{label:'Plot Analysis',color:'#E8735A',role:'a developmental editor who maps story structure against bestseller patterns',
+  explain:'The chart is your <b>emotional arc</b> — the story\'s emotional temperature from first page to last, measured from the language in each slice of the book. The dotted line is neutral; the tinted zones are the extremes. Two patterns matter: roughly <b>90% of bestsellers reach both tinted zones</b> (one real high, one real low), and the line should keep <b>changing direction</b> — every climb followed by a complication. The offline read is a proxy; the AI deep-dive maps your actual beats.',
+  tasks:["Narrative arc — describe the overall emotional shape of the story in plain language and name the closest classic shape (man-in-a-hole, rags-to-riches, Cinderella arc, etc.).","Structure map — locate the major beats with their approximate position as % of the book: hook, inciting incident, first plot point, midpoint shift, dark moment, climax, resolution. Mark each HIT / EARLY / LATE / MISSING and say what's actually on the page there.","Turning points — list the emotional high points and low points (scenes that shift the story's emotional temperature) and whether each is earned by what came before.","Setup & payoff — list every major promise made to the reader and where (or whether) it pays off. Orphaned setups and unearned payoffs are plot problems.","Subplots — name each subplot, whether it supports or distracts from the main plot, and whether it resolves.","Theme — state the book's theme in one sentence. Is it withheld and felt, or announced? Flag any place the book states its own moral.","Genre promise — does the plot deliver the beats this genre's readers came for, where they expect them?"],
+  out:"PLOT REPORT with: ARC SHAPE (one paragraph), BEAT MAP table (Beat | ~% position | Status | What's on the page), TURNING POINTS list, SETUP/PAYOFF ledger, SUBPLOT verdicts, THEME line, and the 3 biggest plot risks ranked."},
+ character:{label:'Character Analysis',color:'#D4A853',role:'a character editor who judges characters by their agency — what they DO on the page, not how they are described',
+  explain:'The table shows every recurring name the scan found, with <b>presence bars</b> — one cell per chapter, darker = more mentions — so you can see who owns the book, who disappears, and who wanders in late. The benchmark gauge is <b>dialogue share</b>: most bestsellers land between <b>25% and 35% dialogue</b>. The offline scan sees names; only the AI deep-dive can judge agency, voice, and arcs.',
+  tasks:["Cast list — every named character with their story function in one line. Flag anyone with no function.","Agency check — for each main character: what do they WANT right now (urgent goal), WHY (motivation), what stands in the way (obstacles), and what FLAW complicates it? Flag any protagonist who mostly reacts instead of deciding.","Differentiation — do any two characters read alike in voice or function? Cover the names in a dialogue scene: can you still tell who's speaking by cadence and word choice alone?","Arcs — for each lead: where they start → where they end, and the exact scenes where the change happens. Is the change earned on the page, or asserted?","Dynamics — for the central relationship: what does each person want FROM the other, what genuinely keeps them apart, and does the push-pull escalate?","POV — whose head are we in, is it consistent, and is it the right head for each big scene?","Supporting cast — does every named side character serve plot or theme? Who could be cut or merged without losing anything?"],
+  out:"CHARACTER REPORT with: AGENCY TABLE (Character | Goal | Motivation | Obstacle | Flaw | Active or Passive), DIFFERENTIATION flags, ARC map per lead (start → end → the scene where it turns), DYNAMICS read on the central relationship, and a cut/merge list."},
+ pacing:{label:'Pacing Analysis',color:'#7A9E7E',role:'a pacing editor who finds where readers speed up, slow down, and put the book down',
+  explain:'The curve estimates <b>reading speed</b> across the book — computed from sentence length, dialogue density, and paragraph weight in each slice. <b>Peaks</b> are page-turner stretches; <b>valleys</b> are slow, scene-setting stretches. Neither is bad alone: the danger signs are a <b>flat line</b> (no variety), a <b>sagging middle</b>, and a slow opening. Bestsellers change pace roughly <b>every 10%</b> of the book.',
+  tasks:["Chapter-by-chapter pace verdict — FAST / STEADY / SLOW for every chapter, naming the one thing driving that pace (action, dialogue, introspection, description).","Sagging middle — does momentum dip in the middle third? Name the exact chapters and what stalls them.","Scene vs. sequel — after each big scene, is there breathing room (reaction, processing, regrouping)? Too much reads as drag; none reads as whiplash.","Openings & endings — does each chapter open inside a live question and end pulling forward? List every clean-stop chapter ending (the #1 place readers quit).","Variety — where does the pace stay the same too long? Bestsellers shift gears roughly every 10% of the book.","Trim list — the specific scenes or passages to cut or compress, and what each cut buys.","Expand list — the big moments that rush by too fast and deserve more space on the page."],
+  out:"PACING REPORT with: CHAPTER TABLE (Chapter | Pace | What's driving it | Fix if needed), MIDDLE-THIRD verdict, TRIM list, EXPAND list, and the single highest-impact pacing change."},
+ conflict:{label:'Conflict Analysis',color:'#1B2A4A',role:'a conflict-and-stakes editor who tracks narrative drive',
+  explain:'The line tracks <b>conflict intensity</b> — the density of friction in each slice of the book (arguments, threats, secrets, danger, refusals). Upward moves are complications building; the rule underneath is <b>tension on every page</b>: even quiet scenes need a live question running. Watch for chapters the scan flags as conflict-quiet, and whether intensity <b>escalates</b> toward the climax instead of plateauing. The AI deep-dive breaks down your conflict <b>sources</b> — a book leaning too hard on one source flattens.',
+  tasks:["Sources of conflict — break down the major sources driving this story (internal struggle, romantic push-pull, interpersonal friction, external circumstance, societal pressure) with a rough % weight each. A book leaning more than ~70% on one source usually flattens.","Tension on every page — list any scene or chapter where NO live conflict or open question is running. These are the dead zones.","Escalation — do the stakes ratchet upward act by act? Name exactly where they plateau or quietly reset.","Complication vs. resolution rhythm — every resolution should open a new complication in the same beat. List resolutions that close clean (momentum killers).","The dark moment — is the 'all is lost' beat devastating, earned, and specific to these characters' wounds — or generic?","Stakes legibility — at any point in the book, can the reader name what's at risk, for whom, and why NOW? Where does it blur?","Endgame — which conflicts resolve, which intentionally carry forward (series hooks), and which are accidentally dropped?"],
+  out:"CONFLICT REPORT with: SOURCES breakdown (% + strongest example of each), DEAD-ZONE list, ESCALATION map (act by act), rhythm flags (clean resolutions to re-hook), DARK-MOMENT verdict, and dropped-conflict list."}
+};
+let anaActive='plot';
+document.getElementById('anaTabs').addEventListener('click',e=>{
+  const b=e.target.closest('.stab');if(!b)return;
+  anaActive=b.dataset.a;
+  document.querySelectorAll('.stab').forEach(x=>x.classList.toggle('on',x===b));
+  renderAnalyses();
+});
+function buildAnaPrompt(kind){
+  const A=ANA[kind];
+  const penLabel=(PENS[state.penName]||{}).label||state.penName;
+  let p=`You are ${A.role}. Run a full ${A.label.toUpperCase()} on the complete manuscript below — a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
+  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\nHEAT TARGET: ${heatGuide()}\n\n`;
+  p+=`Work through every item. Quote the exact text or name the exact scene for every finding — no vague notes:\n`;
+  p+=A.tasks.map((t,i)=>`${i+1}. ${t}`).join('\n')+'\n';
+  p+=`\nOUTPUT: ${A.out}\n`;
+  p+=`\nThen finish with a section titled "REVISION PROMPTS" containing 3–5 copy-paste prompts I can hand to my writing AI to fix the highest-priority issues, each naming the location and the exact change.\n`;
+  p+=`\n----- MANUSCRIPT BEGINS -----\n${state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n')}\n----- MANUSCRIPT ENDS -----`;
+  return p;
+}
+function copyAnaPrompt(kind,btn){
+  navigator.clipboard.writeText(buildAnaPrompt(kind)).then(()=>{
+    const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1500);
+  });
+}
+function charTableHtml(chars,forReport){
+  if(!chars.length)return '<p class="benchband">No recurring names detected yet.</p>';
+  const tw=state.chapters.reduce((a,c)=>a+wc(c.text),0);
+  return `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Character</th><th class="center">Mentions</th><th class="center">Share</th><th>Presence by chapter <span class="benchband">(darker = more)</span></th><th class="center">Enters</th></tr></thead><tbody>`+
+    chars.map(c=>{
+      const mx=Math.max(1,...c.perChap);
+      const bar='<span class="charbar">'+c.perChap.map(v=>`<i class="${v===0?'':(v>=mx*0.66?'on3':v>=mx*0.33?'on2':'on1')}" title="${v}"></i>`).join('')+'</span>';
+      return `<tr><td><b>${esc(c.name)}</b></td><td class="center">${c.total}</td><td class="center">${(c.total/Math.max(1,tw)*1000).toFixed(1)}‰</td><td>${bar}</td><td class="center">${esc(chapTitle(c.first))}</td></tr>`;
+    }).join('')+`</tbody></table></div>`;
+}
+function renderAnalyses(){
+  const stats=document.getElementById('anaStats'),el=document.getElementById('anaBody');
+  if(!state.chapters.length){stats.innerHTML='';el.innerHTML='<div class="note">Load your manuscript on the first tab (paste it all, or build it chapter by chapter), then come back for your lab reports.</div>';return;}
+  const allText=state.chapters.map(c=>c.text).join('\n\n');
+  const tw=wc(allText);
+  const sents=allText.split(/(?<=[.!?…])\s+/).filter(s=>s.trim());
+  const asl=sents.length?(tw/sents.length):0;
+  const dr=Math.round(dialogueRatio(allText)*100);
+  stats.innerHTML=`<span class="stat"><span class="n">${tw.toLocaleString()}</span><span class="l">words</span></span>
+    <span class="stat"><span class="n">${Math.round(tw/250).toLocaleString()}</span><span class="l">min read</span></span>
+    <span class="stat"><span class="n">${asl.toFixed(1)}</span><span class="l">avg sentence</span></span>
+    <span class="stat"><span class="n">${dr}%</span><span class="l">dialogue <span class="benchband">(25–35% typical)</span></span></span>`;
+  const segs=buildSegments(40);
+  const A=ANA[anaActive];
+  let chart='',diag=[];
+  if(anaActive==='plot'){
+    const arc=emotionalArc(segs);const ex=extremaOf(arc,3);
+    chart=miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:A.color,ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:ex.peaks.map(i=>({i})).concat(ex.valleys.map(i=>({i,c:'#1B2A4A'})))});
+    diag=plotDiag(arc,segs);
+  }else if(anaActive==='pacing'){
+    const pace=paceCurve(segs);const ex=extremaOf(pace,3);
+    chart=miniChart(pace,{min:0,max:10,neutral:5,color:A.color,ylab:[{v:10,t:'fast'},{v:0,t:'slow'}],marks:ex.peaks.map(i=>({i}))});
+    diag=pacingDiag(pace,segs);
+  }else if(anaActive==='conflict'){
+    const conf=conflictCurve(segs);const ex=extremaOf(conf,3);
+    chart=miniChart(conf,{min:0,max:10.5,color:A.color,ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:ex.peaks.map(i=>({i}))});
+    diag=conflictDiag(conf,segs);
+  }else{
+    const chars=detectCharacters();
+    chart=charTableHtml(chars);
+    diag=characterDiag(chars);
+  }
+  el.innerHTML=`
+    <details class="explain"><summary>How to read your ${A.label}</summary><div class="body"><p>${A.explain}</p></div></details>
+    ${chart}
+    <div style="margin-top:14px">${findsHtml(diag)}</div>
+    <div class="note">This is the <b>instant offline read</b> — a real signal, but a proxy. The deep-dive prompt below gives your AI the whole manuscript and the full ${A.label.toLowerCase()} checklist.</div>
+    <div class="toolbar" style="margin:10px 0 8px">
+      <button class="btn primary" onclick="copyAnaPrompt('${anaActive}',this)">Copy full ${A.label} prompt</button>
+    </div>
+    <label class="fld">Paste your AI's ${A.label} back here <span style="font-weight:400;color:var(--muted)">(it gets folded into your Fix-It report)</span></label>
+    <textarea rows="5" placeholder="Paste the ${A.label.toUpperCase()} your AI returned…" oninput="state.analysisNotes['${anaActive}']=this.value;persist()">${esc(state.analysisNotes[anaActive]||'')}</textarea>`;
+}
+
+/* ============================================================
    REPORT
    ============================================================ */
 function renderReport(){
@@ -894,6 +1211,8 @@ function buildReportMd(){
   // pass notes
   md+=`\n## 3. Editing-Pass Notes\n`;
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())md+=`\n### Pass ${p.n} — ${p.name}\n${n.trim()}\n`;});
+  md+=`\n## 4. Story Report Notes\n`;
+  ['plot','character','pacing','conflict'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
   return md;
 }
 function downloadReport(){
@@ -991,6 +1310,27 @@ function buildReportHtml(){
   let notesHtml='';
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())notesHtml+=`<div class="passnote"><h3>Pass ${p.n} — ${esc(p.name)}</h3><div>${esc(n.trim()).replace(/\n/g,'<br>')}</div></div>`;});
   if(!notesHtml)notesHtml=`<p class="clean">No editing-pass notes pasted yet. Run the 12 passes (any AI tool), paste each result into the Report tab, then re-export to fold them in here.</p>`;
+  // story lab reports + top priorities
+  let storyHtml='',prioHtml='';
+  if(state.chapters.length){
+    const segs=buildSegments(40);
+    const arc=emotionalArc(segs),pace=paceCurve(segs),conf=conflictCurve(segs);
+    const chars=detectCharacters();
+    const pd=plotDiag(arc,segs),cd=characterDiag(chars),pcd=pacingDiag(pace,segs),cfd=conflictDiag(conf,segs);
+    const liDiag=items=>'<ul>'+items.map(([c,ic,t,d])=>`<li><b>${esc(t)}.</b> ${esc(d)}</li>`).join('')+'</ul>';
+    const noteBlk=k=>{const nn=(state.analysisNotes||{})[k];return nn&&nn.trim()?`<div class="passnote"><h3>AI deep-dive notes</h3><div>${esc(nn.trim()).replace(/\n/g,'<br>')}</div></div>`:'';};
+    const exArc=extremaOf(arc,3),exP=extremaOf(pace,3),exC=extremaOf(conf,3);
+    storyHtml=
+      `<h3 class="ssec">📈 Plot — emotional arc</h3>`+miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:'#E8735A',ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:exArc.peaks.map(i=>({i})).concat(exArc.valleys.map(i=>({i,c:'#1B2A4A'})))})+liDiag(pd)+noteBlk('plot')+
+      `<h3 class="ssec">🎭 Character — presence & cast</h3>`+charTableHtml(chars,true)+liDiag(cd)+noteBlk('character')+
+      `<h3 class="ssec">⏱ Pacing — reading-speed curve</h3>`+miniChart(pace,{min:0,max:10,neutral:5,color:'#7A9E7E',ylab:[{v:10,t:'fast'},{v:0,t:'slow'}],marks:exP.peaks.map(i=>({i}))})+liDiag(pcd)+noteBlk('pacing')+
+      `<h3 class="ssec">⚔️ Conflict — intensity line</h3>`+miniChart(conf,{min:0,max:10.5,color:'#1B2A4A',ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:exC.peaks.map(i=>({i}))})+liDiag(cfd)+noteBlk('conflict');
+    const cand=[];
+    if(gc>0)cand.push(`Fix the ${gc} critical banned-list hits first — names, AI-isms, dramatic triplets.`);
+    if(gh>0)cand.push(`Recast the ${gh} flash-forward / foreshadow lines — keep the narration in the present scene.`);
+    [pd,pcd,cfd,cd].forEach(items=>{const fnd=items.find(x=>x[0]==='crit'||x[0]==='rec');if(fnd)cand.push(fnd[2]+' — '+fnd[3]);});
+    if(cand.length)prioHtml=`<div class="prio"><h3>⭐ Top priorities</h3><ol>${cand.slice(0,5).map(c=>`<li>${esc(c)}</li>`).join('')}</ol></div>`;
+  }
   const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#FFF8F0;margin:0;line-height:1.6}
   .hd{background:#1B2A4A;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#D4A853;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
   .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
@@ -1006,9 +1346,19 @@ function buildReportHtml(){
   .bx{border-radius:7px;padding:8px 10px;font-size:.9rem}.bx.before{background:#FBF1E9}.bx.after{background:#EFF4EE}.bl{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;color:#6b6b6b;margin-bottom:3px}
   mark{background:#F7C8B8;color:#6a1020;border-radius:3px;padding:0 2px}
   .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #D9D0C4;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#1B2A4A;font-size:1.02rem}
-  ul{margin:6px 0 0;padding-left:20px}.foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}`;
-  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Editorial Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
-<body><div class="hd"><h1>Editorial Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+  ul{margin:6px 0 0;padding-left:20px}.foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}
+  h3.ssec{color:#1B2A4A;margin:24px 0 8px;font-size:1.05rem}
+  .prio{background:#fff;border:2px solid #D4A853;border-radius:10px;padding:14px 18px;margin-bottom:22px}
+  .prio h3{margin:0 0 8px;color:#1B2A4A}.prio ol{margin:0;padding-left:20px}.prio li{margin-bottom:5px}
+  .tbl{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
+  .tbl th{background:#F7F1E8;color:#1B2A4A;text-align:left;padding:7px 9px;border:1px solid #E8DFD2}
+  .tbl td{padding:6px 9px;border:1px solid #E8DFD2}.center{text-align:center}
+  .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
+  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
+  .charbar i.on1{background:#F0A78F}.charbar i.on2{background:#E8735A}.charbar i.on3{background:#C0492F}
+  .benchband{font-size:.72rem;color:#6b6b6b;font-weight:normal}`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
+<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
   <div class="counts">
     <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
@@ -1016,14 +1366,17 @@ function buildReportHtml(){
     <div class="cbox"><div class="n" style="color:#D4A853">${gr}</div><div class="l">Recommended</div></div>
     <div class="cbox"><div class="n" style="color:#7A9E7E">${go}</div><div class="l">Optional</div></div>
   </div>
-  <p class="why">Each card below shows the exact text the offline scan flagged (<b>Before</b>), why it weakens the prose, and how to fix it (<b>Fix</b>). These are the mechanical, banned-list issues you'd otherwise pay a line editor to catch. The reasoning passes (plot, dialogue, developmental, arc…) are folded in lower down from your pasted notes.</p>
+  <p class="why">Each card below shows the exact text the offline scan flagged (<b>Before</b>), why it weakens the prose, and how to fix it (<b>Fix</b>). These are the mechanical, banned-list issues you'd otherwise pay a line editor to catch. Below them: your four story lab reports, the satisfaction read, and your editing-pass notes.</p>
+  ${prioHtml}
   <h2 class="sec">1 · Fix-it list, by chapter</h2>
   ${chaptersHtml}
-  <h2 class="sec">2 · Reader satisfaction</h2>
+  <h2 class="sec">2 · Story lab reports</h2>
+  ${storyHtml||'<p class="clean">No manuscript was loaded when this report was made.</p>'}
+  <h2 class="sec">3 · Reader satisfaction</h2>
   ${satHtml}
-  <h2 class="sec">3 · Editing-pass notes</h2>
+  <h2 class="sec">4 · Editing-pass notes</h2>
   ${notesHtml}
-  <div class="foot">Generated by the Manuscript Editing Cockpit · The Invisible Pen — Edit Like a Boss. Everything stayed in your browser; nothing was uploaded.</div>
+  <div class="foot">Generated by the Story Clinic · The Invisible Pen — Edit Like a Boss. Everything stayed in your browser; nothing was uploaded.</div>
 </div></body></html>`;
 }
 function downloadReportHtml(){
@@ -1046,8 +1399,8 @@ function copyMasterRevision(btn){
    IMPORT / EXPORT / DEMO
    ============================================================ */
 function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'editing-cockpit').replace(/[^\w-]+/g,'_')+'.json';a.click();}
-function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({chapters:[],beats:[],passNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
-function clearAll(){if(!confirm('Clear everything? Export first if you want a backup.'))return;state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{}};load();renderAll();}
+function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({chapters:[],beats:[],passNotes:{},analysisNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
+function clearAll(){if(!confirm('Clear everything? Export first if you want a backup.'))return;state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};load();renderAll();}
 const DEMO=`Chapter One
 
 The bell over the bakery door jingled, and Mara looked up from the dough she was punching down. She felt her heart hammer when she saw him. Cole Henderson, back in town after all these years, filling the doorway like he owned it.
