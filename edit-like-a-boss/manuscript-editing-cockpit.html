@@ -250,8 +250,9 @@
           <div style="display:flex;align-items:flex-end"><div class="note" style="margin:0" id="langNote">Every prompt tells your AI to analyze and reply in this language, with the right dialogue and typography conventions.</div></div>
         </div>
         <div id="customVoiceWrap" class="hidden">
-          <label class="fld">Custom voice notes <span style="font-weight:400;color:var(--muted)">(used in the Voice Audit prompt)</span></label>
+          <label class="fld">Custom voice notes <span style="font-weight:400;color:var(--muted)">(used in the Voice Audit and every prompt)</span></label>
           <textarea id="customVoice" rows="3" placeholder="Describe the voice: tone, humor, prose density, what makes it sound like this author…" oninput="save()"></textarea>
+          <div class="note" style="margin-top:8px">Built a voice skill in class? Don't rewrite it by hand — <button class="btn" style="padding:5px 11px;font-size:12.5px" onclick="copyVoiceNotesPrompt(this)">Copy the "ask your Claude for my voice notes" prompt</button> — paste it into the Claude that has your voice skill, then paste what it returns into the box above.</div>
         </div>
 
         <label class="fld" style="margin-top:18px">Manuscript text</label>
@@ -1153,6 +1154,10 @@ function buildAnaPrompt(kind){
   p+=`\nThen finish with a section titled "REVISION PROMPTS" containing 3–5 copy-paste prompts I can hand to my writing AI to fix the highest-priority issues, each naming the location and the exact change.\n`;
   p+=`\n----- MANUSCRIPT BEGINS -----\n${state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n')}\n----- MANUSCRIPT ENDS -----`;
   return p;
+}
+function copyVoiceNotesPrompt(btn){
+  const p=`I'm setting up my editing tool and need my voice notes. You have my pen-name voice skill — read it (and any files it references) and distill it into a compact VOICE NOTES block for an editor.\n\nRules:\n- Pull ONLY from my voice skill — don't invent traits I never defined. If something isn't defined, skip it.\n- Write it as instructions to an editor, present tense ("Voice is warm and dry-witted; banter escalates under stress…").\n- Cover, in this order, whatever my skill defines: overall tone and mood · humor style · prose rhythm and density · POV and tense · interiority style · dialogue and banter style · how heat and emotion are expressed · signature moves I lean on · hard NOs (things this voice never does).\n- 120–180 words, tight. No preamble, no commentary — output ONLY the voice notes block so I can copy it straight into my tool.\n\nIf I have more than one pen-name voice skill, ask me which pen name before you start.`;
+  navigator.clipboard.writeText(p).then(()=>{const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1500);});
 }
 function copyAnaPrompt(kind,btn){
   navigator.clipboard.writeText(buildAnaPrompt(kind)).then(()=>{
