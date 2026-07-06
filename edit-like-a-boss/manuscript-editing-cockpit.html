@@ -211,8 +211,8 @@
             <p>No project? No problem. Paste a chapter (or the whole book) right here and go. Everything stays in your browser — nothing is uploaded, no account, no API key.</p>
           </div>
           <div class="howto-card">
-            <div class="hk">⤳ Any AI tool</div>
-            <p>Every prompt is copy-paste and tool-agnostic — drop it into <b>Claude, ChatGPT, Gemini, or Grok</b>. Bring the notes back here and export your report.</p>
+            <div class="hk">⤳ Any AI tool, six languages</div>
+            <p>Every prompt is copy-paste and tool-agnostic — drop it into <b>Claude, ChatGPT, Gemini, or Grok</b>. Manuscripts in <b>English, French, German, Italian, Spanish, or Portuguese</b>: set the language below and the prompts calibrate themselves.</p>
           </div>
         </div>
         <div class="note" style="margin-bottom:0">New to this? Work one chapter at a time — paste a chapter, run the passes, then use <b>+ Add next chapter</b> below to build your book up as you go. That matches the course, lesson by lesson.</div>
@@ -236,6 +236,18 @@
               <option value="4" selected>4 / 5 — explicit</option>
               <option value="5">5 / 5 — fully explicit</option>
             </select></div>
+        </div>
+        <div class="row">
+          <div><label class="fld">Manuscript language</label>
+            <select id="lang" onchange="save()">
+              <option value="en">English</option>
+              <option value="fr">Français — French</option>
+              <option value="de">Deutsch — German</option>
+              <option value="it">Italiano — Italian</option>
+              <option value="es">Español — Spanish (Castilian)</option>
+              <option value="pt">Português — Portuguese (Brazilian)</option>
+            </select></div>
+          <div style="display:flex;align-items:flex-end"><div class="note" style="margin:0" id="langNote">Every prompt tells your AI to analyze and reply in this language, with the right dialogue and typography conventions.</div></div>
         </div>
         <div id="customVoiceWrap" class="hidden">
           <label class="fld">Custom voice notes <span style="font-weight:400;color:var(--muted)">(used in the Voice Audit prompt)</span></label>
@@ -463,6 +475,7 @@ let hidden={};
 function save(){
   state.title=val('bookTitle'); state.genre=val('genre'); state.penName=val('penName');
   state.heat=val('heat'); state.customVoice=val('customVoice'); state.manuscript=val('manuscript');
+  state.lang=val('lang')||'en';
   try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}
   document.getElementById('customVoiceWrap').classList.toggle('hidden', state.penName!=='custom');
 }
@@ -477,6 +490,7 @@ function load(){
   document.getElementById('genre').value=state.genre||'';
   document.getElementById('penName').value=state.penName||'smalltown';
   document.getElementById('heat').value=state.heat||'4';
+  if(document.getElementById('lang'))document.getElementById('lang').value=state.lang||'en';
   document.getElementById('customVoice').value=state.customVoice||'';
   document.getElementById('manuscript').value=state.manuscript||'';
   document.getElementById('customVoiceWrap').classList.toggle('hidden',(state.penName||'smalltown')!=='custom');
@@ -506,7 +520,7 @@ function splitManuscript(text){
   const lines=text.split(/\r?\n/);
   const isHead=l=>{
     const t=l.trim();
-    return /^#{1,3}\s+\S/.test(t) || /^(chapter|prologue|epilogue)\b/i.test(t) ||
+    return /^#{1,3}\s+\S/.test(t) || /^(chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b/i.test(t) ||
            /^\*\s*\*\s*\*$/.test(t) || /^—{2,}$/.test(t) || /^chapter\s+(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)/i.test(t);
   };
   const chaps=[]; let cur={title:'',lines:[]}; let started=false;
@@ -654,7 +668,8 @@ function renderScan(){
       </div></details>`;
   }).join('');
   function totRfmt(n){return '';}
-  sum.innerHTML=`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
+  const langWarn=(state.lang&&state.lang!=='en')?`<div class="note">⚠ The Auto-Scan word lists are built for <b>English</b>. On a ${langName()} manuscript most checks won't fire (or may misfire) — lean on the <b>Editing Pass prompts</b>, which are fully ${langName()}-aware and will hunt the ${langName()} equivalents of every tell.</div>`:'';
+  sum.innerHTML=langWarn+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
     <span class="stat"><span class="n" style="color:var(--warn)">${totR}</span><span class="l">recommended</span></span>
     <span class="stat"><span class="n" style="color:var(--c-bond)">${totO}</span><span class="l">optional</span></span>`;
   res.innerHTML=blocks;
@@ -702,6 +717,25 @@ function heatGuide(){
   if(h===4)return "Heat 4/5: explicit. Direct anatomical language allowed; keep emotional interiority dominant.";
   return "Heat 5/5: fully explicit. Full vocabulary and dirty talk allowed; emotion still drives the scene.";
 }
+/* ============================================================
+   MANUSCRIPT LANGUAGE — mirrors the author-translator pipeline
+   (fr, de, it, es, pt-br). Prompts carry the language directive;
+   the offline scans stay English-only and say so.
+   ============================================================ */
+const LANGS={
+ en:{name:"English"},
+ fr:{name:"French",conv:"French (Metropolitan) conventions: passé simple for narration, « guillemets » with non-breaking spaces for dialogue, consistent tu/vous register per relationship."},
+ de:{name:"German",conv:"German (Hochdeutsch) conventions: consistent du/Sie register, »Guillemets« or „Anführungszeichen“ for dialogue, Rechtschreibreform spelling."},
+ it:{name:"Italian",conv:"Standard Italian conventions: passato remoto for narration, correct congiuntivo, consistent tu/Lei register, mandatory elision."},
+ es:{name:"Spanish",conv:"European Spanish (Castilian) conventions: «comillas» for dialogue, correct subjunctive use, vosotros where natural."},
+ pt:{name:"Brazilian Portuguese",conv:"Brazilian Portuguese conventions: 'você' address, Brazilian vocabulary and grammar (not European Portuguese)."}
+};
+function langName(){return (LANGS[state.lang]||LANGS.en).name;}
+function langDirective(){
+  if(!state.lang||state.lang==='en')return'';
+  const L=LANGS[state.lang]||{name:state.lang};
+  return `MANUSCRIPT LANGUAGE: ${L.name}. The manuscript below is written in ${L.name}. Do the ENTIRE analysis on the ${L.name} text, and write ALL notes, quoted examples, fixes, and revision prompts in ${L.name}. ${L.conv||''}\nAny banned-list or AI-tell examples in this prompt are English — do NOT search for them literally. Apply their SPIRIT in ${L.name}: flag ${L.name} filter verbs, overused adverbs, cliché AI phrases (the ${L.name} equivalents of "couldn't help but" and friends), dramatic triplets, flash-forward narration, and any machine-translation artifacts or anglicisms.\n\n`;
+}
 function buildPrompt(pass){
   const sc=scopeText();
   const penLabel=(PENS[state.penName]||{}).label||state.penName;
@@ -709,6 +743,7 @@ function buildPrompt(pass){
   let p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
   p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
   if(pass.id==='heat'||pass.id==='qc'||pass.id==='voice')p+=`HEAT TARGET: ${heatGuide()}\n\n`;
+  p+=langDirective();
   p+=`Check every item below. For each issue, quote the exact text and give a specific fix — do not give vague notes:\n`;
   p+=pass.list.map((x,i)=>`${i+1}. ${x}`).join('\n')+'\n';
   if(pass.out)p+=`\nOUTPUT: ${pass.out}\n`;
@@ -859,7 +894,7 @@ function ingestBeats(){
 }
 function copyBeatPrompt(btn){
   const ms=state.chapters.length?state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n'):state.manuscript;
-  const p=`You are a romance story analyst. Read the manuscript below and break it into its major story beats in order (one per scene or chapter). For EACH beat, rate three things 0–10 and mark whether it is a payoff:\n\n• Tension (T): unfulfilled romantic/dramatic wanting — the gap, the ache, the not-yet.\n• Bond (B): closeness EARNED so far — the intimacy and trust that now flows between the leads. This should generally climb across the book.\n• Stakes (S): what's at risk if the relationship fails right now.\n• payoff: true if tension is realized in this beat (a kiss, confession, "I love you", consummation, reunion); otherwise false.\n\nReturn ONLY a JSON array, no commentary, in exactly this shape:\n[{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]\n\n----- MANUSCRIPT BEGINS -----\n${ms||'(paste your manuscript)'}\n----- MANUSCRIPT ENDS -----`;
+  const p=langDirective()+`You are a romance story analyst. Read the manuscript below and break it into its major story beats in order (one per scene or chapter). For EACH beat, rate three things 0–10 and mark whether it is a payoff:\n\n• Tension (T): unfulfilled romantic/dramatic wanting — the gap, the ache, the not-yet.\n• Bond (B): closeness EARNED so far — the intimacy and trust that now flows between the leads. This should generally climb across the book.\n• Stakes (S): what's at risk if the relationship fails right now.\n• payoff: true if tension is realized in this beat (a kiss, confession, "I love you", consummation, reunion); otherwise false.\n\nReturn ONLY a JSON array, no commentary, in exactly this shape:\n[{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]\n\n----- MANUSCRIPT BEGINS -----\n${ms||'(paste your manuscript)'}\n----- MANUSCRIPT ENDS -----`;
   navigator.clipboard.writeText(p).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy “rate my beats” prompt',1500);});
 }
 function persist(){save();}
@@ -927,7 +962,7 @@ function emotionalArc(segs){
   return sm.map(v=>v/mx);
 }
 function dialogueRatio(text){
-  const m=text.match(/"[^"\n]{2,600}"|“[^”\n]{2,600}”/g)||[];
+  const m=text.match(/"[^"\n]{2,600}"|“[^”\n]{2,600}”|«[^»\n]{2,600}»|»[^«\n]{2,600}«|„[^“\n]{2,600}“/g)||[];
   const dw=m.reduce((a,q)=>a+wc(q),0);
   const tw=wc(text);return tw?dw/tw:0;
 }
@@ -1111,6 +1146,7 @@ function buildAnaPrompt(kind){
   const penLabel=(PENS[state.penName]||{}).label||state.penName;
   let p=`You are ${A.role}. Run a full ${A.label.toUpperCase()} on the complete manuscript below — a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
   p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\nHEAT TARGET: ${heatGuide()}\n\n`;
+  p+=langDirective();
   p+=`Work through every item. Quote the exact text or name the exact scene for every finding — no vague notes:\n`;
   p+=A.tasks.map((t,i)=>`${i+1}. ${t}`).join('\n')+'\n';
   p+=`\nOUTPUT: ${A.out}\n`;
@@ -1144,7 +1180,8 @@ function renderAnalyses(){
   stats.innerHTML=`<span class="stat"><span class="n">${tw.toLocaleString()}</span><span class="l">words</span></span>
     <span class="stat"><span class="n">${Math.round(tw/250).toLocaleString()}</span><span class="l">min read</span></span>
     <span class="stat"><span class="n">${asl.toFixed(1)}</span><span class="l">avg sentence</span></span>
-    <span class="stat"><span class="n">${dr}%</span><span class="l">dialogue <span class="benchband">(25–35% typical)</span></span></span>`;
+    <span class="stat"><span class="n">${dr}%</span><span class="l">dialogue <span class="benchband">(25–35% typical)</span></span></span>`
+    +((state.lang&&state.lang!=='en')?`<div class="note" style="margin-top:8px">⚠ The curves below use <b>English</b> word lists, so on a ${langName()} manuscript treat them as rough shapes only. The <b>character presence bars</b> and chapter structure still work in any language — and every deep-dive prompt is fully ${langName()}-aware.</div>`:'');
   const segs=buildSegments(40);
   const A=ANA[anaActive];
   let chart='',diag=[];
@@ -1188,7 +1225,7 @@ function renderReport(){
 function buildReportMd(){
   const data=computeSeries(state.beats);
   let md=`# Editorial Report — ${state.title||'Untitled'}\n`;
-  md+=`Pen name voice: ${(PENS[state.penName]||{}).label||state.penName} · Heat ${state.heat}/5${state.genre?` · ${state.genre}`:''}\n\n`;
+  md+=`Pen name voice: ${(PENS[state.penName]||{}).label||state.penName} · Heat ${state.heat}/5${state.genre?` · ${state.genre}`:''}${(state.lang&&state.lang!=='en')?` · ${langName()}`:''}\n\n`;
   // auto scan
   md+=`## 1. Auto-Scan (offline checks)\n`;
   if(state.chapters.length){
@@ -1358,7 +1395,7 @@ function buildReportHtml(){
   .charbar i.on1{background:#F0A78F}.charbar i.on2{background:#E8735A}.charbar i.on3{background:#C0492F}
   .benchband{font-size:.72rem;color:#6b6b6b;font-weight:normal}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
-<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
   <div class="counts">
     <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
@@ -1387,7 +1424,7 @@ function downloadReportHtml(){
 function copyMasterRevision(btn){
   const sat=computeSeries(state.beats);
   let leaks=sat.map((d,i)=>d.leak>1.2?`beat ${i+1} (${d.name})`:null).filter(Boolean);
-  const p=`You are my writing LLM. Revise my manuscript in the voice of ${(PENS[state.penName]||{}).label||state.penName} at heat ${state.heat}/5. Apply these fixes from my editorial report, preserving voice, character, and pacing:\n\n`+
+  const p=langDirective()+`You are my writing LLM. Revise my manuscript in the voice of ${(PENS[state.penName]||{}).label||state.penName} at heat ${state.heat}/5. Apply these fixes from my editorial report, preserving voice, character, and pacing:\n\n`+
     `1. Remove every banned-list hit flagged in the auto-scan (AI-isms, dramatic triplets, filter words, banned names/words/phrases) — replace with specific, in-voice prose.\n`+
     `2. Address the developmental and dialogue notes I paste below.\n`+
     (leaks.length?`3. Fix the satisfaction leaks at: ${leaks.join('; ')} — add closeness/aftermath so the bond rises to catch the released tension.\n`:'')+
