@@ -295,7 +295,7 @@
     <div class="view" id="v-passes">
       <div class="panel">
         <h2>Editing Passes — prompts for your LLM</h2>
-        <p class="sub">These are the reasoning passes a human or an LLM has to think through. Pick a chapter (or the whole manuscript), copy the prompt, paste it into ChatGPT / Claude / your tool of choice, and bring the notes back to the Report tab. Every prompt ends by asking your LLM for ready-to-paste revision prompts.</p>
+        <p class="sub">Every chapter pass comes in two flavors. <b>✏️ Edit</b> tells your AI to actually FIX the chapter and hand back the revised text with a change log — revise before delivering. <b>Review</b> gives you notes only, for when you want to make the calls yourself. The audit passes (Plot Holes, Timeline, Arc Pacing) are review-only on purpose — those fixes are story decisions that belong to you.</p>
         <div class="row">
           <div><label class="fld">Apply to</label>
             <select id="passScope" onchange="renderPasses()"></select></div>
@@ -719,9 +719,11 @@ function refreshScanBadge(){
    ============================================================ */
 function renderPassScope(){
   const sel=document.getElementById('passScope');if(!sel)return;
+  const cur=sel.value;
   let opts=`<option value="ms">Whole manuscript</option>`;
   state.chapters.forEach((c,i)=>opts+=`<option value="${i}">${esc(c.title)}</option>`);
   sel.innerHTML=opts;
+  if(cur&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
 }
 function scopeText(){
   const sel=document.getElementById('passScope');const v=sel?sel.value:'ms';
@@ -758,11 +760,31 @@ function langDirective(){
   const L=LANGS[state.lang]||{name:state.lang};
   return `MANUSCRIPT LANGUAGE: ${L.name}. The manuscript below is written in ${L.name}. Do the ENTIRE analysis on the ${L.name} text, and write ALL notes, quoted examples, fixes, and revision prompts in ${L.name}. ${L.conv||''}\nAny banned-list or AI-tell examples in this prompt are English — do NOT search for them literally. Apply their SPIRIT in ${L.name}: flag ${L.name} filter verbs, overused adverbs, cliché AI phrases (the ${L.name} equivalents of "couldn't help but" and friends), dramatic triplets, flash-forward narration, and any machine-translation artifacts or anglicisms.\n\n`;
 }
-function buildPrompt(pass){
+function buildPrompt(pass,mode){
   const sc=scopeText();
   const penLabel=(PENS[state.penName]||{}).label||state.penName;
   const usable = (pass.scope==='manuscript' && !sc.isMs) ? false : true;
-  let p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
+  let p;
+  if(mode==='edit'){
+    p=`You are ${pass.role}. EDIT ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''} directly — do not just report problems. Run the "${pass.name}" pass and DELIVER THE REVISED TEXT. The rule: revise before delivering.\n\n`;
+    p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
+    p+=`HEAT TARGET: ${heatGuide()}\n\n`;
+    p+=langDirective();
+    p+=`Apply every item below AS AN EDIT — fix it in the text, don't just note it:\n`;
+    p+=pass.list.map((x,i)=>`${i+1}. ${x}`).join('\n')+'\n';
+    p+=`\nEDITING RULES:\n`;
+    p+=`- Fix at the sentence and paragraph level. Preserve the plot, scene order, events, POV, character choices, and heat level EXACTLY as written.\n`;
+    p+=`- Never invent new plot events, facts, objects, or dialogue that changes what happens. If a real fix would need new story content, do NOT write it — list it under NEEDS AUTHOR instead.\n`;
+    p+=`- Stay inside the pen-name voice the whole way. Enforce the banned list as you edit: no AI-isms, no dramatic triplets ("X. Y. Z." parallel fragments), no filter words (felt/noticed/realized/seemed/watched/saw/heard/wondered/thought).\n`;
+    p+=`- Do not smooth the voice into generic prose — an edit that loses the voice is worse than the flaw it fixed.\n`;
+    p+=`\nRETURN, in this order:\n`;
+    p+=`1. THE REVISED TEXT — complete, ready to paste over the original.\n`;
+    p+=`2. CHANGE LOG — each meaningful change on one line: before → after, tagged with the checklist item that drove it.\n`;
+    p+=`3. NEEDS AUTHOR — anything you flagged but did NOT change because it requires a story decision.\n`;
+    p+=`\n----- TEXT BEGINS -----\n${sc.text||'(paste your text here)'}\n----- TEXT ENDS -----`;
+    return {prompt:p,usable};
+  }
+  p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
   p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
   if(pass.id==='heat'||pass.id==='qc'||pass.id==='voice')p+=`HEAT TARGET: ${heatGuide()}\n\n`;
   p+=langDirective();
@@ -782,6 +804,18 @@ function renderPasses(){
     const {prompt,usable}=buildPrompt(pass);
     const scopeTag=pass.scope==='manuscript'?'manuscript':pass.scope==='chapter'?'per chapter':'chapter or book';
     const warn=(pass.scope==='manuscript'&&!sc.isMs)?`<div class="note">Pass ${pass.n} reasons across chapters — switch “Apply to” to <b>Whole manuscript</b> for the real result.</div>`:'';
+    const canEdit=pass.scope==='chapter';
+    let buttons;
+    if(canEdit&&!sc.isMs){
+      buttons=`<button class="btn gold" onclick="copyPrompt('${pass.id}',this,'edit')">✏️ Copy EDIT prompt — fix it for me</button>
+          <button class="btn" onclick="copyPrompt('${pass.id}',this)">Copy review prompt — notes only</button>`;
+    }else if(canEdit&&sc.isMs){
+      buttons=`<button class="btn primary" onclick="copyPrompt('${pass.id}',this)">Copy review prompt</button>
+          <span class="benchband">✏️ Edit mode works chapter by chapter — pick a chapter under “Apply to”.</span>`;
+    }else{
+      buttons=`<button class="btn primary" onclick="copyPrompt('${pass.id}',this)">Copy prompt</button>
+          <span class="benchband">Diagnostic pass — it flags; the fixes are your call.</span>`;
+    }
     return `<div class="passcard" id="pc-${pass.id}">
       <div class="head" onclick="document.getElementById('pc-${pass.id}').classList.toggle('open')">
         <div class="pno">${pass.n}</div>
@@ -791,7 +825,7 @@ function renderPasses(){
       <div class="pbody">
         ${warn}
         <div class="toolbar" style="margin:0 0 10px">
-          <button class="btn primary" onclick="copyPrompt('${pass.id}',this)">Copy prompt</button>
+          ${buttons}
           <span class="copied hidden">copied ✓</span>
         </div>
         <div class="promptbox" id="prompt-${pass.id}">${esc(prompt)}</div>
@@ -799,9 +833,9 @@ function renderPasses(){
     </div>`;
   }).join('');
 }
-function copyPrompt(id,btn){
+function copyPrompt(id,btn,mode){
   const pass=PASSES.find(p=>p.id===id);
-  const {prompt}=buildPrompt(pass);
+  const {prompt}=buildPrompt(pass,mode);
   navigator.clipboard.writeText(prompt).then(()=>{
     const tag=btn.parentElement.querySelector('.copied');tag.classList.remove('hidden');
     setTimeout(()=>tag.classList.add('hidden'),1500);
@@ -1374,7 +1408,7 @@ function renderReport(){
   renderAssessment();
   const el=document.getElementById('reportNotes');
   el.innerHTML=PASSES.map(p=>`<label class="fld">Pass ${p.n} — ${p.name}</label>
-    <textarea rows="3" placeholder="Paste your LLM's notes for ${p.name} here…" oninput="state.passNotes['${p.id}']=this.value;persist()">${esc(state.passNotes[p.id]||'')}</textarea>`).join('');
+    <textarea rows="3" placeholder="Paste your AI's notes or CHANGE LOG for ${p.name} here…" oninput="state.passNotes['${p.id}']=this.value;persist()">${esc(state.passNotes[p.id]||'')}</textarea>`).join('');
 }
 function buildReportMd(){
   const data=computeSeries(state.beats);
@@ -1458,9 +1492,17 @@ function buildFixList(text){
     collectHits(text,FILTERS,'filter',false),
     collectHits(text,BANNED.transitions,'transition',true)
   );
+  // group repeat offenders: one card per term with a count + one example
+  const groups={};
+  items.forEach(h=>{
+    const k=h.cat+'|'+h.term.toLowerCase();
+    if(!groups[k])groups[k]={cat:h.cat,term:h.term,count:0,b:h.b,mt:h.mt,a:h.a,fix:h.fix};
+    groups[k].count++;
+  });
+  const out=Object.values(groups);
   const order={crit:0,high:1,rec:2,opt:3};
-  items.sort((x,y)=>order[FIXMETA[x.cat].sev]-order[FIXMETA[y.cat].sev]);
-  return items;
+  out.sort((x,y)=>(order[FIXMETA[x.cat].sev]-order[FIXMETA[y.cat].sev])||(y.count-x.count));
+  return out;
 }
 const PATTERN_TITLES=['Dramatic triplet','Contrast frames','Weak verb','-ly adverb','Body-word echoes','Filler phrases','Repeated sentence openers'];
 function patternFindings(text){
@@ -1472,10 +1514,11 @@ function buildReportHtml(){
   const voice=(PENS[state.penName]||{}).label||state.penName;
   const fixCard=h=>{const m=FIXMETA[h.cat],s=SEV[m.sev];
     return `<div class="card" style="border-left-color:${s.c}">
-      <div class="cardhead"><span class="sev" style="background:${s.c}">${s.n}</span><span class="lab">${esc(m.label)}</span></div>
+      <div class="cardhead"><span class="sev" style="background:${s.c}">${s.n}</span><span class="lab">${esc(m.label)} — “${esc(h.term)}”${h.count>1?` <span class="cnt">×${h.count}</span>`:''}</span></div>
       <div class="why">${esc(m.why)}</div>
-      <div class="ba"><div class="bx before"><div class="bl">Before</div><div>${esc(h.b)}<mark>${esc(h.mt)}</mark>${esc(h.a)}</div></div>
+      <div class="ba"><div class="bx before"><div class="bl">Example${h.count>1?` (1 of ${h.count})`:''}</div><div>${esc(h.b)}<mark>${esc(h.mt)}</mark>${esc(h.a)}</div></div>
       <div class="bx after"><div class="bl">Fix</div><div>${esc(m.how)}${h.fix?` <b>→ ${esc(h.fix)}</b>`:''}</div></div></div>
+      ${h.count>1?`<div class="morehits">+ ${h.count-1} more instance${h.count>2?'s':''} — “Show highlighted text” on the Auto-Scan tab lights up every one.</div>`:''}
     </div>`;};
   const patCard=x=>`<div class="card" style="border-left-color:#1B2A4A">
       <div class="cardhead"><span class="sev" style="background:#1B2A4A">Pattern</span><span class="lab">${esc(x.t)}</span></div>
@@ -1486,9 +1529,15 @@ function buildReportHtml(){
     state.chapters.forEach((c,ci)=>{
       const fixes=buildFixList(c.text),pats=patternFindings(c.text);
       fixes.forEach(h=>{const s=FIXMETA[h.cat].sev;if(s==='crit')gc++;else if(s==='high')gh++;else if(s==='rec')gr++;else go++;});
+      const majors=fixes.filter(h=>FIXMETA[h.cat].sev==='crit'||FIXMETA[h.cat].sev==='high');
+      const minors=fixes.filter(h=>FIXMETA[h.cat].sev!=='crit'&&FIXMETA[h.cat].sev!=='high');
       const total=fixes.length+pats.length;
-      chaptersHtml+=`<details class="chap" ${ci===0?'open':''}><summary>${esc(c.title)} <span class="pillc">${total?total+' to fix':'✓ clean'}</span></summary>
-        <div class="cbody">${total?fixes.map(fixCard).join('')+pats.map(patCard).join(''):'<p class="clean">No automated flags. Still run the reasoning passes — the auto-scan only catches the mechanical half.</p>'}</div></details>`;
+      chaptersHtml+=`<details class="chap" ${ci===0?'open':''}><summary>${esc(c.title)} <span class="pillc">${total?((majors.length+pats.length)+' major · '+minors.length+' minor'):'✓ clean'}</span></summary>
+        <div class="cbody">${total?
+          majors.map(fixCard).join('')+pats.map(patCard).join('')+
+          ((!majors.length&&!pats.length)?'<p class="clean">Nothing major here — just the minor polish below.</p>':'')+
+          (minors.length?`<details class="more"><summary>Show ${minors.length} minor fix${minors.length===1?'':'es'} (recommended &amp; optional)</summary>${minors.map(fixCard).join('')}</details>`:'')
+          :'<p class="clean">No automated flags. Still run the reasoning passes — the auto-scan only catches the mechanical half.</p>'}</div></details>`;
     });
   } else chaptersHtml=`<p class="clean">No manuscript was loaded when this report was made.</p>`;
   // satisfaction block
@@ -1521,7 +1570,7 @@ function buildReportHtml(){
     const tl=timelineData();const tmx=Math.max(1,tl[tl.length-1].cum);
     storyHtml+=`<h3 class="ssec">🕰 Timeline — story clock</h3>`+miniChart(tl.map(t=>t.cum),{min:0,max:tmx,color:'#C97A33',xchap:tl.length,ylab:[{v:tmx,t:'day '+(tmx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl)+liDiag(timelineDiag(tl))+noteBlk('timeline');
     const cand=[];
-    if(gc>0)cand.push(`Fix the ${gc} critical banned-list hits first — names, AI-isms, dramatic triplets.`);
+    if(gc>0)cand.push(`Fix the ${gc} critical issue type${gc===1?'':'s'} first — banned names, AI-isms, dramatic triplets. Or just run each chapter through the ✏️ EDIT prompts and let your AI apply the fixes.`);
     if(gh>0)cand.push(`Recast the ${gh} flash-forward / foreshadow lines — keep the narration in the present scene.`);
     [pd,pcd,cfd,cd].forEach(items=>{const fnd=items.find(x=>x[0]==='crit'||x[0]==='rec');if(fnd)cand.push(fnd[2]+' — '+fnd[3]);});
     if(cand.length)prioHtml=`<div class="prio"><h3>⭐ Top priorities</h3><ol>${cand.slice(0,5).map(c=>`<li>${esc(c)}</li>`).join('')}</ol></div>`;
@@ -1563,7 +1612,12 @@ function buildReportHtml(){
   .dim .dk{font-weight:bold;color:#1B2A4A;font-size:.92rem}
   .dim .ds{font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
   .dim.strong .ds{color:#5C8A63}.dim.watch .ds{color:#C97A33}.dim.fix .ds{color:#C0492F}.dim.todo .ds{color:#6b6b6b}
-  .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}`;
+  .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}
+  .cnt{background:#1B2A4A;color:#fff;border-radius:10px;padding:1px 8px;font-size:.7rem;margin-left:6px}
+  .morehits{font-size:.78rem;color:#6b6b6b;margin-top:7px;font-style:italic}
+  details.more{margin-top:10px}
+  details.more>summary{cursor:pointer;color:#E8735A;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
+  details.more>summary::before{content:"▸ "}details.more[open]>summary::before{content:"▾ "}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
 <body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
