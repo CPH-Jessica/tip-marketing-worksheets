@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Story Clinic — Edit Like a Boss</title>
+<title>Story Clinic: Sci-Fi, Fantasy &amp; Mystery — Edit Like a Boss</title>
 <style>
   /* ============================================================
      MANUSCRIPT EDITING COCKPIT
@@ -184,7 +184,7 @@
 </head>
 <body>
   <div class="topbar">
-    <span class="logo">Story <b>Clinic</b></span>
+    <span class="logo">Story <b>Clinic</b> <span style="opacity:.75;font-size:13px">· SFF &amp; Mystery</span></span>
     <span class="tag" id="brandTag"></span>
     <span class="spacer"></span>
     <button onclick="exportState()">Save file</button>
@@ -208,8 +208,8 @@
     <div class="view on" id="v-setup">
 
       <div class="panel intro">
-        <h2>Welcome to the Story Clinic</h2>
-        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b> — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 12 editing passes, five <b>story lab reports</b> (plot, character, pacing, conflict, timeline), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits.</p>
+        <h2>Welcome to the Story Clinic <span class="pill">Sci-Fi · Fantasy · Mystery</span></h2>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>, built for <b>science fiction, fantasy, and mystery</b> writers — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 14 editing passes (including World &amp; Rules Consistency and the Clue &amp; Fair-Play Audit), five <b>story lab reports</b> (plot, character, pacing, conflict, timeline), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits. <i>Writing romance? Use the original Story Clinic instead — this edition is calibrated for plot-first genres.</i></p>
         <div class="howto">
           <div class="howto-card best">
             <div class="hk">★ Best way to use it</div>
@@ -229,21 +229,21 @@
 
       <div class="panel">
         <h2>Drop in your manuscript</h2>
-        <p class="sub">Paste the whole book (or a single chapter). Everything stays in your browser — nothing is uploaded. Then set the pen-name voice and heat so the prompts come out calibrated.</p>
+        <p class="sub">Paste the whole book (or a single chapter). Everything stays in your browser — nothing is uploaded. Then set the voice lane and intensity so the prompts come out calibrated.</p>
         <div class="row">
           <div><label class="fld">Title</label><input id="bookTitle" type="text" placeholder="Book or series title…" oninput="save()"></div>
-          <div><label class="fld">Genre / line <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input id="genre" type="text" placeholder="e.g. small-town contemporary romance" oninput="save()"></div>
+          <div><label class="fld">Genre / line <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input id="genre" type="text" placeholder="e.g. cozy mystery, epic fantasy, space opera" oninput="save()"></div>
         </div>
         <div class="row">
-          <div><label class="fld">Pen-name voice</label>
+          <div><label class="fld">Voice lane</label>
             <select id="penName" onchange="save()"></select></div>
-          <div><label class="fld">Heat level</label>
+          <div><label class="fld">Intensity level</label>
             <select id="heat" onchange="save()">
-              <option value="1">1 / 5 — closed door</option>
-              <option value="2">2 / 5 — sensual</option>
-              <option value="3">3 / 5 — steamy</option>
-              <option value="4" selected>4 / 5 — explicit</option>
-              <option value="5">5 / 5 — fully explicit</option>
+              <option value="1">1 / 5 — cozy (violence off-page, no gore)</option>
+              <option value="2">2 / 5 — mild peril</option>
+              <option value="3" selected>3 / 5 — moderate</option>
+              <option value="4">4 / 5 — intense / graphic</option>
+              <option value="5">5 / 5 — grimdark</option>
             </select></div>
         </div>
         <div class="row">
@@ -295,7 +295,7 @@
     <div class="view" id="v-passes">
       <div class="panel">
         <h2>Editing Passes — prompts for your LLM</h2>
-        <p class="sub">Every chapter pass comes in two flavors. <b>✏️ Edit</b> tells your AI to actually FIX the chapter and hand back the revised text with a change log — revise before delivering. <b>Review</b> gives you notes only, for when you want to make the calls yourself. The audit passes (Plot Holes, Timeline, Arc Pacing) are review-only on purpose — those fixes are story decisions that belong to you.</p>
+        <p class="sub">Every chapter pass comes in two flavors. <b>✏️ Edit</b> tells your AI to actually FIX the chapter and hand back the revised text with a change log — revise before delivering. <b>Review</b> gives you notes only, for when you want to make the calls yourself. The audit passes (Plot Holes, Timeline, Arc Pacing, World &amp; Rules, Clue Audit) are review-only on purpose — those fixes are story decisions that belong to you.</p>
         <div class="row">
           <div><label class="fld">Apply to</label>
             <select id="passScope" onchange="renderPasses()"></select></div>
@@ -328,8 +328,8 @@
         <details class="explain">
           <summary>The Charge Model — why tension alone undersells the book</summary>
           <div class="body">
-            <p>Tension is <b>potential energy</b>: charge stored at the boundary between two people who want and can't yet have. When they finally fall into each other, that energy isn't lost — it <b>converts into Bond</b>, the closeness that now flows between them. Reader satisfaction tracks the whole system: bond earned, tension still live, stakes that make it matter, and the bright catharsis of release.</p>
-            <div class="keyline"><b>The move to watch:</b> at a good payoff, Tension drops but Satisfaction spikes and settles at a <em>higher floor than before</em>, because Bond rose to catch it. The failure it flags is a <b>leak</b> — tension fell but bond didn't rise to meet it, so the charge escaped instead of passing between them.</div>
+            <p>Tension is <b>potential energy</b>: the charge stored in every unanswered question, unsolved crime, and unwon battle. At a payoff — a reveal, a victory, a truth spoken — that energy isn't lost; it <b>converts into Bond</b>, the reader's earned investment in the characters and the world. Reader satisfaction tracks the whole system: investment earned, tension still live, stakes that make it matter, and the bright catharsis of release.</p>
+            <div class="keyline"><b>The move to watch:</b> at a good payoff, Tension drops but Satisfaction spikes and settles at a <em>higher floor than before</em>, because Bond rose to catch it. The failure it flags is a <b>leak</b> — tension fell but bond didn't rise to meet it, so the payoff spent tension without buying reader investment.</div>
           </div>
         </details>
 
@@ -344,7 +344,7 @@
           <button class="btn primary" onclick="addBeat()">+ Add beat</button>
         </div>
         <div id="beatJsonWrap" class="hidden" style="margin-bottom:12px">
-          <textarea id="beatJson" rows="4" placeholder='Paste the JSON your LLM returned, e.g. [{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]'></textarea>
+          <textarea id="beatJson" rows="4" placeholder='Paste the JSON your LLM returned, e.g. [{"name":"The body is found","T":3,"B":1,"S":2,"payoff":false}, ...]'></textarea>
           <div class="toolbar"><button class="btn primary" onclick="ingestBeats()">Plot it</button></div>
         </div>
 
@@ -410,7 +410,7 @@ const CONFIG = {
   brandGeneric: "The Invisible Pen · Edit Like a Boss",
   w:{ bond:0.40, tension:0.25, stakes:0.15, glow:0.55, glowDecay:0.5, stallPenalty:1.2, leakPenalty:0.6, fatigueMax:0.5 }
 };
-const STORE='tip_editing_cockpit_v1';
+const STORE='tip_story_clinic_sff_v1';
 
 /* ============================================================
    VOICE PRESETS — pick the genre lane closest to your book.
@@ -418,18 +418,16 @@ const STORE='tip_editing_cockpit_v1';
    to paste your own pen-name voice (from your Style Sheet).
    ============================================================ */
 const PENS = {
-  romcom:{label:"Rom-com — playful, banter-driven", voice:
-`Witty, warm, a little chaotic. Banter crackles — flirty, fast, fun, no dead spots. At least one snort-worthy line per scene. Light touch on angst (land it, then bounce back to warmth). Sarcastic interiority, "did I just say that out loud" energy. When there's heat, it stays hot AND fun, never mechanical.`},
-  smalltown:{label:"Small-town contemporary — warm, grounded", voice:
-`Warm, grounded, relatable with a touch of wit. Internal monologue reads like a best friend processing life. Humor comes from observation, not snark. Small-town authenticity without condescension. Emotional honesty without melodrama.`},
-  romantasy:{label:"Romantasy / fantasy — lush, atmospheric", voice:
-`Lush, atmospheric prose; emotionally intense without going purple. Sensory-rich. Raw, unfiltered heroine interiority. Magic and worldbuilding integrated naturally, never info-dumped. Subtext carries weight in dialogue.`},
-  dark:{label:"Dark romance — raw, intense", voice:
-`Raw, intense, no apologies. Short brutal sentences for danger, languid for seduction. Possessive without crossing into abusive. Power exchange is earned, not assumed. The hero's restraint slipping is meaningful. Soft moments after intensity — contrast matters. Heroine has backbone.`},
-  regency:{label:"Historical / Regency — period wit", voice:
-`Period-appropriate wit (Austen-adjacent). Formal address that masks attraction. Verbal sparring as foreplay. Narrator with opinions and personality. No anachronisms in language or values. Double meanings and loaded silences. Characters do NOT use modern contractions where the period voice forbids it.`},
-  paranormal:{label:"Paranormal / supernatural — snark + heart", voice:
-`Snarky, self-aware heroine. Comedy from culture clash (e.g. an ancient being vs. modern life). Supernatural logistics played for humor. Balance of comedy and genuine stakes. "This is so weird but also kind of hot" energy.`},
+  epic:{label:"Epic fantasy — sweeping, immersive", voice:
+`Sweeping but readable; wonder with a price tag. Deep third POV, sensory-rich worldbuilding fed through character need — never a lore lecture. Found-family warmth against high stakes. Magic always costs something. Language elevated a half-step, never purple.`},
+  urban:{label:"Urban fantasy — snappy, modern", voice:
+`Fast first-person (or close third) with a modern voice and dry humor under pressure. Supernatural noir energy: case-driven momentum, banter that crackles, weirdness played straight. The city is a character. Short punchy sentences in danger; looser between.`},
+  scifi:{label:"Science fiction — idea-driven, grounded", voice:
+`Clear-eyed and precise; wonder grounded in rigor. Tech and science explained only through what a character needs in the moment — no lectures. Ideas create pressure on people, and the human consequence is always the point. Awe and dread in equal measure.`},
+  space:{label:"Space opera — big canvas, crew chemistry", voice:
+`Propulsive and cinematic. A big canvas painted in specific, human details. Crew banter and loyalty carry the quiet scenes; set-pieces are choreographed clean so the reader never loses the geography. Momentum over machinery.`},
+  cozy:{label:"Cozy mystery — warm, witty, gentle", voice:
+`Warm, witty, community-textured. Amateur-sleuth charm — nosiness as a virtue. Violence stays off-page; the puzzle and the people carry the book. Gentle humor from observation, a village (or shop, or club) that feels lived-in, and comfort with teeth: real stakes under the tea and scones.`},
   custom:{label:"Custom / my own voice", voice:""}
 };
 
@@ -457,8 +455,8 @@ const FILLERS=["a little","sort of","kind of","just","really","very"];
    THE 12 EDITING PASSES (synced to /fiction-editing-workflow)
    ============================================================ */
 const PASSES = [
- {n:1,id:"qc",name:"Quality Check",scope:"chapter",role:"a meticulous line-and-content editor for genre romance",
-  list:["Natural prose — reads human; no AI-isms, overused adverbs, or repeated words/phrases.","Tone match — humor/intensity is right for the pen name.","Outline adherence — stays in THIS chapter's lane; no veering into later plot, no premature resolution, no speeding the book.","Arc consistency — follows the character/story arc.","Romantic/emotional progression — advances appropriately for this point in the story.","Pacing & transitions — scene shifts smooth and earned, not rushed or jarring.","Show vs. tell — flag emotion that's told instead of shown through action, dialogue, or sensation.","Chapter ending — ends on a hook with forward momentum, ON the storybeat, no foreshadowing.","POV — single POV throughout, no head-hopping.","Heat level — matches the pen name's calibration; genre readers will feel satisfied.","Banned list — no banned names, words, phrases, or AI-isms."]},
+ {n:1,id:"qc",name:"Quality Check",scope:"chapter",role:"a meticulous line-and-content editor for genre fiction",
+  list:["Natural prose — reads human; no AI-isms, overused adverbs, or repeated words/phrases.","Tone match — humor/intensity is right for the pen name.","Outline adherence — stays in THIS chapter's lane; no veering into later plot, no premature resolution, no speeding the book.","Arc consistency — follows the character/story arc.","Story/emotional progression — the main arc advances appropriately for this point in the story.","Pacing & transitions — scene shifts smooth and earned, not rushed or jarring.","Show vs. tell — flag emotion that's told instead of shown through action, dialogue, or sensation.","Chapter ending — ends on a hook with forward momentum, ON the storybeat, no foreshadowing.","POV — single POV throughout, no head-hopping.","Intensity — matches the lane's calibration (violence, gore, darkness); genre readers will feel satisfied.","Banned list — no banned names, words, phrases, or AI-isms."]},
  {n:2,id:"plot",name:"Plot Hole Checker",scope:"either",role:"a continuity-obsessed story editor",
   list:["Cause & effect — everything flows logically from what came before; flag actions/reactions lacking a clear cause.","Setup tracking — log any promise introduced (secret, object, decision, foreshadowed event) that must pay off.","Payoff tracking — confirm resolved setups match the setup's weight; underpowered payoffs are holes too.","Character knowledge — every character acts only on info they've actually received in-story.","Logical behavior — decisions fit established personality, wounds, and goals; flag 'because the plot needs it'.","Introduced-but-dropped — anything mentioned then ignored.","Contradictions — facts that conflict with earlier chapters (eye color, status, prior conversation).","Off-page logic — implied off-page events that strain belief (impossible travel/time)."],
   out:"Label flags [PLOT HOLE] / [SETUP LOGGED] / [PAYOFF CHECK] / [WATCH] with a precise location (scene, beat, or quoted snippet)."},
@@ -468,30 +466,36 @@ const PASSES = [
  {n:4,id:"line",name:"Line Edit",scope:"chapter",role:"a sentence-level line editor",
   list:["Echoes — repeated words within 2–3 paragraphs (esp. eyes, heart, breath, gaze, chest, stomach).","Filter words — remove felt/noticed/realized/seemed/watched/saw/heard/wondered/thought; show the sensation directly.","Weak verbs — replace was/were + -ing with active verbs; kill 'started to' / 'began to'.","Adverb crutches — cut -ly adverbs; strengthen the verb.","Dialogue tags — trim to said/asked or action beats.","Sentence variety — flag strings of same-length sentences or repeated structures.","Overwriting — cut purple prose, redundant description, metaphors that don't land.","Filler phrases — remove a little / sort of / kind of / just / really / very / unnecessary 'that'.","Body-language inventory — vary the physical tells (too many brow raises, lip bites, jaw clenches).","Rhythm — does the dialogue flow when read aloud?"]},
  {n:5,id:"dialogue",name:"Dialogue Polish",scope:"chapter",role:"a dialogue specialist",
-  list:["Subtext — characters shouldn't say exactly what they mean; add the unsaid layer.","Distinct voices — cover the names; can you tell who's speaking by cadence and word choice?","Banter rhythm — does the back-and-forth crackle? Trim dead air between zingers.","Exposition dump — flag dialogue that exists only to inform the reader; reframe or cut.","Action-beat balance — right mix of 'said' tags vs. action beats.","Contractions — characters use them (unless period voice forbids it).","Trailing off — overuse of ellipses or em-dashes? Tighten.","Pet phrases — a verbal tic once or twice = character; more = annoying.","Comedic beats (rom-com) — no joke ends without a POV reaction; wit leaks through 3–4×; supporting cast reacts to the POV character's slips."]},
- {n:6,id:"heat",name:"Heat Scene Edit",scope:"chapter",role:"an intimacy-scene editor calibrated to the pen name's heat level",
-  list:["Emotion over mechanics — emotional connection drives the scene, not body parts.","Sensory balance — all five senses, not just visual.","Pacing — it builds; push-pull, not a rush to the finish.","Voice consistency — POV interiority stays distinct even in the moment.","Verb variety — flag repetitive action words.","Euphemism audit — terms are genre-appropriate for this heat level (not too clinical, not too purple).","Emotional aftermath — scene ends on emotional resonance, not just physical resolution.","Power dynamics — tension/control dynamic intact and consensual.","Slow-burn payoff — if slow burn, where can tension be added for more impact?"]},
+  list:["Subtext — characters shouldn't say exactly what they mean; add the unsaid layer.","Distinct voices — cover the names; can you tell who's speaking by cadence and word choice?","Banter rhythm — does the back-and-forth crackle? Trim dead air between zingers.","Exposition dump — flag dialogue that exists only to inform the reader; reframe or cut.","Action-beat balance — right mix of 'said' tags vs. action beats.","Contractions — characters use them (unless period voice forbids it).","Trailing off — overuse of ellipses or em-dashes? Tighten.","Pet phrases — a verbal tic once or twice = character; more = annoying.","Comedic beats (witty lanes) — no joke ends without a POV reaction; wit leaks through 3–4×; supporting cast reacts to the POV character's slips."]},
+ {n:6,id:"heat",name:"Action & Set-Piece Edit",scope:"chapter",role:"an action-scene editor calibrated to the lane's intensity level",
+  list:["Geography first — the reader always knows where everyone is; choreography is trackable without rereading.","Cause and effect — every beat follows physically from the last; no teleporting combatants or forgotten weapons.","POV discipline — only what the POV character could perceive mid-chaos; no omniscient overviews in a knife fight.","Sensory grounding under stress — bodies feel it (breath, impact, adrenaline distortion), not just visuals.","Rhythm — short brutal sentences for impact, longer lines for regrouping; a metronome pace kills momentum.","Stakes stay visible — mid-action, the reader can still name what's at risk beyond survival.","Cost & consequence — injuries persist, resources deplete, victories are paid for; no reset button next scene.","Established capabilities only — no ability, spell, or gadget used here that wasn't set up earlier (that's a gotcha).","Aftermath lands — the scene ends on the emotional and story consequence, not just the dust settling.","Intensity calibration — violence and gore sit exactly at the lane's level; a cozy never shows what a grimdark would."]},
  {n:7,id:"dev",name:"Developmental Edit",scope:"chapter",role:"a developmental editor",
-  list:["Scene purpose — every scene advances plot, character, or relationship; flag 'just vibes'.","Motivation clarity — clear WHY behind every action/reaction.","Conflict present — tension (internal/external/romantic) on every page; where does it sag?","Emotional stakes — reader knows what the POV character stands to lose/gain.","Voice drift — POV character consistent with earlier chapters.","Pacing drag — sections that stall; mark for trim or punch-up.","Setup/payoff — earlier promises honored; flag dangling threads.","Romantic progression — push/pull balance right for this point in the arc (too fast? too slow?).","Reader question — what is the reader asking at chapter's end? Is it the RIGHT question?","Genre expectation — delivers what this pen name's readers expect at this beat."]},
+  list:["Scene purpose — every scene advances plot, character, or relationship; flag 'just vibes'.","Motivation clarity — clear WHY behind every action/reaction.","Conflict present — tension (internal/external/romantic) on every page; where does it sag?","Emotional stakes — reader knows what the POV character stands to lose/gain.","Voice drift — POV character consistent with earlier chapters.","Pacing drag — sections that stall; mark for trim or punch-up.","Setup/payoff — earlier promises honored; flag dangling threads.","Arc progression — external plot and internal character arc advancing in step (too fast? too slow?).","Reader question — what is the reader asking at chapter's end? Is it the RIGHT question?","Genre expectation — delivers what this pen name's readers expect at this beat."]},
  {n:8,id:"voice",name:"Voice Audit",scope:"chapter",role:"a brand voice editor",
   list:["Calibrate every note to the pen-name voice profile provided above.","Flag any line that drifts out of that voice and suggest an in-voice rewrite.","Confirm humor/tone/heat all sit inside the brand."]},
  {n:9,id:"hook",name:"Engagement / Hook Audit",scope:"chapter",role:"a reader-engagement editor",
   list:["Stakes legible — reader can name what's at risk, for whom, and why NOW, from what's on the page (shown, not announced). Urgency from scene pressure, never a narrated clock.","A specific Big Question is live by the midpoint — flag vague teasers ('everything was about to change', 'little did she know'); they give nothing to predict and are banned ominous narration.","Question planted early — chapter opens inside a live question, not a stall.","Reversals set up — any twist recontextualizes earlier on-page detail (surprising-yet-inevitable); an unset-up reversal is a gotcha — flag it.","Reversal survives logic — obeys cause→effect, motivation, knowledge-access.","Head Fakes mid-scene, not end-buttons — no ominous one-liner slammed on the last line.","The seam re-hooks — ending closes one loop and opens the next in the same beat; a clean stop is where readers quit — flag it.","No over-hooking — not manufacturing unearned reversals; one earned turn beats three shallow ones."]},
  {n:10,id:"arc",name:"Arc Pacing Audit",scope:"manuscript",role:"a structural editor who reasons ACROSS chapters",
-  list:["Trajectory — per character: where they started → where they are now, as a plain throughline.","Pacing verdict — ON PACE / RUSHED / STALLED / UNEVEN; name the chapter where any problem ORIGINATES.","Beat check — mark each beat HIT/EARLY/LATE/MISSING/TBD (Meet → Building awareness → First vulnerability → Midpoint shift → Dark moment → Resolution/HEA).","Balance — is one character's emotional movement outpacing the other's? Is vulnerability reciprocal? Imbalance must read as intentional.","Emotional capital — is the story spending trust/tension/intimacy faster than it earned it? Flag the reverse too (banked tension sitting too long).","Heat-vs-emotion sync — does physical escalation track emotional escalation?"],
+  list:["Trajectory — per character: where they started → where they are now, as a plain throughline.","Pacing verdict — ON PACE / RUSHED / STALLED / UNEVEN; name the chapter where any problem ORIGINATES.","Beat check — mark each beat HIT/EARLY/LATE/MISSING/TBD (Hook/inciting event → Point of no return → Midpoint shift → All-is-lost → Climax → Resolution; for mystery: crime → investigation deepens → midpoint twist → dark moment → the reveal).","Balance — is the external plot outpacing the internal character arc (or vice versa)? Is a co-lead's growth lagging? Imbalance must read as intentional.","Narrative capital — is the story spending reveals, trust, and tension faster than it banked them? Flag the reverse too (banked tension sitting too long).","External-vs-internal sync — does plot escalation track the character's internal arc?"],
   out:"This pass DIAGNOSES pacing; it never invents plot. Flag the problem and name the originating chapter — the fix stays the author's call."},
  {n:11,id:"present",name:"Present-Moment Pass",scope:"chapter",role:"a prolepsis-hunting line editor who keeps narration anchored in the present scene",
   list:["Future-knowledge intrusion [PROLEPSIS] — narration tells the reader something the POV character can't know yet ('she would later realize…', 'it would be the last time…', 'years from now, she'd remember').","Ominous teaser narration [FORESHADOW] — the banned 'doom is coming' move ('she had no idea what was coming', 'little did she know', 'if only she'd known', 'everything was about to change').","Outcome leak [OUTCOME LEAK] — a line that quietly spoils a later beat to sound wise ('it was a mistake she'd spend the next month paying for', 'that decision would cost her everything').","Retrospective narrator drift [RETRO DRIFT] — the voice slips into looking-back-from-the-future ('looking back, she should have seen it', 'later, she'd understand').","PROTECT legitimate 'would' — do NOT flag habitual past ('every Sunday she would drive to the lake'), conditionals ('she'd say yes if he asked'), in-the-moment dread in dialogue or thought ('he would leave. They always left.'), reported intentions ('he told her he would call'), or modals ('would you mind?').","When a 'would' is genuinely ambiguous, tag [WOULD — CONFIRM] and ASK — never silently change it.","Recast, don't blanket-delete — convert future-knowledge into present-scene experience using only what the scene already supports; never invent a new detail to make a line work."],
   out:"Header line with counts: Candidates / Offenders / Protected / Confirm. Then OFFENDERS (with NOW: recast + why), PROTECTED (checked, left alone), and WOULD — CONFIRM (ask, don't auto-change)."},
  {n:12,id:"deai",name:"Structural De-AI Sweep",scope:"chapter",role:"an editor hunting structural AI tells at the sentence, paragraph, and whole-chapter level",
   list:["Prestige-word inflation — portable-profundity abstractions standing in for a real image ('the quiet architecture of loss', 'a testament to everything they'd survived'); trade for one concrete sensory fact.","Balanced contrast frames — 'it wasn't X, it was Y' / 'she didn't want him, she needed him'; keep ONLY if both halves are specific and the reversal changes the meaning; otherwise write the truer half once.","Rhetorical question → tidy answer — the explainer voice ('What was she supposed to say? Nothing.'); render as lived experience instead.","Tidy triads & symmetry — three balanced items / parallel clauses recurring; vary the count and weight, let one run lopsided.","Agentless / depersonalized lines — 'a decision was made', 'the tension in the room grew'; name the doer and put a body and a want in the sentence.","Sentiment flattening — ugly/mixed feeling sanded into calm acceptance or a life-lesson; restore friction and ambivalence.","Professionalized sameness — theme legible too early, symbols that announce meaning, an ending that states the lesson; withhold the theme, end on image or unresolved want, add one earned surprise.","Even sentence architecture — every sentence 12–20 words; plant at least one very short line and let one run long per weighty paragraph.","Checklist / prompt-shadow prose — beats arriving in outline order, prompt wording echoed; re-order by dramatic pressure, never echo the brief.","Empty transitions — 'Additionally', 'as if on cue', 'and just like that', 'in the end'; cut the glue or replace with a real causal pivot."],
-  out:"THE CLUSTER TEST is the gate: a lone earned triad/frame/image is human — flag the CLUSTER (3+ stacked tells), not the stray. Verdict: CLEAN / WATCH (1–2) / CLUSTER (3+, rewrite). List tells found (quote + why + fix), log defensible single uses, and revise the clustered lines before delivering."}
+  out:"THE CLUSTER TEST is the gate: a lone earned triad/frame/image is human — flag the CLUSTER (3+ stacked tells), not the stray. Verdict: CLEAN / WATCH (1–2) / CLUSTER (3+, rewrite). List tells found (quote + why + fix), log defensible single uses, and revise the clustered lines before delivering."},
+ {n:13,id:"world",name:"World & Rules Consistency",scope:"either",role:"a worldbuilding-continuity editor who guards the rules of the world",
+  list:["Rule ledger — log every rule the story establishes (magic system, technology, creature abilities, police procedure for mysteries) with where it's stated.","Consistent application — every use of magic/tech/ability obeys the established rules; flag any convenient exception the plot leaned on.","Costs & limits — established costs are always paid; power without price deflates every stake that follows.","Capabilities set up before used — no ability, spell, or gadget appearing for the first time in the exact scene that needs it.","Geography & travel — distances, maps, and travel times stay consistent (cross-check the Timeline pass).","Terminology — invented names, terms, titles, and spellings used identically everywhere; build the glossary as you go.","Lore through need — worldbuilding delivered when a character needs it, never as a lecture; flag every info-dump.","Cultural logic — societies, economies, and institutions keep behaving the way they were established to behave.","Series canon (if applicable) — nothing contradicts the rules established in earlier books."],
+  out:"Build/extend a WORLD BIBLE LOG: Rule/Term | Established where | Used where | Status — then list [RULE BREAK] / [CONVENIENT EXCEPTION] / [UNPAID COST] / [GLOSSARY DRIFT] / [INFO-DUMP] flags, each with its location."},
+ {n:14,id:"clue",name:"Clue & Fair-Play Audit",scope:"either",role:"a mystery editor who audits the clue trail like a defense attorney",
+  list:["Clue ledger — every clue: where it's planted, who saw it, and whether the READER could notice it (fair play requires on-page visibility).","Fair-play check — could an attentive reader solve it from planted clues alone? The solution can't depend on information the reader never got.","Red herrings — each one genuinely misleads, has a real explanation, and is resolved by the end; flag herrings that just evaporate.","Suspect tracking — every suspect's means, motive, opportunity, and alibi stay consistent across the book; flag contradictions.","Knowledge discipline — the sleuth acts only on clues actually gathered on the page; no deductive leaps that skip the reader.","The reveal recontextualizes — the solution makes earlier planted details click (surprising-yet-inevitable); it never introduces new facts.","No unearned confessions — the culprit doesn't fold without pressure the story actually built.","Cozy calibration (if cozy) — crime off-page, no gore, the sleuth in believable jeopardy only, community stakes carrying the middle."],
+  out:"Deliver a CLUE LEDGER (Clue | Planted where | Visible to reader? | Pays off where) + SUSPECT GRID (Means | Motive | Opportunity | Alibi) + flags: [FAIR-PLAY BREAK] / [ORPHANED HERRING] / [KNOWLEDGE LEAP] / [CONTRADICTION]."}
 ];
 
 /* ============================================================
    STATE
    ============================================================ */
-let state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
+let state={title:'',genre:'',penName:'epic',heat:'3',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
 let hidden={};
 
 function save(){
@@ -510,12 +514,12 @@ function load(){
   sel.innerHTML=Object.entries(PENS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
   document.getElementById('bookTitle').value=state.title||'';
   document.getElementById('genre').value=state.genre||'';
-  document.getElementById('penName').value=state.penName||'smalltown';
-  document.getElementById('heat').value=state.heat||'4';
+  document.getElementById('penName').value=state.penName||'epic';
+  document.getElementById('heat').value=state.heat||'3';
   if(document.getElementById('lang'))document.getElementById('lang').value=state.lang||'en';
   document.getElementById('customVoice').value=state.customVoice||'';
   document.getElementById('manuscript').value=state.manuscript||'';
-  document.getElementById('customVoiceWrap').classList.toggle('hidden',(state.penName||'smalltown')!=='custom');
+  document.getElementById('customVoiceWrap').classList.toggle('hidden',(state.penName||'epic')!=='custom');
 }
 
 /* ============================================================
@@ -732,14 +736,15 @@ function scopeText(){
 }
 function voiceProfile(){
   if(state.penName==='custom')return state.customVoice||'(no custom voice notes provided)';
-  return (PENS[state.penName]||PENS.smalltown).voice;
+  return (PENS[state.penName]||PENS.epic).voice;
 }
 function heatGuide(){
   const h=+state.heat;
-  if(h<=2)return "Heat 1–2/5: closed-door / sensual. Tension through longing and near-misses; no explicit content.";
-  if(h===3)return "Heat 3/5: steamy. Sensations over mechanics; can be direct; emotional interiority throughout.";
-  if(h===4)return "Heat 4/5: explicit. Direct anatomical language allowed; keep emotional interiority dominant.";
-  return "Heat 5/5: fully explicit. Full vocabulary and dirty talk allowed; emotion still drives the scene.";
+  if(h<=1)return "Intensity 1/5: cozy. Violence happens off-page, no gore, no explicit content, gentle language — comfort is part of the promise.";
+  if(h===2)return "Intensity 2/5: mild. Real peril with minimal graphic detail; darkness implied more than shown.";
+  if(h===3)return "Intensity 3/5: moderate. On-page violence and adult themes allowed; gore restrained; consequences always real.";
+  if(h===4)return "Intensity 4/5: intense. Graphic action, visceral danger, darker themes on the page.";
+  return "Intensity 5/5: grimdark. Unflinching violence and darkness allowed; emotion still drives every scene.";
 }
 /* ============================================================
    MANUSCRIPT LANGUAGE — mirrors the author-translator pipeline
@@ -766,14 +771,14 @@ function buildPrompt(pass,mode){
   const usable = (pass.scope==='manuscript' && !sc.isMs) ? false : true;
   let p;
   if(mode==='edit'){
-    p=`You are ${pass.role}. EDIT ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''} directly — do not just report problems. Run the "${pass.name}" pass and DELIVER THE REVISED TEXT. The rule: revise before delivering.\n\n`;
-    p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
-    p+=`HEAT TARGET: ${heatGuide()}\n\n`;
+    p=`You are ${pass.role}. EDIT ${sc.label} of a ${state.genre||'genre fiction'} novel${state.title?` ("${state.title}")`:''} directly — do not just report problems. Run the "${pass.name}" pass and DELIVER THE REVISED TEXT. The rule: revise before delivering.\n\n`;
+    p+=`VOICE PROFILE (${penLabel}):\n${voiceProfile()}\n\n`;
+    p+=`INTENSITY TARGET: ${heatGuide()}\n\n`;
     p+=langDirective();
     p+=`Apply every item below AS AN EDIT — fix it in the text, don't just note it:\n`;
     p+=pass.list.map((x,i)=>`${i+1}. ${x}`).join('\n')+'\n';
     p+=`\nEDITING RULES:\n`;
-    p+=`- Fix at the sentence and paragraph level. Preserve the plot, scene order, events, POV, character choices, and heat level EXACTLY as written.\n`;
+    p+=`- Fix at the sentence and paragraph level. Preserve the plot, scene order, events, POV, character choices, and intensity level EXACTLY as written.\n`;
     p+=`- Never invent new plot events, facts, objects, or dialogue that changes what happens. If a real fix would need new story content, do NOT write it — list it under NEEDS AUTHOR instead.\n`;
     p+=`- Stay inside the pen-name voice the whole way. Enforce the banned list as you edit: no AI-isms, no dramatic triplets ("X. Y. Z." parallel fragments), no filter words (felt/noticed/realized/seemed/watched/saw/heard/wondered/thought).\n`;
     p+=`- Do not smooth the voice into generic prose — an edit that loses the voice is worse than the flaw it fixed.\n`;
@@ -784,9 +789,9 @@ function buildPrompt(pass,mode){
     p+=`\n----- TEXT BEGINS -----\n${sc.text||'(paste your text here)'}\n----- TEXT ENDS -----`;
     return {prompt:p,usable};
   }
-  p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
-  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\n`;
-  if(pass.id==='heat'||pass.id==='qc'||pass.id==='voice')p+=`HEAT TARGET: ${heatGuide()}\n\n`;
+  p=`You are ${pass.role}. Run a single editing pass — "${pass.name}" — on ${sc.label} of a ${state.genre||'genre fiction'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
+  p+=`VOICE PROFILE (${penLabel}):\n${voiceProfile()}\n\n`;
+  if(pass.id==='heat'||pass.id==='qc'||pass.id==='voice')p+=`INTENSITY TARGET: ${heatGuide()}\n\n`;
   p+=langDirective();
   p+=`Check every item below. For each issue, quote the exact text and give a specific fix — do not give vague notes:\n`;
   p+=pass.list.map((x,i)=>`${i+1}. ${x}`).join('\n')+'\n';
@@ -846,12 +851,12 @@ function copyPrompt(id,btn,mode){
    SATISFACTION TRACKER (The Charge Model)
    ============================================================ */
 const SAMPLE_BEATS=[
-  {name:"They meet",T:3,B:1,S:2,payoff:false},{name:"The spark",T:5,B:2,S:2,payoff:false},
-  {name:"Forced proximity",T:6,B:3,S:3,payoff:false},{name:"The almost-kiss",T:8,B:3,S:4,payoff:false},
-  {name:"First kiss",T:5,B:6,S:4,payoff:true},{name:"Retreat / fear",T:6,B:5,S:5,payoff:false},
-  {name:"Confession builds",T:8,B:6,S:6,payoff:false},{name:"The night together",T:4,B:7,S:6,payoff:true},
-  {name:"Morning-after distance",T:6,B:6,S:7,payoff:false},{name:"Dark moment",T:7,B:3,S:9,payoff:false},
-  {name:"The grand gesture",T:5,B:8,S:6,payoff:true},{name:"HEA",T:2,B:10,S:3,payoff:true}
+  {name:"The body is found",T:6,B:1,S:5,payoff:false},{name:"Taking the case",T:6,B:3,S:5,payoff:false},
+  {name:"First real clue",T:5,B:4,S:5,payoff:true},{name:"The wrong arrest",T:7,B:4,S:6,payoff:false},
+  {name:"Second body",T:8,B:4,S:8,payoff:false},{name:"An ally confides",T:6,B:6,S:7,payoff:true},
+  {name:"The false solution",T:7,B:5,S:7,payoff:false},{name:"Sleuth in danger",T:9,B:5,S:9,payoff:false},
+  {name:"The missing piece clicks",T:7,B:7,S:8,payoff:true},{name:"Gathering the suspects",T:8,B:7,S:8,payoff:false},
+  {name:"The reveal",T:3,B:9,S:6,payoff:true},{name:"Order restored",T:2,B:10,S:3,payoff:true}
 ];
 function clamp(n){return Math.max(0,Math.min(10,n));}
 function computeSeries(beats){
@@ -950,7 +955,7 @@ function ingestBeats(){
 }
 function copyBeatPrompt(btn){
   const ms=state.chapters.length?state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n'):state.manuscript;
-  const p=langDirective()+`You are a romance story analyst. Read the manuscript below and break it into its major story beats in order (one per scene or chapter). For EACH beat, rate three things 0–10 and mark whether it is a payoff:\n\n• Tension (T): unfulfilled romantic/dramatic wanting — the gap, the ache, the not-yet.\n• Bond (B): closeness EARNED so far — the intimacy and trust that now flows between the leads. This should generally climb across the book.\n• Stakes (S): what's at risk if the relationship fails right now.\n• payoff: true if tension is realized in this beat (a kiss, confession, "I love you", consummation, reunion); otherwise false.\n\nReturn ONLY a JSON array, no commentary, in exactly this shape:\n[{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]\n\n----- MANUSCRIPT BEGINS -----\n${ms||'(paste your manuscript)'}\n----- MANUSCRIPT ENDS -----`;
+  const p=langDirective()+`You are a story analyst for genre fiction. Read the manuscript below and break it into its major story beats in order (one per scene or chapter). For EACH beat, rate three things 0–10 and mark whether it is a payoff:\n\n• Tension (T): unresolved dramatic pressure — open questions, the unsolved crime, the unfinished quest, danger not yet faced.\n• Bond (B): investment EARNED so far — the reader's attachment to the cast, trust inside the team, ground gained on the case or quest. This should generally climb across the book.\n• Stakes (S): what's at risk if the protagonist fails right now.\n• payoff: true if tension is realized in this beat (a reveal, a solved clue, a victory, a rescue, an escape, a truth spoken); otherwise false.\n\nReturn ONLY a JSON array, no commentary, in exactly this shape:\n[{"name":"The body is found","T":3,"B":1,"S":2,"payoff":false}, ...]\n\n----- MANUSCRIPT BEGINS -----\n${ms||'(paste your manuscript)'}\n----- MANUSCRIPT ENDS -----`;
   navigator.clipboard.writeText(p).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy “rate my beats” prompt',1500);});
 }
 function persist(){save();}
@@ -1228,8 +1233,8 @@ const ANA={
   tasks:["Narrative arc — describe the overall emotional shape of the story in plain language and name the closest classic shape (man-in-a-hole, rags-to-riches, Cinderella arc, etc.).","Structure map — locate the major beats with their approximate position as % of the book: hook, inciting incident, first plot point, midpoint shift, dark moment, climax, resolution. Mark each HIT / EARLY / LATE / MISSING and say what's actually on the page there.","Turning points — list the emotional high points and low points (scenes that shift the story's emotional temperature) and whether each is earned by what came before.","Setup & payoff — list every major promise made to the reader and where (or whether) it pays off. Orphaned setups and unearned payoffs are plot problems.","Subplots — name each subplot, whether it supports or distracts from the main plot, and whether it resolves.","Theme — state the book's theme in one sentence. Is it withheld and felt, or announced? Flag any place the book states its own moral.","Genre promise — does the plot deliver the beats this genre's readers came for, where they expect them?"],
   out:"PLOT REPORT with: ARC SHAPE (one paragraph), BEAT MAP table (Beat | ~% position | Status | What's on the page), TURNING POINTS list, SETUP/PAYOFF ledger, SUBPLOT verdicts, THEME line, and the 3 biggest plot risks ranked."},
  character:{label:'Character Analysis',color:'#D4A853',role:'a character editor who judges characters by their agency — what they DO on the page, not how they are described',
-  explain:'The table shows every recurring name the scan found, with <b>presence bars</b> — one cell per chapter, darker = more mentions — so you can see who owns the book, who disappears, and who wanders in late. The benchmark gauge is <b>dialogue share</b>: most bestsellers land between <b>25% and 35% dialogue</b>. The offline scan sees names; only the AI deep-dive can judge agency, voice, and arcs.',
-  tasks:["Cast list — every named character with their story function in one line. Flag anyone with no function.","Agency check — for each main character: what do they WANT right now (urgent goal), WHY (motivation), what stands in the way (obstacles), and what FLAW complicates it? Flag any protagonist who mostly reacts instead of deciding.","Differentiation — do any two characters read alike in voice or function? Cover the names in a dialogue scene: can you still tell who's speaking by cadence and word choice alone?","Arcs — for each lead: where they start → where they end, and the exact scenes where the change happens. Is the change earned on the page, or asserted?","Dynamics — for the central relationship: what does each person want FROM the other, what genuinely keeps them apart, and does the push-pull escalate?","POV — whose head are we in, is it consistent, and is it the right head for each big scene?","Supporting cast — does every named side character serve plot or theme? Who could be cut or merged without losing anything?"],
+  explain:'The table shows every recurring name the scan found, with <b>presence bars</b> — one cell per chapter, darker = more mentions — so you can see who owns the book, who disappears, and who wanders in late. The benchmark gauge is <b>dialogue share</b>: most bestsellers land between <b>25% and 35% dialogue</b>. The offline scan sees names; only the AI deep-dive can judge agency, voice, and arcs. In SFF and mystery the scan can\'t tell people from places — recurring proper nouns (cities, ships, taverns, spells) appear in the table too, so read it as your <b>cast &amp; world glossary</b>: terms that appear once and vanish are worth a look either way.',
+  tasks:["Cast list — every named character with their story function in one line. Flag anyone with no function.","Agency check — for each main character: what do they WANT right now (urgent goal), WHY (motivation), what stands in the way (obstacles), and what FLAW complicates it? Flag any protagonist who mostly reacts instead of deciding.","Differentiation — do any two characters read alike in voice or function? Cover the names in a dialogue scene: can you still tell who's speaking by cadence and word choice alone?","Arcs — for each lead: where they start → where they end, and the exact scenes where the change happens. Is the change earned on the page, or asserted?","Dynamics — for each load-bearing relationship (partners, crew, mentor, sleuth-and-suspects): what does each want FROM the other, and does the friction escalate?","POV — whose head are we in, is it consistent, and is it the right head for each big scene?","Supporting cast — does every named side character serve plot or theme? Who could be cut or merged without losing anything?"],
   out:"CHARACTER REPORT with: AGENCY TABLE (Character | Goal | Motivation | Obstacle | Flaw | Active or Passive), DIFFERENTIATION flags, ARC map per lead (start → end → the scene where it turns), DYNAMICS read on the central relationship, and a cut/merge list."},
  pacing:{label:'Pacing Analysis',color:'#7A9E7E',role:'a pacing editor who finds where readers speed up, slow down, and put the book down',
   explain:'The curve estimates <b>reading speed</b> across the book — computed from sentence length, dialogue density, and paragraph weight in each slice. <b>Peaks</b> are page-turner stretches; <b>valleys</b> are slow, scene-setting stretches. Neither is bad alone: the danger signs are a <b>flat line</b> (no variety), a <b>sagging middle</b>, and a slow opening. Bestsellers change pace roughly <b>every 10%</b> of the book.',
@@ -1237,7 +1242,7 @@ const ANA={
   out:"PACING REPORT with: CHAPTER TABLE (Chapter | Pace | What's driving it | Fix if needed), MIDDLE-THIRD verdict, TRIM list, EXPAND list, and the single highest-impact pacing change."},
  conflict:{label:'Conflict Analysis',color:'#1B2A4A',role:'a conflict-and-stakes editor who tracks narrative drive',
   explain:'The line tracks <b>conflict intensity</b> — the density of friction in each slice of the book (arguments, threats, secrets, danger, refusals). Upward moves are complications building; the rule underneath is <b>tension on every page</b>: even quiet scenes need a live question running. Watch for chapters the scan flags as conflict-quiet, and whether intensity <b>escalates</b> toward the climax instead of plateauing. The AI deep-dive breaks down your conflict <b>sources</b> — a book leaning too hard on one source flattens.',
-  tasks:["Sources of conflict — break down the major sources driving this story (internal struggle, romantic push-pull, interpersonal friction, external circumstance, societal pressure) with a rough % weight each. A book leaning more than ~70% on one source usually flattens.","Tension on every page — list any scene or chapter where NO live conflict or open question is running. These are the dead zones.","Escalation — do the stakes ratchet upward act by act? Name exactly where they plateau or quietly reset.","Complication vs. resolution rhythm — every resolution should open a new complication in the same beat. List resolutions that close clean (momentum killers).","The dark moment — is the 'all is lost' beat devastating, earned, and specific to these characters' wounds — or generic?","Stakes legibility — at any point in the book, can the reader name what's at risk, for whom, and why NOW? Where does it blur?","Endgame — which conflicts resolve, which intentionally carry forward (series hooks), and which are accidentally dropped?"],
+  tasks:["Sources of conflict — break down the major sources driving this story (internal struggle, antagonist pressure, the central mystery or quest question, interpersonal friction, external circumstance, societal pressure) with a rough % weight each. A book leaning more than ~70% on one source usually flattens.","Tension on every page — list any scene or chapter where NO live conflict or open question is running. These are the dead zones.","Escalation — do the stakes ratchet upward act by act? Name exactly where they plateau or quietly reset.","Complication vs. resolution rhythm — every resolution should open a new complication in the same beat. List resolutions that close clean (momentum killers).","The dark moment — is the 'all is lost' beat devastating, earned, and specific to these characters' wounds — or generic?","Stakes legibility — at any point in the book, can the reader name what's at risk, for whom, and why NOW? Where does it blur?","Endgame — which conflicts resolve, which intentionally carry forward (series hooks), and which are accidentally dropped?"],
   out:"CONFLICT REPORT with: SOURCES breakdown (% + strongest example of each), DEAD-ZONE list, ESCALATION map (act by act), rhythm flags (clean resolutions to re-hook), DARK-MOMENT verdict, and dropped-conflict list."}
 };
 let anaActive='plot';
@@ -1250,8 +1255,8 @@ document.getElementById('anaTabs').addEventListener('click',e=>{
 function buildAnaPrompt(kind){
   const A=ANA[kind];
   const penLabel=(PENS[state.penName]||{}).label||state.penName;
-  let p=`You are ${A.role}. Run a full ${A.label.toUpperCase()} on the complete manuscript below — a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
-  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\nHEAT TARGET: ${heatGuide()}\n\n`;
+  let p=`You are ${A.role}. Run a full ${A.label.toUpperCase()} on the complete manuscript below — a ${state.genre||'genre fiction'} novel${state.title?` ("${state.title}")`:''}.\n\n`;
+  p+=`VOICE PROFILE (${penLabel}):\n${voiceProfile()}\n\nINTENSITY TARGET: ${heatGuide()}\n\n`;
   p+=langDirective();
   p+=`Work through every item. Quote the exact text or name the exact scene for every finding — no vague notes:\n`;
   p+=A.tasks.map((t,i)=>`${i+1}. ${t}`).join('\n')+'\n';
@@ -1261,7 +1266,7 @@ function buildAnaPrompt(kind){
   return p;
 }
 function copyVoiceNotesPrompt(btn){
-  const p=`I'm setting up my editing tool and need my voice notes. You have my pen-name voice skill — read it (and any files it references) and distill it into a compact VOICE NOTES block for an editor.\n\nRules:\n- Pull ONLY from my voice skill — don't invent traits I never defined. If something isn't defined, skip it.\n- Write it as instructions to an editor, present tense ("Voice is warm and dry-witted; banter escalates under stress…").\n- Cover, in this order, whatever my skill defines: overall tone and mood · humor style · prose rhythm and density · POV and tense · interiority style · dialogue and banter style · how heat and emotion are expressed · signature moves I lean on · hard NOs (things this voice never does).\n- 120–180 words, tight. No preamble, no commentary — output ONLY the voice notes block so I can copy it straight into my tool.\n\nIf I have more than one pen-name voice skill, ask me which pen name before you start.`;
+  const p=`I'm setting up my editing tool and need my voice notes. You have my pen-name voice skill — read it (and any files it references) and distill it into a compact VOICE NOTES block for an editor.\n\nRules:\n- Pull ONLY from my voice skill — don't invent traits I never defined. If something isn't defined, skip it.\n- Write it as instructions to an editor, present tense ("Voice is warm and dry-witted; banter escalates under stress…").\n- Cover, in this order, whatever my skill defines: overall tone and mood · humor style · prose rhythm and density · POV and tense · interiority style · dialogue and banter style · how intensity and emotion are expressed · signature moves I lean on · hard NOs (things this voice never does).\n- 120–180 words, tight. No preamble, no commentary — output ONLY the voice notes block so I can copy it straight into my tool.\n\nIf I have more than one pen-name voice skill, ask me which pen name before you start.`;
   navigator.clipboard.writeText(p).then(()=>{const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1500);});
 }
 function copyAnaPrompt(kind,btn){
@@ -1373,7 +1378,7 @@ function assessCardHtml(a){
   const dimCards=a.dims.map(d=>`<div class="dim ${d.status}"><div class="dk">${d.icon} ${esc(d.key)}<span class="ds">${d.status==='strong'?'Strong':d.status==='watch'?'Watch':d.status==='fix'?'Fix':'To do'}</span></div><div class="dn">${esc(d.note)}</div></div>`).join('');
   return `<div class="verdict" style="background:${a.verdict.c}">${esc(a.verdict.t)}<small>${esc(a.verdict.d)}</small></div>
     <div class="dimgrid">${dimCards}</div>
-    <div class="benchband">Deep-dives completed: <b>${a.passDone} of 12</b> editing passes · <b>${a.anaDone} of 4</b> lab reports — the verdict firms up as you paste your AI's notes back in.</div>`;
+    <div class="benchband">Deep-dives completed: <b>${a.passDone} of ${PASSES.length}</b> editing passes · <b>${a.anaDone} of 4</b> lab reports — the verdict firms up as you paste your AI's notes back in.</div>`;
 }
 function renderAssessment(){
   const el=document.getElementById('assessCard');if(!el)return;
@@ -1382,8 +1387,8 @@ function renderAssessment(){
 }
 function buildOverallPrompt(){
   const penLabel=(PENS[state.penName]||{}).label||state.penName;
-  let p=`You are a senior developmental editor delivering the final overall assessment of a complete manuscript — a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}. You are honest, specific, and constructive: the author will revise from this letter.\n\n`;
-  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\nHEAT TARGET: ${heatGuide()}\n\n`;
+  let p=`You are a senior developmental editor delivering the final overall assessment of a complete manuscript — a ${state.genre||'genre fiction'} novel${state.title?` ("${state.title}")`:''}. You are honest, specific, and constructive: the author will revise from this letter.\n\n`;
+  p+=`VOICE PROFILE (${penLabel}):\n${voiceProfile()}\n\nINTENSITY TARGET: ${heatGuide()}\n\n`;
   p+=langDirective();
   p+=`Deliver, in this order:\n`;
   p+=`1. EDITOR'S LETTER — 3–4 paragraphs, written to the author. What this book is, what it's trying to do, and how close it comes. Honest but never cruel; open with what genuinely works.\n`;
@@ -1413,7 +1418,7 @@ function renderReport(){
 function buildReportMd(){
   const data=computeSeries(state.beats);
   let md=`# Editorial Report — ${state.title||'Untitled'}\n`;
-  md+=`Pen name voice: ${(PENS[state.penName]||{}).label||state.penName} · Heat ${state.heat}/5${state.genre?` · ${state.genre}`:''}${(state.lang&&state.lang!=='en')?` · ${langName()}`:''}\n\n`;
+  md+=`Pen name voice: ${(PENS[state.penName]||{}).label||state.penName} · Intensity ${state.heat}/5${state.genre?` · ${state.genre}`:''}${(state.lang&&state.lang!=='en')?` · ${langName()}`:''}\n\n`;
   // auto scan
   md+=`## 1. Auto-Scan (offline checks)\n`;
   if(state.chapters.length){
@@ -1551,7 +1556,7 @@ function buildReportHtml(){
   // pass notes
   let notesHtml='';
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())notesHtml+=`<div class="passnote"><h3>Pass ${p.n} — ${esc(p.name)}</h3><div>${esc(n.trim()).replace(/\n/g,'<br>')}</div></div>`;});
-  if(!notesHtml)notesHtml=`<p class="clean">No editing-pass notes pasted yet. Run the 12 passes (any AI tool), paste each result into the Report tab, then re-export to fold them in here.</p>`;
+  if(!notesHtml)notesHtml=`<p class="clean">No editing-pass notes pasted yet. Run the 14 passes (any AI tool), paste each result into the Report tab, then re-export to fold them in here.</p>`;
   // story lab reports + top priorities
   let storyHtml='',prioHtml='';
   if(state.chapters.length){
@@ -1619,7 +1624,7 @@ function buildReportHtml(){
   details.more>summary{cursor:pointer;color:#E8735A;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
   details.more>summary::before{content:"▸ "}details.more[open]>summary::before{content:"▾ "}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
-<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Intensity ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
   <div class="counts">
     <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
@@ -1651,7 +1656,7 @@ function downloadReportHtml(){
 function copyMasterRevision(btn){
   const sat=computeSeries(state.beats);
   let leaks=sat.map((d,i)=>d.leak>1.2?`beat ${i+1} (${d.name})`:null).filter(Boolean);
-  const p=langDirective()+`You are my writing LLM. Revise my manuscript in the voice of ${(PENS[state.penName]||{}).label||state.penName} at heat ${state.heat}/5. Apply these fixes from my editorial report, preserving voice, character, and pacing:\n\n`+
+  const p=langDirective()+`You are my writing LLM. Revise my manuscript in the voice of ${(PENS[state.penName]||{}).label||state.penName} at intensity ${state.heat}/5. Apply these fixes from my editorial report, preserving voice, character, and pacing:\n\n`+
     `1. Remove every banned-list hit flagged in the auto-scan (AI-isms, dramatic triplets, filter words, banned names/words/phrases) — replace with specific, in-voice prose.\n`+
     `2. Address the developmental and dialogue notes I paste below.\n`+
     (leaks.length?`3. Fix the satisfaction leaks at: ${leaks.join('; ')} — add closeness/aftermath so the bond rises to catch the released tension.\n`:'')+
@@ -1667,23 +1672,23 @@ function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new Fil
 function clearAll(){
   if(!confirm('Clear EVERYTHING — manuscript, chapters, pasted notes, and beats? This can\'t be undone. (Hit "Save file" first if you want a backup.)'))return;
   try{localStorage.removeItem(STORE);}catch(e){}
-  state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
+  state={title:'',genre:'',penName:'epic',heat:'3',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
   load();renderAll();
   renderScan();renderPasses();renderAnalyses();renderReport();
 }
 const DEMO=`Chapter One
 
-The bell over the bakery door jingled, and Mara looked up from the dough she was punching down. She felt her heart hammer when she saw him. Cole Henderson, back in town after all these years, filling the doorway like he owned it.
+The bell over the tearoom door jingled, and Prudence looked up from the scones she was arranging. She felt her heart hammer when she saw him. Constable Henderson, mud on his boots, filling the doorway like he owned it.
 
-"Didn't think you'd still be here," he said quietly.
+"Didn't think you'd still be open," he said quietly.
 
-She crossed her arms. "Somebody has to keep the place running." Suddenly the air between them was thick. She couldn't help but notice the way his jaw clenched. She was angry. She was nervous. She was undone.
+She crossed her arms. "Somebody has to feed this village." Suddenly the air between them was thick. She couldn't help but notice the envelope in his hand. She was curious. She was nervous. She was certain.
 
-He took a step closer, and she found herself holding her breath. The scent of him — cedar and rain — undid something in her chest. Slowly, carefully, she set down the dough and met his gaze.
+He took a step closer, and she found herself holding her breath. She would later realize she should have locked the door and let out a breath she didn't know she was holding.
 
-"Mara," he started to say, but she shook her head.
+"It's Mrs. Abernathy," he started to say, but she shook her head.
 
-"Don't." Her voice came out before she could stop it. "You don't get to come back and—" She let out a breath she didn't know she was holding.`;
+"Don't." Her voice came out before she could stop it. "Not a word before my second pot of tea."`;
 function loadDemo(){document.getElementById('manuscript').value=DEMO;save();splitNow();}
 
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
