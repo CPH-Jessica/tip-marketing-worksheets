@@ -316,6 +316,7 @@
           <button class="stab" data-a="character">🎭 Character</button>
           <button class="stab" data-a="pacing">⏱ Pacing</button>
           <button class="stab" data-a="conflict">⚔️ Conflict</button>
+          <button class="stab" data-a="timeline">🕰 Timeline</button>
         </div>
         <div id="anaBody"></div>
       </div>
@@ -1022,7 +1023,10 @@ function miniChart(vals,o){
     s+=`<rect x="${pl}" y="${pt}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="${o.color||'#E8735A'}" opacity="0.10"/>`;
     s+=`<rect x="${pl}" y="${(pt+ph*0.8).toFixed(1)}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="#1B2A4A" opacity="0.10"/>`;
   }
-  [0,25,50,75,100].forEach(p=>{const xx=pl+p/100*pw;s+=`<line x1="${xx}" y1="${pt}" x2="${xx}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">${p}%</text>`;});
+  if(o.xchap){
+    const n=o.xchap,step=Math.max(1,Math.ceil(n/8));
+    for(let i=0;i<n;i+=step){const xx=pl+(n>1?i/(n-1):0.5)*pw;s+=`<line x1="${xx.toFixed(1)}" y1="${pt}" x2="${xx.toFixed(1)}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx.toFixed(1)}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">Ch ${i+1}</text>`;}
+  } else [0,25,50,75,100].forEach(p=>{const xx=pl+p/100*pw;s+=`<line x1="${xx}" y1="${pt}" x2="${xx}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">${p}%</text>`;});
   if(o.neutral!==undefined){const yy=y(o.neutral);s+=`<line x1="${pl}" y1="${yy.toFixed(1)}" x2="${W-pr}" y2="${yy.toFixed(1)}" stroke="#A89F90" stroke-dasharray="5 5"/>`;}
   (o.ylab||[]).forEach(l=>{s+=`<text x="${pl-8}" y="${(y(l.v)+4).toFixed(1)}" font-size="11" fill="#A89F90" text-anchor="end">${l.t}</text>`;});
   const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
@@ -1137,7 +1141,54 @@ function characterDiag(chars){
   return items;
 }
 
+/* Timeline engine — reads the clock phrases in each chapter and
+   estimates elapsed story-days. A proxy for Pass 3, not a replacement. */
+const NUMWORD={a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,couple:2,few:3,several:3};
+function numOf(s){s=s.toLowerCase().replace(/\s+of$/,'');return NUMWORD[s]||parseInt(s)||1;}
+function chapterTime(text){
+  const a={anchors:[],days:0,seasons:[]};
+  const grab=(rx,fn)=>{let m;const r=new RegExp(rx.source,rx.flags);while((m=r.exec(text))!==null){fn(m);if(m.index===r.lastIndex)r.lastIndex++;if(a.anchors.length>40)break;}};
+  grab(/\b(?:the\s+)?(?:next|following)\s+(?:morning|day|evening|night|afternoon|week(?:end)?)\b/gi,m=>{a.days+=/week/i.test(m[0])?7:1;a.anchors.push(m[0]);});
+  grab(/\b(a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|couple(?:\s+of)?|few|several|\d+)\s+(day|week|month|year)s?\s+(?:later|passed|had passed|after that|went by)\b/gi,m=>{
+    const mult={day:1,week:7,month:30,year:365}[m[2].toLowerCase()]||1;
+    a.days+=Math.min(3650,numOf(m[1])*mult);a.anchors.push(m[0]);});
+  grab(/\b(?:that|later that)\s+(?:morning|afternoon|evening|night)\b/gi,m=>{a.anchors.push(m[0]);});
+  grab(/\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b/g,m=>{a.anchors.push(m[0]);});
+  grab(/\b(January|February|March|April|June|July|August|September|October|November|December)\b/g,m=>{a.anchors.push(m[0]);});
+  grab(/\b(spring|summer|autumn|winter)\b/gi,m=>{a.anchors.push(m[0]);if(a.seasons.indexOf(m[0].toLowerCase())<0)a.seasons.push(m[0].toLowerCase());});
+  return a;
+}
+function timelineData(){
+  let cum=0;
+  return state.chapters.map((c,i)=>{
+    const t=chapterTime(c.text);cum+=t.days;
+    return{ci:i,title:c.title,anchors:t.anchors,days:t.days,cum,seasons:t.seasons};
+  });
+}
+function timelineDiag(tl){
+  const items=[];if(!tl.length)return items;
+  const total=tl[tl.length-1].cum;
+  const floating=tl.filter(t=>!t.anchors.length).map(t=>t.title);
+  if(floating.length)items.push(['rec','🫥','Floating chapters: '+floating.slice(0,6).join(', ')+(floating.length>6?' …':''),'No time anchors detected — readers can\'t place these on the story clock. One phrase ("the next morning", "two days later") fixes each.']);
+  else items.push(['good','🕰','Every chapter carries a time anchor','Readers always know where they are on the story clock.']);
+  items.push(['opt','📆','Estimated story span: ~'+total+' day'+(total===1?'':'s')+' across '+tl.length+' chapter'+(tl.length===1?'':'s'),'A rough offline estimate from explicit clock phrases only — the AI deep-dive builds the real log. Chapters with no "time later" phrasing count as same-day.']);
+  const tw=state.chapters.reduce((a,c)=>a+wc(c.text),0);
+  if(total<=3&&tw>30000)items.push(['rec','💨','Whirlwind check','The whole book spans roughly '+total+' story-day'+(total===1?'':'s')+'. A full-length love story in under 72 story-hours can work — but the emotional math has to be made credible on the page (Pass 3\'s relationship-time check).']);
+  tl.forEach(t=>{if(t.days>=30)items.push(['opt','⏭','Big time skip at '+t.title+' (~'+t.days+' days)','Make the reader FEEL the gap — what changed, what didn\'t, what festered.']);});
+  const seasons=[];tl.forEach(t=>t.seasons.forEach(s=>{if(seasons.indexOf(s)<0)seasons.push(s);}));
+  if(seasons.length>=2&&total<45)items.push(['rec','🍂','Possible season conflict','Mentions of '+seasons.join(' and ')+' within ~'+total+' estimated story-days. If that\'s not a flashback or memory, the seasons contradict — worth a Pass 3 look.']);
+  return items;
+}
+function timelineTableHtml(tl){
+  return `<div style="overflow-x:auto;margin-top:12px"><table class="tbl"><thead><tr><th>Chapter</th><th>Clock phrases found</th><th class="center">+ days (est.)</th><th class="center">Story day</th></tr></thead><tbody>`+
+    tl.map(t=>`<tr><td><b>${esc(t.title)}</b></td><td>${t.anchors.length?esc(t.anchors.slice(0,4).join(' · '))+(t.anchors.length>4?' …':''):'<span class="benchband">none — floating</span>'}</td><td class="center">${t.days?'+'+t.days:'—'}</td><td class="center">Day ${t.cum+1}</td></tr>`).join('')+
+    `</tbody></table></div>`;
+}
 const ANA={
+ timeline:{label:'Timeline Analysis',color:'#C97A33',role:'a timeline-auditing editor who builds and verifies the story\'s chronology',
+  explain:'The chart is your <b>story clock</b> — estimated story-days elapsed, chapter by chapter, read from the explicit clock phrases in your prose ("the next morning," "two weeks later," weekdays, seasons). Flat stretches are same-day sequences; jumps are time skips. The table below is your <b>Timeline Log skeleton</b> — the same format Pass 3 uses. Chapters with <b>no anchors at all</b> are "floating": readers can\'t place them. This offline read only counts explicit phrases; the AI deep-dive builds the verified log and hunts contradictions.',
+  tasks:["Build the STORY TIMELINE LOG — for every chapter: [Chapter] Day N | Time of day | Location | Key events | Time elapsed since the previous chapter. Mark each entry CONFIRMED (stated on the page) or INFERRED.","Gap analysis — periods of story time with no coverage. Intentional skip, or lost time the reader will feel?","Contradiction sweep — cross-check every day, date, weekday, time-of-day, and elapsed-time reference for internal conflicts. Tag [POSSIBLE CONTRADICTION] with both quoted lines.","Travel & logistics — every location change against the time allowed. No impossible arrivals.","Season, weather & light — does described weather and daylight match the established season and time of day throughout?","Physical state — fatigue, hunger, healing, and recovery tracking honestly against elapsed time.","Relationship time — does the romance's emotional progression feel earned given the ACTUAL story time elapsed? A couple falling in love across 48 story-hours must be made credible on the page.","Series continuity (if applicable) — does this book's timeline align with the prior book's endpoint and the next book's setup?"],
+  out:"TIMELINE REPORT: the full STORY TIMELINE LOG table first, then flags prioritized [CRITICAL] / [CONFIRM WITH AUTHOR] / [WATCH] — each with its location, both conflicting quotes where relevant, and the fix."},
  plot:{label:'Plot Analysis',color:'#E8735A',role:'a developmental editor who maps story structure against bestseller patterns',
   explain:'The chart is your <b>emotional arc</b> — the story\'s emotional temperature from first page to last, measured from the language in each slice of the book. The dotted line is neutral; the tinted zones are the extremes. Two patterns matter: roughly <b>90% of bestsellers reach both tinted zones</b> (one real high, one real low), and the line should keep <b>changing direction</b> — every climb followed by a complication. The offline read is a proxy; the AI deep-dive maps your actual beats.',
   tasks:["Narrative arc — describe the overall emotional shape of the story in plain language and name the closest classic shape (man-in-a-hole, rags-to-riches, Cinderella arc, etc.).","Structure map — locate the major beats with their approximate position as % of the book: hook, inciting incident, first plot point, midpoint shift, dark moment, climax, resolution. Mark each HIT / EARLY / LATE / MISSING and say what's actually on the page there.","Turning points — list the emotional high points and low points (scenes that shift the story's emotional temperature) and whether each is earned by what came before.","Setup & payoff — list every major promise made to the reader and where (or whether) it pays off. Orphaned setups and unearned payoffs are plot problems.","Subplots — name each subplot, whether it supports or distracts from the main plot, and whether it resolves.","Theme — state the book's theme in one sentence. Is it withheld and felt, or announced? Flag any place the book states its own moral.","Genre promise — does the plot deliver the beats this genre's readers came for, where they expect them?"],
@@ -1222,6 +1273,11 @@ function renderAnalyses(){
     const conf=conflictCurve(segs);const ex=extremaOf(conf,3);
     chart=miniChart(conf,{min:0,max:10.5,color:A.color,ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:ex.peaks.map(i=>({i}))});
     diag=conflictDiag(conf,segs);
+  }else if(anaActive==='timeline'){
+    const tl=timelineData();
+    const mx=Math.max(1,tl[tl.length-1].cum);
+    chart=miniChart(tl.map(t=>t.cum),{min:0,max:mx,color:A.color,xchap:tl.length,ylab:[{v:mx,t:'day '+(mx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl);
+    diag=timelineDiag(tl);
   }else{
     const chars=detectCharacters();
     chart=charTableHtml(chars);
@@ -1262,6 +1318,7 @@ function assessData(){
     dims.push(mk('Pacing','⏱',pacingDiag(pace,segs),'Varied pace, no sagging middle.'));
     dims.push(mk('Conflict','⚔️',conflictDiag(conf,segs),'Tension on the page throughout.'));
   }
+  dims.push(mk('Timeline','🕰',timelineDiag(timelineData()),'Every chapter anchored on the story clock.'));
   dims.push(mk('Character','🎭',characterDiag(chars),'Distinct cast, dialogue in the bestseller band.'));
   const data=computeSeries(state.beats);
   if(data.length>=3){
@@ -1346,7 +1403,7 @@ function buildReportMd(){
   md+=`\n## 3. Editing-Pass Notes\n`;
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())md+=`\n### Pass ${p.n} — ${p.name}\n${n.trim()}\n`;});
   md+=`\n## 4. Story Report Notes\n`;
-  ['plot','character','pacing','conflict'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
+  ['plot','character','pacing','conflict','timeline'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
   const ov=((state.analysisNotes||{}).overall||'').trim();
   if(ov)md+=`\n## 5. Overall Assessment — Editor's Letter\n${ov}\n`;
   return md;
@@ -1461,6 +1518,8 @@ function buildReportHtml(){
       `<h3 class="ssec">🎭 Character — presence & cast</h3>`+charTableHtml(chars,true)+liDiag(cd)+noteBlk('character')+
       `<h3 class="ssec">⏱ Pacing — reading-speed curve</h3>`+miniChart(pace,{min:0,max:10,neutral:5,color:'#7A9E7E',ylab:[{v:10,t:'fast'},{v:0,t:'slow'}],marks:exP.peaks.map(i=>({i}))})+liDiag(pcd)+noteBlk('pacing')+
       `<h3 class="ssec">⚔️ Conflict — intensity line</h3>`+miniChart(conf,{min:0,max:10.5,color:'#1B2A4A',ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:exC.peaks.map(i=>({i}))})+liDiag(cfd)+noteBlk('conflict');
+    const tl=timelineData();const tmx=Math.max(1,tl[tl.length-1].cum);
+    storyHtml+=`<h3 class="ssec">🕰 Timeline — story clock</h3>`+miniChart(tl.map(t=>t.cum),{min:0,max:tmx,color:'#C97A33',xchap:tl.length,ylab:[{v:tmx,t:'day '+(tmx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl)+liDiag(timelineDiag(tl))+noteBlk('timeline');
     const cand=[];
     if(gc>0)cand.push(`Fix the ${gc} critical banned-list hits first — names, AI-isms, dramatic triplets.`);
     if(gh>0)cand.push(`Recast the ${gh} flash-forward / foreshadow lines — keep the narration in the present scene.`);
