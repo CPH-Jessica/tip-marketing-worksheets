@@ -171,6 +171,15 @@
   .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
   .charbar i.on1{background:#F0A78F}.charbar i.on2{background:var(--rose)}.charbar i.on3{background:var(--bad)}
   .benchband{font-size:12px;color:var(--muted)}
+  .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:700;font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+  .verdict small{font-weight:400;font-family:inherit;font-size:13px;opacity:.92}
+  .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
+  .dim{background:#fff;border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:9px;padding:10px 13px}
+  .dim.strong{border-left-color:var(--ok)}.dim.watch{border-left-color:var(--warn)}.dim.fix{border-left-color:var(--bad)}.dim.todo{border-left-color:var(--line)}
+  .dim .dk{font-weight:700;color:var(--plum);font-size:14px}
+  .dim .ds{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
+  .dim.strong .ds{color:var(--ok)}.dim.watch .ds{color:var(--warn)}.dim.fix .ds{color:var(--bad)}.dim.todo .ds{color:var(--muted)}
+  .dim .dn{font-size:12.5px;color:#5A554F;margin-top:3px}
 </style>
 </head>
 <body>
@@ -364,6 +373,17 @@
 
     <!-- ===================== 5 · REPORT ===================== -->
     <div class="view" id="v-report">
+      <div class="panel">
+        <h2>Overall assessment <span class="pill">the clinic verdict</span></h2>
+        <p class="sub">The whole checkup on one card: every dimension the clinic measures, graded, with a readiness verdict. The offline verdict is a real signal but a proxy — the <b>Editor's Letter</b> prompt below gets you the human-grade read from your AI, and it opens your Fix-It report.</p>
+        <div id="assessCard"></div>
+        <div class="toolbar" style="margin:12px 0 8px">
+          <button class="btn primary" onclick="copyOverallPrompt(this)">Copy "Overall Assessment" prompt</button>
+        </div>
+        <label class="fld">Paste your AI's overall assessment — the Editor's Letter <span style="font-weight:400;color:var(--muted)">(it becomes the opening of your Fix-It report)</span></label>
+        <textarea id="overallNotes" rows="5" placeholder="Paste the OVERALL ASSESSMENT your AI returned…" oninput="state.analysisNotes.overall=this.value;persist()"></textarea>
+      </div>
+
       <div class="panel">
         <h2>Fix-It report</h2>
         <p class="sub">Paste back what your AI returned for each pass. The cockpit folds it together with the auto-scan and the satisfaction read into one report. <b>Download the Fix-It report (.html)</b> and open it on your own computer — every issue becomes a card with the before text, why it matters, and the fix.</p>
@@ -1220,9 +1240,81 @@ function renderAnalyses(){
 }
 
 /* ============================================================
+   OVERALL ASSESSMENT — the Clinic Verdict
+   Offline scorecard graded from every dimension the tool already
+   measures, plus the Editor's Letter deep-dive prompt.
+   ============================================================ */
+function assessData(){
+  if(!state.chapters.length)return null;
+  const segs=buildSegments(40);
+  const arc=segs.length>=3?emotionalArc(segs):[],pace=segs.length>=3?paceCurve(segs):[],conf=segs.length>=3?conflictCurve(segs):[];
+  const chars=detectCharacters();
+  let crit=0,rec=0;state.chapters.forEach(c=>{const f=scanChapter(c.text);crit+=f.crit.length;rec+=f.rec.length;});
+  const mk=(key,icon,items,posNote)=>{
+    const c=items.filter(x=>x[0]==='crit'),r=items.filter(x=>x[0]==='rec');
+    return{key,icon,status:c.length?'fix':(r.length?'watch':'strong'),note:c.length?c[0][2]:(r.length?r[0][2]:posNote)};
+  };
+  const dims=[];
+  dims.push({key:'Prose cleanliness',icon:'🧹',status:crit?'fix':(rec>state.chapters.length*3?'watch':'strong'),
+    note:crit?crit+' critical flags to clear (banned names, AI-isms, triplets).':(rec?rec+' recommended fixes flagged in the Auto-Scan.':'Auto-scan is clean.')});
+  if(segs.length>=3){
+    dims.push(mk('Emotional arc','📈',plotDiag(arc,segs),'Reaches both bands with healthy turns.'));
+    dims.push(mk('Pacing','⏱',pacingDiag(pace,segs),'Varied pace, no sagging middle.'));
+    dims.push(mk('Conflict','⚔️',conflictDiag(conf,segs),'Tension on the page throughout.'));
+  }
+  dims.push(mk('Character','🎭',characterDiag(chars),'Distinct cast, dialogue in the bestseller band.'));
+  const data=computeSeries(state.beats);
+  if(data.length>=3){
+    const avg=data.reduce((a,d)=>a+d.sat,0)/data.length;const leaks=data.filter(d=>d.leak>1.2).length;
+    dims.push({key:'Reader satisfaction',icon:'♥',status:leaks?'watch':(avg>=6?'strong':'watch'),
+      note:leaks?leaks+' payoff leak(s) — tension released without bond rising to catch it.':'Averaging '+avg.toFixed(1)+'/10 across '+data.length+' beats.'});
+  }else dims.push({key:'Reader satisfaction',icon:'♥',status:'todo',note:'Beats not mapped yet — visit the Satisfaction tab.'});
+  const passDone=PASSES.filter(p=>(state.passNotes[p.id]||'').trim()).length;
+  const anaDone=['plot','character','pacing','conflict'].filter(k=>((state.analysisNotes||{})[k]||'').trim()).length;
+  const nFix=dims.filter(d=>d.status==='fix').length,nWatch=dims.filter(d=>d.status==='watch').length;
+  const verdict=nFix?{t:'REVISION NEEDED',c:'#C0492F',d:'Clear the red dimensions first — they cost readers most.'}:
+    nWatch?{t:'ALMOST THERE',c:'#C97A33',d:'No red flags. Work the amber dimensions, then polish.'}:
+    {t:'POLISH-READY',c:'#5C8A63',d:'Offline reads are clean — run the human pass and ship it.'};
+  return{dims,verdict,passDone,anaDone};
+}
+function assessCardHtml(a){
+  if(!a)return'<div class="note">Load your manuscript on the first tab and the verdict builds itself.</div>';
+  const dimCards=a.dims.map(d=>`<div class="dim ${d.status}"><div class="dk">${d.icon} ${esc(d.key)}<span class="ds">${d.status==='strong'?'Strong':d.status==='watch'?'Watch':d.status==='fix'?'Fix':'To do'}</span></div><div class="dn">${esc(d.note)}</div></div>`).join('');
+  return `<div class="verdict" style="background:${a.verdict.c}">${esc(a.verdict.t)}<small>${esc(a.verdict.d)}</small></div>
+    <div class="dimgrid">${dimCards}</div>
+    <div class="benchband">Deep-dives completed: <b>${a.passDone} of 12</b> editing passes · <b>${a.anaDone} of 4</b> lab reports — the verdict firms up as you paste your AI's notes back in.</div>`;
+}
+function renderAssessment(){
+  const el=document.getElementById('assessCard');if(!el)return;
+  el.innerHTML=assessCardHtml(assessData());
+  const ta=document.getElementById('overallNotes');if(ta)ta.value=(state.analysisNotes||{}).overall||'';
+}
+function buildOverallPrompt(){
+  const penLabel=(PENS[state.penName]||{}).label||state.penName;
+  let p=`You are a senior developmental editor delivering the final overall assessment of a complete manuscript — a ${state.genre||'romance'} novel${state.title?` ("${state.title}")`:''}. You are honest, specific, and constructive: the author will revise from this letter.\n\n`;
+  p+=`PEN-NAME VOICE (${penLabel}):\n${voiceProfile()}\n\nHEAT TARGET: ${heatGuide()}\n\n`;
+  p+=langDirective();
+  p+=`Deliver, in this order:\n`;
+  p+=`1. EDITOR'S LETTER — 3–4 paragraphs, written to the author. What this book is, what it's trying to do, and how close it comes. Honest but never cruel; open with what genuinely works.\n`;
+  p+=`2. BIGGEST STRENGTHS — 3–5, each with a quoted line or named scene as evidence. These are the things revision must NOT sand off.\n`;
+  p+=`3. POINTS OF CONCERN — ranked by how much they cost the reader, each with its location and the price the reader pays.\n`;
+  p+=`4. KEY RECOMMENDATIONS — 5–7 concrete actions ordered by impact-per-effort. Name chapters and scenes, not vague directions.\n`;
+  p+=`5. READINESS VERDICT — one of DRAFT / REVISE / POLISH / READY, with a one-line justification.\n`;
+  p+=`6. THE ONE THING — if the author fixes only one thing before the next draft, what is it and why.\n`;
+  p+=`7. GENRE PROMISE — does this deliver what readers of this genre came for, and would they buy the next book?\n`;
+  p+=`\nThen finish with a section titled "REVISION PROMPTS" containing 3–5 copy-paste prompts I can hand to my writing AI for the highest-priority fixes, each naming the location and the exact change.\n`;
+  p+=`\n----- MANUSCRIPT BEGINS -----\n${state.chapters.map(c=>`### ${c.title}\n${c.text}`).join('\n\n')}\n----- MANUSCRIPT ENDS -----`;
+  return p;
+}
+function copyOverallPrompt(btn){
+  navigator.clipboard.writeText(buildOverallPrompt()).then(()=>{const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1500);});
+}
+
+/* ============================================================
    REPORT
    ============================================================ */
 function renderReport(){
+  renderAssessment();
   const el=document.getElementById('reportNotes');
   el.innerHTML=PASSES.map(p=>`<label class="fld">Pass ${p.n} — ${p.name}</label>
     <textarea rows="3" placeholder="Paste your LLM's notes for ${p.name} here…" oninput="state.passNotes['${p.id}']=this.value;persist()">${esc(state.passNotes[p.id]||'')}</textarea>`).join('');
@@ -1255,6 +1347,8 @@ function buildReportMd(){
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())md+=`\n### Pass ${p.n} — ${p.name}\n${n.trim()}\n`;});
   md+=`\n## 4. Story Report Notes\n`;
   ['plot','character','pacing','conflict'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
+  const ov=((state.analysisNotes||{}).overall||'').trim();
+  if(ov)md+=`\n## 5. Overall Assessment — Editor's Letter\n${ov}\n`;
   return md;
 }
 function downloadReport(){
@@ -1373,6 +1467,9 @@ function buildReportHtml(){
     [pd,pcd,cfd,cd].forEach(items=>{const fnd=items.find(x=>x[0]==='crit'||x[0]==='rec');if(fnd)cand.push(fnd[2]+' — '+fnd[3]);});
     if(cand.length)prioHtml=`<div class="prio"><h3>⭐ Top priorities</h3><ol>${cand.slice(0,5).map(c=>`<li>${esc(c)}</li>`).join('')}</ol></div>`;
   }
+  const assessHtml=assessCardHtml(assessData());
+  const letter=((state.analysisNotes||{}).overall||'').trim();
+  const letterHtml=letter?`<div class="passnote"><h3>Editor's Letter — AI deep-dive</h3><div>${esc(letter).replace(/\n/g,'<br>')}</div></div>`:'';
   const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#FFF8F0;margin:0;line-height:1.6}
   .hd{background:#1B2A4A;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#D4A853;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
   .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
@@ -1398,7 +1495,16 @@ function buildReportHtml(){
   .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
   .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
   .charbar i.on1{background:#F0A78F}.charbar i.on2{background:#E8735A}.charbar i.on3{background:#C0492F}
-  .benchband{font-size:.72rem;color:#6b6b6b;font-weight:normal}`;
+  .benchband{font-size:.72rem;color:#6b6b6b;font-weight:normal}
+  .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:bold;font-family:Georgia,serif;font-size:1.1rem;margin-bottom:14px}
+  .verdict small{font-weight:normal;font-size:.8rem;opacity:.92}
+  .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
+  .dim{background:#fff;border:1px solid #D9D0C4;border-left:5px solid #6b6b6b;border-radius:9px;padding:10px 13px}
+  .dim.strong{border-left-color:#5C8A63}.dim.watch{border-left-color:#C97A33}.dim.fix{border-left-color:#C0492F}.dim.todo{border-left-color:#D9D0C4}
+  .dim .dk{font-weight:bold;color:#1B2A4A;font-size:.92rem}
+  .dim .ds{font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
+  .dim.strong .ds{color:#5C8A63}.dim.watch .ds{color:#C97A33}.dim.fix .ds{color:#C0492F}.dim.todo .ds{color:#6b6b6b}
+  .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
 <body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
@@ -1409,6 +1515,9 @@ function buildReportHtml(){
     <div class="cbox"><div class="n" style="color:#7A9E7E">${go}</div><div class="l">Optional</div></div>
   </div>
   <p class="why">Each card below shows the exact text the offline scan flagged (<b>Before</b>), why it weakens the prose, and how to fix it (<b>Fix</b>). These are the mechanical, banned-list issues you'd otherwise pay a line editor to catch. Below them: your four story lab reports, the satisfaction read, and your editing-pass notes.</p>
+  <h2 class="sec">The Clinic Verdict — overall assessment</h2>
+  ${assessHtml}
+  ${letterHtml}
   ${prioHtml}
   <h2 class="sec">1 · Fix-it list, by chapter</h2>
   ${chaptersHtml}
