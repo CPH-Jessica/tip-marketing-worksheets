@@ -1664,7 +1664,13 @@ function copyMasterRevision(btn){
    ============================================================ */
 function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'editing-cockpit').replace(/[^\w-]+/g,'_')+'.json';a.click();}
 function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({chapters:[],beats:[],passNotes:{},analysisNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
-function clearAll(){if(!confirm('Clear everything? Export first if you want a backup.'))return;state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};load();renderAll();}
+function clearAll(){
+  if(!confirm('Clear EVERYTHING — manuscript, chapters, pasted notes, and beats? This can\'t be undone. (Hit "Save file" first if you want a backup.)'))return;
+  try{localStorage.removeItem(STORE);}catch(e){}
+  state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
+  load();renderAll();
+  renderScan();renderPasses();renderAnalyses();renderReport();
+}
 const DEMO=`Chapter One
 
 The bell over the bakery door jingled, and Mara looked up from the dough she was punching down. She felt her heart hammer when she saw him. Cole Henderson, back in town after all these years, filling the doorway like he owned it.
