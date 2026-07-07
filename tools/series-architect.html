@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Series Architect — Map Your Whole Series</title>
+<style>
+/* ============================================================
+   SERIES ARCHITECT  —  single-file, offline, localStorage
+   Build a 3–10 book series bible: engine, world, tropes,
+   characters, cross-book threading, per-book maps, health check.
+   ============================================================ */
+:root{
+  --bg:#0f1020; --bg2:#16182e; --panel:#1c1f3a; --panel2:#232647;
+  --ink:#eceaffe0; --ink-dim:#a9a7d4; --line:#33366b;
+  --accent:#c77dff; --accent2:#7b6cff; --accent3:#ff8fb1;
+  --good:#54d6a0; --warn:#ffc861; --bad:#ff7a8a;
+  --chip:#2a2d55; --radius:14px; --shadow:0 8px 30px rgba(0,0,0,.35);
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(160deg,var(--bg),#0b0c18 60%);
+  color:var(--ink); line-height:1.5; min-height:100vh;
+}
+a{color:var(--accent)}
+button{font-family:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px 90px}
+
+/* ---------- header ---------- */
+header.top{
+  position:sticky;top:0;z-index:40;
+  background:rgba(15,16,32,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.top-inner{max-width:var(--maxw);margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{font-size:26px;filter:drop-shadow(0 2px 6px rgba(199,125,255,.5))}
+.brand h1{font-size:19px;margin:0;letter-spacing:.3px;white-space:nowrap}
+.brand .sub{font-size:11.5px;color:var(--ink-dim);margin-top:-1px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:var(--panel2);color:var(--ink);
+  padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
+  transition:.15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:var(--accent);background:var(--panel)}
+.btn.primary{background:linear-gradient(120deg,var(--accent2),var(--accent));border:none;color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 9px;font-size:12px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+
+/* ---------- tabs ---------- */
+nav.tabs{max-width:var(--maxw);margin:0 auto;padding:8px 12px 0;display:flex;gap:4px;flex-wrap:wrap}
+.tab{
+  border:1px solid transparent;background:transparent;color:var(--ink-dim);
+  padding:9px 13px;border-radius:10px 10px 0 0;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;
+}
+.tab:hover{color:var(--ink);background:var(--panel)}
+.tab.active{color:#fff;background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel)}
+.tab .num{display:inline-block;min-width:18px;text-align:center;opacity:.6;margin-right:2px}
+
+/* ---------- panels ---------- */
+.view{display:none;animation:fade .25s}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 22px;margin:16px 0;box-shadow:var(--shadow);
+}
+.card h2{margin:0 0 4px;font-size:20px}
+.card h3{margin:22px 0 8px;font-size:15px;color:var(--accent)}
+.card .lead{color:var(--ink-dim);font-size:13.5px;margin:0 0 12px}
+.section-intro{font-size:13px;color:var(--ink-dim);background:var(--bg2);border-left:3px solid var(--accent2);
+  padding:10px 14px;border-radius:0 10px 10px 0;margin:6px 0 16px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ---------- fields ---------- */
+label.f{display:block;margin:10px 0}
+label.f .lab{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+label.f .hint{font-weight:400;color:var(--ink-dim);font-size:11.5px}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);
+  border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;
+}
+textarea{resize:vertical;min-height:64px;line-height:1.45}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+select{cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+
+/* ---------- chips / tropes ---------- */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;background:var(--chip);border:1px solid var(--line);
+  color:var(--ink);border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;transition:.12s;user-select:none;
+}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:linear-gradient(120deg,var(--accent2),var(--accent));border-color:transparent;color:#fff}
+.chip .x{opacity:.7;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+.trope-cat{margin:10px 0}
+.trope-cat h4{margin:8px 0 5px;font-size:13px;color:var(--accent3);cursor:pointer;display:flex;align-items:center;gap:6px}
+.trope-cat h4 .caret{transition:.2s;font-size:10px}
+.trope-cat.collapsed h4 .caret{transform:rotate(-90deg)}
+.trope-cat.collapsed .chips{display:none}
+.selected-box{background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:12px;margin:8px 0}
+.selected-box .empty{color:var(--ink-dim);font-size:12.5px;font-style:italic}
+
+/* ---------- advisor / callouts ---------- */
+.advisor{border-radius:12px;padding:12px 14px;font-size:13px;margin:10px 0;border:1px solid var(--line)}
+.advisor.good{background:rgba(84,214,160,.10);border-color:rgba(84,214,160,.4)}
+.advisor.warn{background:rgba(255,200,97,.10);border-color:rgba(255,200,97,.4)}
+.advisor.bad{background:rgba(255,122,138,.10);border-color:rgba(255,122,138,.4)}
+.advisor.info{background:rgba(123,108,255,.10);border-color:rgba(123,108,255,.4)}
+.advisor b{color:#fff}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
+.pill.good{background:rgba(84,214,160,.2);color:var(--good)}
+.pill.warn{background:rgba(255,200,97,.2);color:var(--warn)}
+.pill.bad{background:rgba(255,122,138,.2);color:var(--bad)}
+
+/* ---------- book cards ---------- */
+.book-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:0;margin:14px 0;overflow:hidden}
+.book-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(120deg,rgba(123,108,255,.18),rgba(199,125,255,.10));cursor:pointer}
+.book-head .bnum{font-size:22px;font-weight:800;color:var(--accent);min-width:56px}
+.book-head .btitle{font-size:15px;font-weight:700;flex:1;min-width:0}
+.book-head .btitle small{display:block;font-weight:400;color:var(--ink-dim);font-size:12px}
+.book-head .caret{transition:.2s}
+.book-card.collapsed .book-body{display:none}
+.book-card.collapsed .book-head .caret{transform:rotate(-90deg)}
+.book-body{padding:16px 18px;border-top:1px solid var(--line)}
+.endings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+@media(max-width:640px){.endings{grid-template-columns:1fr}}
+.end-box{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.end-box .et{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.end-box.r .et{color:var(--accent3)} .end-box.x .et{color:var(--accent2)}
+.end-box.c .et{color:var(--good)} .end-box.s .et{color:var(--warn)}
+
+/* ---------- tables (threading, arcs) ---------- */
+.tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{background:var(--bg2);color:var(--ink-dim);font-weight:600;font-size:11.5px}
+.tbl td input,.tbl td select,.tbl td textarea{border:none;background:transparent;padding:4px 2px;font-size:12.5px}
+.tbl td textarea{min-height:34px}
+.tbl tr:hover td{background:rgba(123,108,255,.05)}
+.rowdel{color:var(--ink-dim);cursor:pointer;font-weight:700;border:none;background:none;font-size:15px}
+.rowdel:hover{color:var(--bad)}
+
+/* ---------- character cards ---------- */
+.char{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.char .chead{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.char .rolebadge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--chip);text-transform:uppercase;letter-spacing:.4px}
+.rb-main{background:rgba(199,125,255,.25);color:var(--accent)}
+.rb-love{background:rgba(255,143,177,.22);color:var(--accent3)}
+.rb-side{background:rgba(123,108,255,.22);color:var(--accent2)}
+.rb-villain{background:rgba(255,122,138,.2);color:var(--bad)}
+
+/* ---------- arc grid ---------- */
+.arc-row{display:grid;grid-template-columns:150px 1fr 1fr 1fr;gap:8px;margin:8px 0;align-items:stretch}
+.arc-row .arcname{font-size:12.5px;font-weight:700;display:flex;align-items:center;padding:6px 4px}
+.arc-row.head{position:sticky}
+.arc-row.head div{font-size:11px;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.5px;padding:2px 4px}
+@media(max-width:760px){.arc-row{grid-template-columns:1fr}.arc-row .arcname{border-top:1px solid var(--line);padding-top:10px}}
+
+/* ---------- export ---------- */
+#exportOut{width:100%;min-height:420px;font-family:ui-monospace,Consolas,monospace;font-size:12px;white-space:pre;overflow:auto}
+.muted{color:var(--ink-dim);font-size:12px}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent2);font-weight:700;margin-bottom:2px}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.two-col-note{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-size:12.5px}
+.stat b{font-size:18px;display:block;color:#fff}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--accent);
+  color:#fff;padding:11px 20px;border-radius:12px;box-shadow:var(--shadow);font-size:13.5px;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.hide{display:none!important}
+.footer{text-align:center;color:var(--ink-dim);font-size:11.5px;margin-top:30px}
+details.help{margin:10px 0;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:2px 12px}
+details.help summary{cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 0;color:var(--accent)}
+details.help .body{font-size:12.5px;color:var(--ink-dim);padding:0 0 10px}
+details.help .body table{font-size:12px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="glyph">🗺️</span>
+      <div>
+        <h1 id="appTitle">Series Architect</h1>
+        <div class="sub" id="appSub">Map an entire 3–10 book series — engine, world, tropes, cast, threading · <b style="color:var(--warn)">BETA</b></div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost sm" onclick="Store.newSeries()">✦ New</button>
+      <button class="btn sm" onclick="Store.importFile()">⬆ Import</button>
+      <button class="btn sm" onclick="Store.exportJSON()">⬇ Save file</button>
+      <button class="btn primary sm" onclick="go('export')">📤 Export bible</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="wrap">
+
+  <!-- 1. SETUP -->
+  <section class="view" data-view="setup">
+    <div class="card">
+      <div class="kicker">Step 1 · Foundation</div>
+      <h2>Series Setup</h2>
+      <p class="lead">The choices here drive smart guidance across the whole tool. Pick your genre and the advisor tunes every recommendation — sweet-spot length, series model, which arcs matter, and what readers of that lane demand.</p>
+
+      <div class="grid g2">
+        <label class="f"><span class="lab">Series title / world name</span>
+          <input type="text" data-path="series.title" placeholder="e.g. The Ember Court"></label>
+        <label class="f" id="penNameField"><span class="lab">Pen name</span>
+          <input type="text" data-path="series.penName" placeholder="Author name"></label>
+      </div>
+
+      <label class="f"><span class="lab">Genre lane <span class="hint">— sets the whole advisor</span></span>
+        <select data-path="series.genre" onchange="Genre.apply()"></select></label>
+
+      <div class="grid g3">
+        <label class="f"><span class="lab">Sub-flavor <span class="hint">(optional)</span></span>
+          <input type="text" data-path="series.subgenre" placeholder="e.g. dragon riders, Bratva, small-town"></label>
+        <label class="f"><span class="lab">Heat level</span>
+          <select data-path="series.heat">
+            <option value="">—</option>
+            <option>1 · Sweet / Clean</option><option>2 · Behind closed door</option>
+            <option>3 · Warm / open door</option><option>4 · Spicy</option><option>5 · Explicit / dark</option>
+          </select></label>
+        <label class="f"><span class="lab">Books in series: <b id="bcLabel">5</b></span>
+          <input type="range" min="3" max="10" step="1" data-path="series.bookCount" id="bookCount" oninput="Books.onCount()"></label>
+      </div>
+
+      <label class="f"><span class="lab">Series model</span>
+        <select data-path="series.model">
+          <option value="interconnected">Interconnected standalones — new couple/lead each book, shared world (romance sweet spot)</option>
+          <option value="serialized">Serialized same couple — one couple across the arc (romantasy / suspense / UF)</option>
+          <option value="hybrid">Hybrid saga — core couple first, then widen to linked couples & spinoffs</option>
+        </select></label>
+
+      <div id="genreAdvisor"></div>
+    </div>
+
+    <div class="card">
+      <h3>The three pillars of a series that lasts</h3>
+      <p class="lead">Every durable series stands on these. You'll build all three in this tool — this is just the orientation.</p>
+      <div class="grid g3">
+        <div class="stat"><b>1 · Engine</b>A premise/setting that keeps generating new conflict. Too small = out of gas by Book 2. <span class="muted">→ Engine tab</span></div>
+        <div class="stat"><b>2 · Bible</b>The living record so you never contradict Book 1 in Book 6. <span class="muted">→ World, Cast, Threads</span></div>
+        <div class="stat"><b>3 · Theme</b>The emotional argument the whole series proves. <span class="muted">→ Theme tab</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ENGINE & PROMISE -->
+  <section class="view" data-view="engine">
+    <div class="card">
+      <div class="kicker">Step 2 · The Narrative Engine</div>
+      <h2>Engine &amp; Series Promise</h2>
+      <p class="section-intro">A <b>narrative engine</b> is the core premise that naturally keeps generating stories. <b>External engines</b> = a place or institution (small town, crime family, royal court, MC charter). <b>Internal engines</b> = a shared bond (a bloodline curse, a childhood pact, collective trauma). A strong engine answers: <i>"Why does this world keep producing books?"</i></p>
+
+      <div class="grid g2">
+        <label class="f"><span class="lab">Engine type</span>
+          <select data-path="series.engineType">
+            <option value="">—</option>
+            <option value="external">External — a place / institution</option>
+            <option value="internal">Internal — a shared bond / wound</option>
+            <option value="both">Both interlocked</option>
+          </select></label>
+        <label class="f"><span class="lab">Driving force <span class="hint">(what powers the series)</span></span>
+          <input type="text" data-path="series.driver" placeholder="auto-suggested by genre"></label>
+      </div>
+      <label class="f"><span class="lab">Describe your engine in 1–2 sentences</span>
+        <textarea data-path="series.engine" placeholder="e.g. A crime family where each book follows a different brother rising through the ranks while a federal investigation tightens around them all."></textarea></label>
+
+      <div id="engineGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Your north star</div>
+      <h3>The Series Promise</h3>
+      <p class="lead">One sentence that captures the whole series. Fill the blanks — it becomes the north star every book is measured against.</p>
+      <div class="grid g2">
+        <label class="f"><span class="lab">Tone / flavor</span><input type="text" data-path="series.pTone" placeholder="dark & sensual / cozy / high-octane"></label>
+        <label class="f"><span class="lab">Main character(s) / couple</span><input type="text" data-path="series.pWho" placeholder="a sheltered heir & a cursed enemy prince"></label>
+      </div>
+      <div class="grid g2">
+        <label class="f"><span class="lab">External quest / driving situation</span><input type="text" data-path="series.pQuest" placeholder="break a bloodline prophecy"></label>
+        <label class="f"><span class="lab">Central conflict / barrier</span><input type="text" data-path="series.pConflict" placeholder="while resisting a forbidden bond"></label>
+      </div>
+      <label class="f"><span class="lab">…only to discover (the larger hidden truth)</span><input type="text" data-path="series.pTruth" placeholder="their kingdoms were built on a lie told by the gods"></label>
+      <div class="advisor info" id="promisePreview"></div>
+
+      <h3>The three core promises</h3>
+      <p class="lead">The strongest series give readers three things at once. Name each so you can deliver on all three.</p>
+      <div class="grid g3">
+        <label class="f"><span class="lab">💗 Emotional promise <span class="hint">the ache</span></span><textarea data-path="series.promiseEmotional" placeholder="A love story they ache for"></textarea></label>
+        <label class="f"><span class="lab">🌍 World promise <span class="hint">the escape</span></span><textarea data-path="series.promiseWorld" placeholder="A world they want to live in"></textarea></label>
+        <label class="f"><span class="lab">🔍 Mystery promise <span class="hint">the pull</span></span><textarea data-path="series.promiseMystery" placeholder="A mystery they need solved"></textarea></label>
+      </div>
+      <label class="f"><span class="lab">Final series image <span class="hint">the last picture you want to leave readers with</span></span><input type="text" data-path="series.finalImage" placeholder="e.g. the two of them crowned over a remade world"></label>
+    </div>
+  </section>
+
+  <!-- 3. THEME -->
+  <section class="view" data-view="theme">
+    <div class="card">
+      <div class="kicker">Step 3 · The emotional argument</div>
+      <h2>Overarching Theme</h2>
+      <p class="section-intro">Theme is the <b>emotional argument</b> of your series — the truth your characters prove or disprove across every book. Ask: <i>what universal human experience are they wrestling with?</i> Then map it <b>macro → micro</b>: the whole series moves from one emotional state to another, and each book explores a different <b>facet</b> of it.</p>
+
+      <label class="f"><span class="lab">Theme statement</span>
+        <input type="text" data-path="theme.statement" placeholder="e.g. Found family is thicker than blood / Healing requires vulnerability"></label>
+      <div class="chips" id="themeSuggest"></div>
+
+      <h3>Macro arc — where the world/group starts and lands</h3>
+      <div class="grid g2">
+        <label class="f"><span class="lab">Book 1 emotional state (start)</span><textarea data-path="theme.macroStart" placeholder="fractured, cynical, isolated…"></textarea></label>
+        <label class="f"><span class="lab">Final book emotional state (land)</span><textarea data-path="theme.macroEnd" placeholder="unified, healed, transformed…"></textarea></label>
+      </div>
+
+      <h3>Micro arc — each book is a facet of the theme</h3>
+      <p class="lead">e.g. if the theme is <i>overcoming trauma</i>: Book 1 = denial, Book 2 = anger, Book 3 = acceptance. Fill one facet per book.</p>
+      <div id="themeMicro"></div>
+    </div>
+  </section>
+
+  <!-- 4. WORLD BIBLE -->
+  <section class="view" data-view="world">
+    <div class="card">
+      <div class="kicker">Step 4 · The Series Bible</div>
+      <h2>World Bible</h2>
+      <p class="section-intro">By Book 3 you <b>will</b> forget the diner's layout, an eye color, or a timeline. This is your single source of truth. Fields marked with a genre icon appear because of your lane — fill what's relevant, skip what isn't.</p>
+      <div id="worldFields"></div>
+    </div>
+  </section>
+
+  <!-- 5. ARC MAP -->
+  <section class="view" data-view="arcs">
+    <div class="card">
+      <div class="kicker">Step 5 · The layered arcs</div>
+      <h2>Arc Map</h2>
+      <p class="section-intro">A series isn't one long book chopped up — it's a <b>stack of arcs</b> that each move from beginning to end. Map where each arc starts, turns at the midpoint, and lands. Arcs highlighted in <span style="color:var(--accent)">purple</span> are the ones your genre leans on hardest.</p>
+      <div class="arc-row head"><div class="arcname">Arc</div><div>Beginning</div><div>Middle / turn</div><div>End</div></div>
+      <div id="arcRows"></div>
+    </div>
+  </section>
+
+  <!-- 6. TROPES -->
+  <section class="view" data-view="tropes">
+    <div class="card">
+      <div class="kicker">Step 6 · Reader promises</div>
+      <h2>Trope Bible</h2>
+      <p class="section-intro">Tropes aren't clichés — they're <b>reader promises</b>. Pick your <b>recurring</b> tropes (the series' signature, constant across books) here; assign each book its <b>unique</b> tropes on the Book Cards tab. Sweet spot: <b>3–5 recurring</b>, plus 1–3 unique per book. More than that muddies the promise.</p>
+
+      <h3>⭐ Recurring series tropes <span class="muted">— the constant signature</span></h3>
+      <div class="selected-box" id="recurringBox"></div>
+      <div id="tropeAdvisor"></div>
+
+      <div class="row" style="margin:10px 0">
+        <label class="f" style="flex:1;margin:0"><span class="lab">Filter tropes</span>
+          <input type="text" id="tropeSearch" placeholder="type to filter… e.g. fated, enemies, forced" oninput="Tropes.render()"></label>
+        <button class="btn sm" onclick="Tropes.collapseAll(true)">Collapse all</button>
+        <button class="btn sm" onclick="Tropes.collapseAll(false)">Expand all</button>
+      </div>
+      <div id="tropeCats"></div>
+
+      <details class="help">
+        <summary>Proven trope stacks &amp; heat matching</summary>
+        <div class="body" id="tropeHelp"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 7. CHARACTERS -->
+  <section class="view" data-view="cast">
+    <div class="card">
+      <div class="kicker">Step 7 · The cast + the pipeline</div>
+      <h2>Characters &amp; Side-Character Pipeline</h2>
+      <p class="section-intro">This is where series money lives. Track your leads <b>and</b> the side characters you're seeding as future leads (the <b>breadcrumb technique</b>). For each, note their first impression, secret wound, romantic future, world role, and which book pays them off. Introduce side characters as <b>future emotional assets</b>, never randomly.</p>
+      <div class="row" style="margin-bottom:6px">
+        <button class="btn sm" onclick="Cast.add('main')">+ Main lead</button>
+        <button class="btn sm" onclick="Cast.add('love')">+ Love interest</button>
+        <button class="btn sm" onclick="Cast.add('side')">+ Side character</button>
+        <button class="btn sm" onclick="Cast.add('villain')">+ Villain</button>
+      </div>
+      <div id="castList"></div>
+      <div id="castAdvisor"></div>
+    </div>
+  </section>
+
+  <!-- 8. THREADING -->
+  <section class="view" data-view="threads">
+    <div class="card">
+      <div class="kicker">Step 8 · The payoff engine</div>
+      <h2>Threading Board</h2>
+      <p class="section-intro">The whole point of planning a series: <b>plant in one book, harvest in another</b>. Don't plant random cool details — plant details you intend to pay off. This board tracks promises, secrets, breadcrumbs, and the escalating betrayal ladder across every book.</p>
+
+      <h3>🌱 Promise &amp; Payoff tracker</h3>
+      <p class="lead">Every promise planted needs a payoff book. The advisor flags anything planted but never harvested — or a payoff scheduled before its setup.</p>
+      <table class="tbl"><thead><tr>
+        <th style="width:26%">Promise / setup planted</th><th style="width:12%">Type</th>
+        <th style="width:8%">Planted (bk)</th><th style="width:8%">Payoff (bk)</th>
+        <th style="width:32%">Payoff / how it lands</th><th style="width:6%"></th>
+      </tr></thead><tbody id="promiseRows"></tbody></table>
+      <button class="btn sm" onclick="Threads.addPromise()">+ Add thread</button>
+
+      <h3>⚔️ Betrayal / rupture ladder</h3>
+      <p class="lead">Betrayals and breakups should <b>escalate and vary</b> — never "he lied again" every book. Give each book a different, deeper rupture.</p>
+      <table class="tbl"><thead><tr>
+        <th style="width:10%">Book</th><th style="width:34%">Rupture / betrayal</th><th style="width:50%">Why it cuts deeper than the last</th><th style="width:6%"></th>
+      </tr></thead><tbody id="betrayalRows"></tbody></table>
+      <div id="threadAdvisor"></div>
+    </div>
+  </section>
+
+  <!-- 9. BOOK CARDS -->
+  <section class="view" data-view="books">
+    <div class="card">
+      <div class="kicker">Step 9 · Book by book</div>
+      <h2>Book Cards</h2>
+      <p class="section-intro">Each book gets the <b>5-column map</b> (romance payoff · external payoff · major reveal · next-book hook) plus its <b>four endings</b> and its <b>"why now?"</b> urgency. Rule: each book closes a door and opens a bigger one. The final book resolves — everyone else re-hooks.</p>
+      <div id="bookCards"></div>
+    </div>
+  </section>
+
+  <!-- 10. HEALTH -->
+  <section class="view" data-view="health">
+    <div class="card">
+      <div class="kicker">Step 10 · The check</div>
+      <h2>Series Health Check</h2>
+      <p class="lead">Live audit against the rules of durable series. Fix reds before you draft Book 1.</p>
+      <div class="two-col-note" id="healthStats" style="margin-bottom:12px"></div>
+      <div id="healthList"></div>
+    </div>
+  </section>
+
+  <!-- 11. EXPORT -->
+  <section class="view" data-view="export">
+    <div class="card">
+      <div class="kicker">Take it with you</div>
+      <h2>Export Series Bible</h2>
+      <p class="lead">Copy this straight into your planning doc / Fiction Planner project, or save the file. Your work also auto-saves in this browser.</p>
+      <div class="row" style="margin-bottom:10px">
+        <button class="btn primary sm" onclick="Exporter.copy()">📋 Copy Markdown</button>
+        <button class="btn sm" onclick="Exporter.download('md')">⬇ Download .md</button>
+        <button class="btn sm" onclick="Exporter.download('txt')">⬇ Download .txt</button>
+        <button class="btn sm" onclick="window.print()">🖨 Print</button>
+        <button class="btn sm" onclick="Store.exportJSON()">💾 Save data file (.json)</button>
+        <button class="btn sm" onclick="Exporter.render()">↻ Refresh</button>
+      </div>
+      <textarea id="exportOut" readonly></textarea>
+    </div>
+  </section>
+
+  <div class="footer" id="footer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" accept="application/json" class="hide">
+
+<script>
+/* ============================================================
+   CONFIG  —  flip cphMode:false to ship a clean, sellable build
+   ============================================================ */
+const CONFIG = {
+  cphMode: false,                        // generic build for students & working authors
+  appName: "Series Architect",
+  cphName: "Series Architect",
+  storageKey: "seriesArchitect.tip.v1",
+  penNames: []
+};
+
+/* ============================================================
+   GENRE PROFILES  —  the research, encoded
+   model: recommended series model | len:[min,max] sweet spot
+   driver | themes | engine hint | arcs highlighted | world flags | warn
+   ============================================================ */
+const GENRES = {
+  contemporary:{label:"Contemporary Romance", model:"interconnected", len:[3,5],
+    driver:"Community & connection", engine:"A place or friend-group that keeps producing couples — a small town, a family, a workplace.",
+    themes:["Found family","Second chances","Vulnerability & self-acceptance","You can go home again"],
+    arcs:["romance","wound","theme"], flags:["place"],
+    warn:"Interconnected standalones are gold here: a fresh couple + full HEA/HFN every book, shared world. Readers can jump in anywhere."},
+  smalltown:{label:"Small-Town Romance", model:"interconnected", len:[3,6],
+    driver:"Community & belonging", engine:"A town with its own traditions, feuds, and cast — the town itself generates stories.",
+    themes:["Found family","Coming home","Community over ego","Second chances"],
+    arcs:["romance","wound","theme"], flags:["place"],
+    warn:"The town is the engine. Seed the next couple as townsfolk in every book. New couple + HEA each book."},
+  romcom:{label:"Romantic Comedy", model:"interconnected", len:[3,4],
+    driver:"Relatable tropes & banter", engine:"A tight, specific micro-world — a quirky workplace, a chaotic sibling set, a friend group.",
+    themes:["Vulnerability & self-acceptance","Dropping the armor","Love finds the flawed"],
+    arcs:["romance","theme"], flags:["place"],
+    warn:"Keep it 3–4 books — past that the jokes repeat and the world feels claustrophobic. Bicker the next couple in the background."},
+  sports:{label:"Sports Romance", model:"interconnected", len:[3,6],
+    driver:"The team / the season", engine:"A team or league — new player/couple each book, shared locker room.",
+    themes:["Redemption","Family you choose","Winning vs. wholeness"],
+    arcs:["romance","wound","theme"], flags:["place"],
+    warn:"Team = engine. Interconnected standalones, HEA per book. Seed the next player early."},
+  suspense:{label:"Romantic Suspense", model:"serialized", len:[3,5],
+    driver:"Threat & survival", engine:"An ongoing danger — a killer, a conspiracy, a hunted past — that outlasts one book.",
+    themes:["Trust after betrayal","Safety vs. love","Facing the past"],
+    arcs:["romance","villain","mystery","wound"], flags:[],
+    warn:"Serialized single-couple works well — cliffhangers allowed until the finale. Readers must start at Book 1."},
+  romantasy:{label:"Romantasy (Romantic Fantasy)", model:"serialized", len:[3,5],
+    driver:"High-stakes fate & world-saving", engine:"An epic fantasy conflict — war between realms, a rebellion, a deadly curse, a throne game — that forces the romance to evolve.",
+    themes:["Destiny vs. free will","Power & sacrifice","Love as liberation vs. possession","Bloodline is not destiny","Monsters are made by kingdoms","True mates still choose each other"],
+    arcs:["romance","power","villain","world","mystery","wound","spice","theme"], flags:["magic","prophecy"],
+    warn:"⚠️ Romantasy breaks contemporary-romance rules — do NOT use pure standalones. Readers want the SAME couple across a sweeping arc. Each book still needs its own payoff + a bigger hook. Interlocked gears: the fantasy plot forces the romance to change, and the romance changes the fantasy outcome."},
+  fantasy:{label:"Epic / High Fantasy", model:"serialized", len:[3,7],
+    driver:"World-level stakes", engine:"A world-scale problem — war, prophecy, empire, ancient evil — revealed in escalating layers.",
+    themes:["Power & sacrifice","Destiny vs. free will","The cost of the crown"],
+    arcs:["power","villain","world","mystery","wound","theme"], flags:["magic","prophecy"],
+    warn:"Reveal the world as the protagonist earns access to it — don't dump the map in Book 1. Each book closes a door, opens a bigger one."},
+  paranormal:{label:"Paranormal Romance", model:"interconnected", len:[3,7],
+    driver:"Supernatural world & mate bonds", engine:"A supernatural community (pack, coven, clan, city) — new fated pair each book, ongoing world threat beneath.",
+    themes:["Fate vs. choice","Belonging","Monster vs. man"],
+    arcs:["romance","power","villain","world","spice","theme"], flags:["magic","prophecy"],
+    warn:"Often interconnected (new mates each book) with a serialized world-threat underneath. A bond is a pressure cooker, not a relationship — 'fate chose them, but will they choose each other?'"},
+  scifi:{label:"Sci-Fi / Sci-Fi Romance", model:"serialized", len:[3,6],
+    driver:"World-level stakes & discovery", engine:"A technological/cosmic problem — war, colony, AI, alien contact — escalating across books.",
+    themes:["What makes us human","Power & consequence","Freedom vs. control"],
+    arcs:["romance","power","villain","world","mystery","theme"], flags:["magic","prophecy"],
+    warn:"Sci-fi romance often serializes one couple; space-opera can widen to an ensemble. Tech/world rules must stay consistent — log them in the World Bible."},
+  mafia:{label:"Mafia Romance", model:"interconnected", len:[4,6],
+    driver:"Family honor & power", engine:"A crime syndicate (Cosa Nostra, Bratva, rival families). Each book = a different brother/soldier; a turf war, betrayal, or investigation runs underneath.",
+    themes:["Duty vs. desire","Belonging","Loyalty & bloodline","Protecting love in a world that weaponizes it"],
+    arcs:["romance","villain","wound","spice","theme"], flags:["org"],
+    warn:"Follow ONE crime family — Book 1 the Don, Book 2 the Enforcer, etc. Breadcrumb: put Book 2's hero on-page in Book 1 cleaning up a mess for his future heroine."},
+  mc:{label:"MC (Motorcycle Club) Romance", model:"interconnected", len:[5,7],
+    driver:"Club loyalty & survival", engine:"The club charter — rival clubs, running operations, undercover cops, the fight for the gavel. Big core cast = a longer runway.",
+    themes:["Brotherhood & redemption","Found family","Loyalty vs. love","Sanctuary for broken men"],
+    arcs:["romance","villain","wound","spice","theme"], flags:["org"],
+    warn:"MC's big cast (Pres, VP, SAA, Road Captain, Prospects) runs 5–7 books. Breadcrumb the brooding Enforcer or the Prospect in the background with a secret crush or hidden wound."},
+  dark:{label:"Dark Romance", model:"interconnected", len:[3,6],
+    driver:"Obsession, power & danger", engine:"A dangerous world (crime, captivity, revenge) with morally-gray leads and high-tension power dynamics.",
+    themes:["Love vs. possession","Redemption through love","Power & consent"],
+    arcs:["romance","villain","wound","spice","theme"], flags:["org"],
+    warn:"Can run standalone-per-couple or serialized. Keep the power dynamics escalating and the emotional stakes real — spice must change trust/power, not just heat."},
+  historical:{label:"Historical / Regency Romance", model:"interconnected", len:[3,5],
+    driver:"Society, reputation & duty", engine:"A social world (the ton, a family, a season) that keeps throwing eligible couples together.",
+    themes:["Duty vs. desire","Reputation vs. authenticity","Love against the rules"],
+    arcs:["romance","wound","theme"], flags:["place"],
+    warn:"Classic interconnected-standalone territory (a set of siblings, a friend group). New couple + HEA each book."},
+  western:{label:"Western / Cowboy Romance", model:"interconnected", len:[3,6],
+    driver:"Land, family & frontier grit", engine:"A ranch, a frontier town, or a family spread — the land and its people generate stories.",
+    themes:["Found family","Home & roots","Redemption"],
+    arcs:["romance","wound","theme"], flags:["place"],
+    warn:"Interconnected standalones around a ranch/family. Seed the next sibling or ranch hand as a secondary lead."},
+  reverseharem:{label:"Reverse Harem / Why Choose", model:"serialized", len:[3,5],
+    driver:"The growing bond & world threat", engine:"A world (fantasy, academy, dystopia) where the heroine collects her partners as the external threat escalates.",
+    themes:["Belonging","Chosen family","Power & fate"],
+    arcs:["romance","power","villain","world","spice","theme"], flags:["magic","prophecy"],
+    warn:"Usually serialized — the polycule grows across books toward one collective HEA. Give each love interest a distinct arc and payoff moment."},
+  horror:{label:"Horror / Thriller", model:"serialized", len:[3,5],
+    driver:"Dread & survival", engine:"A source of terror (a place, an entity, a killer, a curse) that can renew across books.",
+    themes:["Survival & sanity","The past won't stay buried","What we become under threat"],
+    arcs:["villain","mystery","wound","world","theme"], flags:["prophecy"],
+    warn:"Can serialize one survivor/investigator, or anthologize around a shared source of horror. Escalate the dread and the cost each book. Romance arcs optional."},
+  psychthriller:{label:"Psychological Thriller", model:"serialized", len:[3,5],
+    driver:"Secrets, lies & unraveling", engine:"A recurring investigator or an escalating web of secrets and unreliable truth.",
+    themes:["Truth vs. self-deception","Guilt","Identity"],
+    arcs:["villain","mystery","wound","theme"], flags:[],
+    warn:"Often a serialized protagonist (detective/analyst) with a case-per-book plus a longer personal thread. Plant clues you intend to pay off."},
+  cozy:{label:"Cozy Mystery", model:"interconnected", len:[4,10],
+    driver:"Community & recurring sleuth", engine:"A charming location + amateur sleuth — a fresh murder each book, same beloved cast.",
+    themes:["Community","Justice & order restored","Belonging"],
+    arcs:["mystery","theme"], flags:["place"],
+    warn:"Cozies run long (4–10+): case-per-book, recurring sleuth and town. Keep a light ongoing personal/romance thread to reward regulars."}
+};
+
+/* ============================================================
+   ARCS  —  the eight layers (research)
+   ============================================================ */
+const ARCS = [
+  {id:"romance", name:"💗 Romance / relationship", hint:"attraction → barrier → rupture → commitment"},
+  {id:"identity", name:"🪞 Lead identity", hint:"who they are → what they fear → who they become"},
+  {id:"power", name:"⚡ Power / ability", hint:"appears → harms → trained → costs → redefined"},
+  {id:"villain", name:"😈 Villain", hint:"public face → private mover → ancient wound → belief to defeat"},
+  {id:"world", name:"🌍 World / politics", hint:"one court → rival territory → old magic → whole-world conflict"},
+  {id:"mystery", name:"🔍 Mystery / revelation", hint:"every answer opens a bigger question"},
+  {id:"wound", name:"🩹 Emotional wound", hint:"exposed → exploited → challenged → strength → healed"},
+  {id:"spice", name:"🔥 Intimacy", hint:"gets more meaningful, not just hotter — intimacy as plot"},
+  {id:"theme", name:"🎯 Theme", hint:"what lie → who profits → what truth costs → what replaces it"}
+];
+
+/* ============================================================
+   TROPE BIBLE DATA  (from CPH Trope Bible)
+   ============================================================ */
+const TROPES = {
+  "Relationship Dynamics":["Enemies to Lovers","Friends to Lovers","Strangers to Lovers","Second Chance Romance","Love/Hate","Forbidden Love","Star-Crossed Lovers","Unrequited (becomes requited)","Best Friend's Sibling","Brother's Best Friend","Childhood Sweethearts","Reunion Romance","Slow Burn","Instalove / Insta-Lust","He Falls First","She Falls First","Belated Love Epiphany","Love Triangle","Fake Relationship","Fake Dating","Fake Engagement","Fake Marriage","Marriage of Convenience","Arranged Marriage","Accidental Marriage","Marriage in Trouble","Divorced Couple Reconnects"],
+  "Hero Archetypes":["Alpha","Beta","Cinnamon Roll","Grumpy","Sunshine","Wounded","Tortured","Brooding","Reformed Rake","Virgin Hero","Morally Gray","Anti-Hero","Reluctant Hero","Cocky/Arrogant","Nerdy/Geeky","Billionaire/CEO","Boss","Single Dad","Military","Cowboy/Rancher","Rockstar","Athlete","Doctor","Firefighter","Cop/Detective","Bodyguard","Mafia/Crime Boss","Royal/Prince","Assassin/Hitman","Biker","Mountain Man","Silver Fox","Scarred Hero","Tattooed Hero","Vampire","Werewolf/Shifter","Dragon Shifter","Fae","Alien"],
+  "Heroine Archetypes":["Feisty","Shy/Timid","Sunshine","Grumpy","Badass","Innocent","Experienced","Virgin Heroine","Nerdy/Bookish","Tomboy","Damaged","Independent","Klutzy/Awkward","Snarky","Single Mom","Nanny","Teacher","Nurse","Baker/Café Owner","Bookstore Owner","Florist","Journalist","CEO/Businesswoman","Runaway Bride","Princess/Royal","Spy","Assassin","Witch","Shifter","Fae","Chosen One","Warrior","Heroine in Danger","Heroine on the Run","Returns to Hometown","Starts Over"],
+  "Situations & Settings":["Forced Proximity","Only One Bed","Stranded Together","Snowed In","Cabin in the Woods","Road Trip","Locked In Together","Roommates","Neighbors","Coworkers","Vacation Romance","Office Romance","Boss/Employee","Rival Businesses","Workplace Rivals","Mentor/Mentee","Small Town","Return to Hometown","Big City","Family Business","Inherited Property","Fixing Up Old House","College","Professor/Student","Fish Out of Water","City Meets Country","Time Travel","Historical Setting","Amnesia","Secret Identity","Mistaken Identity","Witness Protection","Undercover"],
+  "Conflict & Obstacles":["Class Differences","Cultural Differences","Feuding Families","Rival Families","Long Distance","Disapproving Family","Ex Creates Problems","Love Rival","Custody Battle","Blackmail","Dangerous Enemy","Prophecy/Curse","Fear of Commitment","Trust Issues","Emotional Walls","Self-Worth Issues","Guilt","Secret They Can't Reveal","Competing Goals","Grief","Secret Baby","Hidden Identity","Secret Billionaire","Secret Royal","Lies That Snowball"],
+  "Power Dynamics":["Older Man/Younger Woman","Older Woman/Younger Man","Dad's Best Friend","Guardian/Ward","Boss/Employee","King/Queen & Subject","Military Rank Gap","Captor/Captive","Virgin/Experienced","Rogue Teaches Innocent","Innocent Corrupted"],
+  "High Heat / Dark":["Dominant/Submissive","Daddy Dom","Contract Relationship","Praise Kink","Breeding Kink","Primal Play","Size Kink","Competence Kink","Rough Sex","Hate Sex","Touch Her & Die","Possession/Obsession","Jealousy/Possessiveness","Alpha Hole","Dubious Consent","Consensual Non-Consent","Kidnapping Romance","Stalker Romance","Bully Romance","Morally Bankrupt Hero"],
+  "Group / Why-Choose":["Reverse Harem","Why Choose","Ménage","MMF","MFM","FFM","Polyamory","Throuple","Harem"],
+  "Omegaverse (A/B/O)":["Alpha/Omega","Fated Mates","Heat Cycles","Rut","Knotting","Bonding Bite","Pack Dynamics","Scent Marking","Rejected Mate"],
+  "Paranormal & Fantasy":["Fated Mates","True Mates","Rejected Mate","Second Chance Mate","Mating Bond","Soul Mates","Bonded Pair","Claiming Mark","Blood Bond","Magic Bond","Psychic Bond","Immortal/Mortal","Pack Politics","Court Intrigue","Forbidden Magic","Curse Breaking","Prophecy Fulfillment","Dragon Rider & Dragon","Familiar & Witch","Guardian & Charge","Chosen One","Hidden Heir","Academy/School of Magic","Enemies-to-Lovers Kingdoms"],
+  "Emotional Beats & Tone":["Emotional Growth","Healing Journey","Learning to Trust Again","Found Family","Redemption Arc","Revenge Romance","Sacrifice for Love","Angsty","Fluffy","Steamy","Dark","Humorous","Swoony","Tearjerker","Action-Packed","Cozy","Gritty"],
+  "Plot Devices & Hooks":["Inheritance","Bet/Wager","Matchmaking","Dating App","Blind Date","Reality Show","Auction","Makeover","Revenge Plot","Heist","Quest/Journey","Tournament","Survival Situation","Epistolary","Wrong Number","Surprise Pregnancy","Secret Baby","Co-Parenting","Marriage Pact"],
+  "Mafia & Crime":["Mafia Boss","Made Man","Enforcer","Consigliere","Underboss","Mafia Princess","Enemy's Daughter","Debt Payment","Forced Marriage","Kidnapped by Mafia","Witness","Betrayal","War Between Families","Going Legit"],
+  "MC (Motorcycle Club)":["MC President","VP","Road Captain","Sergeant at Arms","Prospect","Old Lady","Claiming","Property Vest","Club Loyalty vs Love","Rival Clubs","Club Rescue"],
+  "Royal":["Crown Prince/ss","Spare Heir","Secret Royal","Runaway Royal","Reluctant Royal","Royal Duty","Arranged Royal Marriage","Commoner Falls for Royal","Abdication for Love"],
+  "Military":["Navy SEAL","Marine","Army Ranger","Special Forces","Deployment","Coming Home","PTSD","Forbidden Fraternization","War Zone Romance","Veteran Adjusting"],
+  "Billionaire & Wealth":["Billionaire Boss","Secret Billionaire","Rags to Riches","Rich/Poor Divide","Self-Made Billionaire","Fake Dating for PR","Marriage for the Merger"],
+  "Small Business & Small Town":["Bakery","Bookstore","Coffee Shop","Bar/Brewery","Farm/Ranch","Bed & Breakfast","Flower Shop","Meddling Town","Small Town Secrets","Town Festival","Saving the Town","Town Rivalry"],
+  "Sports":["Hockey","Football","Baseball","Basketball","Soccer","MMA/Boxing","Racing","Teammate Romance","Coach/Athlete","Rival Athletes","Injury Recovery","Retirement"],
+  "Historical":["Wallflower","Rake Reformed","Bluestocking","Debutante Season","Marriage Mart","Compromise","Ruined Reputation","Mail-Order Bride","Frontier Life","Outlaw Romance","Disguised as Man","Hidden Royal"],
+  "Endings":["HEA (Happily Ever After)","HFN (Happy For Now)","Cliffhanger","Bittersweet","Epilogue"]
+};
+const TROPE_STACKS = [
+  ["Small-town sweet","Return to Hometown + Second Chance + Single Dad + Small Business + Friends to Lovers"],
+  ["Steamy billionaire","Boss/Employee + Age Gap + Virgin Heroine + Possessive Hero + Only One Bed"],
+  ["Dark mafia","Forced Marriage + Kidnapping + Enemies to Lovers + Obsession + Enemy's Daughter"],
+  ["Romantasy","Fated Mates + Chosen One + Enemies to Lovers + Forced Proximity + Found Family"],
+  ["MC found-family","Old Lady + Club Loyalty vs Love + Rival Clubs + Redemption + Slow Burn"],
+  ["Contemporary rom-com","Enemies to Lovers + Forced Proximity + Grumpy/Sunshine + Fake Dating + He Falls First"]
+];
+const HEAT_HINTS = {
+  "1":"Sweet/Clean — avoid the High Heat/Dark, Omegaverse, and explicit power-exchange tropes.",
+  "2":"Behind closed door — tension through longing; keep explicit content off-page.",
+  "3":"Warm/open door — Only One Bed, playful jealousy, sexual tension all land here.",
+  "4":"Spicy — Fated Mates, possessive MMC, power exchange (consensual), most heat tropes fair game.",
+  "5":"Explicit/dark — full High Heat/Dark toolkit; keep it romance-first unless the brand is explicitly dark."
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const DEFAULT = () => ({
+  series:{title:"",penName:"",genre:"romantasy",subgenre:"",heat:"",bookCount:5,model:"serialized",
+    engineType:"",driver:"",engine:"",pTone:"",pWho:"",pQuest:"",pConflict:"",pTruth:"",
+    promiseEmotional:"",promiseWorld:"",promiseMystery:"",finalImage:""},
+  theme:{statement:"",macroStart:"",macroEnd:"",micro:{}},
+  world:{},
+  arcs:{},
+  tropes:{recurring:[]},
+  cast:[],
+  promises:[],
+  betrayals:{},
+  books:{},
+  meta:{v:1}
+});
+let S = DEFAULT();
+
+/* ---------- persistence ---------- */
+const Store = {
+  save(){ try{localStorage.setItem(CONFIG.storageKey, JSON.stringify(S));}catch(e){} },
+  load(){ try{const r=localStorage.getItem(CONFIG.storageKey); if(r){S=Object.assign(DEFAULT(),JSON.parse(r));}}catch(e){} },
+  newSeries(){ if(!confirm("Start a brand-new series? Your current work will be cleared (export or save a file first if you want to keep it).")) return;
+    S=DEFAULT(); Store.save(); renderAll(); toast("New series started"); go('setup'); },
+  exportJSON(){ const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=(S.series.title||"series").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-architect.json"; a.click(); toast("Saved data file"); },
+  importFile(){ document.getElementById("fileInput").click(); }
+};
+document.getElementById("fileInput").addEventListener("change",function(e){
+  const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=()=>{ try{ S=Object.assign(DEFAULT(),JSON.parse(r.result)); Store.save(); renderAll(); toast("Series imported"); go('setup'); }
+    catch(err){ toast("Couldn't read that file"); } }; r.readAsText(f); e.target.value="";
+});
+
+/* ---------- generic path binding ---------- */
+function getPath(o,p){ return p.split(".").reduce((a,k)=>a&&a[k]!==undefined?a[k]:undefined,o); }
+function setPath(o,p,v){ const k=p.split("."); let c=o; for(let i=0;i<k.length-1;i++){ if(typeof c[k[i]]!=="object"||c[k[i]]===null)c[k[i]]={}; c=c[k[i]]; } c[k[k.length-1]]=v; }
+function bindInputs(root=document){
+  root.querySelectorAll("[data-path]").forEach(el=>{
+    if(el._bound) return; el._bound=true;
+    const p=el.getAttribute("data-path"); const v=getPath(S,p);
+    if(v!==undefined && v!==null) el.value=v;
+    const ev = (el.tagName==="SELECT")?"change":"input";
+    el.addEventListener(ev,()=>{ let val=el.value; if(el.type==="number"||el.type==="range")val=+val;
+      setPath(S,p,val); Store.save(); onChange(p); });
+  });
+}
+function syncInputs(root=document){
+  root.querySelectorAll("[data-path]").forEach(el=>{ const v=getPath(S,el.getAttribute("data-path")); el.value=(v===undefined||v===null)?"":v; });
+}
+
+/* things that react live to certain fields */
+function onChange(p){
+  if(p==="series.genre"){ /* handled by Genre.apply */ }
+  if(p.startsWith("series.p")) Promise0.preview();
+  if(p==="series.bookCount") Books.onCount();
+  Health.render();
+  Footer.render();
+}
+
+/* ============================================================
+   TABS / NAV
+   ============================================================ */
+const TABS=[
+  ["setup","Setup"],["engine","Engine & Promise"],["theme","Theme"],["world","World Bible"],
+  ["arcs","Arc Map"],["tropes","Tropes"],["cast","Characters"],["threads","Threading"],
+  ["books","Book Cards"],["health","Health"],["export","Export"]
+];
+function buildTabs(){
+  const n=document.getElementById("tabs");
+  n.innerHTML=TABS.map((t,i)=>`<button class="tab" data-tab="${t[0]}" onclick="go('${t[0]}')"><span class="num">${i+1}</span>${t[1]}</button>`).join("");
+}
+function go(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.dataset.view===v));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===v));
+  if(v==="export") Exporter.render();
+  if(v==="health") Health.render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ============================================================
+   GENRE
+   ============================================================ */
+const Genre = {
+  fillSelect(){
+    const sel=document.querySelector('[data-path="series.genre"]');
+    sel.innerHTML=Object.keys(GENRES).map(k=>`<option value="${k}">${GENRES[k].label}</option>`).join("");
+    sel.value=S.series.genre;
+  },
+  apply(){
+    const g=GENRES[S.series.genre]; if(!g) return;
+    // auto-suggest driver if empty
+    if(!S.series.driver){ S.series.driver=g.driver; syncInputs(); }
+    document.querySelector('[data-path="series.driver"]').placeholder=g.driver;
+    Genre.advisor(); Theme.suggest(); Engine.grid(); World.render(); Arcs.render(); Books.render(); Tropes.render(); Health.render(); Store.save();
+  },
+  advisor(){
+    const g=GENRES[S.series.genre]; const box=document.getElementById("genreAdvisor"); if(!g){box.innerHTML="";return;}
+    const bc=S.series.bookCount, fit=(bc>=g.len[0]&&bc<=g.len[1]);
+    const modelName={interconnected:"Interconnected standalones",serialized:"Serialized (same couple)",hybrid:"Hybrid saga"};
+    const modelFit=S.series.model===g.model;
+    let html=`<div class="advisor info"><b>${g.label} playbook</b><br>${g.warn}</div>`;
+    html+=`<div class="two-col-note">
+      <div class="stat"><b>${g.len[0]}–${g.len[1]}</b>sweet-spot length ${fit?'<span class="pill good">you: '+bc+' ✓</span>':'<span class="pill warn">you: '+bc+'</span>'}</div>
+      <div class="stat"><b>${modelName[g.model].split(" ")[0]}</b>recommended model ${modelFit?'<span class="pill good">match ✓</span>':'<span class="pill warn">you chose '+modelName[S.series.model].split(" ")[0]+'</span>'}</div>
+      <div class="stat"><b>Driver</b>${g.driver}</div>
+    </div>`;
+    if(!fit) html+=`<div class="advisor warn">Your ${bc}-book plan is ${bc<g.len[0]?"shorter":"longer"} than the ${g.len[0]}–${g.len[1]} sweet spot for ${g.label}. ${bc>g.len[1]?"Longer can work if the engine is big enough — but watch for a stretched-thin overarching plot.":"That's fine for a tight core — just make sure each book earns its place."}</div>`;
+    if(!modelFit) html+=`<div class="advisor warn">Most ${g.label} series use <b>${modelName[g.model]}</b>. You picked ${modelName[S.series.model]} — deliberate choices are great, just make sure it fits reader expectations.</div>`;
+    box.innerHTML=html;
+  }
+};
+
+/* ============================================================
+   ENGINE + PROMISE
+   ============================================================ */
+const Engine = {
+  grid(){
+    const box=document.getElementById("engineGrid"); const g=GENRES[S.series.genre];
+    const speculative=g && (g.flags.includes("magic")||g.flags.includes("prophecy"));
+    if(!speculative){ box.innerHTML=""; return; }
+    const rows=[
+      ["ePull","Romantic pull","Why are these two bound to each other?"],
+      ["eBarrier","Romantic barrier","Why can't they simply be together?"],
+      ["ePower","Power mystery","What is she / he / they really?"],
+      ["eWound","World wound","What is broken in the kingdom / world?"],
+      ["eVillain","Villain pressure","Who benefits if the truth stays buried?"],
+      ["eEscalation","Escalation path","How does each book reveal a bigger layer?"],
+      ["ePromise","Emotional promise","What transformation will make love possible?"]
+    ];
+    box.innerHTML=`<h3>Series-engine grid <span class="muted">— for speculative lanes, a strong engine answers all seven</span></h3>
+      <div class="grid g2">`+rows.map(r=>`<label class="f"><span class="lab">${r[1]} <span class="hint">${r[2]}</span></span>
+        <input type="text" data-path="series.${r[0]}"></label>`).join("")+`</div>`;
+    bindInputs(box);
+  }
+};
+const Promise0 = {
+  preview(){
+    const s=S.series; const box=document.getElementById("promisePreview");
+    const parts=[s.pTone,"series about",s.pWho,"who must",s.pQuest,s.pConflict,"— only to discover",s.pTruth];
+    if(!s.pWho&&!s.pQuest){ box.innerHTML=`<span class="muted">Fill the blanks above and your one-sentence series promise appears here.</span>`; return; }
+    const lane = (GENRES[s.genre]||{}).label||"";
+    box.innerHTML=`<b>Series promise:</b><br>This is a ${s.pTone||"___"} ${lane.toLowerCase()} series about ${s.pWho||"___"} who must ${s.pQuest||"___"} ${s.pConflict||""}${s.pTruth?", only to discover "+s.pTruth:""}.`;
+  }
+};
+
+/* ============================================================
+   THEME
+   ============================================================ */
+const Theme = {
+  suggest(){
+    const g=GENRES[S.series.genre]; const box=document.getElementById("themeSuggest");
+    if(!g){box.innerHTML="";return;}
+    box.innerHTML=g.themes.map(t=>`<span class="chip" onclick="Theme.pick('${t.replace(/'/g,"\\'")}')">${t}</span>`).join("");
+  },
+  pick(t){ S.theme.statement=t; syncInputs(); Store.save(); Health.render(); },
+  micro(){
+    const box=document.getElementById("themeMicro"); const n=S.series.bookCount;
+    let h="";
+    for(let i=1;i<=n;i++){ const v=(S.theme.micro&&S.theme.micro[i])||"";
+      h+=`<label class="f"><span class="lab">Book ${i} — facet of the theme</span>
+        <input type="text" value="${esc(v)}" oninput="Theme.setMicro(${i},this.value)" placeholder="${i===1?'e.g. denial':i===n?'e.g. acceptance':'e.g. anger / bargaining'}"></label>`; }
+    box.innerHTML=h;
+  },
+  setMicro(i,v){ S.theme.micro=S.theme.micro||{}; S.theme.micro[i]=v; Store.save(); }
+};
+
+/* ============================================================
+   WORLD BIBLE  (genre-aware fields)
+   ============================================================ */
+const World = {
+  base:[
+    ["setting","Core setting / geography","Where does the series live? The main locations readers return to."],
+    ["repeating","Repeating settings","The diner, the clubhouse, the throne room — places that recur (and their key details)."],
+    ["timeline","Timeline / history","Key past events, in order. What happened before Book 1 that still matters?"],
+    ["rules","World rules & laws","How this world works — social rules, laws, customs that create conflict."],
+    ["tone","Tone & atmosphere","The feel: cozy, gritty, opulent, dread-soaked…"],
+    ["macguffin","Overarching subplot / MacGuffin","The thing running under every book. Who knows what, and when?"]
+  ],
+  flagFields:{
+    magic:[["magic","⚡ Magic / power system","Sources, rules, costs, limits. What can't magic do? What does it cost?"],
+           ["factions","🏛 Factions / courts / houses","The powers in play and how they oppose each other."]],
+    prophecy:[["prophecy","🔮 Prophecy / curse / mythos","The prophecy, curse, or ancient wrong — and its true meaning (which may differ from what characters believe)."],
+              ["pantheon","🕯 Gods / old powers / lore","The deeper mythology the finale pays off."]],
+    org:[["org","🕴 The organization","The family / club / syndicate: structure, hierarchy, code, territory."],
+         ["hierarchy","🎖 Ranks & roles","Who holds which position — and who's gunning for whose seat."],
+         ["threat","🎯 External threat","The war, rival, or investigation that pressures everyone across books."]],
+    place:[["community","🏘 The community / cast hub","The town, team, or friend-group that generates couples. Its traditions and running gags."]]
+  },
+  render(){
+    const g=GENRES[S.series.genre]; const box=document.getElementById("worldFields");
+    let fields=[...World.base];
+    if(g){ g.flags.forEach(f=>{ if(World.flagFields[f]) fields=World.flagFields[f].concat(fields); }); }
+    box.innerHTML=`<div class="grid g2">`+fields.map(f=>
+      `<label class="f"><span class="lab">${f[1]} <span class="hint">${f[2]}</span></span>
+       <textarea data-path="world.${f[0]}"></textarea></label>`).join("")+`</div>`;
+    bindInputs(box); syncInputs(box);
+  }
+};
+
+/* ============================================================
+   ARC MAP
+   ============================================================ */
+const Arcs = {
+  render(){
+    const g=GENRES[S.series.genre]; const box=document.getElementById("arcRows");
+    const hot=g?g.arcs:[];
+    box.innerHTML=ARCS.map(a=>{
+      const on=hot.includes(a.id);
+      const v=S.arcs[a.id]||{};
+      return `<div class="arc-row">
+        <div class="arcname" style="${on?'color:var(--accent)':''}">${a.name}<br><span class="muted" style="font-weight:400">${a.hint}</span></div>
+        <textarea data-arc="${a.id}" data-seg="b" placeholder="beginning">${esc(v.b||"")}</textarea>
+        <textarea data-arc="${a.id}" data-seg="m" placeholder="middle / turn">${esc(v.m||"")}</textarea>
+        <textarea data-arc="${a.id}" data-seg="e" placeholder="end">${esc(v.e||"")}</textarea>
+      </div>`;
+    }).join("");
+    box.querySelectorAll("textarea").forEach(t=>t.addEventListener("input",()=>{
+      const id=t.dataset.arc,seg=t.dataset.seg; S.arcs[id]=S.arcs[id]||{}; S.arcs[id][seg]=t.value; Store.save();
+    }));
+  }
+};
+
+/* ============================================================
+   TROPES
+   ============================================================ */
+const Tropes = {
+  toggle(t){
+    const i=S.tropes.recurring.indexOf(t);
+    if(i>=0)S.tropes.recurring.splice(i,1); else S.tropes.recurring.push(t);
+    Store.save(); Tropes.render(); Health.render();
+  },
+  render(){
+    // selected box
+    const sb=document.getElementById("recurringBox");
+    sb.innerHTML=S.tropes.recurring.length
+      ? S.tropes.recurring.map(t=>`<span class="chip on" onclick="Tropes.toggle('${t.replace(/'/g,"\\'")}')">${t} <span class="x">✕</span></span>`).join("")
+      : `<span class="empty">No recurring tropes yet — pick your signature 3–5 from the categories below.</span>`;
+    // advisor
+    Tropes.advisor();
+    // categories
+    const q=(document.getElementById("tropeSearch").value||"").toLowerCase();
+    const cats=document.getElementById("tropeCats"); let h="";
+    Object.keys(TROPES).forEach(cat=>{
+      const items=TROPES[cat].filter(t=>!q||t.toLowerCase().includes(q));
+      if(!items.length) return;
+      const collapsed = Tropes._collapsed[cat] && !q;
+      h+=`<div class="trope-cat ${collapsed?'collapsed':''}"><h4 onclick="Tropes.fold('${cat.replace(/'/g,"\\'")}')"><span class="caret">▼</span>${cat} <span class="muted">(${items.length})</span></h4>
+        <div class="chips">`+items.map(t=>{
+          const on=S.tropes.recurring.includes(t);
+          return `<span class="chip ${on?'on':''}" onclick="Tropes.toggle('${t.replace(/'/g,"\\'")}')">${t}</span>`;
+        }).join("")+`</div></div>`;
+    });
+    cats.innerHTML=h||`<p class="muted">No tropes match "${q}".</p>`;
+    // help
+    document.getElementById("tropeHelp").innerHTML=
+      `<p><b>Proven stacks</b> (aim for 4–5, feature 5–7 in the blurb):</p>`+
+      TROPE_STACKS.map(s=>`<p style="margin:4px 0"><b style="color:var(--accent3)">${s[0]}:</b> ${s[1]}</p>`).join("")+
+      `<p style="margin-top:10px"><b>Heat matching:</b></p>`+
+      Object.keys(HEAT_HINTS).map(k=>`<p style="margin:3px 0"><b>${k}</b> — ${HEAT_HINTS[k]}</p>`).join("");
+  },
+  _collapsed:{},
+  fold(c){ Tropes._collapsed[c]=!Tropes._collapsed[c]; Tropes.render(); },
+  collapseAll(v){ Object.keys(TROPES).forEach(c=>Tropes._collapsed[c]=v); Tropes.render(); },
+  advisor(){
+    const box=document.getElementById("tropeAdvisor"); const n=S.tropes.recurring.length; let h="";
+    if(n===0) h=`<div class="advisor info">Pick your recurring signature tropes — the promises that hold across every book.</div>`;
+    else if(n<=5) h=`<div class="advisor good">${n} recurring trope${n>1?'s':''} — right in the sweet spot. Clear promise. ✓</div>`;
+    else h=`<div class="advisor warn"><b>${n} recurring tropes.</b> More than ~5 muddies the series promise (and the blurb). These are the <i>constant</i> ones — move book-specific tropes onto individual Book Cards instead.</div>`;
+    // heat check
+    if(S.series.heat){ const lvl=S.series.heat[0];
+      const darkSet=new Set([...TROPES["High Heat / Dark"],...TROPES["Omegaverse (A/B/O)"]]);
+      const clash=S.tropes.recurring.filter(t=>darkSet.has(t));
+      if((lvl==="1"||lvl==="2") && clash.length) h+=`<div class="advisor warn"><b>Heat mismatch:</b> ${clash.join(", ")} usually need heat 4–5, but you set heat ${lvl}. Either raise the heat or swap these out.</div>`;
+    }
+    box.innerHTML=h;
+  }
+};
+
+/* ============================================================
+   CHARACTERS
+   ============================================================ */
+let _cid=1;
+const Cast = {
+  add(role){ S.cast.push({id:"c"+(Date.now())+(_cid++),role,name:"",impression:"",wound:"",future:"",worldRole:"",payoff:"",desc:"",status:"",tropes:""}); Store.save(); Cast.render(); },
+  del(id){ S.cast=S.cast.filter(c=>c.id!==id); Store.save(); Cast.render(); Health.render(); },
+  set(id,k,v){ const c=S.cast.find(x=>x.id===id); if(c){c[k]=v; Store.save(); if(k==="payoff"||k==="role")Health.render();} },
+  render(){
+    const box=document.getElementById("castList"); const n=S.series.bookCount;
+    if(!S.cast.length){ box.innerHTML=`<p class="muted">No characters yet. Add your leads, then seed the side characters you'll grow into future leads.</p>`; }
+    else{
+      const rbClass={main:"rb-main",love:"rb-love",side:"rb-side",villain:"rb-villain"};
+      const rbLabel={main:"Main lead",love:"Love interest",side:"Side character",villain:"Villain"};
+      let bookOpts=`<option value="">payoff book…</option>`; for(let i=1;i<=n;i++)bookOpts+=`<option value="${i}">Book ${i}</option>`; bookOpts+=`<option value="spinoff">Spinoff</option><option value="none">Never (support only)</option>`;
+      box.innerHTML=S.cast.map(c=>`<div class="char">
+        <div class="chead">
+          <span class="rolebadge ${rbClass[c.role]}">${rbLabel[c.role]}</span>
+          <input type="text" style="flex:1" value="${esc(c.name)}" placeholder="Name" oninput="Cast.set('${c.id}','name',this.value)">
+          <select onchange="Cast.set('${c.id}','payoff',this.value)">${bookOpts.replace('value="'+c.payoff+'"','value="'+c.payoff+'" selected')}</select>
+          <button class="rowdel" title="Delete" onclick="Cast.del('${c.id}')">✕</button>
+        </div>
+        <div class="grid g3">
+          <label class="f" style="margin:4px 0"><span class="lab">First impression</span><textarea oninput="Cast.set('${c.id}','impression',this.value)" placeholder="how readers first see them">${esc(c.impression)}</textarea></label>
+          <label class="f" style="margin:4px 0"><span class="lab">Secret wound</span><textarea oninput="Cast.set('${c.id}','wound',this.value)" placeholder="the hidden hurt driving them">${esc(c.wound)}</textarea></label>
+          <label class="f" style="margin:4px 0"><span class="lab">Romantic future</span><textarea oninput="Cast.set('${c.id}','future',this.value)" placeholder="who they'll end up with">${esc(c.future)}</textarea></label>
+        </div>
+        <div class="grid g3">
+          <label class="f" style="margin:4px 0"><span class="lab">World / plot role</span><textarea oninput="Cast.set('${c.id}','worldRole',this.value)" placeholder="their job in the bigger plot">${esc(c.worldRole)}</textarea></label>
+          <label class="f" style="margin:4px 0"><span class="lab">Description / details</span><textarea oninput="Cast.set('${c.id}','desc',this.value)" placeholder="looks, voice, tics — lock these so Book 6 matches Book 1">${esc(c.desc)}</textarea></label>
+          <label class="f" style="margin:4px 0"><span class="lab">Status tracker</span><textarea oninput="Cast.set('${c.id}','status',this.value)" placeholder="e.g. married as of Bk2 / dies Bk4">${esc(c.status)}</textarea></label>
+        </div>
+      </div>`).join("");
+    }
+    Cast.advisor();
+  },
+  advisor(){
+    const box=document.getElementById("castAdvisor"); let h="";
+    const sides=S.cast.filter(c=>c.role==="side"||c.role==="love");
+    const seeded=sides.filter(c=>c.payoff&&c.payoff!=="none");
+    if(S.series.model!=="serialized" && S.cast.length){
+      if(sides.length && seeded.length<sides.length) h+=`<div class="advisor warn"><b>Breadcrumb check:</b> ${sides.length-seeded.length} side/love character(s) have no payoff book. In an interconnected series, side characters should be <i>future leads planted early</i> — give each a payoff book or mark them support-only.</div>`;
+      else if(seeded.length) h+=`<div class="advisor good">Breadcrumb pipeline looks good — ${seeded.length} future lead(s) seeded with a payoff book. ✓</div>`;
+    }
+    const mains=S.cast.filter(c=>c.role==="main").length, villains=S.cast.filter(c=>c.role==="villain").length;
+    if(S.cast.length && !mains) h+=`<div class="advisor warn">No main lead yet — add at least one.</div>`;
+    const g=GENRES[S.series.genre];
+    if(g && (g.arcs.includes("villain")) && !villains && S.cast.length) h+=`<div class="advisor info">${g.label} leans on a strong villain arc — consider adding a villain and mapping them (public face → private mover → belief to defeat) on the Arc Map.</div>`;
+    box.innerHTML=h;
+  }
+};
+
+/* ============================================================
+   THREADING  (promises + betrayal ladder)
+   ============================================================ */
+const Threads = {
+  addPromise(){ S.promises.push({id:"p"+Date.now()+(_cid++),what:"",type:"Setup",planted:"",payoff:"",how:""}); Store.save(); Threads.render(); },
+  delPromise(id){ S.promises=S.promises.filter(p=>p.id!==id); Store.save(); Threads.render(); Health.render(); },
+  setP(id,k,v){ const p=S.promises.find(x=>x.id===id); if(p){p[k]=v; Store.save(); Health.render();} },
+  setBetrayal(i,k,v){ S.betrayals[i]=S.betrayals[i]||{}; S.betrayals[i][k]=v; Store.save(); Health.render(); },
+  render(){
+    const n=S.series.bookCount;
+    // promises
+    let bookOpts=`<option value="">—</option>`; for(let i=1;i<=n;i++)bookOpts+=`<option value="${i}">${i}</option>`;
+    const types=["Setup","Secret","Mystery reveal","Breadcrumb (next lead)","Romantic seed","Plot object","World rule","Villain move"];
+    const pb=document.getElementById("promiseRows");
+    pb.innerHTML=S.promises.length?S.promises.map(p=>`<tr>
+      <td><textarea oninput="Threads.setP('${p.id}','what',this.value)" placeholder="e.g. Hero can't touch the sacred flame">${esc(p.what)}</textarea></td>
+      <td><select onchange="Threads.setP('${p.id}','type',this.value)">${types.map(t=>`<option ${p.type===t?'selected':''}>${t}</option>`).join("")}</select></td>
+      <td><select onchange="Threads.setP('${p.id}','planted',this.value)">${bookOpts.replace('value="'+p.planted+'"','value="'+p.planted+'" selected')}</select></td>
+      <td><select onchange="Threads.setP('${p.id}','payoff',this.value)">${bookOpts.replace('value="'+p.payoff+'"','value="'+p.payoff+'" selected')}</select></td>
+      <td><textarea oninput="Threads.setP('${p.id}','how',this.value)" placeholder="how it pays off">${esc(p.how)}</textarea></td>
+      <td><button class="rowdel" onclick="Threads.delPromise('${p.id}')">✕</button></td>
+    </tr>`).join(""):`<tr><td colspan="6" class="muted" style="text-align:center">No threads yet — add the setups, secrets, and breadcrumbs you plan to pay off.</td></tr>`;
+    // betrayal ladder
+    const bb=document.getElementById("betrayalRows"); let h="";
+    for(let i=1;i<=n;i++){ const b=S.betrayals[i]||{};
+      h+=`<tr><td><b>Book ${i}</b></td>
+        <td><textarea oninput="Threads.setBetrayal(${i},'what',this.value)" placeholder="${i===1?'personal lie / mistrust':i===n?'final choice / self-betrayal':'deeper rupture'}">${esc(b.what||"")}</textarea></td>
+        <td><textarea oninput="Threads.setBetrayal(${i},'why',this.value)" placeholder="what makes it worse than Book ${Math.max(1,i-1)}">${esc(b.why||"")}</textarea></td>
+        <td></td></tr>`; }
+    bb.innerHTML=h;
+    Threads.advisor();
+  },
+  advisor(){
+    const box=document.getElementById("threadAdvisor"); let h=""; const n=S.series.bookCount;
+    const unpaid=S.promises.filter(p=>p.what&&(!p.payoff||p.payoff===""));
+    if(unpaid.length) h+=`<div class="advisor warn"><b>${unpaid.length} thread(s) planted but never harvested:</b> ${unpaid.map(p=>'"'+(p.what.slice(0,40))+'"').join(", ")}. Every promise needs a payoff book — or cut it.</div>`;
+    const backwards=S.promises.filter(p=>p.planted&&p.payoff&&(+p.payoff<+p.planted));
+    if(backwards.length) h+=`<div class="advisor bad"><b>Timeline error:</b> ${backwards.length} thread(s) pay off <i>before</i> they're planted. Setup must come first.</div>`;
+    // betrayal variety
+    const bs=[]; for(let i=1;i<=n;i++){ const w=(S.betrayals[i]||{}).what; if(w)bs.push(w.trim().toLowerCase()); }
+    const dupes=bs.length-new Set(bs).size;
+    if(dupes>0) h+=`<div class="advisor warn"><b>Repeated rupture:</b> some books share the same betrayal wording. Vary it — readers notice "he lied again" every book. Escalate: personal → family → bond → worldview → self.</div>`;
+    if(!unpaid.length&&!backwards.length&&S.promises.length) h+=`<div class="advisor good">Every thread has a payoff, and setups precede payoffs. ✓</div>`;
+    box.innerHTML=h;
+  }
+};
+
+/* ============================================================
+   BOOK CARDS
+   ============================================================ */
+const Books = {
+  onCount(){ const n=S.series.bookCount||5; document.getElementById("bcLabel").textContent=n;
+    Books.render(); Theme.micro(); Threads.render(); Cast.render(); Health.render(); },
+  set(i,k,v){ S.books[i]=S.books[i]||{}; S.books[i][k]=v; Store.save(); Health.render(); },
+  render(){
+    const box=document.getElementById("bookCards"); const n=S.series.bookCount||5; const g=GENRES[S.series.genre];
+    const spec=g&&(g.flags.includes("magic")||g.flags.includes("prophecy"));
+    const extLabel=spec?"External / fantasy payoff":"External / plot payoff";
+    let h="";
+    for(let i=1;i<=n;i++){ const b=S.books[i]||{}; const last=(i===n);
+      const purpose=Books.purposeHint(i,n);
+      h+=`<div class="book-card ${i>1?'collapsed':''}">
+        <div class="book-head" onclick="this.parentNode.classList.toggle('collapsed')">
+          <span class="bnum">${i}</span>
+          <span class="btitle">${esc(b.title)||'Book '+i+' — working title'}<small>${purpose}</small></span>
+          <span class="caret">▼</span>
+        </div>
+        <div class="book-body">
+          <div class="grid g2">
+            <label class="f"><span class="lab">Working title</span><input type="text" value="${esc(b.title)}" oninput="Books.set(${i},'title',this.value)" placeholder="trope-forward working title"></label>
+            <label class="f"><span class="lab">Couple / lead focus</span><input type="text" value="${esc(b.couple)}" oninput="Books.set(${i},'couple',this.value)" placeholder="${S.series.model==='serialized'?'same couple across the arc':'the couple this book follows'}"></label>
+          </div>
+          <div class="grid g2">
+            <label class="f"><span class="lab">This book's unique tropes</span><input type="text" value="${esc(b.tropes)}" oninput="Books.set(${i},'tropes',this.value)" placeholder="1–3 fresh tropes on top of the recurring signature"></label>
+            <label class="f"><span class="lab">⏳ "Why now?" — the urgency</span><input type="text" value="${esc(b.whyNow)}" oninput="Books.set(${i},'whyNow',this.value)" placeholder="the ticking clock forcing this book to happen now"></label>
+          </div>
+          <div class="grid g2">
+            <label class="f"><span class="lab">External goal</span><textarea oninput="Books.set(${i},'goal',this.value)" placeholder="the concrete book-level quest">${esc(b.goal)}</textarea></label>
+            <label class="f"><span class="lab">Romantic / emotional barrier</span><textarea oninput="Books.set(${i},'barrier',this.value)" placeholder="what keeps them apart this book">${esc(b.barrier)}</textarea></label>
+          </div>
+          <label class="f"><span class="lab">Major reveal</span><textarea oninput="Books.set(${i},'reveal',this.value)" placeholder="the truth that reframes what came before">${esc(b.reveal)}</textarea></label>
+
+          <h3 style="margin-top:14px">The four endings <span class="muted">— every book lands all four</span></h3>
+          <div class="endings">
+            <div class="end-box r"><div class="et">💗 Romance ending</div><textarea oninput="Books.set(${i},'endR',this.value)" placeholder="where the relationship lands">${esc(b.endR)}</textarea></div>
+            <div class="end-box x"><div class="et">${spec?'🐉':'🎬'} ${extLabel}</div><textarea oninput="Books.set(${i},'endX',this.value)" placeholder="what external conflict resolves">${esc(b.endX)}</textarea></div>
+            <div class="end-box c"><div class="et">🪞 Character ending</div><textarea oninput="Books.set(${i},'endC',this.value)" placeholder="how the lead has changed">${esc(b.endC)}</textarea></div>
+            <div class="end-box s"><div class="et">${last?'🏁 Series resolution':'🪝 Next-book hook'}</div><textarea oninput="Books.set(${i},'endS',this.value)" placeholder="${last?'full emotional + mythic resolution (HEA/HFN)':'the bigger danger/question that pulls readers into Book '+(i+1)}">${esc(b.endS)}</textarea></div>
+          </div>
+        </div>
+      </div>`;
+    }
+    box.innerHTML=h;
+  },
+  purposeHint(i,n){
+    if(n<=1) return "";
+    if(i===1) return "Awakening — fall in love with world, couple & question. Ends: “this is bigger than we thought.”";
+    if(i===n) return "Restoration — pay the bill. Final proof, full-circle, world changed. HEA/HFN.";
+    if(i===2) return "Deepening & betrayal — prove the series has depth; a rupture that matters.";
+    const mid=Math.ceil(n/2);
+    if(i===mid) return "Choice & consequence — series midpoint; irreversible choice, leads start leading.";
+    if(i===n-1) return "Power & cost — victory will require a sacrifice they're not ready to pay.";
+    return "Escalate — close a door, open a bigger one.";
+  }
+};
+
+/* ============================================================
+   HEALTH CHECK
+   ============================================================ */
+const Health = {
+  render(){
+    const g=GENRES[S.series.genre]; const n=S.series.bookCount; const checks=[];
+    const add=(level,msg)=>checks.push({level,msg});
+    // structure
+    if(g){ if(n>=g.len[0]&&n<=g.len[1]) add("good",`Length (${n}) fits the ${g.len[0]}–${g.len[1]} sweet spot for ${g.label}.`);
+      else add("warn",`${n} books is outside the ${g.len[0]}–${g.len[1]} sweet spot for ${g.label}.`);
+      if(S.series.model===g.model) add("good",`Series model matches ${g.label} convention.`);
+      else add("warn",`${g.label} usually uses the "${g.model}" model; double-check your choice fits reader expectations.`); }
+    // promise
+    add(S.series.pWho&&S.series.pQuest?"good":"warn", S.series.pWho&&S.series.pQuest?"Series promise is filled in.":"Series promise is incomplete (Engine tab).");
+    add(S.series.promiseEmotional&&S.series.promiseWorld&&S.series.promiseMystery?"good":"info",
+      (S.series.promiseEmotional&&S.series.promiseWorld&&S.series.promiseMystery)?"All three core promises named (ache · escape · pull).":"Name all three core promises — a love to ache for, a world to escape to, a mystery to solve (Engine tab).");
+    // theme
+    add(S.theme.statement?"good":"warn", S.theme.statement?"Theme statement set.":"No overarching theme yet (Theme tab).");
+    // tropes
+    const tn=S.tropes.recurring.length;
+    if(tn===0) add("warn","No recurring tropes chosen (Tropes tab).");
+    else if(tn<=5) add("good",`${tn} recurring tropes — clean promise.`);
+    else add("warn",`${tn} recurring tropes — trim toward 3–5; move book-specific ones to Book Cards.`);
+    // engine
+    add(S.series.engine?"good":"warn", S.series.engine?"Narrative engine described.":"Describe your narrative engine (Engine tab).");
+    // cast breadcrumbs
+    const sides=S.cast.filter(c=>c.role==="side"||c.role==="love");
+    const seeded=sides.filter(c=>c.payoff&&c.payoff!=="none");
+    if(S.series.model!=="serialized"){ if(sides.length&&seeded.length===sides.length) add("good","Every side/love character has a payoff book — breadcrumbs planted.");
+      else if(sides.length) add("warn",`${sides.length-seeded.length} side character(s) lack a payoff book (Characters tab).`); }
+    if(!S.cast.some(c=>c.role==="main")) add("warn","No main lead added (Characters tab).");
+    // threads
+    const unpaid=S.promises.filter(p=>p.what&&!p.payoff);
+    if(S.promises.length){ if(!unpaid.length) add("good","All planted threads have a payoff book.");
+      else add("warn",`${unpaid.length} thread(s) planted but never paid off (Threading tab).`); }
+    else add("info","No promise/payoff threads logged yet (Threading tab) — this is the heart of series planning.");
+    const backwards=S.promises.filter(p=>p.planted&&p.payoff&&+p.payoff<+p.planted);
+    if(backwards.length) add("bad",`${backwards.length} thread(s) pay off before being planted (Threading tab).`);
+    // books completeness
+    let booksWithHook=0, booksWithEndings=0, lastResolves=false;
+    for(let i=1;i<=n;i++){ const b=S.books[i]||{};
+      if(i<n && b.endS) booksWithHook++;
+      if(b.endR&&b.endX&&b.endC&&b.endS) booksWithEndings++;
+      if(i===n && b.endS) lastResolves=true; }
+    add(booksWithHook===n-1?"good":"warn", `${booksWithHook}/${n-1} non-final books have a next-book hook.`);
+    add(booksWithEndings===n?"good":"info", `${booksWithEndings}/${n} books have all four endings mapped.`);
+    add(lastResolves?"good":"info", lastResolves?"Final book has its resolution.":"Give the final book a satisfying resolution (Book Cards).");
+    // why now
+    let why=0; for(let i=1;i<=n;i++){ if((S.books[i]||{}).whyNow) why++; }
+    add(why===n?"good":"info", `${why}/${n} books have a "why now?" urgency. No urgency = wandering.`);
+    // betrayal variety
+    const bs=[]; for(let i=1;i<=n;i++){ const w=(S.betrayals[i]||{}).what; if(w)bs.push(w.trim().toLowerCase()); }
+    if(bs.length){ const dup=bs.length-new Set(bs).size; add(dup>0?"warn":"good", dup>0?"Some ruptures repeat — vary and escalate them.":"Ruptures are varied across books."); }
+
+    // stats
+    const good=checks.filter(c=>c.level==="good").length, warn=checks.filter(c=>c.level==="warn").length, bad=checks.filter(c=>c.level==="bad").length;
+    const total=checks.length; const score=Math.round((good/total)*100);
+    document.getElementById("healthStats").innerHTML=`
+      <div class="stat"><b>${score}%</b>ready <span class="pill ${score>75?'good':score>45?'warn':'bad'}">${score>75?'strong':score>45?'getting there':'early'}</span></div>
+      <div class="stat"><b style="color:var(--good)">${good}</b>passing</div>
+      <div class="stat"><b style="color:var(--warn)">${warn}</b>to improve</div>
+      <div class="stat"><b style="color:var(--bad)">${bad}</b>fix now</div>`;
+    const order={bad:0,warn:1,info:2,good:3};
+    checks.sort((a,b)=>order[a.level]-order[b.level]);
+    document.getElementById("healthList").innerHTML=checks.map(c=>{
+      const icon={good:"✓",warn:"▲",bad:"✕",info:"ℹ"}[c.level];
+      return `<div class="advisor ${c.level}">${icon} ${c.msg}</div>`;
+    }).join("");
+  }
+};
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+const Exporter = {
+  build(){
+    const s=S.series, g=GENRES[s.genre]||{label:s.genre}, n=s.bookCount;
+    const L=[]; const p=x=>L.push(x); const nb=()=>L.push("");
+    p(`# ${s.title||"Untitled Series"} — Series Bible`);
+    if(CONFIG.cphMode && s.penName) p(`**Pen name:** ${s.penName}`);
+    p(`**Genre:** ${g.label}${s.subgenre?" ("+s.subgenre+")":""}  |  **Heat:** ${s.heat||"—"}  |  **Books:** ${n}  |  **Model:** ${({interconnected:"Interconnected standalones",serialized:"Serialized same couple",hybrid:"Hybrid saga"})[s.model]||s.model}`);
+    nb();
+    // promise
+    const lane=(g.label||"").toLowerCase();
+    if(s.pWho||s.pQuest){ p(`## Series Promise`); p(`> This is a ${s.pTone||"___"} ${lane} series about ${s.pWho||"___"} who must ${s.pQuest||"___"} ${s.pConflict||""}${s.pTruth?", only to discover "+s.pTruth:""}.`); nb(); }
+    // three promises
+    if(s.promiseEmotional||s.promiseWorld||s.promiseMystery){ p(`## Three Core Promises`);
+      if(s.promiseEmotional)p(`- **Emotional (the ache):** ${s.promiseEmotional}`);
+      if(s.promiseWorld)p(`- **World (the escape):** ${s.promiseWorld}`);
+      if(s.promiseMystery)p(`- **Mystery (the pull):** ${s.promiseMystery}`);
+      if(s.finalImage)p(`- **Final series image:** ${s.finalImage}`); nb(); }
+    // engine
+    p(`## Narrative Engine`);
+    p(`- **Type:** ${({external:"External (place/institution)",internal:"Internal (bond/wound)",both:"Both interlocked"})[s.engineType]||"—"}  |  **Driver:** ${s.driver||g.driver||"—"}`);
+    if(s.engine)p(`- ${s.engine}`);
+    ["ePull","eBarrier","ePower","eWound","eVillain","eEscalation","ePromise"].forEach(k=>{ if(s[k]){ const lbl={ePull:"Romantic pull",eBarrier:"Romantic barrier",ePower:"Power mystery",eWound:"World wound",eVillain:"Villain pressure",eEscalation:"Escalation path",ePromise:"Emotional promise"}[k]; p(`  - **${lbl}:** ${s[k]}`);} });
+    nb();
+    // theme
+    if(S.theme.statement||S.theme.macroStart){ p(`## Theme`); p(`**Statement:** ${S.theme.statement||"—"}`);
+      if(S.theme.macroStart||S.theme.macroEnd) p(`**Macro arc:** ${S.theme.macroStart||"—"}  →  ${S.theme.macroEnd||"—"}`);
+      const mic=[]; for(let i=1;i<=n;i++){ if((S.theme.micro||{})[i]) mic.push(`Bk${i}: ${S.theme.micro[i]}`); }
+      if(mic.length) p(`**Per-book facets:** ${mic.join(" · ")}`); nb(); }
+    // world
+    const wk=Object.keys(S.world).filter(k=>S.world[k]);
+    if(wk.length){ p(`## World Bible`); const labels={setting:"Setting/geography",repeating:"Repeating settings",timeline:"Timeline/history",rules:"World rules & laws",tone:"Tone",macguffin:"Overarching subplot",magic:"Magic/power system",factions:"Factions/courts",prophecy:"Prophecy/curse",pantheon:"Gods/lore",org:"The organization",hierarchy:"Ranks & roles",threat:"External threat",community:"Community hub"};
+      wk.forEach(k=>{ p(`**${labels[k]||k}:** ${S.world[k]}`); }); nb(); }
+    // tropes
+    if(S.tropes.recurring.length){ p(`## Recurring Series Tropes`); p(S.tropes.recurring.map(t=>"`"+t+"`").join(" · ")); nb(); }
+    // arcs
+    const ak=ARCS.filter(a=>S.arcs[a.id]&&(S.arcs[a.id].b||S.arcs[a.id].m||S.arcs[a.id].e));
+    if(ak.length){ p(`## Arc Map`); p(`| Arc | Beginning | Middle | End |`); p(`|---|---|---|---|`);
+      ak.forEach(a=>{ const v=S.arcs[a.id]; p(`| ${a.name.replace(/[^\x00-\x7F]/g,"").trim()} | ${(v.b||"").replace(/\|/g,"/")} | ${(v.m||"").replace(/\|/g,"/")} | ${(v.e||"").replace(/\|/g,"/")} |`); }); nb(); }
+    // cast
+    if(S.cast.length){ p(`## Characters`); const rl={main:"MAIN",love:"LOVE INTEREST",side:"SIDE",villain:"VILLAIN"};
+      S.cast.forEach(c=>{ p(`### ${c.name||"(unnamed)"} — ${rl[c.role]}${c.payoff&&c.payoff!=="none"?" · payoff Bk "+c.payoff:""}`);
+        if(c.impression)p(`- First impression: ${c.impression}`);
+        if(c.wound)p(`- Secret wound: ${c.wound}`);
+        if(c.future)p(`- Romantic future: ${c.future}`);
+        if(c.worldRole)p(`- World/plot role: ${c.worldRole}`);
+        if(c.desc)p(`- Details: ${c.desc}`);
+        if(c.status)p(`- Status: ${c.status}`); });
+      nb(); }
+    // threads
+    const pr=S.promises.filter(x=>x.what);
+    if(pr.length){ p(`## Promise & Payoff Tracker`); p(`| Planted | Type | Bk | → | Payoff |`); p(`|---|---|---|---|---|`);
+      pr.forEach(x=>p(`| ${x.what.replace(/\|/g,"/")} | ${x.type} | ${x.planted||"?"} | ${x.payoff||"?"} | ${(x.how||"").replace(/\|/g,"/")} |`)); nb(); }
+    const bl=[]; for(let i=1;i<=n;i++){ const b=S.betrayals[i]; if(b&&b.what)bl.push([i,b]); }
+    if(bl.length){ p(`## Betrayal / Rupture Ladder`); bl.forEach(([i,b])=>{ p(`- **Book ${i}:** ${b.what}${b.why?" — "+b.why:""}`); }); nb(); }
+    // books
+    p(`## Book-by-Book Map`);
+    for(let i=1;i<=n;i++){ const b=S.books[i]||{};
+      p(`### Book ${i}${b.title?": "+b.title:""}`);
+      p(`*${Books.purposeHint(i,n)}*`);
+      if(b.couple)p(`- **Focus:** ${b.couple}`);
+      if(b.tropes)p(`- **Unique tropes:** ${b.tropes}`);
+      if(b.whyNow)p(`- **Why now:** ${b.whyNow}`);
+      if(b.goal)p(`- **External goal:** ${b.goal}`);
+      if(b.barrier)p(`- **Barrier:** ${b.barrier}`);
+      if(b.reveal)p(`- **Major reveal:** ${b.reveal}`);
+      const e=[]; if(b.endR)e.push(`  - 💗 Romance: ${b.endR}`); if(b.endX)e.push(`  - 🐉 External: ${b.endX}`); if(b.endC)e.push(`  - 🪞 Character: ${b.endC}`); if(b.endS)e.push(`  - ${i===n?'🏁 Resolution':'🪝 Next hook'}: ${b.endS}`);
+      if(e.length){ p(`- **Four endings:**`); e.forEach(x=>p(x)); }
+      nb();
+    }
+    p(`---`);
+    p(`*Generated by ${CONFIG.cphMode?CONFIG.cphName:CONFIG.appName}. Paste into your planning doc or story-bible project.*`);
+    return L.join("\n");
+  },
+  render(){ document.getElementById("exportOut").value=Exporter.build(); },
+  copy(){ const t=document.getElementById("exportOut"); t.select(); document.execCommand("copy");
+    if(navigator.clipboard) navigator.clipboard.writeText(Exporter.build()); toast("Copied to clipboard"); },
+  download(ext){ const md=Exporter.build(); const blob=new Blob([md],{type:"text/plain"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=(S.series.title||"series").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-bible."+ext; a.click(); toast("Downloaded ."+ext); }
+};
+
+/* ============================================================
+   MISC
+   ============================================================ */
+function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1800); }
+const Footer={ render(){ document.getElementById("footer").innerHTML=
+  `${CONFIG.cphMode?CONFIG.cphName:CONFIG.appName} · everything saves in this browser · ${S.tropes.recurring.length} recurring tropes · ${S.cast.length} characters · ${S.promises.length} threads`; } };
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function renderAll(){
+  // branding
+  document.getElementById("appTitle").textContent = CONFIG.cphMode?CONFIG.cphName:CONFIG.appName;
+  document.title = (CONFIG.cphMode?CONFIG.cphName:CONFIG.appName)+" — Map Your Whole Series";
+  // pen name field: dropdown in cphMode
+  const pnf=document.getElementById("penNameField");
+  if(CONFIG.cphMode){
+    pnf.innerHTML=`<span class="lab">Pen name</span><select data-path="series.penName"><option value="">—</option>`+
+      CONFIG.penNames.map(x=>`<option>${x}</option>`).join("")+`</select>`;
+  }
+  document.getElementById("bookCount").value=S.series.bookCount;
+  document.getElementById("bcLabel").textContent=S.series.bookCount;
+  Genre.fillSelect();
+  bindInputs(document); syncInputs(document);
+  Genre.apply();            // cascades: advisor, theme suggest, engine grid, world, arcs, books, tropes, health
+  Theme.micro();
+  Cast.render();
+  Threads.render();
+  Promise0.preview();
+  Footer.render();
+}
+buildTabs();
+Store.load();
+renderAll();
+go('setup');
+</script>
+</body>
+</html>
