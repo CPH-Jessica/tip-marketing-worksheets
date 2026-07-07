@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Series Architect — Beta Feedback</title>
+<style>
+:root{--navy:#1B2A4A;--coral:#E8735A;--cream:#FFF8F0;--gold:#D4A853;--sage:#7A9E7E;--ink:#2D2D2D;--line:#D9D0C4;--bad:#C0492F}
+*{box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--cream);color:var(--ink);margin:0;line-height:1.6}
+.hd{background:var(--navy);color:#fff;padding:28px 22px;text-align:center}
+.hd h1{margin:0 0 6px;font-size:1.6rem}
+.hd .sub{color:#EAD9C4;font-size:.95rem;font-style:italic}
+.hd .brand{color:var(--gold);font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+.wrap{max-width:720px;margin:0 auto;padding:24px 18px 60px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(27,42,74,.06)}
+.panel h2{margin:0 0 4px;color:var(--navy);font-size:1.15rem}
+.panel .note{font-size:.85rem;color:#6b6b6b;margin:0 0 12px}
+label.fld{display:block;font-weight:700;color:var(--navy);font-size:.92rem;margin:14px 0 4px}
+label.fld small{font-weight:400;color:#6b6b6b}
+input[type=text],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 12px;font-size:.95rem;font-family:inherit;background:#FFFDF8;color:var(--ink)}
+textarea{resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral)}
+.rate{display:flex;gap:8px;margin-top:4px}
+.rate button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:9px 0;font-size:1rem;cursor:pointer;font-family:inherit}
+.rate button.on{background:var(--coral);border-color:var(--coral);color:#fff;font-weight:700}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border:none;border-radius:10px;padding:12px 20px;font-size:1rem;font-family:inherit;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--coral);color:#fff}
+.btn.gold{background:var(--gold);color:#3a2a00}
+.btn.plain{background:#fff;border:1.5px solid var(--line);color:var(--ink);font-weight:400}
+.preview{white-space:pre-wrap;background:var(--navy);color:#F3EEE4;border-radius:10px;padding:14px;font-size:.85rem;font-family:Consolas,monospace;max-height:300px;overflow:auto;margin-top:14px}
+.okmsg{background:#EFF4EE;border-left:4px solid var(--sage);border-radius:8px;padding:11px 14px;font-size:.9rem;margin-top:12px}
+.hidden{display:none}
+.foot{text-align:center;color:#888;font-size:.8rem;padding:20px}
+.req{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="hd">
+  <h1>Help me make the Series Architect better 💬</h1>
+  <div class="sub">Five minutes of your honesty = the next feature you actually want</div>
+  <div class="brand">The Invisible Pen · Beta</div>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>The basics</h2>
+    <p class="note">Only the first question is required — answer whatever you have energy for. Your draft auto-saves in this browser as you type.</p>
+
+    <label class="fld">How far did you get? <span class="req">*</span></label>
+    <select id="tool">
+      <option value="">— pick the closest —</option>
+      <option>Just poked around</option>
+      <option>Set up a series (first couple of tabs)</option>
+      <option>Mapped several tabs</option>
+      <option>Completed a full series map</option>
+      <option>Exported the series bible and used it</option>
+    </select>
+
+    <label class="fld">What kind of series were you planning? <small>(genre lane + how many books, e.g. "romantasy, 4 books" or "cozy mystery, 8 books")</small></label>
+    <input type="text" id="lane" placeholder="Your genre and series length">
+
+    <label class="fld">Which part were you in when you formed this opinion?</label>
+    <select id="doing">
+      <option value="">— pick the closest —</option>
+      <option>Setup (genre / model / length)</option>
+      <option>Engine &amp; Promise</option>
+      <option>Theme</option>
+      <option>World Bible</option>
+      <option>Arc Map</option>
+      <option>Tropes</option>
+      <option>Characters / side-character pipeline</option>
+      <option>Threading Board (promises &amp; betrayals)</option>
+      <option>Book Cards</option>
+      <option>Health Check</option>
+      <option>Export</option>
+      <option>Saving / loading my work</option>
+      <option>Just exploring</option>
+    </select>
+  </div>
+
+  <div class="panel">
+    <h2>The good, the bad, the confusing</h2>
+
+    <label class="fld">What worked — the moment it earned its keep <small>(so I don't break it)</small></label>
+    <textarea id="worked" rows="3" placeholder="e.g. 'The threading board caught a setup I'd forgotten to pay off' or 'the health check told me exactly what was missing'"></textarea>
+
+    <label class="fld">What was confusing or broken <small>(be ruthless — which tab, what you clicked, what you expected vs. what happened)</small></label>
+    <textarea id="broken" rows="4" placeholder="e.g. 'On the Book Cards tab I clicked X and expected Y, but…'"></textarea>
+
+    <label class="fld">Did any advice feel wrong for your genre? <small>(the advisor recommends series length, model, arcs — where did it miss?)</small></label>
+    <textarea id="badadvice" rows="3" placeholder="e.g. 'It told me 3–4 books for my genre but my readers expect longer' or 'the world bible fields didn't fit my lane'"></textarea>
+
+    <label class="fld">The feature you wish it had</label>
+    <textarea id="wish" rows="3" placeholder="Dream a little. What would make this the tool you open for every series?"></textarea>
+  </div>
+
+  <div class="panel">
+    <h2>Quick scores</h2>
+    <label class="fld">How easy was it to figure out?</label>
+    <div class="rate" id="rEase"></div>
+    <label class="fld">How useful was the finished series map?</label>
+    <div class="rate" id="rUseful"></div>
+    <label class="fld">Would you tell another author to use it?</label>
+    <div class="rate" id="rRec"></div>
+    <p class="note" style="margin-top:8px">1 = oof · 5 = shut up and take my money</p>
+  </div>
+
+  <div class="panel">
+    <h2>Send it</h2>
+    <label class="fld">Your name <small>(optional — so Jessica can thank you / follow up)</small></label>
+    <input type="text" id="who" placeholder="Name, and email if different from the one you'll send from">
+    <label class="fld">Anything else?</label>
+    <textarea id="extra" rows="2" placeholder="The floor is yours."></textarea>
+
+    <div class="toolbar">
+      <button class="btn primary" onclick="sendEmail()">📧 Send by email</button>
+      <button class="btn gold" onclick="copyFb(this)">📋 Copy my feedback</button>
+      <button class="btn plain" onclick="togglePreview()">Preview what gets sent</button>
+    </div>
+    <div class="okmsg hidden" id="okmsg"></div>
+    <div class="preview hidden" id="preview"></div>
+    <p class="note" style="margin-top:12px"><b>📧 Send by email</b> opens your mail app with everything filled in — just hit send. No mail app on this device? Use <b>📋 Copy</b> and paste it into an email to <b>clarkpublishinghouse@gmail.com</b> (or a Skool DM to Jessica). Every submission gets read — by Jessica AND by the Claude that builds this tool.</p>
+  </div>
+
+  <div class="foot">The Invisible Pen · Clark Publishing House LLC — nothing on this page is uploaded anywhere until you hit send.</div>
+</div>
+
+<script>
+const KEY='tip_series_architect_feedback_draft';
+const FIELDS=['tool','lane','doing','worked','broken','badadvice','wish','who','extra'];
+const RATES={rEase:0,rUseful:0,rRec:0};
+function mkRate(id){
+  const el=document.getElementById(id);
+  el.innerHTML=[1,2,3,4,5].map(n=>`<button type="button" onclick="setRate('${id}',${n},this)">${n}</button>`).join('');
+}
+function setRate(id,n,btn){
+  RATES[id]=n;
+  [...btn.parentElement.children].forEach((b,i)=>b.classList.toggle('on',i<n));
+  saveDraft();
+}
+function val(id){return (document.getElementById(id).value||'').trim();}
+function saveDraft(){
+  try{
+    const d={r:RATES};FIELDS.forEach(f=>d[f]=val(f));
+    localStorage.setItem(KEY,JSON.stringify(d));
+  }catch(e){}
+}
+function loadDraft(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'{}');
+    FIELDS.forEach(f=>{if(d[f])document.getElementById(f).value=d[f];});
+    if(d.r)Object.keys(d.r).forEach(k=>{if(d.r[k]){RATES[k]=d.r[k];const el=document.getElementById(k);[...el.children].forEach((b,i)=>b.classList.toggle('on',i<d.r[k]));}});
+  }catch(e){}
+}
+function buildBody(){
+  const L=[];
+  L.push('[SERIES ARCHITECT FEEDBACK]');
+  L.push('Got as far as: '+(val('tool')||'(not picked)'));
+  if(val('lane'))L.push('Series/genre: '+val('lane'));
+  if(val('doing'))L.push('Was in: '+val('doing'));
+  L.push('Scores: ease '+(RATES.rEase||'-')+'/5 · useful '+(RATES.rUseful||'-')+'/5 · recommend '+(RATES.rRec||'-')+'/5');
+  if(val('worked'))L.push('\nWORKED:\n'+val('worked'));
+  if(val('broken'))L.push('\nCONFUSING / BROKEN:\n'+val('broken'));
+  if(val('badadvice'))L.push('\nADVICE MISSED:\n'+val('badadvice'));
+  if(val('wish'))L.push('\nWISH:\n'+val('wish'));
+  if(val('extra'))L.push('\nOTHER:\n'+val('extra'));
+  if(val('who'))L.push('\nFrom: '+val('who'));
+  return L.join('\n');
+}
+function ready(){
+  if(!val('tool')){document.getElementById('tool').focus();flash('Pick how far you got first — it\'s the only required field.');return false;}
+  return true;
+}
+function flash(msg){
+  const ok=document.getElementById('okmsg');ok.textContent=msg;ok.classList.remove('hidden');
+  setTimeout(()=>ok.classList.add('hidden'),6000);
+}
+function sendEmail(){
+  if(!ready())return;
+  const subj='[SERIES ARCHITECT FEEDBACK] '+val('tool');
+  const body=buildBody();
+  const url='mailto:clarkpublishinghouse@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+  if(body.length>1800)flash('Long feedback (love it!) — if your mail app cuts it off, use 📋 Copy and paste instead.');
+  else flash('Opening your mail app… just hit send. Thank you! 💛');
+  window.location.href=url;
+}
+function copyFb(btn){
+  if(!ready())return;
+  navigator.clipboard.writeText(buildBody()).then(()=>{
+    flash('Copied! Paste it into an email to clarkpublishinghouse@gmail.com — subject line "[SERIES ARCHITECT FEEDBACK]" — or a Skool DM.');
+    const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1800);
+  });
+}
+function togglePreview(){
+  const p=document.getElementById('preview');
+  if(p.classList.contains('hidden')){p.textContent=buildBody();p.classList.remove('hidden');}
+  else p.classList.add('hidden');
+}
+['rEase','rUseful','rRec'].forEach(mkRate);
+FIELDS.forEach(f=>document.getElementById(f).addEventListener('input',saveDraft));
+loadDraft();
+</script>
+</body>
+</html>

@@ -202,6 +202,7 @@ details.help .body table{font-size:12px}
       <button class="btn sm" onclick="Store.importFile()">⬆ Import</button>
       <button class="btn sm" onclick="Store.exportJSON()">⬇ Save file</button>
       <button class="btn primary sm" onclick="go('export')">📤 Export bible</button>
+      <button class="btn sm" onclick="window.open('series-architect-feedback.html','_blank')" title="Tell Jessica what worked and what broke">💬 Feedback</button>
     </div>
   </div>
   <nav class="tabs" id="tabs"></nav>
@@ -1234,7 +1235,7 @@ const Exporter = {
 function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1800); }
 const Footer={ render(){ document.getElementById("footer").innerHTML=
-  `${CONFIG.cphMode?CONFIG.cphName:CONFIG.appName} · everything saves in this browser · ${S.tropes.recurring.length} recurring tropes · ${S.cast.length} characters · ${S.promises.length} threads`; } };
+  `${CONFIG.cphMode?CONFIG.cphName:CONFIG.appName} · everything saves in this browser · ${S.tropes.recurring.length} recurring tropes · ${S.cast.length} characters · ${S.promises.length} threads · <a href="series-architect-feedback.html">💬 beta feedback</a>`; } };
 
 /* ============================================================
    INIT
