@@ -209,7 +209,7 @@
 
       <div class="panel intro">
         <h2>Welcome to the Story Clinic <span class="pill">Sci-Fi · Fantasy · Mystery · Horror · Thriller</span></h2>
-        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>, built for <b>science fiction, fantasy, mystery, horror, and psychological-thriller</b> writers — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 14 editing passes (including World &amp; Rules Consistency and the Clue &amp; Fair-Play Audit), five <b>story lab reports</b> (plot, character, pacing, conflict, timeline), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits. <i>Writing romance? Use the original Story Clinic instead — this edition is calibrated for plot-first genres.</i></p>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>, built for <b>science fiction, fantasy, mystery, horror, and psychological-thriller</b> writers — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 14 editing passes (including World &amp; Rules Consistency and the Clue &amp; Fair-Play Audit), seven <b>story lab reports</b> (plot, character, pacing, conflict, timeline, dread, mystery engine), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits. <i>Writing romance? Use the original Story Clinic instead — this edition is calibrated for plot-first genres.</i></p>
         <div class="howto">
           <div class="howto-card best">
             <div class="hk">★ Best way to use it</div>
@@ -309,7 +309,7 @@
     <div class="view" id="v-reports">
       <div class="panel">
         <h2>Story Lab Reports <span class="pill">instant offline read + AI deep-dive</span></h2>
-        <p class="sub">Four whole-book reports, the kind bestseller-analysis dashboards charge for. Each one gives you an <b>instant offline read</b> computed right here from your chapters (nothing uploaded), plus a <b>copy-paste prompt</b> for the full deep-dive in your AI tool. Paste back what your AI returns and it's folded into your Fix-It report.</p>
+        <p class="sub">Seven whole-book lab reports, the kind bestseller-analysis dashboards charge for — including a dread curve for horror and an investigation engine for mysteries. Each one gives you an <b>instant offline read</b> computed right here from your chapters (nothing uploaded), plus a <b>copy-paste prompt</b> for the full deep-dive in your AI tool. Paste back what your AI returns and it's folded into your Fix-It report.</p>
         <div id="anaStats" style="margin-bottom:4px"></div>
         <div class="subtabs" id="anaTabs">
           <button class="stab on" data-a="plot">📈 Plot</button>
@@ -317,6 +317,8 @@
           <button class="stab" data-a="pacing">⏱ Pacing</button>
           <button class="stab" data-a="conflict">⚔️ Conflict</button>
           <button class="stab" data-a="timeline">🕰 Timeline</button>
+          <button class="stab" data-a="dread">🕯 Dread</button>
+          <button class="stab" data-a="mystery">🔍 Mystery</button>
         </div>
         <div id="anaBody"></div>
       </div>
@@ -1222,6 +1224,60 @@ function timelineDiag(tl){
   if(seasons.length>=2&&total<45)items.push(['rec','🍂','Possible season conflict','Mentions of '+seasons.join(' and ')+' within ~'+total+' estimated story-days. If that\'s not a flashback or memory, the seasons contradict — worth a Pass 3 look.']);
   return items;
 }
+/* Dread & Mystery engines — genre-specific lexicon curves */
+const DREADW=new Set("shadow shadows dark darkness black cold chill chilled fog mist silence silent hollow empty pale dim flicker flickered creak creaked groan groaned whisper whispered whispering rustle scratch scratching thud footsteps midnight grave graves tomb cellar basement attic shiver shivered shudder shuddered trembled trembling froze frozen breathless heartbeat pulse spine prickled crawled watched watching stared staring unseen presence figure shape lurking waiting beneath below wrong strange odd unnatural impossible rot rotten decay stench reek corpse corpses bones bone blood scream screamed screaming terror dread fear afraid terrified horror haunted curse cursed demon ghost ghosts spirit dead death dying nightmare nightmares".split(" "));
+const MYSTW=new Set("clue clues alibi alibis suspect suspects suspected motive evidence witness witnesses murder murdered murderer killer victim victims body bodies detective constable inspector sheriff investigate investigation investigating interrogate interrogation questioned secret secrets hidden poison poisoned weapon fingerprints footprints diary letter note key locked missing vanished disappeared stolen theft thief lied lying liar truth confess confessed confession accuse accused guilty innocent case solve solved solving mystery mysteries suspicious suspicion".split(" "));
+const REVEALW=new Set("discovered discovery revealed admitted confessed confession answered explained explanation solved proof proved uncovered realized recognized".split(" "));
+function lexCurve(segs,set){
+  const raw=segs.map(s=>{let n=0;toks(s.text).forEach(t=>{if(set.has(t))n++;});return n/Math.max(1,s.w)*1000;});
+  const sm=smoothArr(raw,1);
+  const mx=Math.max(0.001,...sm);
+  return sm.map(v=>v/mx*10);
+}
+function lexDensity(text,set){let n=0;toks(text).forEach(t=>{if(set.has(t))n++;});return n/Math.max(1,wc(text))*1000;}
+function dreadDiag(dr,segs){
+  const items=[];if(dr.length<3)return[['opt','ℹ','Not enough text yet','Add more chapters for a meaningful dread read.']];
+  const dens=lexDensity(state.chapters.map(c=>c.text).join('\n'),DREADW);
+  const darkLane=state.penName==='horror'||state.penName==='psythriller';
+  if(dens<6&&darkLane)items.push(['rec','🕯','Dread language is thin','About '+dens.toFixed(1)+' dread markers per 1,000 words. For a horror or thriller lane the atmosphere may be underfed — feed it specific sensory wrongness, not spooky adjectives.']);
+  if(dens<6&&!darkLane)items.push(['opt','ℹ','Low dread density','Expected for this lane — this report matters most for horror and psychological thrillers.']);
+  const iMax=dr.indexOf(Math.max(...dr));
+  items.push(['opt','💥','Biggest spike: '+chapTitle(segs[iMax].ci)+' (~'+segs[iMax].pct+'%)','Your heaviest concentration of dread. If this isn\'t the centerpiece scare, check whether the real one out-dreads it.']);
+  if(dr.length>=9){
+    const third=Math.floor(dr.length/3);const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+    if(avg(dr.slice(third*2))>avg(dr.slice(0,third))*1.15)items.push(['good','📈','The dread escalates','The final third runs darker than the opening — the screws are tightening.']);
+    else items.push(['rec','📉','Escalation check','The final third isn\'t clearly darker than the opening. Horror that plateaus stops scaring — each wave should crest higher than the last.']);
+  }
+  let run=0,best=0,at=0;dr.forEach((v,i)=>{if(v>=6){run++;if(run>best){best=run;at=i;}}else run=0;});
+  if(best>=5)items.push(['rec','😵','Numbing risk around '+chapTitle(segs[at].ci),best+' segments of unbroken high dread. Constant alarm numbs the reader — give them a breather (warmth, humor, daylight) so the next spike lands harder.']);
+  const spikes=dr.filter((v,i)=>v>=7&&(i===0||dr[i-1]<7)).length;
+  if(spikes>=2)items.push(['good','🌊','Dread comes in waves ('+spikes+' major spikes)','Quiet-quiet-BANG — spikes separated by quieter build. That\'s the rhythm that keeps readers flinching.']);
+  return items;
+}
+function mystDiag(my,segs){
+  const items=[];if(!state.chapters.length||my.length<3)return[['opt','ℹ','Not enough text yet','Add more chapters for a meaningful mystery read.']];
+  const cozyLane=state.penName==='cozy'||state.penName==='psythriller';
+  const crimeRx=/\b(murder|murdered|body|corpse|dead|killed|stolen|missing|vanished|crime)\b/i;
+  let firstCi=-1;state.chapters.some((c,i)=>{if(crimeRx.test(c.text)){firstCi=i;return true;}return false;});
+  const totW=state.chapters.reduce((a,c)=>a+wc(c.text),0);
+  if(firstCi>=0){
+    let before=0;for(let i=0;i<firstCi;i++)before+=wc(state.chapters[i].text);
+    const pct=Math.round(before/Math.max(1,totW)*100);
+    if(pct>20&&cozyLane)items.push(['rec','🪦','The crime lands late (~'+pct+'%)','The first crime marker appears in '+chapTitle(firstCi)+'. Mystery readers expect the inciting crime by roughly the 10–15% mark — everything before it runs on a promise clock.']);
+    else items.push(['opt','🪦','Inciting crime: '+chapTitle(firstCi)+' (~'+pct+'%)','The first crime-scene language the scan can see.']);
+  }else if(cozyLane)items.push(['rec','🪦','No crime detected','The scan found no crime-scene language at all. If this is a mystery, the inciting crime may be buried too deep in euphemism — or missing.']);
+  const per=state.chapters.map(c=>{let n=0;toks(c.text).forEach(t=>{if(REVEALW.has(t))n++;});return n;});
+  let stall=[],runS=[];
+  per.forEach((n,i)=>{if(n===0){runS.push(i);}else{if(runS.length>=3)stall.push(runS.map(x=>chapTitle(x)).join(', '));runS=[];}});
+  if(runS.length>=3)stall.push(runS.map(x=>chapTitle(x)).join(', '));
+  if(stall.length)items.push(['rec','🥖','Breadcrumb stall: '+stall[0],'Three or more consecutive chapters with no reveal language. Mystery momentum runs on breadcrumbs — a clue, an answer, or a fresh question every chapter or two.']);
+  else if(state.chapters.length>=4)items.push(['good','🥖','Breadcrumbs land steadily','No long stretch without reveal language — the case keeps moving.']);
+  const tot=per.reduce((a,b)=>a+b,0);
+  per.forEach((n,i)=>{if(tot>=10&&n>tot*0.4)items.push(['opt','🏔','Info avalanche at '+chapTitle(i),'A big share of the book\'s reveal language lands in this one chapter. If it isn\'t the denouement, consider spreading the answers.']);});
+  const quiet=state.chapters.map((c,i)=>lexDensity(c.text,MYSTW)<1.5?chapTitle(i):null).filter(Boolean);
+  if(quiet.length&&cozyLane)items.push(['opt','🫖','Off-case chapters: '+quiet.slice(0,5).join(', ')+(quiet.length>5?' …':''),'Little investigation language here. Subplot breathers are healthy — but every chapter should still touch the case somehow.']);
+  return items;
+}
 function timelineTableHtml(tl){
   return `<div style="overflow-x:auto;margin-top:12px"><table class="tbl"><thead><tr><th>Chapter</th><th>Clock phrases found</th><th class="center">+ days (est.)</th><th class="center">Story day</th></tr></thead><tbody>`+
     tl.map(t=>`<tr><td><b>${esc(t.title)}</b></td><td>${t.anchors.length?esc(t.anchors.slice(0,4).join(' · '))+(t.anchors.length>4?' …':''):'<span class="benchband">none — floating</span>'}</td><td class="center">${t.days?'+'+t.days:'—'}</td><td class="center">Day ${t.cum+1}</td></tr>`).join('')+
@@ -1232,6 +1288,14 @@ const ANA={
   explain:'The chart is your <b>story clock</b> — estimated story-days elapsed, chapter by chapter, read from the explicit clock phrases in your prose ("the next morning," "two weeks later," weekdays, seasons). Flat stretches are same-day sequences; jumps are time skips. The table below is your <b>Timeline Log skeleton</b> — the same format Pass 3 uses. Chapters with <b>no anchors at all</b> are "floating": readers can\'t place them. This offline read only counts explicit phrases; the AI deep-dive builds the verified log and hunts contradictions.',
   tasks:["Build the STORY TIMELINE LOG — for every chapter: [Chapter] Day N | Time of day | Location | Key events | Time elapsed since the previous chapter. Mark each entry CONFIRMED (stated on the page) or INFERRED.","Gap analysis — periods of story time with no coverage. Intentional skip, or lost time the reader will feel?","Contradiction sweep — cross-check every day, date, weekday, time-of-day, and elapsed-time reference for internal conflicts. Tag [POSSIBLE CONTRADICTION] with both quoted lines.","Travel & logistics — every location change against the time allowed. No impossible arrivals.","Season, weather & light — does described weather and daylight match the established season and time of day throughout?","Physical state — fatigue, hunger, healing, and recovery tracking honestly against elapsed time.","Relationship time — does the romance's emotional progression feel earned given the ACTUAL story time elapsed? A couple falling in love across 48 story-hours must be made credible on the page.","Series continuity (if applicable) — does this book's timeline align with the prior book's endpoint and the next book's setup?"],
   out:"TIMELINE REPORT: the full STORY TIMELINE LOG table first, then flags prioritized [CRITICAL] / [CONFIRM WITH AUTHOR] / [WATCH] — each with its location, both conflicting quotes where relevant, and the fix."},
+ dread:{label:'Dread Analysis',color:'#4A3B60',role:'a horror editor who tracks fear the way a composer tracks dynamics',
+  explain:'The curve tracks <b>dread language</b> — atmosphere gone wrong, body-level fear, half-seen threats — across the book. Horror works like music: <b>quiet-quiet-BANG</b>. Watch for three failure modes: a <b>flat line</b> (no atmosphere), an <b>unbroken high</b> (constant alarm numbs the reader), and a final third that doesn\'t out-dread the opening (a plateau stops scaring). Peaks should come in waves, each cresting higher. Writing outside horror/thriller? This report is informational — a cozy SHOULD run low.',
+  tasks:["Fear register map — scene by scene, which register is running: DREAD (anticipation, something is wrong), TERROR (in-the-moment threat), or HORROR (aftermath, revulsion). Which dominates, and does the mix evolve?","Scare ladder — list every major scare in order: setup → spike → aftermath. Does each scare crest higher than the last? Flag any scare that undercuts a bigger earlier one.","Quiet-quiet-BANG spacing — analyze the gaps between scares. Flag numbing stretches (unbroken dread with no relief) AND dead air (too long with no unease at all).","Reveal budget — how much of the threat has been shown vs. implied at each point? The monster is scariest half-seen; flag any early over-reveal that spends the mystery too soon.","Atmosphere audit — is dread built from specific sensory wrongness (a detail that shouldn't be there), or generic spooky vocabulary? Quote the strongest and weakest atmospheric beats.","Body-level fear — POV fear rendered physically and specifically, never narrated ('she was terrified'). Flag told-fear.","Survivable choices — every decision characters make under threat must be defensible in the moment; flag dumb-decision horror (it breaks reader trust).","Relief and contrast — the warmth/humor/daylight beats that reset the reader's nerves. Are there enough, and are they placed so the next scare lands harder?","Rules of the threat — the entity/killer's capabilities stay consistent (cross-check the World & Rules pass); fear evaporates when the monster's rules wobble."],
+  out:"DREAD REPORT: fear-register map, SCARE LADDER table (Scare | Setup | Spike | Aftermath | Crest higher than the last?), numbing/dead-air flags with locations, reveal-budget verdict, and the top 3 changes that would amplify dread the most."},
+ mystery:{label:'Mystery Engine Analysis',color:'#8B5E3C',role:'a mystery editor who audits momentum: questions opened, breadcrumbs dropped, answers earned',
+  explain:'The curve tracks <b>investigation language</b> — clues, suspects, alibis, evidence — across the book. A healthy mystery keeps the engine running: the crime lands early (readers expect it by <b>~10–15%</b>), a breadcrumb (clue, answer, or fresh question) lands <b>every chapter or two</b>, and the answers cluster at the denouement without going silent in the middle. The offline read flags late crimes, breadcrumb stalls, and info avalanches; the deep-dive builds the full question ledger.',
+  tasks:["Question ledger — every question the book opens (the central question plus secondary ones): where it opens, where it's answered. Orphaned questions are broken promises — flag each one.","Breadcrumb cadence — chapter by chapter, what does the case gain (a clue, an answer, a fresh question, a reversal)? Flag any stretch of 2+ chapters where the case gains nothing, and any chapter that dumps too many answers at once.","Clue fairness — cross-check the Clue & Fair-Play Audit: every clue the solution depends on is planted on-page where the reader could notice it.","Suspect field — for each suspect, map their viability over the book: when they look guilty, when they're cleared, and whether anyone is cleared so early the field collapses.","Red herring economy — each herring genuinely misleads, costs the sleuth something, and gets a real explanation.","Sleuth agency — clues are EARNED by sleuthing (observation, interviews, legwork), not delivered by coincidence, eavesdropping windfalls, or unprompted confession.","Midpoint engine — what re-energizes the middle (second crime, major reversal, ally unmasked)? If nothing does, the middle sags no matter how good the prose is.","The reveal — recontextualizes planted details (surprising-yet-inevitable), the reader could have solved it, and the denouement closes every opened question."],
+  out:"MYSTERY ENGINE REPORT: QUESTION LEDGER table (Question | Opened where | Answered where | Status), breadcrumb cadence map with stall/avalanche flags, suspect viability notes, sleuth-agency verdict, and fair-play verdict."},
  plot:{label:'Plot Analysis',color:'#E8735A',role:'a developmental editor who maps story structure against bestseller patterns',
   explain:'The chart is your <b>emotional arc</b> — the story\'s emotional temperature from first page to last, measured from the language in each slice of the book. The dotted line is neutral; the tinted zones are the extremes. Two patterns matter: roughly <b>90% of bestsellers reach both tinted zones</b> (one real high, one real low), and the line should keep <b>changing direction</b> — every climb followed by a complication. The offline read is a proxy; the AI deep-dive maps your actual beats.',
   tasks:["Narrative arc — describe the overall emotional shape of the story in plain language and name the closest classic shape (man-in-a-hole, rags-to-riches, Cinderella arc, etc.).","Structure map — locate the major beats with their approximate position as % of the book: hook, inciting incident, first plot point, midpoint shift, dark moment, climax, resolution. Mark each HIT / EARLY / LATE / MISSING and say what's actually on the page there.","Turning points — list the emotional high points and low points (scenes that shift the story's emotional temperature) and whether each is earned by what came before.","Setup & payoff — list every major promise made to the reader and where (or whether) it pays off. Orphaned setups and unearned payoffs are plot problems.","Subplots — name each subplot, whether it supports or distracts from the main plot, and whether it resolves.","Theme — state the book's theme in one sentence. Is it withheld and felt, or announced? Flag any place the book states its own moral.","Genre promise — does the plot deliver the beats this genre's readers came for, where they expect them?"],
@@ -1321,6 +1385,14 @@ function renderAnalyses(){
     const mx=Math.max(1,tl[tl.length-1].cum);
     chart=miniChart(tl.map(t=>t.cum),{min:0,max:mx,color:A.color,xchap:tl.length,ylab:[{v:mx,t:'day '+(mx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl);
     diag=timelineDiag(tl);
+  }else if(anaActive==='dread'){
+    const dcur=lexCurve(segs,DREADW);const ex=extremaOf(dcur,3);
+    chart=miniChart(dcur,{min:0,max:10.5,color:A.color,ylab:[{v:10,t:'dread'},{v:0,t:'calm'}],marks:ex.peaks.map(i=>({i}))});
+    diag=dreadDiag(dcur,segs);
+  }else if(anaActive==='mystery'){
+    const mcur=lexCurve(segs,MYSTW);const ex=extremaOf(mcur,3);
+    chart=miniChart(mcur,{min:0,max:10.5,color:A.color,ylab:[{v:10,t:'on the case'},{v:0,t:'off-case'}],marks:ex.peaks.map(i=>({i}))});
+    diag=mystDiag(mcur,segs);
   }else{
     const chars=detectCharacters();
     chart=charTableHtml(chars);
@@ -1360,6 +1432,8 @@ function assessData(){
     dims.push(mk('Emotional arc','📈',plotDiag(arc,segs),'Reaches both bands with healthy turns.'));
     dims.push(mk('Pacing','⏱',pacingDiag(pace,segs),'Varied pace, no sagging middle.'));
     dims.push(mk('Conflict','⚔️',conflictDiag(conf,segs),'Tension on the page throughout.'));
+    if(state.penName==='horror'||state.penName==='psythriller')dims.push(mk('Dread','🕯',dreadDiag(lexCurve(segs,DREADW),segs),'Dread builds in waves and escalates.'));
+    if(state.penName==='cozy'||state.penName==='psythriller')dims.push(mk('Mystery engine','🔍',mystDiag(lexCurve(segs,MYSTW),segs),'Breadcrumbs land steadily; the case never stalls.'));
   }
   dims.push(mk('Timeline','🕰',timelineDiag(timelineData()),'Every chapter anchored on the story clock.'));
   dims.push(mk('Character','🎭',characterDiag(chars),'Distinct cast, dialogue in the bestseller band.'));
@@ -1446,7 +1520,7 @@ function buildReportMd(){
   md+=`\n## 3. Editing-Pass Notes\n`;
   PASSES.forEach(p=>{const n=state.passNotes[p.id];if(n&&n.trim())md+=`\n### Pass ${p.n} — ${p.name}\n${n.trim()}\n`;});
   md+=`\n## 4. Story Report Notes\n`;
-  ['plot','character','pacing','conflict','timeline'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
+  ['plot','character','pacing','conflict','timeline','dread','mystery'].forEach(k=>{const n=(state.analysisNotes||{})[k];if(n&&n.trim())md+=`\n### ${ANA[k].label}\n${n.trim()}\n`;});
   const ov=((state.analysisNotes||{}).overall||'').trim();
   if(ov)md+=`\n## 5. Overall Assessment — Editor's Letter\n${ov}\n`;
   return md;
@@ -1578,6 +1652,9 @@ function buildReportHtml(){
       `<h3 class="ssec">⚔️ Conflict — intensity line</h3>`+miniChart(conf,{min:0,max:10.5,color:'#1B2A4A',ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:exC.peaks.map(i=>({i}))})+liDiag(cfd)+noteBlk('conflict');
     const tl=timelineData();const tmx=Math.max(1,tl[tl.length-1].cum);
     storyHtml+=`<h3 class="ssec">🕰 Timeline — story clock</h3>`+miniChart(tl.map(t=>t.cum),{min:0,max:tmx,color:'#C97A33',xchap:tl.length,ylab:[{v:tmx,t:'day '+(tmx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl)+liDiag(timelineDiag(tl))+noteBlk('timeline');
+    const dcur=lexCurve(segs,DREADW),mcur=lexCurve(segs,MYSTW);
+    storyHtml+=`<h3 class="ssec">🕯 Dread — fear curve</h3>`+miniChart(dcur,{min:0,max:10.5,color:'#4A3B60',ylab:[{v:10,t:'dread'},{v:0,t:'calm'}]})+liDiag(dreadDiag(dcur,segs))+noteBlk('dread');
+    storyHtml+=`<h3 class="ssec">🔍 Mystery engine — investigation curve</h3>`+miniChart(mcur,{min:0,max:10.5,color:'#8B5E3C',ylab:[{v:10,t:'on the case'},{v:0,t:'off-case'}]})+liDiag(mystDiag(mcur,segs))+noteBlk('mystery');
     const cand=[];
     if(gc>0)cand.push(`Fix the ${gc} critical issue type${gc===1?'':'s'} first — banned names, AI-isms, dramatic triplets. Or just run each chapter through the ✏️ EDIT prompts and let your AI apply the fixes.`);
     if(gh>0)cand.push(`Recast the ${gh} flash-forward / foreshadow lines — keep the narration in the present scene.`);
