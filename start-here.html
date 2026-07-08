@@ -1,189 +1,493 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Start Here — The Invisible Pen</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plot Your Path — The Invisible Pen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Spectral:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+/* ============================================================
+   JESSICA'S CONTROL PANEL  —  edit only what's below.
+   Everything is plain English. You never touch the code.
+   ============================================================
+
+   1) LINKS — paste your real web addresses between the quotes.
+      Leave a "#" if you don't have one yet (the button just
+      won't go anywhere until you paste a real link).            */
+
+const LINKS = {
+  oneOnOne:   "#",   // Your PAID 1:1 booking link (Paperbell) — paste yours
+  hub:        "https://payhip.com/theinvisiblepen",   // Where your classes are sold
+  liveCohort: "#"    // Your occasional LIVE cohort signup (optional) — paste yours
+};
+
+/* 2) CLASSES — this is the ONLY thing you maintain over time.
+      For each class set  status: "live"  or  status: "soon".
+      When you finish building a class, change "soon" to "live"
+      and paste its link. The tool updates itself. Done.
+
+      - "live"  = shows a real "Start here" button using its link
+      - "soon"  = shows on the roadmap as "Coming soon" (no link)  */
+
+const CLASSES = {
+  foundations: {
+    name: "Foundations of Claude",
+    status: "live",                 // <-- live or soon
+    link: LINKS.hub,                // <-- paste this class's link
+    line: "Set Claude up so it writes like YOU — your voice, your project, your system. This is the bottleneck for almost everyone."
+  },
+  tropeSchool: {
+    name: "Trope School",
+    status: "soon",
+    link: "#",
+    line: "Write books readers are actually searching for — the difference between Author Intent and Reader Intent, from your very first outline."
+  },
+  bestseller: {
+    name: "Writing a Best Selling Book",
+    status: "soon",
+    link: "#",
+    line: "Build commercial structure in from page one, so the book sells once it's written."
+  },
+  elab: {
+    name: "Edit Like a Boss",
+    status: "live",
+    link: LINKS.hub,
+    line: "Turn a messy draft into a polished, ready-to-publish manuscript using Claude as your editing partner."
+  },
+  blurbs: {
+    name: "Mastering Amazon Blurbs",
+    status: "soon",
+    link: "#",
+    line: "Write the hybrid blurb that sells to humans AND gets you found by Amazon's search — this is the flagship for a reason."
+  },
+  keywords: {
+    name: "Keywords & Categories",
+    status: "soon",
+    link: "#",
+    line: "Get your books in front of the right readers using the 7 keyword boxes and the categories that actually convert."
+  },
+  newsletter: {
+    name: "Reader Magnets & Newsletters",
+    status: "live",
+    link: LINKS.hub,
+    line: "Build the one audience asset you actually own — a reader list that pays forever, no ad spend required."
+  },
+  launch: {
+    name: "Launch Strategy",
+    status: "soon",
+    link: "#",
+    line: "Launch with organic momentum — swaps, ARC teams, timing — without burning cash on ads."
+  },
+  styleSheet: {
+    name: "Your AI Style Sheet",
+    status: "soon",
+    link: "#",
+    line: "The deeper-dive document that locks your voice so Claude stops drifting into its own defaults."
+  }
+};
+
+/* 3) That's it. Everything below this point runs the tool.
+      You shouldn't need to change anything past here.          */
+/* ============================================================ */
+</script>
+
 <style>
   :root{
-    --ink:#21302f; --muted:#5c6a6a; --bg:#fbfaf7; --card:#fff; --line:#dde6e5;
-    --teal:#0f6e6e; --teal-d:#0c5654; --gold:#b9831f;
-    --l1:#2e8b57; --l1s:#e7f3ec; --l2:#0f6e6e; --l2s:#e2f1f0;
-    --l3:#b9831f; --l3s:#f7eed9; --l4:#8a2d54; --l4s:#f6e6ed;
+    --teal-deep:#0c3a3a;
+    --teal:#15706b;
+    --teal-bright:#1f8e87;
+    --teal-soft:#e4efed;
+    --gold:#c6a052;
+    --gold-deep:#a8843a;
+    --cream:#fbf8f1;
+    --paper:#fffdf8;
+    --ink:#22302e;
+    --ink-soft:#516460;
+    --line:#d9e3e0;
+    --shadow:0 18px 50px -22px rgba(12,58,58,.45);
   }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.6;}
-  .wrap{max-width:920px;margin:0 auto;padding:26px 20px 70px;}
-  .builder{background:#fff4e0;border:1.5px dashed #d9b15e;border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13.5px;color:#6b4e16;}
-  .builder b{color:#9a6b14;}
-  .builder ul{margin:6px 0 0;padding-left:20px;}
-  header.h{text-align:center;margin-bottom:8px;}
-  .bf{font-size:34px;line-height:1;}
-  h1{margin:6px 0 6px;font-size:34px;color:var(--teal);letter-spacing:-.01em;}
-  .tagline{color:var(--muted);font-size:16px;max-width:620px;margin:0 auto;}
-  .welcome{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:22px 0 10px;font-size:16px;}
-  .welcome p{margin:0 0 12px;} .welcome p:last-child{margin-bottom:0;}
-  .welcome .big{font-size:17px;}
-  .how{font-size:15px;color:var(--muted);text-align:center;margin:20px auto 6px;max-width:680px;}
-  .pick{font-weight:800;color:var(--teal);text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:26px 0 12px;}
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media (max-width:720px){.cards{grid-template-columns:1fr;}}
-  .pickcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px 18px;cursor:pointer;transition:.15s;}
-  .pickcard:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
-  .pickcard .lv{display:inline-block;font-weight:800;font-size:13px;color:#fff;border-radius:7px;padding:2px 10px;margin-bottom:8px;}
-  .pickcard h3{margin:0 0 4px;font-size:18px;}
-  .pickcard p{margin:0;font-size:14px;color:var(--muted);}
-  .pl1 .lv{background:var(--l1);} .pl2 .lv{background:var(--l2);} .pl3 .lv{background:var(--l3);} .pl4 .lv{background:var(--l4);}
-  .detail{display:none;border-radius:16px;padding:0;overflow:hidden;margin-top:24px;border:1px solid var(--line);scroll-margin-top:14px;}
-  .detail.open{display:block;animation:fade .2s ease;}
-  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-  .detail .top{padding:16px 22px;color:#fff;}
-  .detail .top .lv{font-weight:800;font-size:13px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:7px;padding:2px 10px;}
-  .detail .top h2{margin:8px 0 2px;font-size:22px;}
-  .detail .top .who{font-size:14.5px;opacity:.95;}
-  .detail .body{background:#fff;padding:18px 22px 22px;}
-  .d1 .top{background:var(--l1);} .d2 .top{background:var(--l2);} .d3 .top{background:var(--l3);} .d4 .top{background:var(--l4);}
-  .lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin:6px 0 8px;color:var(--muted);}
-  ol.steps{margin:0;padding-left:0;list-style:none;counter-reset:s;}
-  ol.steps li{counter-increment:s;position:relative;padding:10px 0 10px 46px;border-bottom:1px dashed var(--line);}
-  ol.steps li:last-child{border-bottom:none;}
-  ol.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
-  .d1 ol.steps li::before{background:var(--l1);} .d2 ol.steps li::before{background:var(--l2);}
-  .d3 ol.steps li::before{background:var(--l3);} .d4 ol.steps li::before{background:var(--l4);}
-  ol.steps b{font-size:15.5px;}
-  ol.steps .cls{display:inline-block;font-weight:700;}
-  ol.steps small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px;}
-  .ready{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:14.5px;}
-  .d1 .ready{background:var(--l1s);} .d2 .ready{background:var(--l2s);} .d3 .ready{background:var(--l3s);} .d4 .ready{background:var(--l4s);}
-  .ready b{text-transform:uppercase;font-size:11px;letter-spacing:.06em;display:block;margin-bottom:3px;}
-  .unsure{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:26px;font-size:15px;}
-  .unsure b{color:var(--teal);}
-  .close{text-align:center;margin-top:30px;font-size:16px;color:var(--ink);}
-  .close .sig{font-weight:700;color:var(--teal);}
-  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Spectral",Georgia,serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 12% -8%, rgba(31,142,135,.10), transparent 60%),
+      radial-gradient(1000px 700px at 108% 4%, rgba(198,160,82,.12), transparent 55%),
+      var(--cream);
+    font-size:18px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:48px 22px 72px}
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:46px 44px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:5px;
+    background:linear-gradient(90deg,var(--teal),var(--teal-bright) 55%,var(--gold));
+  }
+  .eyebrow{
+    font-family:"Fraunces",serif;
+    font-weight:600;font-style:italic;
+    letter-spacing:.02em;
+    color:var(--teal);
+    font-size:.95rem;
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:"Fraunces",serif;
+    font-weight:700;
+    font-size:clamp(2.1rem,5.4vw,3rem);
+    line-height:1.04;
+    letter-spacing:-.01em;
+    margin:0 0 18px;
+    color:var(--teal-deep);
+  }
+  .lede{font-size:1.18rem;color:var(--ink-soft);margin:0 0 30px;max-width:54ch}
+  .meta{
+    display:flex;gap:22px;flex-wrap:wrap;
+    font-family:"Fraunces",serif;font-size:.92rem;color:var(--ink-soft);
+    margin:0 0 34px;padding-top:22px;border-top:1px dashed var(--line);
+  }
+  .meta b{color:var(--teal);font-weight:600}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:"Fraunces",serif;font-weight:600;font-size:1.05rem;
+    border:none;cursor:pointer;border-radius:999px;
+    padding:16px 30px;
+    background:var(--teal);color:#fff;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s ease;
+    box-shadow:0 10px 26px -12px rgba(21,112,107,.8);
+    text-decoration:none;
+  }
+  .btn:hover{background:var(--teal-deep);transform:translateY(-2px)}
+  .btn .arrow{transition:transform .2s ease}
+  .btn:hover .arrow{transform:translateX(4px)}
+  .btn.gold{background:var(--gold);color:var(--teal-deep);box-shadow:0 10px 26px -12px rgba(168,132,58,.8)}
+  .btn.gold:hover{background:var(--gold-deep);color:#fff}
+  .btn.ghost{background:transparent;color:var(--teal);box-shadow:none;border:1.5px solid var(--line);padding:13px 24px;font-size:.98rem}
+  .btn.ghost:hover{background:var(--teal-soft);transform:none;border-color:var(--teal-bright)}
+
+  /* progress */
+  .progress{margin:0 0 30px}
+  .progress .track{height:7px;background:var(--teal-soft);border-radius:999px;overflow:hidden}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:999px;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+  .progress .lbl{font-family:"Fraunces",serif;font-size:.85rem;color:var(--ink-soft);margin-top:10px;letter-spacing:.03em}
+
+  .qnum{font-family:"Fraunces",serif;font-style:italic;color:var(--gold-deep);font-size:1rem;margin:0 0 8px}
+  .qtext{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.4rem,3.6vw,1.9rem);line-height:1.18;color:var(--teal-deep);margin:0 0 26px}
+
+  .opts{display:flex;flex-direction:column;gap:13px}
+  .opt{
+    text-align:left;width:100%;cursor:pointer;
+    font-family:"Spectral",serif;font-size:1.08rem;color:var(--ink);
+    background:var(--paper);border:1.5px solid var(--line);border-radius:15px;
+    padding:18px 22px;line-height:1.4;
+    transition:border-color .15s ease, background .15s ease, transform .12s ease, box-shadow .15s ease;
+    display:flex;align-items:center;gap:15px;
+  }
+  .opt .dot{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);transition:all .15s ease}
+  .opt:hover{border-color:var(--teal-bright);background:#fff;transform:translateY(-1px);box-shadow:0 8px 22px -16px rgba(12,58,58,.6)}
+  .opt:hover .dot{border-color:var(--teal-bright);background:var(--teal-soft)}
+
+  .backrow{margin-top:26px;display:flex;justify-content:space-between;align-items:center}
+  .back{background:none;border:none;cursor:pointer;color:var(--ink-soft);font-family:"Fraunces",serif;font-size:.95rem;text-decoration:underline;text-underline-offset:3px}
+  .back:hover{color:var(--teal)}
+  .back[hidden]{visibility:hidden}
+
+  /* results */
+  .badge{
+    display:inline-block;font-family:"Fraunces",serif;font-style:italic;font-weight:500;
+    background:var(--teal-soft);color:var(--teal);border-radius:999px;
+    padding:7px 18px;font-size:.95rem;margin:0 0 18px;
+  }
+  .readout{font-size:1.12rem;color:var(--ink-soft);margin:0 0 12px}
+  .pathtitle{font-family:"Fraunces",serif;font-weight:600;color:var(--gold-deep);font-style:italic;font-size:1.15rem;margin:34px 0 16px;display:flex;align-items:center;gap:12px}
+  .pathtitle::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .step{
+    display:flex;gap:18px;align-items:flex-start;
+    border:1.5px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:14px;background:var(--paper);
+    position:relative;
+  }
+  .step.start{border-color:var(--teal-bright);background:linear-gradient(180deg,#fff, #f4faf8);box-shadow:0 12px 30px -20px rgba(21,112,107,.7)}
+  .stepnum{
+    flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+    display:grid;place-items:center;font-family:"Fraunces",serif;font-weight:700;
+    background:var(--teal-soft);color:var(--teal);font-size:1.05rem;
+  }
+  .step.start .stepnum{background:var(--teal);color:#fff}
+  .stepbody{flex:1}
+  .stepname{font-family:"Fraunces",serif;font-weight:600;font-size:1.16rem;color:var(--teal-deep);margin:0 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .tag{font-family:"Fraunces",serif;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+  .tag.live{background:var(--teal);color:#fff}
+  .tag.soon{background:#efe7d2;color:var(--gold-deep)}
+  .tag.here{background:var(--gold);color:var(--teal-deep)}
+  .stepline{font-size:1.02rem;color:var(--ink-soft);margin:0 0 14px}
+  .step .btn{padding:11px 22px;font-size:.96rem}
+
+  .upsell{
+    margin:38px 0 0;padding:30px 30px;border-radius:18px;
+    background:linear-gradient(135deg,var(--teal-deep),var(--teal));
+    color:#fff;box-shadow:var(--shadow);
+  }
+  .upsell h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.5rem;margin:0 0 10px;color:#fff}
+  .upsell p{color:#d7eae7;margin:0 0 20px;font-size:1.06rem}
+  .upsell .btn{background:var(--gold);color:var(--teal-deep)}
+  .upsell .btn:hover{background:#fff;color:var(--teal-deep)}
+
+  .footnote{margin:30px 0 0;text-align:center;color:var(--ink-soft);font-size:1rem}
+  .footnote a{color:var(--teal);font-weight:600}
+  .restart{margin-top:30px;text-align:center}
+
+  .brand{text-align:center;margin:0 0 26px}
+  .brand .name{font-family:"Fraunces",serif;font-weight:600;letter-spacing:.04em;color:var(--teal);font-size:1rem}
+  .brand .tag2{font-family:"Spectral",serif;font-style:italic;color:var(--ink-soft);font-size:.92rem}
+
+  @media (max-width:560px){
+    .card{padding:34px 22px}
+    .meta{gap:14px}
+    .step{flex-direction:row}
+  }
+  .fade{animation:fade .45s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-
-  <header class="h">
-    <div class="bf">🦋</div>
-    <h1>Start Here</h1>
-    <p class="tagline">Welcome to The Invisible Pen. Don't drink from the firehose — let's find <i>your</i> starting point.</p>
-  </header>
-
-  <div class="welcome">
-    <p class="big">You found us. Good.</p>
-    <p>The Invisible Pen is for authors over 40 who want to use AI as a writing <i>partner</i> — not a replacement. No hype. No fear-mongering. No “get rich quick.” Just real, practical help learning to write and publish with AI without losing your voice.</p>
-    <p>There's a lot in here, and I built it that way on purpose. But I know that can feel like walking into a library with no signs. So forget the rest of the classroom for one minute. You only need to answer one question: <b>which of these four sounds the most like you, right now?</b></p>
-    <p>Pick that one. Do the three steps. Come back when you're ready to level up. That's the whole plan.</p>
+  <div class="brand">
+    <div class="name">THE INVISIBLE PEN</div>
+    <div class="tag2">Writing with AI, Over 40</div>
   </div>
-
-  <p class="how">Not sure you're in the “right” level? Nobody is, at first. Pick the one that feels closest — you can always reach up or drop back. There's no wrong door here.</p>
-
-  <div class="pick">👇 Which one is you?</div>
-  <div class="cards">
-    <div class="pickcard pl1" onclick="openLvl('l1')">
-      <span class="lv">L1</span><h3>Beginner Writer</h3>
-      <p>Haven't published yet. New to all of it. “Where do I even begin?”</p>
-    </div>
-    <div class="pickcard pl2" onclick="openLvl('l2')">
-      <span class="lv">L2</span><h3>Newly Published</h3>
-      <p>One book out. New to drafting with AI. Marketing's a mystery — and you half-wonder if AI is cheating.</p>
-    </div>
-    <div class="pickcard pl3" onclick="openLvl('l3')">
-      <span class="lv">L3</span><h3>Established &amp; AI-Curious</h3>
-      <p>A few books in. Using AI but it doesn't sound like <i>you</i> yet — and you'd like to keep this quiet for now.</p>
-    </div>
-    <div class="pickcard pl4" onclick="openLvl('l4')">
-      <span class="lv">L4</span><h3>Competent &amp; Optimizing</h3>
-      <p>You run the whole pipeline. Now you want to sharpen, scale, and stay ahead.</p>
-    </div>
-  </div>
-
-  <!-- L1 -->
-  <div class="detail d1" id="l1">
-    <div class="top"><span class="lv">L1 · Beginner Writer</span><h2>Let's build your foundation</h2>
-      <div class="who">You haven't published yet, the words <i>trope</i> and <i>blurb</i> are fuzzy, and you've dabbled with AI but nothing serious. Perfect. You're exactly who this was built for.</div></div>
-    <div class="body">
-      <div class="lbl">Your first three steps</div>
-      <ol class="steps">
-        <li><b><span class="cls">Watch the Live Call Replays.</span></b><small>Get the lay of the land — my background, the “AI as partner” philosophy, and the 5-Phase Author Roadmap so you can see the whole journey before you start walking it.</small></li>
-        <li><b><span class="cls">Take “L1 Class: Understanding Tropes.”</span></b><small>Before you write a single word, learn to speak reader language. This is the difference between a book that sells and one that sits.</small></li>
-        <li><b><span class="cls">Start “Pen Name Launcher — The Complete System.”</span></b><small>Six lessons that walk you from naming your pen name all the way to launch week — newsletter, reader magnet, cover, KDP, the works.</small></li>
-      </ol>
-      <div class="ready"><b>You're ready for L2 when…</b> you've drafted (or nearly) your first book and the basic pieces — pen name, newsletter, cover, blurb — aren't scary anymore, even if they're rough.</div>
-    </div>
-  </div>
-
-  <!-- L2 -->
-  <div class="detail d2" id="l2">
-    <div class="top"><span class="lv">L2 · Newly Published</span><h2>Make AI yours — and learn to sell the book</h2>
-      <div class="who">You've got a book out, you're new to actually drafting with AI, you have a few tools but aren't sure how to use them, and marketing feels like a foreign language. Let's fix all three.</div></div>
-    <div class="body">
-      <div class="lbl">Your first three steps</div>
-      <ol class="steps">
-        <li><b><span class="cls">Set up your Claude: “Foundations of Claude — Before You Prompt,” then Part 1.</span></b><small>The fastest way to stop wondering if AI is “cheating” is to make it sound like YOU. That starts with teaching it who you are.</small></li>
-        <li><b><span class="cls">Grab the Free Resources + “How to Build Custom Gems for Blurbs.”</span></b><small>The Banned List, the blurb checkers, and the Gems guide give you a real handle on keywords, blurbs, and the marketing that actually moves books.</small></li>
-        <li><b><span class="cls">Watch “How I Use AI Tools to Edit” and try the Beta Reader Bestie skill.</span></b><small>See the whole process — brainstorm to edit — and put a brutally honest beta reader to work on your pages.</small></li>
-      </ol>
-      <div class="ready"><b>You're ready for L3 when…</b> you've made peace that AI is a real partner, you can use your core tools, and you've got a basic marketing handle on your published book.</div>
-    </div>
-  </div>
-
-  <!-- L3 -->
-  <div class="detail d3" id="l3">
-    <div class="top"><span class="lv">L3 · Established &amp; AI-Curious</span><h2>Get it to sound like YOU</h2>
-      <div class="who">You've got a backlist, you're folding AI into a process that already works, and you may not want readers or peers knowing yet. The headline goal here is simple: make the words sound unmistakably like you.</div></div>
-    <div class="body">
-      <div class="lbl">Your first three steps</div>
-      <ol class="steps">
-        <li><b><span class="cls">Take “How to Give Claude a Brain.”</span></b><small>Claude Projects — Instructions, Knowledge, Conversations. This is the efficiency unlock most established authors have backwards, and it changes everything.</small></li>
-        <li><b><span class="cls">Build your voice: “Foundations Part 2 — Building Skills” + the Fiction Ghostwriter Skill Builder.</span></b><small>This is the “sound like me” work. You build it once, and Claude carries your voice into every session after.</small></li>
-        <li><b><span class="cls">Run “Edit Like a Boss” (the 9-pass system).</span></b><small>Edits that protect your voice instead of flattening it. Add the Slasher Editor skill when you're ready to cut hard.</small></li>
-      </ol>
-      <div class="ready"><b>You're ready for L4 when…</b> AI is woven into your workflow (projects, instructions, a dialed-in voice skill) and you trust the output is genuinely your voice.</div>
-    </div>
-  </div>
-
-  <!-- L4 -->
-  <div class="detail d4" id="l4">
-    <div class="top"><span class="lv">L4 · Competent &amp; Optimizing</span><h2>Sharpen, scale, stay ahead</h2>
-      <div class="who">You can run the whole pipeline. Now it's about refining your systems, scaling across pen names, and keeping pace as the tools change. (This is where I live, too.)</div></div>
-    <div class="body">
-      <div class="lbl">Where to point your energy</div>
-      <ol class="steps">
-        <li><b><span class="cls">“Writing Spicy with AI” + the heat workflow.</span></b><small>The thing most tools won't help you with — and one of our real differentiators. Lean in.</small></li>
-        <li><b><span class="cls">Scale with the Premium Skill Packs + Story Studio.</span></b><small>Series Architect, Market Compass, Plot Engine, and a dashboard to keep every pen name straight without losing your mind.</small></li>
-        <li><b><span class="cls">Go advanced: multi-LLM, the Translator, and the live cohort calls.</span></b><small>Route work across tools, open new markets, and bring your real problems to the calls — that's where the best stuff happens.</small></li>
-      </ol>
-      <div class="ready"><b>This is the mastery tier.</b> The goal isn't to “finish” — it's to keep getting sharper. If you want direct time with me, the Penthouse cohort is where that lives.</div>
-    </div>
-  </div>
-
-  <div class="unsure">
-    <b>Honestly not sure?</b> Start at <b>L1</b> — nobody will judge you, and you'll only move faster for having the basics solid. Or watch <b>“Meet Your Co-Writer: Claude Cowork”</b> for the no-hype overview, then come back and pick.
-  </div>
-
-  <div class="close">
-    You're not behind, and you're not too late. Pick your level, take the first step, and I'll be right here.<br>
-    I'm pulling for you — we're all in this together. 🦋<br>
-    <span class="sig">— Jessica</span>
-  </div>
-
-  <footer>The Invisible Pen · Start Here — Onboarding Path · routes to your live classroom classes by level</footer>
-
+  <div class="card" id="app"></div>
 </div>
 
 <script>
-  function openLvl(id){
-    document.querySelectorAll('.detail').forEach(function(d){d.classList.remove('open');});
-    var el=document.getElementById(id);
-    el.classList.add('open');
-    el.scrollIntoView({behavior:'smooth', block:'start'});
+/* ---------- Questions & routing ---------- */
+const QUESTIONS = [
+  { q:"Where are you in your author journey right now?",
+    a:[
+      {t:"Haven't started yet — I'm planning my first book", s:{A:3,D:1}},
+      {t:"Writing my first book now", s:{A:3,B:1}},
+      {t:"I have a finished (or nearly finished) manuscript", s:{B:3}},
+      {t:"Published, 1–3 books, but not getting traction", s:{C:2,B:1}},
+      {t:"Published, 4+ books, and I want more readers & income", s:{C:3}}
+    ]},
+  { q:"How many books do you have published?",
+    a:[
+      {t:"None yet", s:{A:2}},
+      {t:"1 to 3", s:{B:2,C:1}},
+      {t:"4 or more", s:{C:3}}
+    ]},
+  { q:"Your email newsletter / reader list?",
+    a:[
+      {t:"I don't have one", s:{A:1,B:1}},
+      {t:"I have one, but it's dormant or tiny", s:{B:2,C:2}},
+      {t:"Active, but under about 500 subscribers", s:{C:2}},
+      {t:"Active and growing nicely", s:{D:1}}
+    ]},
+  { q:"Your AI setup with Claude — style sheet, project, your voice?",
+    a:[
+      {t:"What's a style sheet? I haven't set anything up", s:{A:2,D:2}},
+      {t:"I use AI, but it never quite sounds like me", s:{D:3,A:1}},
+      {t:"I've got some setup, but it's inconsistent", s:{D:2,B:1}},
+      {t:"Fully set up and humming along", s:{C:1,B:1}}
+    ]},
+  { q:"What's the thing actually stopping you right now?",
+    a:[
+      {t:"I don't know where to begin", s:{A:3}},
+      {t:"My book's done but I'm stuck on editing & polishing", s:{B:3}},
+      {t:"I'm published but invisible — nobody's finding me", s:{C:3}},
+      {t:"I want AI to write in MY voice, not a generic robot's", s:{D:3}}
+    ]},
+  { q:"Picture success a year from now. It looks like…",
+    a:[
+      {t:"Finally finishing and publishing my first book", s:{A:2,B:1}},
+      {t:"A polished catalog readers actually find and buy", s:{C:2}},
+      {t:"A calm system so writing & publishing isn't chaos", s:{D:2,B:1}},
+      {t:"Steady, reliable income from my books", s:{C:1,B:1}}
+    ]},
+  { q:"How are you using AI today?",
+    a:[
+      {t:"Barely — honestly, it makes me nervous", s:{A:2}},
+      {t:"Dabbling with basic prompts", s:{A:1,D:1}},
+      {t:"Regularly, but I want it doing much more", s:{D:2,B:1}},
+      {t:"It's core to how I work", s:{D:2,C:1}}
+    ]}
+];
+
+/* ---------- Track definitions ---------- */
+const TRACKS = {
+  A:{ label:"Foundation Builder",
+      read:"You're at the best possible starting point: the beginning, before any bad habits set in. The authors who struggle most aren't the beginners — they're the ones who skipped setup and are now untangling it. You get to do it right the first time.",
+      path:["foundations","tropeSchool","bestseller","elab"] },
+  B:{ label:"Launch Ready",
+      read:"You've already done the hardest part — you have a book, or you're nearly there. Now it's about polish and getting it into readers' hands without burning out or burning cash. Don't let \u201cit's not perfect yet\u201d keep it parked on your hard drive.",
+      path:["elab","foundations","blurbs","newsletter"] },
+  C:{ label:"Visibility Seeker",
+      read:"You've got books out — that already puts you ahead of most people who only ever talk about writing one. Your problem isn't your writing. It's that readers can't find you. That's fixable, and it doesn't require a dime of ad spend.",
+      path:["newsletter","blurbs","keywords","launch"] },
+  D:{ label:"AI Accelerator",
+      read:"You've got the bones in place — now you want Claude working as a real co-pilot that sounds like you, not a generic robot. Here's the secret: it's not about fancier prompts. It's about setup. Lock the foundation and everything downstream gets easier.",
+      path:["foundations","styleSheet","elab"] }
+};
+
+/* ---------- State ---------- */
+let step = -1;                 // -1 = intro
+const scores = {A:0,B:0,C:0,D:0};
+const answers = [];
+const app = document.getElementById('app');
+
+function render(){
+  if(step === -1){ intro(); return; }
+  if(step >= QUESTIONS.length){ results(); return; }
+  question(step);
+}
+
+function intro(){
+  app.innerHTML = `
+    <div class="fade">
+      <p class="eyebrow">Plot Your Path</p>
+      <h1>Not sure where to start with Claude? Let's figure that out together.</h1>
+      <p class="lede">Answer 7 quick questions and I'll tell you exactly where you are, what's stopping you, and the order to tackle it in — so you can move forward on your own, today.</p>
+      <div class="meta">
+        <span><b>7</b> questions</span>
+        <span><b>~2</b> minutes</span>
+        <span><b>No</b> email required</span>
+      </div>
+      <button class="btn" onclick="next()">Build my roadmap <span class="arrow">&rarr;</span></button>
+    </div>`;
+}
+
+function question(i){
+  const Q = QUESTIONS[i];
+  const pct = Math.round((i/QUESTIONS.length)*100);
+  app.innerHTML = `
+    <div class="fade">
+      <div class="progress">
+        <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+        <div class="lbl">Question ${i+1} of ${QUESTIONS.length}</div>
+      </div>
+      <p class="qnum">Question ${i+1}</p>
+      <p class="qtext">${Q.q}</p>
+      <div class="opts">
+        ${Q.a.map((o,idx)=>`
+          <button class="opt" onclick="choose(${idx})">
+            <span class="dot"></span><span>${o.t}</span>
+          </button>`).join('')}
+      </div>
+      <div class="backrow">
+        <button class="back" onclick="back()" ${i===0?'hidden':''}>&larr; Back</button>
+        <span></span>
+      </div>
+    </div>`;
+}
+
+function next(){ step++; render(); }
+
+function choose(idx){
+  const Q = QUESTIONS[step];
+  // undo previous answer for this step if revisiting
+  if(answers[step]!==undefined){
+    const prev = Q.a[answers[step]].s;
+    for(const k in prev) scores[k]-=prev[k];
   }
+  const s = Q.a[idx].s;
+  for(const k in s) scores[k]+=s[k];
+  answers[step]=idx;
+  step++; render();
+}
+
+function back(){
+  step--;
+  // remove the answer we're going back to so it re-applies cleanly on re-choose
+  if(answers[step]!==undefined){
+    const prev = QUESTIONS[step].a[answers[step]].s;
+    for(const k in prev) scores[k]-=prev[k];
+    answers[step]=undefined;
+  }
+  render();
+}
+
+function winner(){
+  // tie-break order: A > B > C > D (foundation-first when unsure)
+  const order=["A","B","C","D"];
+  let best=order[0];
+  for(const k of order){ if(scores[k]>scores[best]) best=k; }
+  return best;
+}
+
+function classStep(id, n, isStart){
+  const c = CLASSES[id];
+  const live = c.status==="live";
+  const tag = isStart ? `<span class="tag here">Start here</span>`
+            : live    ? `<span class="tag live">Available now</span>`
+                      : `<span class="tag soon">Coming soon</span>`;
+  const cta = live
+      ? `<a class="btn" href="${c.link}" target="_blank" rel="noopener">Start this class <span class="arrow">&rarr;</span></a>`
+      : ``;
+  return `
+    <div class="step ${isStart?'start':''}">
+      <div class="stepnum">${n}</div>
+      <div class="stepbody">
+        <div class="stepname">${c.name} ${tag}</div>
+        <p class="stepline">${c.line}</p>
+        ${cta}
+      </div>
+    </div>`;
+}
+
+function results(){
+  const w = winner();
+  const T = TRACKS[w];
+  // find the first LIVE class in the path = the "start here"
+  const startId = T.path.find(id => CLASSES[id].status==="live");
+  const steps = T.path.map((id,i)=>classStep(id, i+1, id===startId)).join('');
+
+  app.innerHTML = `
+    <div class="fade">
+      <p class="eyebrow">Plot Your Path</p>
+      <span class="badge">Based on your answers, you're a&hellip;</span>
+      <h1>${T.label}</h1>
+      <p class="readout">${T.read}</p>
+
+      <p class="pathtitle">Your path, in order</p>
+      ${steps}
+
+      <div class="upsell">
+        <h3>Want a human in your corner?</h3>
+        <p>Book a 1:1 and we'll map this roadmap to YOUR books, your goals, and your pace — together. It's the fastest way to skip the guesswork.</p>
+        <a class="btn" href="${LINKS.oneOnOne}" target="_blank" rel="noopener">Book a 1:1 with Jessica <span class="arrow">&rarr;</span></a>
+      </div>
+
+      <p class="footnote">
+        Everything you need lives in one place &mdash; <a href="${LINKS.hub}" target="_blank" rel="noopener">browse the full library</a>.<br>
+        Prefer to learn live with a small group? I run an occasional <a href="${LINKS.liveCohort}" target="_blank" rel="noopener">live cohort</a>.
+      </p>
+
+      <div class="restart">
+        <button class="btn ghost" onclick="reset()">Start over</button>
+      </div>
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function reset(){
+  step=-1; for(const k in scores) scores[k]=0; answers.length=0; render();
+}
+
+render();
 </script>
 </body>
 </html>
