@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>The Writing Space — The Invisible Pen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Spectral:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-deep:#0c3a3a;
+    --teal:#15706b;
+    --teal-bright:#1f8e87;
+    --teal-soft:#e4efed;
+    --gold:#c6a052;
+    --gold-deep:#a8843a;
+    --cream:#fbf8f1;
+    --paper:#fffdf8;
+    --ink:#22302e;
+    --ink-soft:#516460;
+    --line:#d9e3e0;
+    --shadow:0 18px 50px -22px rgba(12,58,58,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Spectral",Georgia,serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 12% -8%, rgba(31,142,135,.10), transparent 60%),
+      radial-gradient(1000px 700px at 108% 4%, rgba(198,160,82,.12), transparent 55%),
+      var(--cream);
+    font-size:18px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:48px 22px 72px}
+  .brand{text-align:center;margin:0 0 26px}
+  .brand .name{font-family:"Fraunces",serif;font-weight:600;letter-spacing:.04em;color:var(--teal);font-size:1rem}
+  .brand .tag2{font-family:"Spectral",serif;font-style:italic;color:var(--ink-soft);font-size:.92rem}
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:46px 44px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:5px;
+    background:linear-gradient(90deg,var(--teal),var(--teal-bright) 55%,var(--gold));
+  }
+  .eyebrow{
+    font-family:"Fraunces",serif;font-weight:600;font-style:italic;
+    letter-spacing:.02em;color:var(--teal);font-size:.95rem;margin:0 0 14px;
+  }
+  h1{
+    font-family:"Fraunces",serif;font-weight:700;
+    font-size:clamp(2rem,5.2vw,2.8rem);line-height:1.06;
+    letter-spacing:-.01em;margin:0 0 18px;color:var(--teal-deep);
+  }
+  .lede{font-size:1.16rem;color:var(--ink-soft);margin:0 0 26px;max-width:56ch}
+  .premium{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:"Fraunces",serif;font-weight:600;font-size:.85rem;
+    letter-spacing:.08em;text-transform:uppercase;
+    background:var(--gold);color:var(--teal-deep);
+    border-radius:999px;padding:7px 18px;margin:0 0 26px;
+  }
+  .grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;
+    margin:0 0 30px;padding:24px 0 4px;border-top:1px dashed var(--line);
+  }
+  @media (max-width:560px){.grid{grid-template-columns:1fr}.card{padding:34px 22px}}
+  .g .k{font-family:"Fraunces",serif;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 3px}
+  .g .v{font-family:"Fraunces",serif;font-weight:600;font-size:1.08rem;color:var(--teal-deep)}
+  .g .n{font-size:.95rem;color:var(--ink-soft)}
+  .howtitle{font-family:"Fraunces",serif;font-weight:600;color:var(--gold-deep);font-style:italic;font-size:1.12rem;margin:0 0 14px;display:flex;align-items:center;gap:12px}
+  .howtitle::after{content:"";flex:1;height:1px;background:var(--line)}
+  .how{margin:0 0 30px;padding:0;list-style:none;counter-reset:hs}
+  .how li{
+    counter-increment:hs;display:flex;gap:14px;align-items:flex-start;
+    margin-bottom:12px;font-size:1.04rem;color:var(--ink-soft);
+  }
+  .how li::before{
+    content:counter(hs);flex:0 0 auto;width:30px;height:30px;border-radius:50%;
+    display:grid;place-items:center;font-family:"Fraunces",serif;font-weight:700;
+    background:var(--teal-soft);color:var(--teal);font-size:.95rem;
+  }
+  .how li b{color:var(--ink)}
+  form{border-top:1px dashed var(--line);padding-top:28px}
+  .frow{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+  .frow > div{flex:1;min-width:220px}
+  label{display:block;font-family:"Fraunces",serif;font-weight:600;font-size:.98rem;color:var(--teal-deep);margin-bottom:5px}
+  .hint{font-size:.88rem;color:var(--ink-soft);margin:2px 0 6px}
+  input[type=text],input[type=email]{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;
+    padding:13px 15px;font-family:"Spectral",serif;font-size:1.02rem;color:var(--ink);
+    background:#fff;
+  }
+  input:focus{outline:none;border-color:var(--teal-bright);box-shadow:0 0 0 3px rgba(31,142,135,.15)}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:"Fraunces",serif;font-weight:600;font-size:1.05rem;
+    border:none;cursor:pointer;border-radius:999px;
+    padding:16px 30px;background:var(--teal);color:#fff;
+    transition:transform .15s ease, background .2s ease;
+    box-shadow:0 10px 26px -12px rgba(21,112,107,.8);
+    text-decoration:none;margin-top:6px;
+  }
+  .btn:hover{background:var(--teal-deep);transform:translateY(-2px)}
+  .btn .arrow{transition:transform .2s ease}
+  .btn:hover .arrow{transform:translateX(4px)}
+  .fineprint{font-size:.92rem;color:var(--ink-soft);margin-top:16px}
+  .formerr{
+    display:none;background:#fce8e2;border-left:4px solid #b23a3a;
+    border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0 0;
+    font-size:.95rem;color:#8a3524;
+  }
+  .success{
+    display:none;text-align:left;
+  }
+  .success .bigcheck{
+    width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+    background:var(--teal);color:#fff;font-size:1.6rem;margin-bottom:18px;
+  }
+  .success h2{font-family:"Fraunces",serif;font-weight:700;font-size:1.7rem;color:var(--teal-deep);margin:0 0 12px}
+  .success p{color:var(--ink-soft);font-size:1.05rem}
+  .success b{color:var(--ink)}
+  .fade{animation:fade .45s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="name">THE INVISIBLE PEN</div>
+    <div class="tag2">Writing with AI, Over 40</div>
+  </div>
+
+  <div class="card fade">
+    <p class="eyebrow">The Writing Space</p>
+    <h1>Come do the boring work with me.</h1>
+    <p class="lede">A live co-working space inside our Skool community. I share my screen, you bring whatever you're avoiding — drafting, editing, setup, admin — and we sit down and actually do it, together. No lecture, no slides. Just the work, finally getting done.</p>
+    <span class="premium">★ Premium members only</span>
+
+    <div class="grid">
+      <div class="g"><div class="k">Where</div><div class="v">Inside Skool</div><div class="n">Our private community space</div></div>
+      <div class="g"><div class="k">Format</div><div class="v">Live co-working</div><div class="n">Watch my screen, work alongside me</div></div>
+      <div class="g"><div class="k">Cost</div><div class="v">Included</div><div class="n">Free with Premium membership</div></div>
+      <div class="g"><div class="k">Bring</div><div class="v">Your boring work</div><div class="n">The task you keep putting off</div></div>
+    </div>
+
+    <p class="howtitle">How it works</p>
+    <ol class="how">
+      <li><b>Sign up below</b> with the name you use in Skool.</li>
+      <li><b>Confirm your email</b> — a confirmation note lands in your inbox right after you sign up. One click.</li>
+      <li><b>I verify your Premium membership</b> in Skool — every signup is checked by hand.</li>
+      <li><b>You get the session details</b> by email once you're confirmed. Then just show up and write.</li>
+    </ol>
+
+    <div id="formWrap">
+      <form id="signupForm" action="https://assets.mailerlite.com/jsonp/1362400/forms/192433140128548254/subscribe" method="post" target="_blank">
+        <div class="frow">
+          <div>
+            <label for="fName">First name</label>
+            <input type="text" id="fName" name="fields[name]" autocomplete="given-name" required>
+          </div>
+          <div>
+            <label for="fEmail">Email</label>
+            <input type="email" id="fEmail" name="fields[email]" autocomplete="email" required>
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="fSkool">Your Skool username</label>
+            <div class="hint">Exactly as it appears in the community — so I can confirm your Premium membership.</div>
+            <input type="text" id="fSkool" name="fields[skool_username]" required>
+          </div>
+        </div>
+        <input type="hidden" name="fields[membership_tier]" value="Premium (to verify)">
+        <input type="hidden" name="ml-submit" value="1">
+        <input type="hidden" name="anticsrf" value="true">
+        <button type="submit" class="btn">Save my seat <span class="arrow">&rarr;</span></button>
+        <div class="formerr" id="formErr">Hmm, that didn&rsquo;t go through. Please try again &mdash; or just message me inside the community and I&rsquo;ll add you myself.</div>
+        <p class="fineprint">Not Premium yet? Upgrade inside the community first, then come back and grab your seat.</p>
+      </form>
+    </div>
+
+    <div class="success" id="successBox">
+      <div class="bigcheck">&#10003;</div>
+      <h2>You're almost in.</h2>
+      <p>Two quick things and you're set:</p>
+      <p><b>1. Check your inbox</b> — click the confirmation link in the email that's on its way to you now.</p>
+      <p><b>2. Sit tight while I verify your Premium membership</b> in Skool. Once you're confirmed, the session details land in your inbox.</p>
+      <p>See you in the Writing Space. Bring the boring work. &#9997;&#65039;</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var form = document.getElementById('signupForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('formErr').style.display = 'none';
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data && data.success) {
+        document.getElementById('formWrap').style.display = 'none';
+        var s = document.getElementById('successBox');
+        s.style.display = 'block';
+        s.classList.add('fade');
+        window.scrollTo({top:0,behavior:'smooth'});
+      } else {
+        throw new Error('not success');
+      }
+    })
+    .catch(function(){
+      document.getElementById('formErr').style.display = 'block';
+    });
+  });
+})();
+</script>
+</body>
+</html>
