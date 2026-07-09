@@ -188,6 +188,7 @@
     <span class="tag" id="brandTag"></span>
     <span class="spacer"></span>
     <a href="story-clinic-feedback.html" style="color:#EAD9C4;font-size:13px;text-decoration:none;border:1px solid rgba(255,255,255,.35);padding:7px 12px;border-radius:9px">💬 Feedback</a>
+    <button onclick="clearAll()" title="Wipe everything and start a new manuscript">↺ Start over</button>
     <button onclick="exportState()">Save file</button>
     <button onclick="document.getElementById('importFile').click()">Open file</button>
     <button class="gold" onclick="downloadReportHtml()">Export report</button>
@@ -269,13 +270,11 @@
         <textarea id="manuscript" rows="14" placeholder="Paste your manuscript here. Use “Chapter One”, “Chapter 1”, “# Chapter”, or *** between chapters and the cockpit will split it for you." oninput="onManuscriptInput()"></textarea>
 
         <div class="toolbar">
-          <button class="btn primary" onclick="splitNow()">Split &amp; scan</button>
-          <button class="btn gold" onclick="addChapters()">+ Add next chapter</button>
+          <button class="btn primary" id="goBtn" onclick="goSmart()">▶ Go — scan my manuscript</button>
+          <button class="btn hidden" id="replaceBtn" onclick="if(confirm('Replace ALL loaded chapters with the text in the box?'))splitNow()">Start over with this text</button>
           <button class="btn" onclick="loadDemo()">Load demo chapter</button>
-          <div class="gap"></div>
-          <button class="btn" onclick="clearAll()">Clear all</button>
         </div>
-        <p class="sub" style="margin-top:8px;font-size:12.5px"><b>Split &amp; scan</b> replaces everything with what's in the box (paste your whole book, or your first chapter). <b>+ Add next chapter</b> keeps the chapters you already have and appends what's in the box — paste one chapter, add it, repeat, lesson by lesson.</p>
+        <p class="sub" style="margin-top:8px;font-size:12.5px">One button, whatever your style: <b>Go</b> scans what's in the box — a single chapter or the whole book (chapter breaks are found automatically). Once chapters are loaded, <b>Go</b> adds the box as your next chapter, so you can build the book lesson by lesson. Pasted a fresh full version? <b>Start over with this text</b> replaces everything.</p>
 
         <div id="setupStats" style="margin-top:16px"></div>
         <div id="chapList" style="margin-top:10px"></div>
@@ -578,6 +577,17 @@ function addChapters(){
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
   document.querySelector('.tab[data-v="scan"]').click();
 }
+function goSmart(){
+  save();
+  if(!(state.manuscript||'').trim()){alert('Paste your manuscript (or a chapter) into the box first.');return;}
+  if(!state.chapters.length)splitNow();else addChapters();
+}
+function updateGoBtn(){
+  const b=document.getElementById('goBtn'),r=document.getElementById('replaceBtn');
+  if(!b)return;
+  if(state.chapters.length){b.textContent='▶ Go — add next chapter & scan';if(r)r.classList.remove('hidden');}
+  else{b.textContent='▶ Go — scan my manuscript';if(r)r.classList.add('hidden');}
+}
 function wc(s){return (s.trim().match(/\S+/g)||[]).length;}
 function totalWords(){return (state.chapters||[]).reduce((a,c)=>a+wc(c.text),0)||wc(state.manuscript||'');}
 function renderSetupStats(){
@@ -586,6 +596,7 @@ function renderSetupStats(){
     `<span class="stat"><span class="n">${state.chapters.length}</span><span class="l">chapters</span></span>
      <span class="stat"><span class="n">${tw.toLocaleString()}</span><span class="l">words</span></span>
      <span class="stat"><span class="n">${Math.round(tw/Math.max(1,state.chapters.length)).toLocaleString()}</span><span class="l">avg / chapter</span></span>`:'';
+  updateGoBtn();
 }
 function renderChapList(){
   const el=document.getElementById('chapList');
