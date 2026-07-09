@@ -174,6 +174,10 @@
   .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
   .charbar i.on1{background:#D4A5A5}.charbar i.on2{background:var(--rose)}.charbar i.on3{background:var(--bad)}
   .benchband{font-size:12px;color:var(--muted)}
+  details.pasteback{margin-top:10px;border:1.5px dashed var(--line);border-radius:12px;background:var(--cream)}
+  details.pasteback>summary{cursor:pointer;padding:10px 14px;font-weight:600;color:var(--plum);list-style:none;font-size:13px}
+  details.pasteback .pbody2{padding:0 14px 12px}
+  .pbmsg{font-size:13px;color:var(--ok);font-weight:600}
   .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:700;font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
   /* ============================================================
      THE GROK SKIN — visual design by Grok (teal · cream · gold ·
@@ -271,7 +275,7 @@
     <button class="tab" data-v="passes">3 · Editing Passes</button>
     <button class="tab" data-v="reports">4 · Story Reports</button>
     <button class="tab" data-v="sat">5 · Satisfaction</button>
-    <button class="tab" data-v="report">6 · Fix-It Report</button>
+    <button class="tab" data-v="report">6 · Manuscript Report</button>
   </div>
 
   <div class="wrap">
@@ -281,7 +285,7 @@
 
       <div class="panel intro">
         <h2>Welcome to the Story Clinic</h2>
-        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b> — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 12 editing passes, five <b>story lab reports</b> (plot, character, pacing, conflict, timeline), a reader-satisfaction tracker, and one exportable Fix-It report with before &amp; after edits.</p>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b> — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 12 editing passes, five <b>story lab reports</b> (plot, character, pacing, conflict, timeline), a reader-satisfaction tracker, and one exportable Manuscript report with before &amp; after edits.</p>
         <div class="howto">
           <div class="howto-card best">
             <div class="hk">★ Pro tip: where to paste the prompts</div>
@@ -342,10 +346,10 @@
         <div class="toolbar">
           <button class="btn primary" id="goBtn" onclick="goSmart()">▶ Go — scan my manuscript</button>
           <button class="btn gold" onclick="addChapters()">+ Add next chapter</button>
-          <button class="btn hidden" id="replaceBtn" onclick="if(confirm('Replace ALL loaded chapters with the text in the box?'))splitNow()">Start over with this text</button>
+          <button class="btn hidden" id="replaceBtn" onclick="if(confirm('Replace ALL loaded chapters with the text in the box?'))splitNow()">Replace ALL chapters with this text</button>
           <button class="btn" onclick="loadDemo()">Load demo chapter</button>
         </div>
-        <p class="sub" style="margin-top:8px;font-size:12.5px"><b>Go</b> does the right thing: it scans what's in the box — one chapter or the whole book (chapter breaks found automatically) — and once chapters are loaded, it adds the box as your next chapter. Prefer to be explicit? <b>+ Add next chapter</b> always appends the box as a new chapter. Pasted a fresh full version? <b>Start over with this text</b> replaces everything.</p>
+        <p class="sub" style="margin-top:8px;font-size:12.5px"><b>Go</b> does the right thing: it scans what's in the box — one chapter or the whole book (chapter breaks found automatically) — and once chapters are loaded, it adds the box as your next chapter. Prefer to be explicit? <b>+ Add next chapter</b> always appends the box as a new chapter. Pasted a fresh full version of the whole book? <b>Replace ALL chapters with this text</b> swaps everything at once — while <b>🔁 Paste revised text</b> (inside any chapter card above) swaps just that one chapter.</p>
 
         <div id="setupStats" style="margin-top:16px"></div>
         <div id="chapList" style="margin-top:10px"></div>
@@ -380,7 +384,7 @@
     <div class="view" id="v-reports">
       <div class="panel">
         <h2>Story Lab Reports <span class="pill">instant offline read + AI deep-dive</span></h2>
-        <p class="sub">Five whole-book lab reports, the kind bestseller-analysis dashboards charge for. Each one gives you an <b>instant offline read</b> computed right here from your chapters (nothing uploaded), plus a <b>copy-paste prompt</b> for the full deep-dive in your AI tool. Paste back what your AI returns and it's folded into your Fix-It report.</p>
+        <p class="sub">Five whole-book lab reports, the kind bestseller-analysis dashboards charge for. Each one gives you an <b>instant offline read</b> computed right here from your chapters (nothing uploaded), plus a <b>copy-paste prompt</b> for the full deep-dive in your AI tool. Paste back what your AI returns and it's folded into your Manuscript report.</p>
         <div id="anaStats" style="margin-bottom:4px"></div>
         <div class="subtabs" id="anaTabs">
           <button class="stab on" data-a="plot">📈 Plot</button>
@@ -447,21 +451,21 @@
     <div class="view" id="v-report">
       <div class="panel">
         <h2>Overall assessment <span class="pill">the clinic verdict</span></h2>
-        <p class="sub">The whole checkup on one card: every dimension the clinic measures, graded, with a readiness verdict. The offline verdict is a real signal but a proxy — the <b>Editor's Letter</b> prompt below gets you the human-grade read from your AI, and it opens your Fix-It report.</p>
+        <p class="sub">The whole checkup on one card: every dimension the clinic measures, graded, with a readiness verdict. The offline verdict is a real signal but a proxy — the <b>Editor's Letter</b> prompt below gets you the human-grade read from your AI, and it opens your Manuscript report.</p>
         <div id="assessCard"></div>
         <div class="toolbar" style="margin:12px 0 8px">
           <button class="btn primary" onclick="copyOverallPrompt(this)">Copy "Overall Assessment" prompt</button>
         </div>
-        <label class="fld">Paste your AI's overall assessment — the Editor's Letter <span style="font-weight:400;color:var(--muted)">(it becomes the opening of your Fix-It report)</span></label>
+        <label class="fld">Paste your AI's overall assessment — the Editor's Letter <span style="font-weight:400;color:var(--muted)">(it becomes the opening of your Manuscript report)</span></label>
         <textarea id="overallNotes" rows="5" placeholder="Paste the OVERALL ASSESSMENT your AI returned…" oninput="state.analysisNotes.overall=this.value;persist()"></textarea>
       </div>
 
       <div class="panel">
-        <h2>Fix-It report</h2>
-        <p class="sub">Paste back what your AI returned for each pass. The cockpit folds it together with the auto-scan and the satisfaction read into one report. <b>Download the Fix-It report (.html)</b> and open it on your own computer — every issue becomes a card with the before text, why it matters, and the fix.</p>
+        <h2>Manuscript report</h2>
+        <p class="sub">Paste back what your AI returned for each pass. The cockpit folds it together with the auto-scan and the satisfaction read into one report. <b>Download the Manuscript report (.html)</b> and open it on your own computer — every issue becomes a card with the before text, why it matters, and the fix.</p>
         <div id="reportNotes"></div>
         <div class="toolbar">
-          <button class="btn primary" onclick="downloadReportHtml()">⬇ Download Fix-It report (.html)</button>
+          <button class="btn primary" onclick="downloadReportHtml()">⬇ Download Manuscript report (.html)</button>
           <button class="btn" onclick="downloadReport()">Plain text (.md)</button>
           <button class="btn" onclick="copyMasterRevision(this)">Copy master revision prompt</button>
         </div>
@@ -683,18 +687,37 @@ function renderChapList(){
 let lastRepl=null;
 function toggleRepl(i){const el=document.getElementById('repl-'+i);if(el)el.classList.toggle('hidden');}
 function flagCount(text){const f=scanChapter(text);return f.crit.length+f.rec.length+f.opt.length;}
-function applyRepl(i){
-  const ta=document.getElementById('replTa-'+i);
-  let t=(ta&&ta.value||'').trim();
-  if(!t){alert('Paste the revised chapter text first.');return;}
-  // drop a duplicated heading line if the AI included one
-  t=t.replace(/^(?:#{1,3}\s+[^\n]*|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b[^\n]*)\n+/i,'');
+function stripLeadHeading(t){return t.replace(/^(?:#{1,3}\s+[^\n]*|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b[^\n]*)\n+/i,'');}
+function replaceChapterText(i,t){
   const before=flagCount(state.chapters[i].text);
   state.chapters[i].text=t;
   const after=flagCount(t);
   lastRepl={title:state.chapters[i].title,before,after};
-  save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();
+  save();renderSetupStats();renderChapList();refreshScanBadge();
+  return {before,after};
+}
+function applyRepl(i){
+  const ta=document.getElementById('replTa-'+i);
+  const t=(ta&&ta.value||'').trim();
+  if(!t){alert('Paste the revised chapter text first.');return;}
+  replaceChapterText(i,stripLeadHeading(t));
+  renderPassScope();
   document.querySelector('.tab[data-v="scan"]').click();
+}
+function applyPassRepl(passId){
+  const sel=document.getElementById('passScope');
+  const v=sel?sel.value:'ms';
+  if(v==='ms'){alert('Pick a specific chapter under “Apply to” first.');return;}
+  const ta=document.getElementById('pb-'+passId);
+  const t=(ta&&ta.value||'').trim();
+  if(!t){alert('Paste the revised chapter text first.');return;}
+  const i=+v;
+  const r=replaceChapterText(i,stripLeadHeading(t));
+  renderPasses();
+  const card=document.getElementById('pc-'+passId);if(card)card.classList.add('open');
+  const box=document.getElementById('pbd-'+passId);if(box)box.open=true;
+  const msg=document.getElementById('pbmsg-'+passId);
+  if(msg)msg.textContent='✅ '+state.chapters[i].title+' updated — flags '+r.before+' → '+r.after+'. Every pass now uses this revision.';
 }
 function renameChap(i,v){state.chapters[i].title=v;save();}
 function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();renderScan();}
@@ -939,6 +962,10 @@ function renderPasses(){
           <span class="copied hidden">copied ✓</span>
         </div>
         <div class="promptbox" id="prompt-${pass.id}">${esc(prompt)}</div>
+        ${(canEdit&&!sc.isMs)?`<details class="pasteback" id="pbd-${pass.id}"><summary>📥 Done with this pass? Paste the revised chapter here — it updates ${esc(sc.label)} so your NEXT pass runs on the new version</summary><div class="pbody2">
+          <textarea id="pb-${pass.id}" rows="6" placeholder="Paste the full REVISED chapter your AI returned. It replaces the loaded chapter in place — no tab-hopping — and every later pass prompt is built from this new version."></textarea>
+          <div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick="applyPassRepl('${pass.id}')">Update chapter &amp; re-scan</button><span class="pbmsg" id="pbmsg-${pass.id}"></span></div>
+        </div></details>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1435,7 +1462,7 @@ function renderAnalyses(){
     <div class="toolbar" style="margin:10px 0 8px">
       <button class="btn primary" onclick="copyAnaPrompt('${anaActive}',this)">Copy full ${A.label} prompt</button>
     </div>
-    <label class="fld">Paste your AI's ${A.label} back here <span style="font-weight:400;color:var(--muted)">(it gets folded into your Fix-It report)</span></label>
+    <label class="fld">Paste your AI's ${A.label} back here <span style="font-weight:400;color:var(--muted)">(it gets folded into your Manuscript report)</span></label>
     <textarea rows="5" placeholder="Paste the ${A.label.toUpperCase()} your AI returned…" oninput="state.analysisNotes['${anaActive}']=this.value;persist()">${esc(state.analysisNotes[anaActive]||'')}</textarea>`;
 }
 
@@ -1559,7 +1586,7 @@ function downloadReport(){
 }
 
 /* ============================================================
-   HTML FIX-IT REPORT — before/after cards, opens in any browser
+   HTML MANUSCRIPT REPORT — before/after cards, opens in any browser
    ============================================================ */
 const FIXMETA={
  name:{sev:'crit',label:'Banned character name',why:"On the never-use banned-names list — these are overused in AI fiction, so readers and AI-detectors clock them fast.",how:"Rename the character to something fresh that suits your world."},
@@ -1729,7 +1756,7 @@ function buildReportHtml(){
   details.more>summary{cursor:pointer;color:#C2727B;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
   details.more>summary::before{content:"▸ "}details.more[open]>summary::before{content:"▾ "}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
-<body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+<body><div class="hd"><h1>Story Clinic — Manuscript Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Heat ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
 <div class="wrap">
   <div class="counts">
     <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
@@ -1756,7 +1783,7 @@ function buildReportHtml(){
 function downloadReportHtml(){
   const blob=new Blob([buildReportHtml()],{type:'text/html'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=(state.title||'editorial-report').replace(/[^\w-]+/g,'_')+'_fix-it-report.html';a.click();
+  a.download=(state.title||'editorial-report').replace(/[^\w-]+/g,'_')+'_manuscript-report.html';a.click();
 }
 function copyMasterRevision(btn){
   const sat=computeSeries(state.beats);
