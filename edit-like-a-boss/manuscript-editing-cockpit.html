@@ -638,6 +638,7 @@ function splitNow(){
   save();
   state.chapters=splitManuscript(state.manuscript);
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
+  const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';
   // jump to scan
   document.querySelector('.tab[data-v="scan"]').click();
 }
@@ -687,7 +688,13 @@ function renderChapList(){
 let lastRepl=null;
 function toggleRepl(i){const el=document.getElementById('repl-'+i);if(el)el.classList.toggle('hidden');}
 function flagCount(text){const f=scanChapter(text);return f.crit.length+f.rec.length+f.opt.length;}
-function stripLeadHeading(t){return t.replace(/^(?:#{1,3}\s+[^\n]*|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b[^\n]*)\n+/i,'');}
+function stripLeadHeading(t){
+  const nl=t.indexOf('\n');if(nl<0)return t;
+  const first=t.slice(0,nl).trim();
+  const looksHeading=/^(?:#{1,3}\s+\S|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b)/i.test(first);
+  if(looksHeading&&(first.match(/\S+/g)||[]).length<=8)return t.slice(nl).replace(/^\n+/,'');
+  return t;
+}
 function replaceChapterText(i,t){
   const before=flagCount(state.chapters[i].text);
   state.chapters[i].text=t;
@@ -715,12 +722,13 @@ function applyPassRepl(passId){
   const r=replaceChapterText(i,stripLeadHeading(t));
   renderPasses();
   const card=document.getElementById('pc-'+passId);if(card)card.classList.add('open');
+  const det=document.getElementById('pbd-'+passId);if(det)det.open=true;
   const box=document.getElementById('pbd-'+passId);if(box)box.open=true;
   const msg=document.getElementById('pbmsg-'+passId);
   if(msg)msg.textContent='✅ '+state.chapters[i].title+' updated — flags '+r.before+' → '+r.after+'. Every pass now uses this revision.';
 }
 function renameChap(i,v){state.chapters[i].title=v;save();}
-function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();renderScan();}
+function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';}
 
 /* ============================================================
    AUTO-SCAN (offline deterministic checks)
@@ -809,14 +817,13 @@ function renderScan(){
     const f=scanChapter(c.text);totC+=f.crit.length;totR+=f.rec.length;totO+=f.opt.length;
     const all=[...f.crit.map(x=>['crit',x]),...f.rec.map(x=>['rec',x]),...f.opt.map(x=>['opt',x])];
     const clean=all.length===0;
-    return `<details class="chap" ${f.crit.length?'open':''}><summary>${esc(c.title)}<span class="cw">${clean?'✓ clean':(f.crit.length?f.crit.length+' critical · ':'')+(f.rec.length+totRfmt(f.rec.length))} </span></summary>
+    return `<details class="chap" ${f.crit.length?'open':''}><summary>${esc(c.title)}<span class="cw">${clean?'✓ clean':[f.crit.length?f.crit.length+' critical':'',f.rec.length?f.rec.length+' recommended':'',f.opt.length?f.opt.length+' optional':''].filter(Boolean).join(' · ')}</span></summary>
       <div class="cbody">${clean?'<div class="find good"><div class="ic">✓</div><div><div class="ft">No automated flags</div><div class="fd">Nothing on the banned list or mechanical checks. Still worth running the reasoning passes.</div></div></div>':
         all.map(([cls,x])=>`<div class="find ${cls}"><div class="ic">${x.ic}</div><div><div class="ft">${x.t}</div><div class="fd">${esc(x.d)}</div>${x.ex?`<div class="ex">${esc(x.ex)}</div>`:''}</div></div>`).join('')}
         <div class="toolbar"><button class="btn" onclick="toggleHighlight(${i},this)">Show highlighted text</button></div>
         <div id="hl-${i}"></div>
       </div></details>`;
   }).join('');
-  function totRfmt(n){return '';}
   const langWarn=(state.lang&&state.lang!=='en')?`<div class="note">⚠ The Auto-Scan word lists are built for <b>English</b>. On a ${langName()} manuscript most checks won't fire (or may misfire) — lean on the <b>Editing Pass prompts</b>, which are fully ${langName()}-aware and will hunt the ${langName()} equivalents of every tell.</div>`:'';
   let replBanner='';
   if(lastRepl){
