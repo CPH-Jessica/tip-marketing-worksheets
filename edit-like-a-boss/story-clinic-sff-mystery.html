@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Story Clinic: Sci-Fi, Fantasy, Mystery, Horror &amp; Thriller — Edit Like a Boss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      MANUSCRIPT EDITING COCKPIT
@@ -17,17 +20,17 @@
      Built CPH-first; flip CONFIG.cphMode for a generic sellable build.
      ============================================================ */
   :root{
-    --plum:#1B2A4A; --plum-2:#2C4368; --rose:#E8735A; --rose-soft:#F0A78F;
-    --gold:#D4A853; --cream:#FFF8F0; --ink:#2D2D2D; --muted:#6b6b6b;
-    --line:#D9D0C4; --card:#ffffff; --ok:#5C8A63; --warn:#C97A33; --bad:#C0492F;
-    --c-tension:#E8735A; --c-bond:#1B2A4A; --c-sat:#D4A853; --c-stakes:#7A9E7E;
-    --shadow:0 10px 30px rgba(27,42,74,.10); --shadow-sm:0 3px 10px rgba(27,42,74,.08);
+    --plum:#1E3A5F; --plum-2:#0F172A; --rose:#3B82F6; --rose-soft:#93B8E8;
+    --gold:#C9A66B; --cream:#F1F5F9; --ink:#2D2D2D; --muted:#6b6b6b;
+    --line:#E2E8F0; --card:#ffffff; --ok:#5C8A63; --warn:#C97A33; --bad:#C0492F;
+    --c-tension:#3B82F6; --c-bond:#1E3A5F; --c-sat:#C9A66B; --c-stakes:#7A9E7E;
+    --shadow:0 10px 30px rgba(30,58,95,.10); --shadow-sm:0 3px 10px rgba(30,58,95,.08);
     --r:14px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:'Georgia','Times New Roman',serif;color:var(--ink);
-    background:linear-gradient(160deg,#FFF8F0 0%,#F4EFE6 100%);min-height:100vh;line-height:1.6}
+    background:linear-gradient(160deg,#F1F5F9 0%,#F4EFE6 100%);min-height:100vh;line-height:1.6}
   h1,h2,h3,.serif{font-family:'Georgia','Times New Roman',serif}
   a{color:var(--rose)}
 
@@ -63,7 +66,7 @@
 
   label.fld{display:block;margin:14px 0 5px;font-weight:600;font-size:13.5px}
   input[type=text],select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;
-    font-size:14px;font-family:inherit;background:#FFFDF8;color:var(--ink);transition:.15s}
+    font-size:14px;font-family:inherit;background:#FBFCFE;color:var(--ink);transition:.15s}
   textarea{resize:vertical;line-height:1.5}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose-soft);box-shadow:0 0 0 3px rgba(233,140,163,.18)}
   .row{display:flex;gap:14px;flex-wrap:wrap}
@@ -78,13 +81,13 @@
   .toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;align-items:center}
   .toolbar .gap{flex:1}
 
-  .stat{display:inline-flex;flex-direction:column;background:#F7F1E8;border:1px solid var(--line);border-radius:11px;padding:9px 16px;margin:4px 8px 4px 0}
+  .stat{display:inline-flex;flex-direction:column;background:#F2F6FA;border:1px solid var(--line);border-radius:11px;padding:9px 16px;margin:4px 8px 4px 0}
   .stat .n{font-size:22px;font-weight:800;font-family:Georgia,serif;color:var(--plum)}
   .stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
 
   /* chapter list */
   .chap{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
-  .chap>summary{cursor:pointer;padding:11px 15px;font-weight:600;background:#F7F1E8;list-style:none;display:flex;gap:10px;align-items:center}
+  .chap>summary{cursor:pointer;padding:11px 15px;font-weight:600;background:#F2F6FA;list-style:none;display:flex;gap:10px;align-items:center}
   .chap>summary::-webkit-details-marker{display:none}
   .chap>summary::before{content:"▸";color:var(--rose)}
   .chap[open]>summary::before{content:"▾"}
@@ -95,17 +98,17 @@
   .find{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-left-width:5px;border-radius:9px;padding:10px 13px;margin-bottom:8px;background:#fff}
   .find .ic{font-size:16px}
   .find .ft{font-weight:700;font-size:13.5px}
-  .find .fd{font-size:13px;color:#5A554F;margin-top:2px}
+  .find .fd{font-size:13px;color:#475569;margin-top:2px}
   .find .ex{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:4px}
   .find.crit{border-left-color:var(--bad)} .find.rec{border-left-color:var(--warn)}
   .find.opt{border-left-color:var(--c-bond)} .find.good{border-left-color:var(--ok)}
   mark{background:#F4D38A;color:#5a3a00;border-radius:3px;padding:0 1px}
   mark.ai{background:#F7C8B8;color:#6a1020}
-  .hltext{font-size:13.5px;line-height:1.7;white-space:pre-wrap;max-height:340px;overflow:auto;background:#FFFDF8;border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-top:8px}
+  .hltext{font-size:13.5px;line-height:1.7;white-space:pre-wrap;max-height:340px;overflow:auto;background:#FBFCFE;border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-top:8px}
 
   /* prompt blocks */
   .passcard{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
-  .passcard>.head{display:flex;gap:12px;align-items:center;padding:13px 16px;background:#F7F1E8;cursor:pointer}
+  .passcard>.head{display:flex;gap:12px;align-items:center;padding:13px 16px;background:#F2F6FA;cursor:pointer}
   .passcard .pno{width:26px;height:26px;border-radius:50%;background:var(--plum);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
   .passcard .pttl{font-weight:700;font-size:15px}
   .passcard .psub{font-size:12.5px;color:var(--muted)}
@@ -113,23 +116,23 @@
   .passcard .pbody{padding:14px 16px;display:none}
   .passcard.open .pbody{display:block}
   .promptbox{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.5;
-    background:#1B2A4A;color:#F3EEE4;border-radius:10px;padding:14px;max-height:300px;overflow:auto}
+    background:#1E3A5F;color:#F3EEE4;border-radius:10px;padding:14px;max-height:300px;overflow:auto}
   .copied{color:var(--ok);font-weight:700;font-size:12.5px;margin-left:8px}
 
   /* satisfaction (charge model) */
   details.explain{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:18px;overflow:hidden}
-  details.explain>summary{cursor:pointer;padding:13px 18px;font-weight:600;color:var(--plum);list-style:none;background:#F7F1E8}
+  details.explain>summary{cursor:pointer;padding:13px 18px;font-weight:600;color:var(--plum);list-style:none;background:#F2F6FA}
   details.explain>summary::-webkit-details-marker{display:none}
   details.explain>summary::before{content:"▸ ";color:var(--rose)}
   details.explain[open]>summary::before{content:"▾ "}
   .explain .body{padding:4px 22px 20px;font-size:14px}
-  .keyline{background:#F7F1E8;border-radius:10px;padding:13px 15px;margin-top:6px;font-size:13.5px}
+  .keyline{background:#F2F6FA;border-radius:10px;padding:13px 15px;margin-top:6px;font-size:13.5px}
   .legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
   .legend .lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border:1.5px solid var(--line);
     border-radius:20px;padding:4px 11px;cursor:pointer;user-select:none;background:#fff}
   .legend .lg .sw{width:14px;height:14px;border-radius:4px}
   .legend .lg.off{opacity:.38}
-  svg.chart{width:100%;height:auto;display:block;background:linear-gradient(180deg,#FFFDF8,#FCF6EE);border:1px solid var(--line);border-radius:12px}
+  svg.chart{width:100%;height:auto;display:block;background:linear-gradient(180deg,#FBFCFE,#F4F7FB);border:1px solid var(--line);border-radius:12px}
   .chartwrap{position:relative}
   .chart-tip{position:absolute;pointer-events:none;background:var(--plum);color:#fff;padding:8px 11px;border-radius:9px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;max-width:230px;z-index:10}
   .chart-tip b{color:var(--gold)}
@@ -145,33 +148,98 @@
   .tbl .pf{width:19px;height:19px;accent-color:var(--rose);cursor:pointer}
   .tbl .satcell{font-weight:800;text-align:center;font-size:15px}
   .tbl .del{cursor:pointer;color:var(--muted);border:none;background:none;font-size:16px;padding:2px 6px;border-radius:6px}
-  .tbl .del:hover{color:var(--bad);background:#F6E2DC}
+  .tbl .del:hover{color:var(--bad);background:#E8EDF5}
   .tbl td.center{text-align:center}
-  tr.payoff-row td{background:#FBF1DD}
-  .scorebadge{display:inline-flex;align-items:baseline;gap:8px;background:#F7F1E8;border:1px solid var(--line);border-radius:12px;padding:10px 18px;margin-bottom:6px}
+  tr.payoff-row td{background:#F1EBD8}
+  .scorebadge{display:inline-flex;align-items:baseline;gap:8px;background:#F2F6FA;border:1px solid var(--line);border-radius:12px;padding:10px 18px;margin-bottom:6px}
   .scorebadge .big{font-size:30px;font-weight:800;font-family:Georgia,serif;color:var(--plum)}
   .scorebadge .lab{font-size:13px;color:var(--muted)}
 
-  .note{background:#F7F1E8;border-left:4px solid var(--gold);border-radius:8px;padding:11px 14px;font-size:13px;margin:12px 0}
+  .note{background:#F2F6FA;border-left:4px solid var(--gold);border-radius:8px;padding:11px 14px;font-size:13px;margin:12px 0}
   .foot{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
   .hidden{display:none!important}
-  .pill{display:inline-block;background:#F0EDE8;color:var(--rose);font-weight:700;font-size:11px;padding:2px 9px;border-radius:14px;margin-left:6px}
+  .pill{display:inline-block;background:#E9EEF4;color:var(--rose);font-weight:700;font-size:11px;padding:2px 9px;border-radius:14px;margin-left:6px}
   .panel.intro{border-top:5px solid var(--gold)}
   .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
   @media(max-width:680px){.howto{grid-template-columns:1fr}}
   .howto-card{background:var(--cream);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
   .howto-card.best{background:#fbeede;border-color:var(--gold)}
   .howto-card .hk{font-family:Georgia,serif;font-weight:700;color:var(--plum);font-size:14.5px;margin-bottom:5px}
-  .howto-card p{margin:0;font-size:13px;color:#5A554F}
+  .howto-card p{margin:0;font-size:13px;color:#475569}
   .subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
   .stab{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:13.5px;font-family:inherit;transition:.13s}
   .stab:hover{border-color:var(--rose-soft)}
   .stab.on{background:var(--plum);border-color:var(--plum);color:#fff}
   .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
-  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
-  .charbar i.on1{background:#F0A78F}.charbar i.on2{background:var(--rose)}.charbar i.on3{background:var(--bad)}
+  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#E9EEF4}
+  .charbar i.on1{background:#93B8E8}.charbar i.on2{background:var(--rose)}.charbar i.on3{background:var(--bad)}
   .benchband{font-size:12px;color:var(--muted)}
   .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:700;font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+  /* ============================================================
+     THE GROK SKIN — TACTICAL EDITION. Visual design by Grok
+     (deep navy · steel · gold · electric blue, Playfair + Inter,
+     pills & soft shadows), engineering unchanged.
+     ============================================================ */
+  :root{
+    --plum:#1E3A5F; --plum-2:#0F172A; --rose:#3B82F6; --rose-soft:#93B8E8;
+    --gold:#C9A66B; --cream:#F1F5F9; --ink:#26313F; --muted:#5E6A78;
+    --line:#E2E8F0;
+    --c-tension:#3B82F6; --c-bond:#1E3A5F; --c-sat:#C9A66B; --c-stakes:#7A9E7E;
+    --shadow:0 10px 15px -3px rgba(30,58,95,.08),0 4px 6px -4px rgba(30,58,95,.08);
+    --shadow-sm:0 4px 6px -2px rgba(30,58,95,.06);
+    --r:16px;
+  }
+  body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--ink);
+    background:linear-gradient(135deg,rgba(241,245,249,.96),rgba(226,232,240,.96)),
+    url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill-rule=%22evenodd%22%3E%3Cpath fill=%22%231E3A5F%22 fill-opacity=%220.05%22 d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-10V8h-2v16h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 6v-4H4v4H0v2h4v4h2V8h4V6H6z%22/%3E%3C/g%3E%3C/svg%3E');
+    background-size:auto,60px 60px}
+  h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;letter-spacing:-0.02em}
+  .topbar{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    color:var(--ink);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(30,58,95,.05)}
+  .topbar .logo{color:var(--ink);font-family:'Playfair Display',Georgia,serif;font-size:20px}
+  .topbar .logo b{color:var(--plum)}
+  .topbar .tag{color:var(--muted);opacity:1}
+  .topbar button{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:999px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+  .topbar button:hover{background:var(--cream)}
+  .topbar button.gold{background:var(--plum);border-color:var(--plum);color:#fff}
+  .topbar button.gold:hover{background:var(--plum-2)}
+  .topbar a[href="story-clinic-feedback.html"]{color:var(--ink)!important;border-color:var(--line)!important;background:#fff;border-radius:999px!important}
+  .edpill{background:var(--plum);color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.2px;padding:3px 11px;border-radius:999px;vertical-align:middle;margin-left:8px}
+  .tabs{background:rgba(241,245,249,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    padding:10px 14px;gap:8px;border-bottom:1px solid var(--line);box-shadow:none}
+  .tabs .tab{color:var(--muted);border-bottom:none;border-radius:999px;padding:9px 18px;font-family:'Inter',sans-serif;transition:all .2s}
+  .tabs .tab:hover{color:var(--plum);background:#fff}
+  .tabs .tab.on{color:#fff;background:var(--plum)}
+  .panel{border-radius:16px;box-shadow:var(--shadow)}
+  .panel.intro{border-top:4px solid var(--gold)}
+  .panel h2{color:var(--plum)}
+  button.btn{border-radius:999px;font-family:'Inter',sans-serif;font-weight:600;transition:all .2s cubic-bezier(.4,0,.2,1)}
+  button.btn:hover{transform:translateY(-1px)}
+  button.btn.primary{background:var(--plum);border-color:var(--plum)}
+  button.btn.primary:hover{background:var(--plum-2)}
+  button.btn.gold{background:linear-gradient(90deg,#C9A66B,#D4A017);border-color:#C9A66B;color:#2A2008}
+  input[type=text],select,textarea{border-radius:14px;background:#fff;font-family:'Inter',sans-serif}
+  .passcard{border-radius:16px;transition:all .2s cubic-bezier(.4,0,.2,1)}
+  .passcard:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(30,58,95,.10),0 8px 10px -6px rgba(30,58,95,.10)}
+  .passcard>.head{background:#F5F8FC}
+  .passcard .pno{background:var(--plum)}
+  .chap>summary{background:#F5F8FC}
+  .stat{background:#F5F8FC;border-radius:14px}
+  .note{background:#F5F8FC;border-radius:10px}
+  .promptbox{background:#12233B;color:#E7ECF3;border-radius:14px}
+  .howto-card{background:var(--cream);border-radius:14px}
+  .howto-card.best{background:linear-gradient(135deg,#F2ECDC,#F6F2E7);border-color:var(--gold)}
+  .howto-card .hk{font-family:'Playfair Display',Georgia,serif}
+  .pill{background:#E7EEF9;color:var(--plum)}
+  .stab{border-radius:999px;font-family:'Inter',sans-serif}
+  .stab.on{background:var(--plum);border-color:var(--plum)}
+  .scorebadge,.keyline,details.explain>summary{background:#F5F8FC}
+  svg.chart{border-radius:14px}
+  a{color:var(--rose)}
+  .find{border-radius:12px}
+  .verdict{border-radius:14px;font-family:'Playfair Display',Georgia,serif}
+  .dim{border-radius:12px}
+  .cw{font-family:'Inter',sans-serif}
   .verdict small{font-weight:400;font-family:inherit;font-size:13px;opacity:.92}
   .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
   .dim{background:#fff;border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:9px;padding:10px 13px}
@@ -179,12 +247,12 @@
   .dim .dk{font-weight:700;color:var(--plum);font-size:14px}
   .dim .ds{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
   .dim.strong .ds{color:var(--ok)}.dim.watch .ds{color:var(--warn)}.dim.fix .ds{color:var(--bad)}.dim.todo .ds{color:var(--muted)}
-  .dim .dn{font-size:12.5px;color:#5A554F;margin-top:3px}
+  .dim .dn{font-size:12.5px;color:#475569;margin-top:3px}
 </style>
 </head>
 <body>
   <div class="topbar">
-    <span class="logo">Story <b>Clinic</b> <span style="opacity:.75;font-size:13px">· Genre Fiction</span></span>
+    <span class="logo">Story <b>Clinic</b><span class="edpill">GENRE FICTION EDITION</span></span>
     <span class="tag" id="brandTag"></span>
     <span class="spacer"></span>
     <a href="story-clinic-feedback.html" style="color:#EAD9C4;font-size:13px;text-decoration:none;border:1px solid rgba(255,255,255,.35);padding:7px 12px;border-radius:9px">💬 Feedback</a>
@@ -901,10 +969,10 @@ function renderChart(){
   const W=1000,H=420,padL=42,padR=20,padT=22,padB=64,plotW=W-padL-padR,plotH=H-padT-padB,n=data.length;
   const x=i=>n<=1?padL+plotW/2:padL+plotW*i/(n-1);const y=v=>padT+plotH*(1-v/10);
   let s='';
-  for(let g=0;g<=10;g+=2){const yy=y(g);s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#E8DFD2"/><text x="${padL-8}" y="${yy+4}" font-size="11" fill="#A89F90" text-anchor="end">${g}</text>`;}
-  if(!n){svg.innerHTML=s+`<text x="${W/2}" y="${H/2}" font-size="15" fill="#A89F90" text-anchor="middle">Add a beat to see the curve.</text>`;return;}
+  for(let g=0;g<=10;g+=2){const yy=y(g);s+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#DCE4EE"/><text x="${padL-8}" y="${yy+4}" font-size="11" fill="#94A3B8" text-anchor="end">${g}</text>`;}
+  if(!n){svg.innerHTML=s+`<text x="${W/2}" y="${H/2}" font-size="15" fill="#94A3B8" text-anchor="middle">Add a beat to see the curve.</text>`;return;}
   data.forEach((d,i)=>{if(d.payoff){s+=`<line x1="${x(i)}" y1="${padT}" x2="${x(i)}" y2="${padT+plotH}" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="2 4" opacity=".55"/><text x="${x(i)}" y="${padT-8}" font-size="10" fill="var(--gold)" text-anchor="middle" font-weight="700">payoff</text>`;}});
-  data.forEach((d,i)=>s+=`<text x="${x(i)}" y="${padT+plotH+18}" font-size="10.5" fill="#A89F90" text-anchor="middle">${i+1}</text>`);
+  data.forEach((d,i)=>s+=`<text x="${x(i)}" y="${padT+plotH+18}" font-size="10.5" fill="#94A3B8" text-anchor="middle">${i+1}</text>`);
   if(!hidden.sat){let a=`M ${x(0)} ${y(data[0].sat)} `;data.forEach((d,i)=>a+=`L ${x(i)} ${y(d.sat)} `);a+=`L ${x(n-1)} ${padT+plotH} L ${x(0)} ${padT+plotH} Z`;s+=`<path d="${a}" fill="var(--c-sat)" opacity=".10"/>`;}
   SERIES.forEach(se=>{if(hidden[se.key])return;let p='';data.forEach((d,i)=>p+=(i===0?'M':'L')+` ${x(i)} ${y(se.get(d))} `);s+=`<path d="${p}" fill="none" stroke="${se.color}" stroke-width="${se.width}" ${se.dash?`stroke-dasharray="${se.dash}"`:''} stroke-linejoin="round" stroke-linecap="round"/>`;});
   SERIES.forEach(se=>{if(hidden[se.key])return;data.forEach((d,i)=>{const r=se.key==='sat'?4:2.6;s+=`<circle cx="${x(i)}" cy="${y(se.get(d))}" r="${r}" fill="#fff" stroke="${se.color}" stroke-width="2"/>`;});});
@@ -1066,19 +1134,19 @@ function miniChart(vals,o){
   const y=v=>pt+ph-((v-mn)/Math.max(0.0001,mx-mn))*ph;
   let s='';
   if(o.bands){
-    s+=`<rect x="${pl}" y="${pt}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="${o.color||'#E8735A'}" opacity="0.10"/>`;
-    s+=`<rect x="${pl}" y="${(pt+ph*0.8).toFixed(1)}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="#1B2A4A" opacity="0.10"/>`;
+    s+=`<rect x="${pl}" y="${pt}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="${o.color||'#3B82F6'}" opacity="0.10"/>`;
+    s+=`<rect x="${pl}" y="${(pt+ph*0.8).toFixed(1)}" width="${pw}" height="${(ph*0.2).toFixed(1)}" fill="#1E3A5F" opacity="0.10"/>`;
   }
   if(o.xchap){
     const n=o.xchap,step=Math.max(1,Math.ceil(n/8));
-    for(let i=0;i<n;i+=step){const xx=pl+(n>1?i/(n-1):0.5)*pw;s+=`<line x1="${xx.toFixed(1)}" y1="${pt}" x2="${xx.toFixed(1)}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx.toFixed(1)}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">Ch ${i+1}</text>`;}
-  } else [0,25,50,75,100].forEach(p=>{const xx=pl+p/100*pw;s+=`<line x1="${xx}" y1="${pt}" x2="${xx}" y2="${pt+ph}" stroke="#E8DFD2"/><text x="${xx}" y="${H-14}" font-size="11" fill="#A89F90" text-anchor="middle">${p}%</text>`;});
-  if(o.neutral!==undefined){const yy=y(o.neutral);s+=`<line x1="${pl}" y1="${yy.toFixed(1)}" x2="${W-pr}" y2="${yy.toFixed(1)}" stroke="#A89F90" stroke-dasharray="5 5"/>`;}
-  (o.ylab||[]).forEach(l=>{s+=`<text x="${pl-8}" y="${(y(l.v)+4).toFixed(1)}" font-size="11" fill="#A89F90" text-anchor="end">${l.t}</text>`;});
+    for(let i=0;i<n;i+=step){const xx=pl+(n>1?i/(n-1):0.5)*pw;s+=`<line x1="${xx.toFixed(1)}" y1="${pt}" x2="${xx.toFixed(1)}" y2="${pt+ph}" stroke="#DCE4EE"/><text x="${xx.toFixed(1)}" y="${H-14}" font-size="11" fill="#94A3B8" text-anchor="middle">Ch ${i+1}</text>`;}
+  } else [0,25,50,75,100].forEach(p=>{const xx=pl+p/100*pw;s+=`<line x1="${xx}" y1="${pt}" x2="${xx}" y2="${pt+ph}" stroke="#DCE4EE"/><text x="${xx}" y="${H-14}" font-size="11" fill="#94A3B8" text-anchor="middle">${p}%</text>`;});
+  if(o.neutral!==undefined){const yy=y(o.neutral);s+=`<line x1="${pl}" y1="${yy.toFixed(1)}" x2="${W-pr}" y2="${yy.toFixed(1)}" stroke="#94A3B8" stroke-dasharray="5 5"/>`;}
+  (o.ylab||[]).forEach(l=>{s+=`<text x="${pl-8}" y="${(y(l.v)+4).toFixed(1)}" font-size="11" fill="#94A3B8" text-anchor="end">${l.t}</text>`;});
   const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-  s+=`<polyline points="${pts}" fill="none" stroke="${o.color||'#E8735A'}" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>`;
-  (o.marks||[]).forEach(m=>{s+=`<circle cx="${x(m.i).toFixed(1)}" cy="${y(vals[m.i]).toFixed(1)}" r="5.5" fill="#fff" stroke="${m.c||o.color||'#E8735A'}" stroke-width="2.5"/>`;});
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:linear-gradient(180deg,#FFFDF8,#FCF6EE);border:1px solid #D9D0C4;border-radius:12px">${s}</svg>`;
+  s+=`<polyline points="${pts}" fill="none" stroke="${o.color||'#3B82F6'}" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  (o.marks||[]).forEach(m=>{s+=`<circle cx="${x(m.i).toFixed(1)}" cy="${y(vals[m.i]).toFixed(1)}" r="5.5" fill="#fff" stroke="${m.c||o.color||'#3B82F6'}" stroke-width="2.5"/>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:linear-gradient(180deg,#FBFCFE,#F4F7FB);border:1px solid #E2E8F0;border-radius:12px">${s}</svg>`;
 }
 const NAME_STOP=new Set("The A An And But Or Nor So Yet Then When While After Before Because If As At On In Of To For With From By Not No Yes Oh Okay Ok Well Now Just Still Even Every Some Any All Both Each Chapter Prologue Epilogue She He They It We You I Her His Their My Your Our Its Him Them Us Me Mine Yours Mr Mrs Ms Miss Dr Doctor Aunt Uncle Grandma Grandpa Mom Dad Mama Papa Momma Daddy Mother Father Sir Madam Lord Lady God Jesus Christ Lord Monday Tuesday Wednesday Thursday Friday Saturday Sunday January February March April June July August September October November December Christmas Thanksgiving Halloween Easter Valentine Main Street Avenue Road Park Lake River County North South East West Saint America American English French Spanish Italian York Los Texas California Instagram Facebook Google TikTok Twitter What Why How Who Whom Where Which Whose There Here This That These Those Something Someone Anyone Everyone Nothing Nobody Everything Everybody Maybe Please Thanks Thank Sorry Hey Hi Hello Goodbye Wait Stop Look Listen Come Fine Right Sure Great Good Damn Jesus Don Didn Wasn Isn Aren Won Can Couldn Wouldn Shouldn Let Its Later Soon Once Suddenly Finally Meanwhile Inside Outside Behind Above Below Across Around Beyond Instead Almost Together Tonight Today Tomorrow Yesterday Somewhere Anywhere Everywhere Nowhere Except Without Within During Despite Although Though Since Until Unless Whatever Whenever Wherever Somehow Perhaps Really Honestly Seriously Apparently Eventually Slowly Carefully Never Always Enough Nothing Besides However Anyway Actually Probably Definitely Course Thanks".split(" "));
 function detectCharacters(){
@@ -1297,11 +1365,11 @@ const ANA={
   explain:'The curve tracks <b>investigation language</b> — clues, suspects, alibis, evidence — across the book. A healthy mystery keeps the engine running: the crime lands early (readers expect it by <b>~10–15%</b>), a breadcrumb (clue, answer, or fresh question) lands <b>every chapter or two</b>, and the answers cluster at the denouement without going silent in the middle. The offline read flags late crimes, breadcrumb stalls, and info avalanches; the deep-dive builds the full question ledger.',
   tasks:["Question ledger — every question the book opens (the central question plus secondary ones): where it opens, where it's answered. Orphaned questions are broken promises — flag each one.","Breadcrumb cadence — chapter by chapter, what does the case gain (a clue, an answer, a fresh question, a reversal)? Flag any stretch of 2+ chapters where the case gains nothing, and any chapter that dumps too many answers at once.","Clue fairness — cross-check the Clue & Fair-Play Audit: every clue the solution depends on is planted on-page where the reader could notice it.","Suspect field — for each suspect, map their viability over the book: when they look guilty, when they're cleared, and whether anyone is cleared so early the field collapses.","Red herring economy — each herring genuinely misleads, costs the sleuth something, and gets a real explanation.","Sleuth agency — clues are EARNED by sleuthing (observation, interviews, legwork), not delivered by coincidence, eavesdropping windfalls, or unprompted confession.","Midpoint engine — what re-energizes the middle (second crime, major reversal, ally unmasked)? If nothing does, the middle sags no matter how good the prose is.","The reveal — recontextualizes planted details (surprising-yet-inevitable), the reader could have solved it, and the denouement closes every opened question."],
   out:"MYSTERY ENGINE REPORT: QUESTION LEDGER table (Question | Opened where | Answered where | Status), breadcrumb cadence map with stall/avalanche flags, suspect viability notes, sleuth-agency verdict, and fair-play verdict."},
- plot:{label:'Plot Analysis',color:'#E8735A',role:'a developmental editor who maps story structure against bestseller patterns',
+ plot:{label:'Plot Analysis',color:'#3B82F6',role:'a developmental editor who maps story structure against bestseller patterns',
   explain:'The chart is your <b>emotional arc</b> — the story\'s emotional temperature from first page to last, measured from the language in each slice of the book. The dotted line is neutral; the tinted zones are the extremes. Two patterns matter: roughly <b>90% of bestsellers reach both tinted zones</b> (one real high, one real low), and the line should keep <b>changing direction</b> — every climb followed by a complication. The offline read is a proxy; the AI deep-dive maps your actual beats.',
   tasks:["Narrative arc — describe the overall emotional shape of the story in plain language and name the closest classic shape (man-in-a-hole, rags-to-riches, Cinderella arc, etc.).","Structure map — locate the major beats with their approximate position as % of the book: hook, inciting incident, first plot point, midpoint shift, dark moment, climax, resolution. Mark each HIT / EARLY / LATE / MISSING and say what's actually on the page there.","Turning points — list the emotional high points and low points (scenes that shift the story's emotional temperature) and whether each is earned by what came before.","Setup & payoff — list every major promise made to the reader and where (or whether) it pays off. Orphaned setups and unearned payoffs are plot problems.","Subplots — name each subplot, whether it supports or distracts from the main plot, and whether it resolves.","Theme — state the book's theme in one sentence. Is it withheld and felt, or announced? Flag any place the book states its own moral.","Genre promise — does the plot deliver the beats this genre's readers came for, where they expect them?"],
   out:"PLOT REPORT with: ARC SHAPE (one paragraph), BEAT MAP table (Beat | ~% position | Status | What's on the page), TURNING POINTS list, SETUP/PAYOFF ledger, SUBPLOT verdicts, THEME line, and the 3 biggest plot risks ranked."},
- character:{label:'Character Analysis',color:'#D4A853',role:'a character editor who judges characters by their agency — what they DO on the page, not how they are described',
+ character:{label:'Character Analysis',color:'#C9A66B',role:'a character editor who judges characters by their agency — what they DO on the page, not how they are described',
   explain:'The table shows every recurring name the scan found, with <b>presence bars</b> — one cell per chapter, darker = more mentions — so you can see who owns the book, who disappears, and who wanders in late. The benchmark gauge is <b>dialogue share</b>: most bestsellers land between <b>25% and 35% dialogue</b>. The offline scan sees names; only the AI deep-dive can judge agency, voice, and arcs. In SFF and mystery the scan can\'t tell people from places — recurring proper nouns (cities, ships, taverns, spells) appear in the table too, so read it as your <b>cast &amp; world glossary</b>: terms that appear once and vanish are worth a look either way.',
   tasks:["Cast list — every named character with their story function in one line. Flag anyone with no function.","Agency check — for each main character: what do they WANT right now (urgent goal), WHY (motivation), what stands in the way (obstacles), and what FLAW complicates it? Flag any protagonist who mostly reacts instead of deciding.","Differentiation — do any two characters read alike in voice or function? Cover the names in a dialogue scene: can you still tell who's speaking by cadence and word choice alone?","Arcs — for each lead: where they start → where they end, and the exact scenes where the change happens. Is the change earned on the page, or asserted?","Dynamics — for each load-bearing relationship (partners, crew, mentor, sleuth-and-suspects): what does each want FROM the other, and does the friction escalate?","POV — whose head are we in, is it consistent, and is it the right head for each big scene?","Supporting cast — does every named side character serve plot or theme? Who could be cut or merged without losing anything?"],
   out:"CHARACTER REPORT with: AGENCY TABLE (Character | Goal | Motivation | Obstacle | Flaw | Active or Passive), DIFFERENTIATION flags, ARC map per lead (start → end → the scene where it turns), DYNAMICS read on the central relationship, and a cut/merge list."},
@@ -1309,7 +1377,7 @@ const ANA={
   explain:'The curve estimates <b>reading speed</b> across the book — computed from sentence length, dialogue density, and paragraph weight in each slice. <b>Peaks</b> are page-turner stretches; <b>valleys</b> are slow, scene-setting stretches. Neither is bad alone: the danger signs are a <b>flat line</b> (no variety), a <b>sagging middle</b>, and a slow opening. Bestsellers change pace roughly <b>every 10%</b> of the book.',
   tasks:["Chapter-by-chapter pace verdict — FAST / STEADY / SLOW for every chapter, naming the one thing driving that pace (action, dialogue, introspection, description).","Sagging middle — does momentum dip in the middle third? Name the exact chapters and what stalls them.","Scene vs. sequel — after each big scene, is there breathing room (reaction, processing, regrouping)? Too much reads as drag; none reads as whiplash.","Openings & endings — does each chapter open inside a live question and end pulling forward? List every clean-stop chapter ending (the #1 place readers quit).","Variety — where does the pace stay the same too long? Bestsellers shift gears roughly every 10% of the book.","Trim list — the specific scenes or passages to cut or compress, and what each cut buys.","Expand list — the big moments that rush by too fast and deserve more space on the page."],
   out:"PACING REPORT with: CHAPTER TABLE (Chapter | Pace | What's driving it | Fix if needed), MIDDLE-THIRD verdict, TRIM list, EXPAND list, and the single highest-impact pacing change."},
- conflict:{label:'Conflict Analysis',color:'#1B2A4A',role:'a conflict-and-stakes editor who tracks narrative drive',
+ conflict:{label:'Conflict Analysis',color:'#1E3A5F',role:'a conflict-and-stakes editor who tracks narrative drive',
   explain:'The line tracks <b>conflict intensity</b> — the density of friction in each slice of the book (arguments, threats, secrets, danger, refusals). Upward moves are complications building; the rule underneath is <b>tension on every page</b>: even quiet scenes need a live question running. Watch for chapters the scan flags as conflict-quiet, and whether intensity <b>escalates</b> toward the climax instead of plateauing. The AI deep-dive breaks down your conflict <b>sources</b> — a book leaning too hard on one source flattens.',
   tasks:["Sources of conflict — break down the major sources driving this story (internal struggle, antagonist pressure, dread and psychological pressure, the central mystery or quest question, interpersonal friction, external circumstance, societal pressure) with a rough % weight each. A book leaning more than ~70% on one source usually flattens.","Tension on every page — list any scene or chapter where NO live conflict or open question is running. These are the dead zones.","Escalation — do the stakes ratchet upward act by act? Name exactly where they plateau or quietly reset.","Complication vs. resolution rhythm — every resolution should open a new complication in the same beat. List resolutions that close clean (momentum killers).","The dark moment — is the 'all is lost' beat devastating, earned, and specific to these characters' wounds — or generic?","Stakes legibility — at any point in the book, can the reader name what's at risk, for whom, and why NOW? Where does it blur?","Endgame — which conflicts resolve, which intentionally carry forward (series hooks), and which are accidentally dropped?"],
   out:"CONFLICT REPORT with: SOURCES breakdown (% + strongest example of each), DEAD-ZONE list, ESCALATION map (act by act), rhythm flags (clean resolutions to re-hook), DARK-MOMENT verdict, and dropped-conflict list."}
@@ -1371,7 +1439,7 @@ function renderAnalyses(){
   let chart='',diag=[];
   if(anaActive==='plot'){
     const arc=emotionalArc(segs);const ex=extremaOf(arc,3);
-    chart=miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:A.color,ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:ex.peaks.map(i=>({i})).concat(ex.valleys.map(i=>({i,c:'#1B2A4A'})))});
+    chart=miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:A.color,ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:ex.peaks.map(i=>({i})).concat(ex.valleys.map(i=>({i,c:'#1E3A5F'})))});
     diag=plotDiag(arc,segs);
   }else if(anaActive==='pacing'){
     const pace=paceCurve(segs);const ex=extremaOf(pace,3);
@@ -1545,7 +1613,7 @@ const FIXMETA={
  filter:{sev:'rec',label:'Filter word',why:"A filter word that holds the reader at arm's length from the sensation.",how:"Show the sensation directly instead of filtering it through felt/saw/realized."},
  transition:{sev:'opt',label:'Empty transition (Pass 12)',why:"Glue that organizes the prose but doesn't mean anything.",how:"Cut it and let the next beat land, or replace it with a real causal/emotional pivot."}
 };
-const SEV={crit:{c:'#C0492F',n:'Critical'},high:{c:'#C97A33',n:'High'},rec:{c:'#D4A853',n:'Recommended'},opt:{c:'#7A9E7E',n:'Optional'}};
+const SEV={crit:{c:'#C0492F',n:'Critical'},high:{c:'#C97A33',n:'High'},rec:{c:'#C9A66B',n:'Recommended'},opt:{c:'#7A9E7E',n:'Optional'}};
 const WORDFIX={suddenly:"cut it — just show the action",slowly:"cut, or show the slowness in the action itself",quietly:"cut, or describe how the quiet sounds",finally:"cut — let the action land on its own",slightly:"cut — it only weakens the verb",smirk:"smiled, grinned, mouth quirked",smirked:"smiled, grinned, mouth quirked",glow:"name the actual light",tension:"show the specific physical pressure",tense:"show what the body actually does",professional:"name the specific competence",chaos:"describe the specific mess",expression:"name the specific look",softly:"cut the adverb — let the line carry the tone"};
 const PHRASEFIX={"couldn't help but":"cut — just do the action","found myself":"cut — just do the action","something shifted":"name exactly what changed","the air between us":"describe the specific tension or sensation","let out a breath i didn't know i was holding":"describe the exhale specifically","heart hammered":"pulse kicked / chest tightened — a specific reaction","arms crossed":"a different defensive beat","folded arms":"a different defensive beat","i cross my arms":"a different defensive beat","swallowed hard":"a specific throat or voice reaction","meet my gaze":"a specific look, or break the eye contact","hold my gaze":"a specific look, or break the eye contact","search my face":"name what she's actually looking for","little did she know":"cut — give her present-tense unease instead","little did he know":"cut — give him present-tense unease instead","everything was about to change":"cut — let the change happen on the page"};
 function collectHits(text,terms,cat,isPhrase){
@@ -1604,8 +1672,8 @@ function buildReportHtml(){
       <div class="bx after"><div class="bl">Fix</div><div>${esc(m.how)}${h.fix?` <b>→ ${esc(h.fix)}</b>`:''}</div></div></div>
       ${h.count>1?`<div class="morehits">+ ${h.count-1} more instance${h.count>2?'s':''} — “Show highlighted text” on the Auto-Scan tab lights up every one.</div>`:''}
     </div>`;};
-  const patCard=x=>`<div class="card" style="border-left-color:#1B2A4A">
-      <div class="cardhead"><span class="sev" style="background:#1B2A4A">Pattern</span><span class="lab">${esc(x.t)}</span></div>
+  const patCard=x=>`<div class="card" style="border-left-color:#1E3A5F">
+      <div class="cardhead"><span class="sev" style="background:#1E3A5F">Pattern</span><span class="lab">${esc(x.t)}</span></div>
       <div class="why">${esc(x.d)}</div>${x.ex?`<div class="ba"><div class="bx before"><div class="bl">Example</div><div>${esc(x.ex)}</div></div></div>`:''}
     </div>`;
   let chaptersHtml='',gc=0,gh=0,gr=0,go=0;
@@ -1647,10 +1715,10 @@ function buildReportHtml(){
     const noteBlk=k=>{const nn=(state.analysisNotes||{})[k];return nn&&nn.trim()?`<div class="passnote"><h3>AI deep-dive notes</h3><div>${esc(nn.trim()).replace(/\n/g,'<br>')}</div></div>`:'';};
     const exArc=extremaOf(arc,3),exP=extremaOf(pace,3),exC=extremaOf(conf,3);
     storyHtml=
-      `<h3 class="ssec">📈 Plot — emotional arc</h3>`+miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:'#E8735A',ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:exArc.peaks.map(i=>({i})).concat(exArc.valleys.map(i=>({i,c:'#1B2A4A'})))})+liDiag(pd)+noteBlk('plot')+
+      `<h3 class="ssec">📈 Plot — emotional arc</h3>`+miniChart(arc,{min:-1.05,max:1.05,neutral:0,bands:true,color:'#3B82F6',ylab:[{v:1,t:'high'},{v:0,t:'neutral'},{v:-1,t:'low'}],marks:exArc.peaks.map(i=>({i})).concat(exArc.valleys.map(i=>({i,c:'#1E3A5F'})))})+liDiag(pd)+noteBlk('plot')+
       `<h3 class="ssec">🎭 Character — presence & cast</h3>`+charTableHtml(chars,true)+liDiag(cd)+noteBlk('character')+
       `<h3 class="ssec">⏱ Pacing — reading-speed curve</h3>`+miniChart(pace,{min:0,max:10,neutral:5,color:'#7A9E7E',ylab:[{v:10,t:'fast'},{v:0,t:'slow'}],marks:exP.peaks.map(i=>({i}))})+liDiag(pcd)+noteBlk('pacing')+
-      `<h3 class="ssec">⚔️ Conflict — intensity line</h3>`+miniChart(conf,{min:0,max:10.5,color:'#1B2A4A',ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:exC.peaks.map(i=>({i}))})+liDiag(cfd)+noteBlk('conflict');
+      `<h3 class="ssec">⚔️ Conflict — intensity line</h3>`+miniChart(conf,{min:0,max:10.5,color:'#1E3A5F',ylab:[{v:10,t:'intense'},{v:0,t:'calm'}],marks:exC.peaks.map(i=>({i}))})+liDiag(cfd)+noteBlk('conflict');
     const tl=timelineData();const tmx=Math.max(1,tl[tl.length-1].cum);
     storyHtml+=`<h3 class="ssec">🕰 Timeline — story clock</h3>`+miniChart(tl.map(t=>t.cum),{min:0,max:tmx,color:'#C97A33',xchap:tl.length,ylab:[{v:tmx,t:'day '+(tmx+1)},{v:0,t:'day 1'}]})+timelineTableHtml(tl)+liDiag(timelineDiag(tl))+noteBlk('timeline');
     const dcur=lexCurve(segs,DREADW),mcur=lexCurve(segs,MYSTW);
@@ -1665,45 +1733,45 @@ function buildReportHtml(){
   const assessHtml=assessCardHtml(assessData());
   const letter=((state.analysisNotes||{}).overall||'').trim();
   const letterHtml=letter?`<div class="passnote"><h3>Editor's Letter — AI deep-dive</h3><div>${esc(letter).replace(/\n/g,'<br>')}</div></div>`:'';
-  const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#FFF8F0;margin:0;line-height:1.6}
-  .hd{background:#1B2A4A;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#D4A853;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+  const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#F1F5F9;margin:0;line-height:1.6}
+  .hd{background:#1E3A5F;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#C9A66B;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
   .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
-  .counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.cbox{flex:1;min-width:90px;background:#fff;border:1px solid #D9D0C4;border-radius:10px;padding:12px;text-align:center}.cbox .n{font-size:1.7rem;font-weight:bold}.cbox .l{font-size:.75rem;color:#6b6b6b;text-transform:uppercase;letter-spacing:.5px}
-  h2.sec{color:#1B2A4A;border-bottom:2px solid #E8735A;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
-  details.chap{background:#fff;border:1px solid #D9D0C4;border-radius:10px;margin-bottom:12px;overflow:hidden}
-  details.chap>summary{cursor:pointer;padding:13px 16px;font-weight:bold;color:#1B2A4A;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#F7F1E8}
-  .pillc{font-size:.75rem;font-weight:bold;color:#fff;background:#E8735A;border-radius:12px;padding:2px 10px}.chap .cbody{padding:14px 16px}
-  .card{background:#fff;border:1px solid #E8DFD2;border-left-width:5px;border-radius:8px;padding:12px 14px;margin-bottom:11px}
-  .cardhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}.sev{color:#fff;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:10px}.lab{font-weight:bold;color:#1B2A4A}
-  .why{font-size:.92rem;color:#5A554F;margin-bottom:8px}
+  .counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.cbox{flex:1;min-width:90px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:12px;text-align:center}.cbox .n{font-size:1.7rem;font-weight:bold}.cbox .l{font-size:.75rem;color:#6b6b6b;text-transform:uppercase;letter-spacing:.5px}
+  h2.sec{color:#1E3A5F;border-bottom:2px solid #3B82F6;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
+  details.chap{background:#fff;border:1px solid #E2E8F0;border-radius:10px;margin-bottom:12px;overflow:hidden}
+  details.chap>summary{cursor:pointer;padding:13px 16px;font-weight:bold;color:#1E3A5F;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#F2F6FA}
+  .pillc{font-size:.75rem;font-weight:bold;color:#fff;background:#3B82F6;border-radius:12px;padding:2px 10px}.chap .cbody{padding:14px 16px}
+  .card{background:#fff;border:1px solid #DCE4EE;border-left-width:5px;border-radius:8px;padding:12px 14px;margin-bottom:11px}
+  .cardhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}.sev{color:#fff;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:10px}.lab{font-weight:bold;color:#1E3A5F}
+  .why{font-size:.92rem;color:#475569;margin-bottom:8px}
   .ba{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:620px){.ba{grid-template-columns:1fr}}
-  .bx{border-radius:7px;padding:8px 10px;font-size:.9rem}.bx.before{background:#FBF1E9}.bx.after{background:#EFF4EE}.bl{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;color:#6b6b6b;margin-bottom:3px}
+  .bx{border-radius:7px;padding:8px 10px;font-size:.9rem}.bx.before{background:#EDF2F9}.bx.after{background:#EFF4EE}.bl{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;color:#6b6b6b;margin-bottom:3px}
   mark{background:#F7C8B8;color:#6a1020;border-radius:3px;padding:0 2px}
-  .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #D9D0C4;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#1B2A4A;font-size:1.02rem}
+  .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #E2E8F0;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#1E3A5F;font-size:1.02rem}
   ul{margin:6px 0 0;padding-left:20px}.foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}
-  h3.ssec{color:#1B2A4A;margin:24px 0 8px;font-size:1.05rem}
-  .prio{background:#fff;border:2px solid #D4A853;border-radius:10px;padding:14px 18px;margin-bottom:22px}
-  .prio h3{margin:0 0 8px;color:#1B2A4A}.prio ol{margin:0;padding-left:20px}.prio li{margin-bottom:5px}
+  h3.ssec{color:#1E3A5F;margin:24px 0 8px;font-size:1.05rem}
+  .prio{background:#fff;border:2px solid #C9A66B;border-radius:10px;padding:14px 18px;margin-bottom:22px}
+  .prio h3{margin:0 0 8px;color:#1E3A5F}.prio ol{margin:0;padding-left:20px}.prio li{margin-bottom:5px}
   .tbl{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
-  .tbl th{background:#F7F1E8;color:#1B2A4A;text-align:left;padding:7px 9px;border:1px solid #E8DFD2}
-  .tbl td{padding:6px 9px;border:1px solid #E8DFD2}.center{text-align:center}
+  .tbl th{background:#F2F6FA;color:#1E3A5F;text-align:left;padding:7px 9px;border:1px solid #DCE4EE}
+  .tbl td{padding:6px 9px;border:1px solid #DCE4EE}.center{text-align:center}
   .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
-  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
-  .charbar i.on1{background:#F0A78F}.charbar i.on2{background:#E8735A}.charbar i.on3{background:#C0492F}
+  .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#E9EEF4}
+  .charbar i.on1{background:#93B8E8}.charbar i.on2{background:#3B82F6}.charbar i.on3{background:#C0492F}
   .benchband{font-size:.72rem;color:#6b6b6b;font-weight:normal}
   .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:bold;font-family:Georgia,serif;font-size:1.1rem;margin-bottom:14px}
   .verdict small{font-weight:normal;font-size:.8rem;opacity:.92}
   .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
-  .dim{background:#fff;border:1px solid #D9D0C4;border-left:5px solid #6b6b6b;border-radius:9px;padding:10px 13px}
-  .dim.strong{border-left-color:#5C8A63}.dim.watch{border-left-color:#C97A33}.dim.fix{border-left-color:#C0492F}.dim.todo{border-left-color:#D9D0C4}
-  .dim .dk{font-weight:bold;color:#1B2A4A;font-size:.92rem}
+  .dim{background:#fff;border:1px solid #E2E8F0;border-left:5px solid #6b6b6b;border-radius:9px;padding:10px 13px}
+  .dim.strong{border-left-color:#5C8A63}.dim.watch{border-left-color:#C97A33}.dim.fix{border-left-color:#C0492F}.dim.todo{border-left-color:#E2E8F0}
+  .dim .dk{font-weight:bold;color:#1E3A5F;font-size:.92rem}
   .dim .ds{font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
   .dim.strong .ds{color:#5C8A63}.dim.watch .ds{color:#C97A33}.dim.fix .ds{color:#C0492F}.dim.todo .ds{color:#6b6b6b}
-  .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}
-  .cnt{background:#1B2A4A;color:#fff;border-radius:10px;padding:1px 8px;font-size:.7rem;margin-left:6px}
+  .dim .dn{font-size:.8rem;color:#475569;margin-top:3px}
+  .cnt{background:#1E3A5F;color:#fff;border-radius:10px;padding:1px 8px;font-size:.7rem;margin-left:6px}
   .morehits{font-size:.78rem;color:#6b6b6b;margin-top:7px;font-style:italic}
   details.more{margin-top:10px}
-  details.more>summary{cursor:pointer;color:#E8735A;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
+  details.more>summary{cursor:pointer;color:#3B82F6;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
   details.more>summary::before{content:"▸ "}details.more[open]>summary::before{content:"▾ "}`;
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Clinic Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
 <body><div class="hd"><h1>Story Clinic — Fix-It Report</h1><div class="meta">${esc(state.title||'Untitled')} · ${esc(voice)} · Intensity ${esc(state.heat)}/5${state.genre?` · ${esc(state.genre)}`:''}${(state.lang&&state.lang!=='en')?` · ${esc(langName())}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
@@ -1711,7 +1779,7 @@ function buildReportHtml(){
   <div class="counts">
     <div class="cbox"><div class="n" style="color:#C0492F">${gc}</div><div class="l">Critical</div></div>
     <div class="cbox"><div class="n" style="color:#C97A33">${gh}</div><div class="l">Flash-forward</div></div>
-    <div class="cbox"><div class="n" style="color:#D4A853">${gr}</div><div class="l">Recommended</div></div>
+    <div class="cbox"><div class="n" style="color:#C9A66B">${gr}</div><div class="l">Recommended</div></div>
     <div class="cbox"><div class="n" style="color:#7A9E7E">${go}</div><div class="l">Optional</div></div>
   </div>
   <p class="why">Each card below shows the exact text the offline scan flagged (<b>Before</b>), why it weakens the prose, and how to fix it (<b>Fix</b>). These are the mechanical, banned-list issues you'd otherwise pay a line editor to catch. Below them: your four story lab reports, the satisfaction read, and your editing-pass notes.</p>
