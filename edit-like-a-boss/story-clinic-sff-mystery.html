@@ -339,10 +339,11 @@
 
         <div class="toolbar">
           <button class="btn primary" id="goBtn" onclick="goSmart()">▶ Go — scan my manuscript</button>
+          <button class="btn gold" onclick="addChapters()">+ Add next chapter</button>
           <button class="btn hidden" id="replaceBtn" onclick="if(confirm('Replace ALL loaded chapters with the text in the box?'))splitNow()">Start over with this text</button>
           <button class="btn" onclick="loadDemo()">Load demo chapter</button>
         </div>
-        <p class="sub" style="margin-top:8px;font-size:12.5px">One button, whatever your style: <b>Go</b> scans what's in the box — a single chapter or the whole book (chapter breaks are found automatically). Once chapters are loaded, <b>Go</b> adds the box as your next chapter, so you can build the book lesson by lesson. Pasted a fresh full version? <b>Start over with this text</b> replaces everything.</p>
+        <p class="sub" style="margin-top:8px;font-size:12.5px"><b>Go</b> does the right thing: it scans what's in the box — one chapter or the whole book (chapter breaks found automatically) — and once chapters are loaded, it adds the box as your next chapter. Prefer to be explicit? <b>+ Add next chapter</b> always appends the box as a new chapter. Pasted a fresh full version? <b>Start over with this text</b> replaces everything.</p>
 
         <div id="setupStats" style="margin-top:16px"></div>
         <div id="chapList" style="margin-top:10px"></div>
