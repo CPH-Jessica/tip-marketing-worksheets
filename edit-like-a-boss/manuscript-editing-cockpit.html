@@ -672,8 +672,29 @@ function renderSetupStats(){
 function renderChapList(){
   const el=document.getElementById('chapList');
   if(!state.chapters.length){el.innerHTML='';return;}
-  el.innerHTML=`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, or remove one with ✕</span></h3>`+
-    state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span><button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}</div></details>`).join('');
+  el.innerHTML=`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, remove with ✕, or open one to paste its revised version</span></h3>`+
+    state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span><button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}
+      <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised text</button></div>
+      <div id="repl-${i}" class="hidden">
+        <textarea id="replTa-${i}" rows="7" placeholder="Paste the REVISED chapter your AI returned — it replaces this chapter, and every scan and report updates instantly."></textarea>
+        <div class="toolbar" style="margin-top:6px"><button class="btn primary" onclick="applyRepl(${i})">Replace &amp; re-scan</button><button class="btn" onclick="toggleRepl(${i})">Cancel</button></div>
+      </div></div></details>`).join('');
+}
+let lastRepl=null;
+function toggleRepl(i){const el=document.getElementById('repl-'+i);if(el)el.classList.toggle('hidden');}
+function flagCount(text){const f=scanChapter(text);return f.crit.length+f.rec.length+f.opt.length;}
+function applyRepl(i){
+  const ta=document.getElementById('replTa-'+i);
+  let t=(ta&&ta.value||'').trim();
+  if(!t){alert('Paste the revised chapter text first.');return;}
+  // drop a duplicated heading line if the AI included one
+  t=t.replace(/^(?:#{1,3}\s+[^\n]*|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b[^\n]*)\n+/i,'');
+  const before=flagCount(state.chapters[i].text);
+  state.chapters[i].text=t;
+  const after=flagCount(t);
+  lastRepl={title:state.chapters[i].title,before,after};
+  save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();
+  document.querySelector('.tab[data-v="scan"]').click();
 }
 function renameChap(i,v){state.chapters[i].title=v;save();}
 function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();renderScan();}
@@ -774,7 +795,13 @@ function renderScan(){
   }).join('');
   function totRfmt(n){return '';}
   const langWarn=(state.lang&&state.lang!=='en')?`<div class="note">⚠ The Auto-Scan word lists are built for <b>English</b>. On a ${langName()} manuscript most checks won't fire (or may misfire) — lean on the <b>Editing Pass prompts</b>, which are fully ${langName()}-aware and will hunt the ${langName()} equivalents of every tell.</div>`:'';
-  sum.innerHTML=langWarn+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
+  let replBanner='';
+  if(lastRepl){
+    const drop=lastRepl.after<lastRepl.before;
+    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — automated flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan, report, and prompt now uses the revised text — copy any pass again for an updated AI read. (Notes you pasted earlier still describe the old version.)</div></div></div>`;
+    lastRepl=null;
+  }
+  sum.innerHTML=replBanner+langWarn+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
     <span class="stat"><span class="n" style="color:var(--warn)">${totR}</span><span class="l">recommended</span></span>
     <span class="stat"><span class="n" style="color:var(--c-bond)">${totO}</span><span class="l">optional</span></span>`;
   res.innerHTML=blocks;
