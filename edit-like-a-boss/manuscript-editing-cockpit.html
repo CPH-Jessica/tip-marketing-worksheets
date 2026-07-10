@@ -20,7 +20,7 @@
      Built CPH-first; flip CONFIG.cphMode for a generic sellable build.
      ============================================================ */
   :root{
-    --plum:#0F766E; --plum-2:#134E4B; --rose:#C2727B; --rose-soft:#D4A5A5;
+    --plum:#B76E79; --plum-2:#9C5560; --rose:#C2727B; --rose-soft:#D4A5A5;
     --gold:#C9A66B; --cream:#F8F1E9; --ink:#2D2D2D; --muted:#6b6b6b;
     --line:#EDE4D9; --card:#ffffff; --ok:#5C8A63; --warn:#C97A33; --bad:#C0492F;
     --c-tension:#C2727B; --c-bond:#0F766E; --c-sat:#C9A66B; --c-stakes:#7A9E7E;
@@ -116,7 +116,7 @@
   .passcard .pbody{padding:14px 16px;display:none}
   .passcard.open .pbody{display:block}
   .promptbox{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.5;
-    background:#0F766E;color:#F3EEE4;border-radius:10px;padding:14px;max-height:300px;overflow:auto}
+    background:#B76E79;color:#F3EEE4;border-radius:10px;padding:14px;max-height:300px;overflow:auto}
   .copied{color:var(--ok);font-weight:700;font-size:12.5px;margin-left:8px}
 
   /* satisfaction (charge model) */
@@ -185,12 +185,12 @@
      unchanged. Overrides cascade over the base styles above.
      ============================================================ */
   :root{
-    --plum:#0F766E; --plum-2:#134E4B; --rose:#C2727B; --rose-soft:#D4A5A5;
+    --plum:#B76E79; --plum-2:#9C5560; --rose:#C2727B; --rose-soft:#D4A5A5;
     --gold:#C9A66B; --cream:#F8F1E9; --ink:#3F2A1E; --muted:#6B5C4E;
     --line:#EDE4D9;
     --c-tension:#C2727B; --c-bond:#0F766E; --c-sat:#C9A66B; --c-stakes:#7A9E7E;
-    --shadow:0 10px 15px -3px rgba(15,118,110,.08),0 4px 6px -4px rgba(15,118,110,.08);
-    --shadow-sm:0 4px 6px -2px rgba(15,118,110,.06);
+    --shadow:0 10px 15px -3px rgba(183,110,121,.08),0 4px 6px -4px rgba(183,110,121,.08);
+    --shadow-sm:0 4px 6px -2px rgba(183,110,121,.06);
     --r:16px;
   }
   body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--ink);
@@ -199,7 +199,7 @@
     background-size:auto,60px 60px}
   h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;letter-spacing:-0.02em}
   .topbar{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    color:var(--ink);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(15,118,110,.04)}
+    color:var(--ink);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(183,110,121,.04)}
   .topbar .logo{color:var(--ink);font-family:'Playfair Display',Georgia,serif;font-size:20px}
   .topbar .logo b{color:var(--plum)}
   .topbar .tag{color:var(--muted);opacity:1}
@@ -221,16 +221,16 @@
   button.btn:hover{transform:translateY(-1px)}
   button.btn.primary{background:var(--plum);border-color:var(--plum)}
   button.btn.primary:hover{background:var(--plum-2)}
-  button.btn.gold{background:linear-gradient(90deg,#C9A66B,#D4A5A5);border-color:#C9A66B;color:#3F2A1E}
+  button.btn.gold{background:linear-gradient(90deg,#C98A94,#E7C6BD);border-color:#C98A94;color:#4A2430}
   input[type=text],select,textarea{border-radius:14px;background:#fff;font-family:'Inter',sans-serif}
   .passcard{border-radius:16px;transition:all .2s cubic-bezier(.4,0,.2,1)}
-  .passcard:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(15,118,110,.10),0 8px 10px -6px rgba(15,118,110,.10)}
+  .passcard:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(183,110,121,.10),0 8px 10px -6px rgba(183,110,121,.10)}
   .passcard>.head{background:#FBF6EF}
   .passcard .pno{background:var(--plum)}
   .chap>summary{background:#FBF6EF}
   .stat{background:#FBF6EF;border-radius:14px}
   .note{background:#FBF6EF;border-radius:10px}
-  .promptbox{background:#123F3A;color:#EDE9E0;border-radius:14px}
+  .promptbox{background:#3A2430;color:#EDE9E0;border-radius:14px}
   .howto-card{background:var(--cream);border-radius:14px}
   .howto-card.best{background:linear-gradient(135deg,#F6EBD9,#F8EFE4);border-color:var(--gold)}
   .howto-card .hk{font-family:'Playfair Display',Georgia,serif}
@@ -1664,8 +1664,8 @@ function buildReportHtml(){
       <div class="bx after"><div class="bl">Fix</div><div>${esc(m.how)}${h.fix?` <b>→ ${esc(h.fix)}</b>`:''}</div></div></div>
       ${h.count>1?`<div class="morehits">+ ${h.count-1} more instance${h.count>2?'s':''} — “Show highlighted text” on the Auto-Scan tab lights up every one.</div>`:''}
     </div>`;};
-  const patCard=x=>`<div class="card" style="border-left-color:#0F766E">
-      <div class="cardhead"><span class="sev" style="background:#0F766E">Pattern</span><span class="lab">${esc(x.t)}</span></div>
+  const patCard=x=>`<div class="card" style="border-left-color:#B76E79">
+      <div class="cardhead"><span class="sev" style="background:#B76E79">Pattern</span><span class="lab">${esc(x.t)}</span></div>
       <div class="why">${esc(x.d)}</div>${x.ex?`<div class="ba"><div class="bx before"><div class="bl">Example</div><div>${esc(x.ex)}</div></div></div>`:''}
     </div>`;
   let chaptersHtml='',gc=0,gh=0,gr=0,go=0;
@@ -1723,26 +1723,26 @@ function buildReportHtml(){
   const letter=((state.analysisNotes||{}).overall||'').trim();
   const letterHtml=letter?`<div class="passnote"><h3>Editor's Letter — AI deep-dive</h3><div>${esc(letter).replace(/\n/g,'<br>')}</div></div>`:'';
   const css=`*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#2D2D2D;background:#F8F1E9;margin:0;line-height:1.6}
-  .hd{background:#0F766E;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#C9A66B;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+  .hd{background:#B76E79;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#C9A66B;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
   .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
   .counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.cbox{flex:1;min-width:90px;background:#fff;border:1px solid #EDE4D9;border-radius:10px;padding:12px;text-align:center}.cbox .n{font-size:1.7rem;font-weight:bold}.cbox .l{font-size:.75rem;color:#6b6b6b;text-transform:uppercase;letter-spacing:.5px}
-  h2.sec{color:#0F766E;border-bottom:2px solid #C2727B;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
+  h2.sec{color:#B76E79;border-bottom:2px solid #C2727B;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
   details.chap{background:#fff;border:1px solid #EDE4D9;border-radius:10px;margin-bottom:12px;overflow:hidden}
-  details.chap>summary{cursor:pointer;padding:13px 16px;font-weight:bold;color:#0F766E;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#FBF6EF}
+  details.chap>summary{cursor:pointer;padding:13px 16px;font-weight:bold;color:#B76E79;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#FBF6EF}
   .pillc{font-size:.75rem;font-weight:bold;color:#fff;background:#C2727B;border-radius:12px;padding:2px 10px}.chap .cbody{padding:14px 16px}
   .card{background:#fff;border:1px solid #E5DCCB;border-left-width:5px;border-radius:8px;padding:12px 14px;margin-bottom:11px}
-  .cardhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}.sev{color:#fff;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:10px}.lab{font-weight:bold;color:#0F766E}
+  .cardhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}.sev{color:#fff;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:10px}.lab{font-weight:bold;color:#B76E79}
   .why{font-size:.92rem;color:#5A554F;margin-bottom:8px}
   .ba{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:620px){.ba{grid-template-columns:1fr}}
   .bx{border-radius:7px;padding:8px 10px;font-size:.9rem}.bx.before{background:#FBF1E9}.bx.after{background:#EFF4EE}.bl{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;color:#6b6b6b;margin-bottom:3px}
   mark{background:#F7C8B8;color:#6a1020;border-radius:3px;padding:0 2px}
-  .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #EDE4D9;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#0F766E;font-size:1.02rem}
+  .clean{color:#5C8A63;font-style:italic}.passnote{background:#fff;border:1px solid #EDE4D9;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#B76E79;font-size:1.02rem}
   ul{margin:6px 0 0;padding-left:20px}.foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}
-  h3.ssec{color:#0F766E;margin:24px 0 8px;font-size:1.05rem}
+  h3.ssec{color:#B76E79;margin:24px 0 8px;font-size:1.05rem}
   .prio{background:#fff;border:2px solid #C9A66B;border-radius:10px;padding:14px 18px;margin-bottom:22px}
-  .prio h3{margin:0 0 8px;color:#0F766E}.prio ol{margin:0;padding-left:20px}.prio li{margin-bottom:5px}
+  .prio h3{margin:0 0 8px;color:#B76E79}.prio ol{margin:0;padding-left:20px}.prio li{margin-bottom:5px}
   .tbl{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
-  .tbl th{background:#FBF6EF;color:#0F766E;text-align:left;padding:7px 9px;border:1px solid #E5DCCB}
+  .tbl th{background:#FBF6EF;color:#B76E79;text-align:left;padding:7px 9px;border:1px solid #E5DCCB}
   .tbl td{padding:6px 9px;border:1px solid #E5DCCB}.center{text-align:center}
   .charbar{display:inline-flex;gap:2px;width:100%;max-width:230px;vertical-align:middle}
   .charbar i{flex:1;min-width:5px;height:14px;border-radius:2px;background:#F0EDE8}
@@ -1753,11 +1753,11 @@ function buildReportHtml(){
   .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
   .dim{background:#fff;border:1px solid #EDE4D9;border-left:5px solid #6b6b6b;border-radius:9px;padding:10px 13px}
   .dim.strong{border-left-color:#5C8A63}.dim.watch{border-left-color:#C97A33}.dim.fix{border-left-color:#C0492F}.dim.todo{border-left-color:#EDE4D9}
-  .dim .dk{font-weight:bold;color:#0F766E;font-size:.92rem}
+  .dim .dk{font-weight:bold;color:#B76E79;font-size:.92rem}
   .dim .ds{font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
   .dim.strong .ds{color:#5C8A63}.dim.watch .ds{color:#C97A33}.dim.fix .ds{color:#C0492F}.dim.todo .ds{color:#6b6b6b}
   .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}
-  .cnt{background:#0F766E;color:#fff;border-radius:10px;padding:1px 8px;font-size:.7rem;margin-left:6px}
+  .cnt{background:#B76E79;color:#fff;border-radius:10px;padding:1px 8px;font-size:.7rem;margin-left:6px}
   .morehits{font-size:.78rem;color:#6b6b6b;margin-top:7px;font-style:italic}
   details.more{margin-top:10px}
   details.more>summary{cursor:pointer;color:#C2727B;font-weight:bold;font-size:.9rem;padding:6px 0;list-style:none}
