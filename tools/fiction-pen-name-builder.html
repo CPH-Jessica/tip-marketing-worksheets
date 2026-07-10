@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiction Pen Name Builder — Start From Your Genre · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3, .serif { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+.grp { margin-top: 14px; }
+.grp h3 { font-size: 13px; color: #c79a4b; text-transform: uppercase; letter-spacing: .07em; border-bottom: 1px solid #ecdfd0; padding-bottom: 4px; margin-bottom: 8px; }
+.ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.gcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all .15s; }
+.gcard:hover { border-color: #c79a4b; background: #fffaf0; transform: translateY(-1px); }
+.gcard.on { border-color: #6d2b4e; background: #f6ecf1; box-shadow: 0 2px 8px rgba(109,43,78,.15); }
+.gcard .ge { font-size: 19px; }
+.gcard .gn { font-weight: 700; font-size: 13.5px; color: #4a3a2c; margin-top: 2px; }
+.gcard.on .gn { color: #6d2b4e; }
+.gcard .gh { font-size: 11px; color: #9a8674; margin-top: 2px; }
+
+#baseline { display: none; }
+#baseline.show { display: block; }
+.bl-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.bl-head .be { font-size: 34px; }
+.bl-head h2 { margin: 0; }
+.bl-head .heat { font-size: 12.5px; color: #a0522d; font-weight: 700; }
+.bl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .bl-grid { grid-template-columns: 1fr; } }
+.bl { background: #fff; border: 1px solid #ecdfd0; border-left: 3px solid #c79a4b; border-radius: 0 10px 10px 0; padding: 11px 14px; }
+.bl.full { grid-column: 1 / -1; }
+.bl h4 { font-size: 11.5px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; font-family: -apple-system, sans-serif; }
+.bl p, .bl li { font-size: 13px; color: #4a3a2c; }
+.bl .pill { display: inline-block; background: #f6ecf1; border: 1px solid #d6b3c4; color: #6d2b4e; border-radius: 999px; padding: 2px 10px; font-size: 12px; margin: 2px 3px 2px 0; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 60px; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 640px){ .three { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+.addrow { display: flex; gap: 8px; margin-top: 8px; }
+.addrow input { flex: 1; }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-primary { background: #6d2b4e; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-primary:hover { background: #58213f; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>🖋️ Fiction Pen Name Builder</h1></header>
+  <div class="tagline">Thrillers, mysteries, fantasy, sci-fi, horror &amp; more — pick your genre lane, get the full baseline prebuilt, then make it unmistakably yours.</div>
+
+  <div class="panel">
+    <h2><span class="stepnum">1</span>Pick your lane</h2>
+    <p class="lead">Every shelf is a promise to a specific reader. Choose the lane this pen name lives in — you'll get its full baseline: tone, signature elements, naming vibe, brand look, comps, and release rhythm. <i>(Writing romance? Use the <a href="pen-name-identity-builder.html" style="color:#6d2b4e;font-weight:700;">romance edition</a>.)</i></p>
+    <div id="genreGroups"></div>
+  </div>
+
+  <div class="panel" id="baseline">
+    <h2><span class="stepnum">2</span>Your prebuilt baseline</h2>
+    <p class="lead">This is what readers of your lane already expect. You don't have to reinvent it — you have to <b>deliver it in your voice</b>.</p>
+    <div class="bl-head"><span class="be" id="blEmoji"></span><div><h2 id="blName" style="font-size:22px;"></h2><div class="heat" id="blHeat"></div></div></div>
+    <div class="bl-grid">
+      <div class="bl full"><h4>The reader promise</h4><p id="blPromise"></p></div>
+      <div class="bl full"><h4>Signature elements readers expect</h4><div id="blTropes"></div></div>
+      <div class="bl"><h4>Pen name vibe</h4><p id="blNames"></p><p id="blNameEx" style="margin-top:5px;font-style:italic;color:#8a7560;"></p></div>
+      <div class="bl"><h4>Brand look (covers &amp; colors)</h4><p id="blLook"></p></div>
+      <div class="bl"><h4>Voice &amp; tone</h4><p id="blVoice"></p></div>
+      <div class="bl"><h4>Study these authors</h4><p id="blComps"></p></div>
+      <div class="bl"><h4>Length &amp; release rhythm</h4><p id="blLen"></p></div>
+      <div class="bl"><h4>Watch-outs &amp; conventions</h4><p id="blNotes"></p></div>
+    </div>
+  </div>
+
+  <div class="panel" id="custom" style="display:none;">
+    <h2><span class="stepnum">3</span>Make it yours</h2>
+    <p class="lead">The baseline is prefilled below. Edit anything. Leave a field blank and Claude will pick it for you in the kit.</p>
+
+    <label>Pen name candidates <span class="opt">(up to 3 — check availability before you commit)</span></label>
+    <div class="hint">Match the naming vibe above, or break it on purpose. Google + Amazon-search every candidate.</div>
+    <div class="three">
+      <input type="text" id="pn1" placeholder="Candidate 1">
+      <input type="text" id="pn2" placeholder="Candidate 2">
+      <input type="text" id="pn3" placeholder="Candidate 3">
+    </div>
+
+    <label>Darkness &amp; intensity</label>
+    <div class="hint">The baseline default is highlighted — slide it to where your version of the lane lives.</div>
+    <div class="chips" id="toneChips"></div>
+
+    <label>Romance subplot</label>
+    <div class="hint">Even non-romance readers notice this promise. Decide it on purpose.</div>
+    <div class="chips" id="romChips"></div>
+
+    <label>Your signature elements</label>
+    <div class="hint">The baseline set is pre-selected. Turn off what you won't write, add what you'll be known for.</div>
+    <div class="chips" id="tropeChips"></div>
+    <div class="addrow"><input type="text" id="tropeAdd" placeholder="Add your own element…" onkeydown="if(event.key==='Enter'){event.preventDefault();addTrope();}"><button class="btn-ghost" onclick="addTrope()">+ Add</button></div>
+
+    <label for="f_words">Three brand words</label>
+    <div class="hint">If a reader described your books to a friend, these are the words you want them to use.</div>
+    <input type="text" id="f_words">
+
+    <label for="f_tagline">Author tagline</label>
+    <div class="hint">Goes on your newsletter, bio, and website header. The prefill is a pattern — make it yours.</div>
+    <input type="text" id="f_tagline">
+
+    <label for="f_avatar">Your reader</label>
+    <div class="hint">Who are they, what do they read, what do they want to feel?</div>
+    <textarea id="f_avatar"></textarea>
+
+    <label for="f_bio">Author bio draft</label>
+    <div class="hint">Third person, 2–4 sentences. Keep the persona consistent with the lane.</div>
+    <textarea id="f_bio" style="min-height:84px;"></textarea>
+
+    <label for="f_release">Release plan</label>
+    <div class="hint">Prefilled with the lane's norm — adjust to your real life.</div>
+    <textarea id="f_release"></textarea>
+
+    <label for="f_bound">Boundaries &amp; content notes <span class="opt">(optional)</span></label>
+    <div class="hint">What you won't write, plus any content conventions your lane requires.</div>
+    <textarea id="f_bound"></textarea>
+
+    <label for="f_twist">Your twist on the lane <span class="opt">(optional)</span></label>
+    <div class="hint">The nuance that makes you different inside the genre — setting, structure, profession niche, cultural lens, humor…</div>
+    <textarea id="f_twist"></textarea>
+  </div>
+
+  <div class="panel" id="kitPanel" style="display:none;">
+    <h2><span class="stepnum">4</span>Your Pen Name Identity Kit</h2>
+    <p class="lead">Everything in one brief — save it, or hand it to Claude to pressure-test and build on.</p>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="kit"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="copyKit()">📋 Copy kit</button>
+      <button class="btn-ghost" onclick="downloadKit()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+  </div>
+
+  <footer>
+    Your work saves automatically in this page. Next step: take your kit into <b>First Three Books</b> to plan the series runway.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='pen-name-identity-fiction-v1';
+const KIT_KEY='pen-name-kit-fiction';
+const TONES=['Cozy / gentle','Light','Balanced','Dark','Pitch black'];
+const ROMS=['No romance','Background romance','Strong romance thread'];
+
+/* ============ GENRE BASELINES ============ */
+const GENRES=[
+/* ---- Thriller & Crime ---- */
+{k:'psych',n:'Psychological Thriller',e:'🧠',grp:'Thriller & Crime',tone:'Dark',rom:'Background romance',heatLabel:'Dark · twist-driven',
+ promise:'Nothing is what it seems — an unreliable world, a narrator you can\'t fully trust, and a final twist that recolors every chapter before it.',
+ tropes:['Unreliable narrator','The twist you re-read for','Secrets in a marriage/friendship','Dual timeline','Gaslighting (named & punished)','Ordinary person, extraordinary lie'],
+ names:'Sharp and modern — short first names, punchy surnames; initials read well on thriller shelves.',ex:'e.g. Nora Blake · A.J. Merrick · Claire Voss',
+ look:'Bold type-driven covers — one arresting object or fractured image; high contrast, red/black/white or acid tones.',
+ voice:'taut, intimate, needling doubt',comps:['Freida McFadden','Gillian Flynn','Riley Sager'],
+ len:'75–95k · standalones with a signature "brand of twist" · 1–3/year',
+ notes:'The twist must play fair — re-readers should find the clues. Your brand is the *kind* of twist you deliver, book after book.'},
+{k:'domestic',n:'Domestic Thriller',e:'🏠',grp:'Thriller & Crime',tone:'Dark',rom:'Background romance',heatLabel:'Dark · suburbia with teeth',
+ promise:'The danger is already inside the house — marriages, neighbors, and school runs hiding something rotten. The reader\'s own life, one secret away from collapse.',
+ tropes:['Perfect couple, ugly truth','The new neighbor','Missing spouse','Motherhood under suspicion','Suburban façade','The friend who knows too much'],
+ names:'Trust-adjacent and readable — a name that could be on the school newsletter.',ex:'e.g. Sarah Denning · Kate Mercer · Ellen Shaw',
+ look:'A house, a window, a doorway — muted domestic imagery with one wrong detail; serif/sans hybrid titles.',
+ voice:'close, simmering, quietly menacing',comps:['Shari Lapena','B.A. Paris','Liane Moriarty (upmarket end)'],
+ len:'80–95k · standalones · 1–2/year',
+ notes:'The mundane details sell the dread — get the school-run texture right and readers believe the body in Act 3.'},
+{k:'procedural',n:'Detective / Police Procedural',e:'🕵️',grp:'Thriller & Crime',tone:'Dark',rom:'Background romance',heatLabel:'Dark · case-driven series',
+ promise:'A detective worth following for ten books — the case gets solved, the city stays broken, and the detective pays a little more each time.',
+ tropes:['Flawed brilliant detective','Partner dynamic','The case that echoes their past','Procedural texture (warrants, forensics)','Long-arc nemesis','City as character'],
+ names:'Solid and durable — this name goes on 15 spines.',ex:'e.g. D.K. Hale · Frank Mercer · Rowan Petty',
+ look:'Moody cityscapes, lone figure, police tape — blues/greys, strong series-consistent typography.',
+ voice:'procedural, weathered, morally weary',comps:['Michael Connelly','Ian Rankin','Karin Slaughter'],
+ len:'90–110k · one detective = one series (8–15+ books) · 1–2/year',
+ notes:'Readers marry the detective, not the case. Age them, scar them, and keep the department politics consistent across the series.'},
+{k:'legal',n:'Legal Thriller',e:'⚖️',grp:'Thriller & Crime',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · courtroom stakes',
+ promise:'The courtroom as battlefield — a lawyer in over their head, a case that\'s rigged, and justice won by nerve and loopholes.',
+ tropes:['Underdog attorney vs. machine','The client who\'s lying','Jury in the balance','Corrupt firm/judge','One last cross-examination','Ethics vs. survival'],
+ names:'Credible and boardroom-ready.',ex:'e.g. Marcus Hale · J.D. Winter · Grace Callahan',
+ look:'Scales, courthouses, city towers — navy/gold/marble; authoritative serif type.',
+ voice:'sharp, strategic, morally live',comps:['John Grisham','Steve Cavanagh','Scott Turow'],
+ len:'90–110k · standalones or one-lawyer series · 1–2/year',
+ notes:'Verdicts must be earned by procedure the reader watched. One real legal howler breaks the spell — research or hire an eye.'},
+{k:'action',n:'Action / Vigilante Thriller',e:'💥',grp:'Thriller & Crime',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · high-body-count comfort read',
+ promise:'One highly capable man, one town full of trouble, zero hesitation. The fantasy of competence — wrongs righted by the end of the book, no paperwork.',
+ tropes:['Drifter with a code','Ex-special-forces skills','Small town, big corruption','They hurt the wrong person\'s friend','Set-piece finale','Series hero, episodic cases'],
+ names:'Hard consonants, no frills — reads like a callsign.',ex:'e.g. Jack Colt (style) · Dane Rourke · M.T. Bishop',
+ look:'Lone silhouette, road, muzzle-flash palette — black/orange/steel; big block titles.',
+ voice:'lean, kinetic, dry one-liners',comps:['Lee Child','Mark Greaney','Vince Flynn'],
+ len:'70–90k · episodic hero series · rapid-ish (2–4/year) rewards this shelf',
+ notes:'Keep the hero\'s code consistent — readers tolerate any body count except a broken code. Fight scenes need choreography you can follow.'},
+{k:'darkcrime',n:'Serial Killer / Dark Crime',e:'🔪',grp:'Thriller & Crime',tone:'Pitch black',rom:'No romance',heatLabel:'Pitch black · strong-stomach shelf',
+ promise:'Into the mind of the monster — profilers, predators, and crime scenes described one shade past comfortable. Readers come to be disturbed, safely.',
+ tropes:['Profiler vs. serial killer','Killer POV chapters','Signature murders / pattern','The hunt reverses','Copycat twist','Grim forensic detail'],
+ names:'Cold and precise — initials common on this shelf.',ex:'e.g. C.V. Rook · Elias Thorn · K.M. Draven',
+ look:'Stark black covers, single visceral motif (tape, wire, porcelain doll) — restrained, clinical type.',
+ voice:'controlled, forensic, dread on a leash',comps:['Chris Carter','Thomas Harris','J.T. Ellison'],
+ len:'85–100k · profiler/detective series · 1–2/year',
+ notes:'Decide your gore ceiling in book one and hold it — this shelf punishes both flinching and escalation-for-shock. Content notes help, not hurt.'},
+/* ---- Mystery ---- */
+{k:'cozy',n:'Cozy Mystery',e:'🫖',grp:'Mystery',tone:'Cozy / gentle',rom:'Background romance',heatLabel:'Cozy · no gore, no swearing',
+ promise:'A murder without the nightmares — a charming hook (bakery, bookshop, knitting circle), an amateur sleuth with a nosy heart, and a town readers move into for 15 books.',
+ tropes:['Amateur sleuth with a day job','Themed hook (recipes, crafts, books)','Quirky sidekick / pet','Detective who says "stay out of it"','Small town with deep secrets','Fair-play clues'],
+ names:'Charming, trustworthy, pun-tolerant.',ex:'e.g. Meg Thistle · Dottie Lane · Prue Abernathy',
+ look:'Bright illustrated covers — the shop, the pet, the town square; punny titles in series-consistent layout.',
+ voice:'witty, warm, puzzle-forward',comps:['Joanne Fluke','Ellery Adams','Jenn McKinlay'],
+ len:'55–75k · long series (10+ books), one town & cast · 2–4/year',
+ notes:'The mystery must play fair, the body stays offscreen, and the sleuth needs a believable reason to keep finding corpses. The hook is the brand.'},
+{k:'caper',n:'Comic Caper / Cozy Crime',e:'🎭',grp:'Mystery',tone:'Light',rom:'Background romance',heatLabel:'Light · laughs with a body',
+ promise:'Crime as comedy — chaotic sleuths, capers that go sideways, and a cast readers quote to their friends. The joke lands and the plot still holds.',
+ tropes:['Ensemble of amateur meddlers','Bounty hunter / fixer chaos','Retirement-home irregulars','Heist that unravels','Recurring love-triangle comedy','Banter-driven interrogation'],
+ names:'Fun and memorable — momentum in the name.',ex:'e.g. Lottie Pierce · Benny Marsh · Q.T. Vale',
+ look:'Bold colors, cartoonish props (flamingo, getaway scooter) — playful type with attitude.',
+ voice:'zippy, ensemble-driven, deadpan',comps:['Janet Evanovich','Richard Osman','Carl Hiaasen'],
+ len:'70–85k · numbered/branded series · 1–3/year',
+ notes:'Comedy ages the fastest of any voice — the plot must stand even when a joke misses. Ensemble bookkeeping is your real job.'},
+{k:'hardboiled',n:'Hardboiled / PI',e:'🚬',grp:'Mystery',tone:'Dark',rom:'Background romance',heatLabel:'Dark · rain-slick streets',
+ promise:'A private eye with a bruised code, clients who lie, and a city that never comes clean. The case closes; the loneliness doesn\'t.',
+ tropes:['Down-at-heel PI','The client is the villain','Femme fatale (or subverted)','Corrupt everything','One honest cop','Voice-driven first person'],
+ names:'Worn leather — classic, terse.',ex:'e.g. Mick Calder · Ray Donovan (style) · Sal Moreno',
+ look:'Neon, rain, silhouette in a doorway — noir palettes, condensed type.',
+ voice:'wry, weathered, first-person music',comps:['Robert Crais','Sue Grafton','Dennis Lehane'],
+ len:'80–95k · one PI series · 1–2/year',
+ notes:'The voice IS the product — readers stay for the narration. Modernize the tropes (the fatale, the cops) or they read as pastiche.'},
+{k:'histmystery',n:'Historical Mystery',e:'🕰️',grp:'Mystery',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · period-perfect sleuthing',
+ promise:'A sleuth working without DNA or databases — period texture thick enough to smell, and a mystery only solvable inside that world\'s rules.',
+ tropes:['Constrained-era detection','Sleuth who doesn\'t fit their time (governess, veteran, monk)','Class and scandal as motive','Real events brushing the plot','Series through a decade'],
+ names:'Period-adjacent elegance.',ex:'e.g. Ada Hartwell · Simon Pryce · Verity Lockwood',
+ look:'Gaslit streets, period dress, sepia + one rich accent color; classic serif.',
+ voice:'immersive, mannered, sharply observed',comps:['Rhys Bowen','Charles Todd','Anne Perry'],
+ len:'80–95k · sleuth-per-era series · 1–2/year',
+ notes:'Anachronisms are the one-star magnet — verify what your sleuth could know, touch, and say in that year.'},
+/* ---- Fantasy ---- */
+{k:'epic',n:'Epic Fantasy',e:'🗺️',grp:'Fantasy',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · kingdom-scale stakes',
+ promise:'A second world worth living in for 500 pages — maps, magic with rules, and a struggle that decides the fate of nations. Scope is the product.',
+ tropes:['Chosen one (played straight or broken)','Hard magic system','Found fellowship','Ancient evil stirring','Political intrigue between kingdoms','The cost of power'],
+ names:'Substantial, timeless — often initials or full formal names.',ex:'e.g. R.E. Callow · Mara Venn · T.S. Aldric',
+ look:'Painted landscapes, sigils, swords — rich golds/deep blues; ornate but readable serif.',
+ voice:'sweeping, architectural, earned wonder',comps:['Brandon Sanderson','Robin Hobb','Michael J. Sullivan'],
+ len:'120–200k · trilogies & sagas · 1/year is respectable; finish your series',
+ notes:'Worldbuilding debt compounds — keep a codex from day one. Readers forgive slow starts, never broken magic rules or abandoned series.'},
+{k:'urban',n:'Urban Fantasy',e:'🌃',grp:'Fantasy',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · magic under streetlights',
+ promise:'Our world with the veil torn — a snarky first-person hero, a supernatural underworld with politics, and a case-per-book engine that runs 12+ books.',
+ tropes:['Hidden supernatural society','Wisecracking first-person lead','Case-of-the-book + long arc','Faction politics (vamps, fae, packs)','Power creep managed','Signature magic gimmick'],
+ names:'Modern with a spark.',ex:'e.g. Jess Harrow · Kit Delacroix · N.V. Reyes',
+ look:'Lead character mid-action, city + magic glow — purples/teals, punchy title type.',
+ voice:'snarky, kinetic, warm under the armor',comps:['Jim Butcher','Patricia Briggs','Ilona Andrews'],
+ len:'85–100k · long first-person series · 1–2/year',
+ notes:'The narrator\'s voice carries the series — nail it by book one. Manage power creep or book 9 has no stakes left.'},
+{k:'cozyfantasy',n:'Cozy Fantasy',e:'☕',grp:'Fantasy',tone:'Cozy / gentle',rom:'Background romance',heatLabel:'Cozy · low stakes, high comfort',
+ promise:'Magic without dread — an orc opening a coffee shop, a witch fixing a village. Stakes are personal, kindness wins, and the reader exhales.',
+ tropes:['Retired adventurer opens a shop','Found family of misfits','Small magical community','Gentle problem-of-the-book','Food/craft magic','Kindness as plot engine'],
+ names:'Soft, whimsical, hand-lettered energy.',ex:'e.g. Wren Alder · Fable Moss · Juniper Teal',
+ look:'Illustrated warmth — lattes, lanterns, dragons in aprons; muted cottagecore palettes.',
+ voice:'gentle, wry, quietly profound',comps:['Travis Baldree','T.J. Klune','Sangu Mandanna'],
+ len:'60–90k · standalones or loose series · 1–3/year',
+ notes:'"Cozy" doesn\'t mean conflict-free — it means safety is never truly threatened. Break that promise once and the shelf is gone.'},
+{k:'grimdark',n:'Grimdark',e:'🩸',grp:'Fantasy',tone:'Pitch black',rom:'No romance',heatLabel:'Pitch black · everyone lies, everyone bleeds',
+ promise:'Fantasy with the plate armor off — morally grey everyone, victories that cost too much, and wit black enough to light the way down.',
+ tropes:['Anti-heroes & likable monsters','War without glory','The betrayal you saw coming and loved anyway','Power corrupts, always','Gallows humor','No plot armor'],
+ names:'Blunt, hard-edged.',ex:'e.g. J. Kade Morrow · Bryce Halloran · S.G. Vance',
+ look:'Weathered figures, blood-and-iron palettes, brutalist type.',
+ voice:'savage, funny, unflinching',comps:['Joe Abercrombie','Mark Lawrence','Anna Smith Spark'],
+ len:'110–160k · trilogies · 1/year',
+ notes:'Grim without wit is just grey sludge — the humor is load-bearing. Character voice separates grimdark from misery tourism.'},
+{k:'litrpg',n:'LitRPG / Progression Fantasy',e:'🎮',grp:'Fantasy',tone:'Light',rom:'No romance',heatLabel:'Light–Balanced · numbers go up',
+ promise:'Visible growth — levels, stats, skill trees, and a hero grinding from nothing to godhood. The dopamine of progress, chapter after chapter.',
+ tropes:['System apocalypse / portal','Stat screens & level-ups','Underdog builds a broken skill combo','Dungeon crawls','Guild found-family','Escalating tournament arcs'],
+ names:'Internet-native, brandable.',ex:'e.g. Max Vellan · K. Ryder · Ashe Corvin',
+ look:'Glowing HUD elements, dungeon gates, RPG iconography — game-art energy.',
+ voice:'propulsive, systems-obsessed, community-aware',comps:['Matt Dinniman (Dungeon Crawler Carl)','Pirateaba (The Wandering Inn)','Shirtaloon'],
+ len:'Serial-native: 150k+ tomes or weekly chapters (Royal Road → KU) · rapid, relentless cadence',
+ notes:'This lane lives on Royal Road, Patreon, and KU — the serial community IS the marketing. Consistency of posting beats polish.'},
+{k:'yafantasy',n:'YA Fantasy',e:'🌠',grp:'Fantasy',tone:'Balanced',rom:'Strong romance thread',heatLabel:'Balanced · first-love + fate of the world',
+ promise:'A teen facing an unfair world with everything to prove — magic, found family, first love, and choices that cost. Crossover adult readership is the norm.',
+ tropes:['Reluctant heir / hidden power','Rivals to allies (to more)','Deadly trials or courts','Found family of outcasts','Corrupt regime toppled','First love under fire'],
+ names:'Lyrical but punchy — YA shelves favor memorable full names.',ex:'e.g. Sable Quinn · Aria Voss · Bo Merrick',
+ look:'Symbol-driven covers (crown, dagger, flower with teeth) — jewel tones, elegant display type.',
+ voice:'immediate, emotional, banter + ache',comps:['Leigh Bardugo','Holly Black','Sabaa Tahir'],
+ len:'85–110k · duologies/trilogies · 1/year',
+ notes:'YA voice is about immediacy, not simplicity. Content conventions (violence yes, explicit no) matter — crossover adults are half your readership.'},
+/* ---- Sci-Fi ---- */
+{k:'spaceopera',n:'Space Opera',e:'🚀',grp:'Sci-Fi',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · big ships, bigger feelings',
+ promise:'A galaxy with history — crews that feel like family, empires in motion, and human (and inhuman) hearts at the center of the spectacle.',
+ tropes:['Ragtag crew found family','Ancient alien mystery','Empire vs. fringe','The ship is home','First contact gone sideways','Heist/job structure per book'],
+ names:'Clean and future-proof.',ex:'e.g. C.R. Voss · Ada Merit · Jax Callum',
+ look:'Ships against nebulae, station silhouettes — deep space palettes with one hot accent.',
+ voice:'adventurous, humane, wonder-forward',comps:['Becky Chambers','James S.A. Corey','John Scalzi'],
+ len:'90–120k · crew/series arcs · 1–2/year',
+ notes:'Readers board for the spectacle and stay for the crew. Keep your galaxy\'s tech and politics internally consistent — a codex saves you by book three.'},
+{k:'milsf',n:'Military Sci-Fi',e:'🛰️',grp:'Sci-Fi',tone:'Balanced',rom:'No romance',heatLabel:'Balanced · boots in vacuum',
+ promise:'War in the future, told with the discipline of someone who\'s read the manuals — unit loyalty, chain-of-command friction, and battles that obey physics.',
+ tropes:['Recruit-to-commander arc','Unit as family','Hostile first contact','Orbital drops & fleet actions','Politicians vs. soldiers','The cost of the war'],
+ names:'Rank-and-file solid; initials very common.',ex:'e.g. K.D. Frost · Marcus Vale · T.R. Onner',
+ look:'Powered armor, dropships, fleet formations — gunmetal + flare; stencil-adjacent type.',
+ voice:'disciplined, visceral, chain-of-command real',comps:['Marko Kloos','Jack Campbell','Craig Alanson (comic end)'],
+ len:'80–100k · long series (6–12) · rapid-ish release rewards KU here',
+ notes:'This shelf is KU-native and bingey — series length is the business model. Get the military texture right or veterans will tell you.'},
+{k:'hardsf',n:'Hard SF / Techno-Thriller',e:'🔬',grp:'Sci-Fi',tone:'Balanced',rom:'No romance',heatLabel:'Balanced · the science is the suspense',
+ promise:'Problems solved with real physics and duct tape — competence porn where the universe is the antagonist and the math has to check out.',
+ tropes:['Lone problem-solver vs. environment','Near-future tech one step ahead','Countdown structure','Science explained through crisis','Corporate/agency shadow games','The clever fix'],
+ names:'Credible, engineer-adjacent.',ex:'e.g. David Chen (style) · R.A. Pruitt · Elena Marsh',
+ look:'Clean high-concept covers — one object (helmet, capsule, DNA strand) on stark ground; techy sans type.',
+ voice:'precise, propulsive, wry under pressure',comps:['Andy Weir','Blake Crouch','Dennis E. Taylor'],
+ len:'85–100k · high-concept standalones · 1/year+',
+ notes:'One hand-waved equation costs you the exact readers this shelf attracts. Humor makes the physics go down — see Weir.'},
+{k:'postapoc',n:'Dystopian / Post-Apocalyptic',e:'🌆',grp:'Sci-Fi',tone:'Dark',rom:'Background romance',heatLabel:'Dark · after the fall',
+ promise:'The world ended — now what? Survival logistics, community rebuilt from scraps, and the question of what we keep when everything else burns.',
+ tropes:['EMP/plague/collapse trigger','Prepper competence','Convoy/homestead defense','Community vs. warlord','The soft skills that save us','Hope in the ruins'],
+ names:'Grounded, hard-wearing.',ex:'e.g. Gray Holt · A.M. Kessler · Jo Redfield',
+ look:'Ruined skylines, lone figures on empty highways — ash tones + ember accent.',
+ voice:'gritty, practical, quietly hopeful (or not — pick)',comps:['Hugh Howey','Kyla Stone','Franklin Horton'],
+ len:'70–90k · series-native (5–9 books, one collapse arc) · rapid-ish · KU heartland',
+ notes:'Decide your lane: survival-logistics (prepper shelf) vs. literary dystopia — different covers, different readers, different promises.'},
+/* ---- Horror ---- */
+{k:'supernatural',n:'Supernatural Horror',e:'👻',grp:'Horror',tone:'Dark',rom:'No romance',heatLabel:'Dark · the house wins',
+ promise:'Something is in the house/town/family, and it\'s been waiting — dread built room by room, characters worth fearing for, and an ending that costs.',
+ tropes:['Haunted place with history','Small town hiding a hungry thing','Grief made manifest','The skeptic converts too late','Ancestral debt','The final girl/boy who pays'],
+ names:'Sturdy with shadow.',ex:'e.g. Marlow Finch · E.C. Hurst · Dana Creel',
+ look:'Houses, woods, doorways at night — desaturated + one wrong color; classic horror serif.',
+ voice:'patient, atmospheric, human first',comps:['Stephen King','Grady Hendrix','T. Kingfisher'],
+ len:'80–110k · standalones with a signature flavor · 1–2/year',
+ notes:'Character investment is the delivery system for fear — nobody\'s scared for people they don\'t love. Dread > gore on this shelf.'},
+{k:'gothic',n:'Gothic Horror',e:'🕯️',grp:'Horror',tone:'Dark',rom:'Background romance',heatLabel:'Dark · beautiful rot',
+ promise:'Atmosphere as thick as velvet — crumbling estates, family secrets, a heroine walking down the corridor everyone told her to avoid.',
+ tropes:['The house remembers','New bride / governess arrives','Family curse','The locked room/wing','Unreliable servants & doctors','Madness or haunting? (both)'],
+ names:'Ornate, old-blood elegance.',ex:'e.g. Isadora Wren · Helena Marsh · V.C. Ashcombe',
+ look:'Manors in mist, wallpaper motifs, candlelight — deep greens/burgundy; ornate serif with flourish.',
+ voice:'lush, claustrophobic, slow-closing',comps:['Silvia Moreno-Garcia','Daphne du Maurier (lineage)','Rachel Hawkins (gothic-thriller end)'],
+ len:'85–100k · standalones · 1/year+',
+ notes:'Pacing is the risk — the atmosphere must escalate, not marinate. Every beautiful sentence should also tighten the noose.'},
+{k:'cosmic',n:'Cosmic / Folk Horror',e:'🌌',grp:'Horror',tone:'Pitch black',rom:'No romance',heatLabel:'Pitch black · the universe doesn\'t care',
+ promise:'Horror at scale — old gods, older rituals, and the dawning comprehension that humanity is a rounding error. The fear is understanding.',
+ tropes:['The village ritual that works','Forbidden text/expedition','Reality thins at the edges','Cult with a point','The witness driven past sanity','Nature as ancient god'],
+ names:'Stark, slightly arcane.',ex:'e.g. H.L. Crane · Moss Whitaker · R. Vantablack (style)',
+ look:'Vast landscapes dwarfing figures, occult geometry — black + sickly gold/green.',
+ voice:'incantatory, escalating, awe-struck dread',comps:['Adam Nevill','John Langan','Cassandra Khaw'],
+ len:'70–95k · standalones & novellas · anthology-friendly',
+ notes:'The monster you fully explain stops being cosmic. Restraint is the whole craft — reveal 10%, imply the rest.'},
+/* ---- Book Club & Literary ---- */
+{k:'bookclub',n:'Women\'s Fiction / Book Club',e:'📚',grp:'Book Club & Literary',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · the tissues shelf',
+ promise:'A woman\'s life cracked open and rebuilt — family secrets, impossible choices, and an ending that earns its tears. Discussion questions practically write themselves.',
+ tropes:['Three generations, one secret','The homecoming that reopens everything','Motherhood/daughterhood reckonings','Second-act reinvention','Dual timeline reveal','Female friendship as lifeline'],
+ names:'Warm gravitas.',ex:'e.g. Anna Whitfield · Claire Bennett · Margot Ellison',
+ look:'Evocative single images — coastlines, kitchen tables, women walking away; literary serif, soft palettes.',
+ voice:'emotionally precise, generous, unhurried',comps:['Kristin Hannah','Jodi Picoult','Kerry Fisher'],
+ len:'90–110k · standalones · 1/year',
+ notes:'The "issue" (grief, custody, diagnosis) must be researched to book-club scrutiny level — these readers check.'},
+{k:'literary',n:'Literary / Upmarket',e:'🖋️',grp:'Book Club & Literary',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · prose is the promise',
+ promise:'Sentences worth underlining and a story that still moves — the upmarket sweet spot: literary voice, commercial spine.',
+ tropes:['A family over decades','One incident, many perspectives','Place as destiny','The unsaid thing','Structure as meaning (letters, reverse, fragments)','Quiet devastations'],
+ names:'Distinctive, remembered by full name.',ex:'e.g. Juniper Hale · Theo Marchetti · Ondine Clarke',
+ look:'Painterly or typographic covers — award-shelf aesthetics, restrained palettes.',
+ voice:'precise, resonant, image-rich',comps:['Celeste Ng','Ann Patchett','Claire Keegan'],
+ len:'70–100k · standalones · the book takes the time it takes',
+ notes:'Slowest lane to build, longest tail once built. Prizes, book clubs, and handselling matter more than KU algorithms here.'},
+{k:'histfic',n:'Historical Fiction',e:'🕊️',grp:'Book Club & Literary',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · history with a heartbeat',
+ promise:'The past made personal — ordinary women inside extraordinary history, meticulous research worn lightly, and a dual-timeline secret that survives the war.',
+ tropes:['WWII resistance/homefront','Dual timeline: then & now','Real events, invented hearts','Letters/diaries discovered','Women history forgot','The choice that echoes generations'],
+ names:'Timeless, slightly formal.',ex:'e.g. Eleanor Vance · M.K. Ashford · Lena Brandt',
+ look:'Period figures from behind, wartime skies — sepia + one saturated accent; classic serif.',
+ voice:'immersive, elegiac, humane',comps:['Kate Quinn','Pam Jenoff','Kristin Hannah (historical titles)'],
+ len:'100–120k · standalones · 1/year',
+ notes:'WWII dominates but is crowded — an underused era or theater is a real edge. Author\'s note on research is expected and loved.'},
+/* ---- Western & Adventure ---- */
+{k:'western',n:'Traditional Western',e:'🌵',grp:'Western & Adventure',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · frontier justice',
+ promise:'The frontier with its code intact — lawmen, drifters, and homesteaders where a man\'s word is the plot and justice arrives by the last chapter.',
+ tropes:['Drifter defends the town','Marshal vs. cattle baron','Revenge ride','Homestead under threat','The reformed gunfighter','Trail drive perils'],
+ names:'Weathered and plain-spoken.',ex:'e.g. Cole Barrett · J.B. Tanner · Wade McCall',
+ look:'Riders against big skies, six-guns, weathered type — sepia/dust/denim.',
+ voice:'spare, honorable, hard country',comps:['William W. Johnstone','C.J. Petit','Louis L\'Amour (lineage)'],
+ len:'50–75k · series-native, fast cadence · KU goldmine with older readership',
+ notes:'One of KU\'s quietest reliable shelves — readers are voracious and loyal. Period texture (guns, distances, money) must hold up.'},
+{k:'adventure',n:'Action-Adventure / Treasure Hunt',e:'🗿',grp:'Western & Adventure',tone:'Light',rom:'Background romance',heatLabel:'Light–Balanced · globetrotting matinee',
+ promise:'History\'s secrets + modern bullets — lost cities, ancient conspiracies, and a two-fisted expert who quips through the collapsing temple.',
+ tropes:['Artifact with world-ending secret','Expert + operative duo','Globetrotting chapter engine','Shadow society opposition','Set-piece escapes','History nerdery as plot fuel'],
+ names:'Adventure-serial punch.',ex:'e.g. Drake Mercer · Nora Steele · Rex Callaway',
+ look:'Temples, maps, silhouettes rappelling — gold/teal/stone; blockbuster type.',
+ voice:'breathless, witty, matinee-hearted',comps:['Clive Cussler (lineage)','Matthew Reilly','Andy McDermott'],
+ len:'85–100k · hero-duo series · 1–3/year',
+ notes:'The history hook must be 80% real to be fun — readers love the author\'s note separating fact from invention.'}
+];
+
+const GROUPS=['Thriller & Crime','Mystery','Fantasy','Sci-Fi','Horror','Book Club & Literary','Western & Adventure'];
+
+/* ============ state ============ */
+let state=null;
+function blank(){ return {v:1, genre:'', tone:'', rom:'', tropes:[], customTropes:[], fields:{}, edited:{}}; }
+const FIELDS=['pn1','pn2','pn3','f_words','f_tagline','f_avatar','f_bio','f_release','f_bound','f_twist'];
+
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  publishKit();
+}
+function publishKit(){
+  try{
+    const G=g(); if(!G) return;
+    localStorage.setItem(KIT_KEY, JSON.stringify({
+      src:'fiction', updated:new Date().toISOString().slice(0,10), genre:G.n,
+      pen:(state.fields.pn1||'').trim(), tone:state.tone, rom:state.rom,
+      tropes:state.tropes.slice(), tagline:(state.fields.f_tagline||'').trim(),
+      len:G.len, kit:buildKit()
+    }));
+  }catch(e){}
+}
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function g(){ return GENRES.find(x=>x.k===state.genre); }
+
+/* ============ init ============ */
+function init(){
+  load();
+  const wrap=document.getElementById('genreGroups');
+  GROUPS.forEach(grp=>{
+    const d=document.createElement('div'); d.className='grp';
+    const h=document.createElement('h3'); h.textContent=grp; d.appendChild(h);
+    const grid=document.createElement('div'); grid.className='ggrid';
+    GENRES.filter(x=>x.grp===grp).forEach(x=>{
+      const c=document.createElement('div'); c.className='gcard'; c.dataset.k=x.k;
+      c.innerHTML='<span class="ge">'+x.e+'</span><div class="gn">'+x.n+'</div><div class="gh">'+x.heatLabel+'</div>';
+      c.onclick=()=>pickGenre(x.k);
+      grid.appendChild(c);
+    });
+    d.appendChild(grid); wrap.appendChild(d);
+  });
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener('input',()=>{ state.fields[id]=el.value; state.edited[id]=true; save(); renderKit(); });
+  });
+  if(state.genre){ pickGenre(state.genre, true); }
+}
+
+function pickGenre(k, restoring){
+  const prev=state.genre;
+  state.genre=k;
+  document.querySelectorAll('.gcard').forEach(c=>c.classList.toggle('on', c.dataset.k===k));
+  const G=g();
+  document.getElementById('baseline').classList.add('show');
+  document.getElementById('blEmoji').textContent=G.e;
+  document.getElementById('blName').textContent=G.n;
+  document.getElementById('blHeat').textContent='Baseline: '+G.heatLabel;
+  document.getElementById('blPromise').textContent=G.promise;
+  document.getElementById('blTropes').innerHTML=G.tropes.map(t=>'<span class="pill">'+t+'</span>').join('');
+  document.getElementById('blNames').textContent=G.names;
+  document.getElementById('blNameEx').textContent=G.ex;
+  document.getElementById('blLook').textContent=G.look;
+  document.getElementById('blVoice').textContent=G.voice;
+  document.getElementById('blComps').textContent=G.comps.join(' · ');
+  document.getElementById('blLen').textContent=G.len;
+  document.getElementById('blNotes').textContent=G.notes;
+  document.getElementById('custom').style.display='block';
+  document.getElementById('kitPanel').style.display='block';
+
+  if(!restoring){
+    if(prev && prev!==k){
+      state.tropes=G.tropes.slice(); state.customTropes=[];
+      state.tone=G.tone; state.rom=G.rom;
+      prefill(G, false);
+      toast('Baseline loaded: '+G.n+' — prefills updated (your pen names were kept).');
+    } else {
+      state.tropes=state.tropes.length?state.tropes:G.tropes.slice();
+      state.tone=state.tone||G.tone; state.rom=state.rom||G.rom;
+      prefill(G, true);
+    }
+  } else {
+    FIELDS.forEach(id=>{ if(state.fields[id]!=null) document.getElementById(id).value=state.fields[id]; });
+  }
+  buildTone(); buildRom(); buildTropes(); save(); renderKit();
+  if(!restoring) document.getElementById('baseline').scrollIntoView({behavior:'smooth'});
+}
+
+function prefill(G, keepEdited){
+  const set=(id,val)=>{
+    if(keepEdited && state.edited[id] && state.fields[id]) { document.getElementById(id).value=state.fields[id]; return; }
+    state.fields[id]=val; state.edited[id]=false; document.getElementById(id).value=val;
+  };
+  ['pn1','pn2','pn3'].forEach(id=>{ if(state.fields[id]) document.getElementById(id).value=state.fields[id]; });
+  set('f_words', G.voice);
+  set('f_tagline', taglinePattern(G));
+  set('f_avatar', 'They read '+G.comps[0]+' and '+(G.comps[1]||'authors like them')+', binge by series, and come to this shelf to feel: '+G.voice.split(',').slice(0,2).join(',')+'. They want the promise kept: '+G.promise.split('.')[0].toLowerCase()+'.');
+  set('f_bio', '[Pen name] writes '+G.n.toLowerCase()+' with '+G.voice.split(',')[0].trim()+' precision. When not writing, they [detail that fits the persona]. Readers come for '+(G.tropes[0]||'the hook').toLowerCase()+' and stay for the voice. [Newsletter hook.]');
+  set('f_release', G.len);
+  set('f_bound', G.notes);
+  if(!keepEdited || !state.edited['f_twist']) { state.fields['f_twist']=state.fields['f_twist']||''; document.getElementById('f_twist').value=state.fields['f_twist']||''; }
+}
+
+function taglinePattern(G){
+  const map={
+    'psych':'Trust no one. Especially the narrator.',
+    'domestic':'The perfect family. The perfect lie.',
+    'procedural':'The city keeps its secrets. He doesn\'t let it.',
+    'legal':'Justice isn\'t blind. It\'s bought. Usually.',
+    'action':'One man. One code. No paperwork.',
+    'darkcrime':'To catch a monster, think like one.',
+    'cozy':'Small town. Big secrets. Fresh scones.',
+    'caper':'Crime doesn\'t pay. It barely breaks even.',
+    'hardboiled':'The truth costs extra in this city.',
+    'histmystery':'Murder never goes out of fashion.',
+    'epic':'Kingdoms fall. Legends don\'t.',
+    'urban':'The city has teeth. So do I.',
+    'cozyfantasy':'Magic, warm bread, and nobody dies.',
+    'grimdark':'No heroes. No mercy. Great jokes.',
+    'litrpg':'Level up or die trying.',
+    'yafantasy':'She was never meant to survive. She did anyway.',
+    'spaceopera':'The galaxy is vast. The crew is family.',
+    'milsf':'The stars don\'t care. The unit does.',
+    'hardsf':'The math has to work. So does the miracle.',
+    'postapoc':'The world ended. They didn\'t.',
+    'supernatural':'Some houses never let go.',
+    'gothic':'Beautiful places hide the oldest hungers.',
+    'cosmic':'We were never alone. We were never important.',
+    'bookclub':'Stories that break your heart, then hand it back stronger.',
+    'literary':'[Your promise in one resonant line]',
+    'histfic':'History remembers the battles. These are the hearts.',
+    'western':'Out here, a man\'s word is the only law that holds.',
+    'adventure':'History left clues. He\'s got a shovel and bad enemies.'
+  };
+  return map[G.k]||'[Your promise to readers in one line]';
+}
+
+/* dials + tropes */
+function buildTone(){
+  const c=document.getElementById('toneChips'); c.innerHTML='';
+  TONES.forEach(h=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state.tone===h?' on':''); ch.textContent=h;
+    ch.onclick=()=>{ state.tone=h; buildTone(); save(); renderKit(); };
+    c.appendChild(ch);
+  });
+}
+function buildRom(){
+  const c=document.getElementById('romChips'); c.innerHTML='';
+  ROMS.forEach(h=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state.rom===h?' on':''); ch.textContent=h;
+    ch.onclick=()=>{ state.rom=h; buildRom(); save(); renderKit(); };
+    c.appendChild(ch);
+  });
+}
+function buildTropes(){
+  const c=document.getElementById('tropeChips'); c.innerHTML='';
+  const G=g(); if(!G) return;
+  const all=[...G.tropes, ...state.customTropes.filter(t=>!G.tropes.includes(t))];
+  all.forEach(t=>{
+    const on=state.tropes.includes(t);
+    const ch=document.createElement('div'); ch.className='chip'+(on?' on':''); ch.textContent=t;
+    ch.onclick=()=>{ const i=state.tropes.indexOf(t); if(i>=0) state.tropes.splice(i,1); else state.tropes.push(t); buildTropes(); save(); renderKit(); };
+    c.appendChild(ch);
+  });
+}
+function addTrope(){
+  const el=document.getElementById('tropeAdd'); const v=el.value.trim(); if(!v) return;
+  if(!state.customTropes.includes(v)) state.customTropes.push(v);
+  if(!state.tropes.includes(v)) state.tropes.push(v);
+  el.value=''; buildTropes(); save(); renderKit(); toast('Added "'+v+'"');
+}
+
+/* ============ kit ============ */
+const PICK='⟨ Claude, pick this for me ⟩';
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : (what?'⟨ Claude, '+what+' ⟩':PICK); }
+function buildKit(){
+  const G=g(); if(!G) return 'Pick a genre above to build your kit.';
+  const f=state.fields;
+  const pens=[f.pn1,f.pn2,f.pn3].filter(x=>x&&x.trim());
+  const L=[];
+  L.push('# PEN NAME IDENTITY KIT — '+G.n);
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — fill it in so it fits this genre baseline and everything else in the kit, then list what you picked so I can tweak.');
+  L.push('');
+  L.push('## The lane');
+  L.push('- Genre: '+G.n);
+  L.push('- Reader promise: '+G.promise);
+  L.push('- Darkness & intensity: '+c(state.tone));
+  L.push('- Romance subplot: '+c(state.rom));
+  L.push('- Length & release norm: '+G.len);
+  L.push('');
+  L.push('## Pen name');
+  if(pens.length){ pens.forEach((p,i)=>L.push('- Candidate '+(i+1)+': '+p)); }
+  else L.push('- ⟨ Claude, suggest 3 pen names that fit this vibe: '+G.names+' ('+G.ex+') ⟩');
+  L.push('- Naming vibe for this lane: '+G.names);
+  L.push('');
+  L.push('## Signature elements (my brand promise)');
+  if(state.tropes.length) state.tropes.forEach(t=>L.push('- '+t));
+  else L.push('- ⟨ Claude, pick 5 signature elements from this lane\'s baseline ⟩');
+  L.push('');
+  L.push('## Brand');
+  L.push('- Three brand words: '+c(f.f_words));
+  L.push('- Tagline: '+c(f.f_tagline,'write a one-line tagline that fits the lane'));
+  L.push('- Cover & visual direction (lane baseline): '+G.look);
+  L.push('- Voice & tone: '+G.voice);
+  L.push('');
+  L.push('## My reader');
+  L.push(c(f.f_avatar,'describe my target reader for this lane'));
+  L.push('');
+  L.push('## Author bio (draft)');
+  L.push(c(f.f_bio,'draft a 3-sentence third-person author bio for this persona'));
+  L.push('');
+  L.push('## Release plan');
+  L.push(c(f.f_release));
+  L.push('');
+  L.push('## Boundaries & content notes');
+  L.push(c(f.f_bound,'note the content conventions this lane requires'));
+  if(f.f_twist && f.f_twist.trim()){ L.push(''); L.push('## My twist on the lane'); L.push(f.f_twist.trim()); }
+  L.push('');
+  L.push('## Comp authors to study');
+  G.comps.forEach(x=>L.push('- '+x));
+  L.push('');
+  L.push('## Lane watch-outs');
+  L.push(G.notes);
+  return L.join('\n');
+}
+function renderKit(){
+  const kit=buildKit();
+  document.getElementById('kit').textContent=kit;
+  const n=(kit.match(/⟨ Claude/g)||[]).length;
+  const note=document.getElementById('pickNote');
+  note.innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Hand the kit to Claude and it fills them in to fit your lane.'
+    : '✅ Every spot is filled — this identity is fully yours.';
+}
+function copyKit(){ copyText(buildKit(),'Kit copied.'); }
+function downloadKit(){
+  const base=((state.fields.pn1||'pen-name-identity')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'pen-name-identity';
+  const blob=new Blob([buildKit()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-identity-kit.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  const msg='I\'m building a new fiction pen name and used the Fiction Pen Name Builder to lock in the genre baseline. First, fill in anything marked ⟨ Claude, … ⟩ so it fits the lane, and tell me what you chose. Then pressure-test the whole identity: does the name, tagline, element set, and reader promise hang together? Flag anything off-lane, then help me plan the first three books. Here\'s the kit:\n\n'+buildKit();
+  copyText(msg,'Prompt copied — paste it into Claude.');
+}
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the whole identity.')) return;
+  state=blank(); save();
+  try{ localStorage.removeItem(KIT_KEY); }catch(e){}
+  FIELDS.forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('.gcard').forEach(c=>c.classList.remove('on'));
+  document.getElementById('baseline').classList.remove('show');
+  document.getElementById('custom').style.display='none';
+  document.getElementById('kitPanel').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh start.');
+}
+init();
+</script>
+</body>
+</html>

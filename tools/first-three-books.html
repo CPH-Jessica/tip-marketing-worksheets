@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>First Three Books — Series Runway Planner · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+/* kit import */
+.kitcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+@media (max-width: 640px){ .kitcards { grid-template-columns: 1fr; } }
+.kitcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.kitcard:hover { border-color: #c79a4b; background: #fffaf0; }
+.kitcard.on { border-color: #6d2b4e; background: #f6ecf1; box-shadow: 0 2px 8px rgba(109,43,78,.15); }
+.kitcard .kc-src { font-size: 11px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.kitcard .kc-genre { font-weight: 700; font-size: 15px; color: #6d2b4e; font-family: Georgia, serif; margin-top: 2px; }
+.kitcard .kc-meta { font-size: 12px; color: #9a8674; margin-top: 3px; }
+.pastewrap { margin-top: 6px; }
+.pastewrap textarea { min-height: 90px; font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; }
+.kit-loaded { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; font-size: 13px; color: #7a5e2e; display: none; }
+.kit-loaded.show { display: block; }
+.kit-loaded b { color: #6d2b4e; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], input[type=date], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 56px; }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+
+/* book cards */
+.book { border: 1.5px solid #e6d8c7; border-radius: 12px; background: #fff; padding: 16px 18px; margin-top: 16px; }
+.book h3 { font-size: 17px; display: flex; align-items: center; gap: 8px; }
+.book .booknum { background: #c79a4b; color: #fff; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 13px; font-family: Georgia, serif; flex-shrink: 0; }
+.book .role { font-size: 12px; color: #a07c2e; font-style: italic; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-primary { background: #6d2b4e; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-primary:hover { background: #58213f; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>📚 First Three Books</h1></header>
+  <div class="tagline">Turn your Pen Name Identity Kit into a series runway — three story blueprints, one release calendar, and a straight line from pen name to catalog.</div>
+
+  <!-- STEP 1: load kit -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>Load your Identity Kit</h2>
+    <p class="lead">Built a kit in the <b>Pen Name Identity Builder</b> (romance) or <b>Fiction Pen Name Builder</b>? It'll appear below automatically. Or paste any kit, or start from scratch.</p>
+    <div class="kitcards" id="kitCards"></div>
+    <details class="pastewrap">
+      <summary style="cursor:pointer;color:#6d2b4e;font-weight:700;font-size:13px;">📋 Paste a kit instead</summary>
+      <textarea id="pasteBox" placeholder="Paste your PEN NAME IDENTITY KIT markdown here…" style="margin-top:8px;"></textarea>
+      <button class="btn-ghost" style="margin-top:8px;" onclick="importPaste()">Import pasted kit</button>
+    </details>
+    <details class="pastewrap" style="margin-top:8px;">
+      <summary style="cursor:pointer;color:#6d2b4e;font-weight:700;font-size:13px;">✏️ Start from scratch</summary>
+      <div class="two" style="margin-top:8px;">
+        <input type="text" id="manualGenre" placeholder="Genre / lane (e.g. Cozy Mystery)">
+        <input type="text" id="manualPen" placeholder="Pen name (optional)">
+      </div>
+      <input type="text" id="manualTropes" placeholder="Signature tropes, comma-separated (e.g. amateur sleuth, small town, slow-burn detective)" style="margin-top:8px;">
+      <button class="btn-ghost" style="margin-top:8px;" onclick="importManual()">Use these</button>
+    </details>
+    <div class="kit-loaded" id="kitLoaded"></div>
+  </div>
+
+  <!-- STEP 2: series shape -->
+  <div class="panel" id="shapePanel" style="display:none;">
+    <h2><span class="stepnum">2</span>Shape the series</h2>
+    <p class="lead">The runway works when readers know why book 2 exists before they finish book 1.</p>
+
+    <label for="s_name">Series name <span class="opt">(working name is fine)</span></label>
+    <input type="text" id="s_name" placeholder="e.g. The Cedar Falls Files, Hearts of Halloran Ranch">
+
+    <label>What carries readers to the next book?</label>
+    <div class="chips" id="ladderChips"></div>
+
+    <label>The series glue</label>
+    <div class="hint">The constant readers come back for — pick the anchor.</div>
+    <div class="chips" id="glueChips"></div>
+
+    <label for="s_setting">Setting / world anchor</label>
+    <div class="hint">The town, team, family, precinct, or world every book returns to.</div>
+    <input type="text" id="s_setting" placeholder="e.g. Cedar Falls, Montana — pop. 3,000 and one very busy sheriff">
+  </div>
+
+  <!-- STEP 3: books -->
+  <div class="panel" id="booksPanel" style="display:none;">
+    <h2><span class="stepnum">3</span>The three blueprints</h2>
+    <p class="lead">Your signature tropes are rotated across the books so each one leads with a fresh promise while staying on brand. Edit everything; blanks become Claude's picks.</p>
+    <div id="bookCards"></div>
+  </div>
+
+  <!-- STEP 4: calendar -->
+  <div class="panel" id="calPanel" style="display:none;">
+    <h2><span class="stepnum">4</span>Release calendar</h2>
+    <p class="lead" id="paceHint"></p>
+    <div class="two">
+      <div><label for="d1">Book 1 target</label><input type="date" id="d1"></div>
+      <div><label for="d2">Book 2 target</label><input type="date" id="d2"></div>
+    </div>
+    <div class="two" style="margin-top:4px;">
+      <div><label for="d3">Book 3 target</label><input type="date" id="d3"></div>
+      <div><label for="s_pace">Pace notes <span class="opt">(optional)</span></label><input type="text" id="s_pace" placeholder="e.g. write 1 & 2 before launching 1"></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: runway -->
+  <div class="panel" id="outPanel" style="display:none;">
+    <h2><span class="stepnum">5</span>Your Series Runway</h2>
+    <p class="lead">Three blueprints + calendar in one brief. Send all three books to <b>Story Studio</b> to start tracking them, or take it to Claude to build out book one.</p>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="runway"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="sendToStudio()">📚 Send all 3 to Story Studio</button>
+      <button class="btn-ghost" onclick="copyRunway()">📋 Copy runway</button>
+      <button class="btn-ghost" onclick="downloadRunway()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+    <div class="hint" id="studioMsg" style="margin-top:12px;"></div>
+  </div>
+
+  <footer>
+    Your runway saves automatically in this page. The chain: <b>Pen Name Builder → First Three Books → Story Studio → Story Spark</b> (book one's full plan).
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='first-three-books-v1';
+const STUDIO_KEY='story-studio-student-v1';
+const KIT_SOURCES=[
+  {key:'pen-name-kit-romance', label:'Romance Builder'},
+  {key:'pen-name-kit-fiction', label:'Fiction Builder'}
+];
+const LADDERS=['Same lead every book (detective-style)','Interconnected standalones (new leads, shared world)','One serialized arc across all three'];
+const GLUES=['Same town','Same family / siblings','Same team / crew','Same world & magic','Same profession','Same case that won\'t die'];
+const ROLES=['Establish the promise','Escalate & deepen','Payoff & set up book 4'];
+
+let state=null;
+function blank(){
+  return {v:1, kit:null, seriesName:'', ladder:'', glue:'', setting:'', pace:'',
+    dates:['','',''],
+    books:[{title:'',tropes:[],hook:'',proto:''},{title:'',tropes:[],hook:'',proto:''},{title:'',tropes:[],hook:'',proto:''}]};
+}
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.books) state=blank(); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+
+/* ---------- kit import ---------- */
+function init(){
+  load();
+  renderKitCards();
+  ['s_name','s_setting','s_pace'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener('input',()=>{ state[id.replace('s_','')==='name'?'seriesName':id.replace('s_','')]=el.value; save(); renderRunway(); });
+  });
+  ['d1','d2','d3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.addEventListener('input',()=>{ state.dates[i]=el.value; save(); renderRunway(); });
+  });
+  if(state.kit){ paintAll(); }
+}
+
+function renderKitCards(){
+  const wrap=document.getElementById('kitCards'); wrap.innerHTML='';
+  let found=0;
+  KIT_SOURCES.forEach(srcDef=>{
+    let k=null;
+    try{ k=JSON.parse(localStorage.getItem(srcDef.key)); }catch(e){}
+    if(!k||!k.genre) return;
+    found++;
+    const c=document.createElement('div'); c.className='kitcard'+(state.kit&&state.kit.src===k.src&&state.kit.genre===k.genre?' on':'');
+    c.innerHTML='<div class="kc-src">'+srcDef.label+'</div><div class="kc-genre">'+k.genre+'</div>'+
+      '<div class="kc-meta">'+(k.pen?('Pen: '+k.pen+' · '):'')+(k.tropes&&k.tropes.length?k.tropes.length+' signature tropes · ':'')+'updated '+(k.updated||'—')+'</div>';
+    c.onclick=()=>useKit(k);
+    wrap.appendChild(c);
+  });
+  if(!found){
+    wrap.innerHTML='<div style="grid-column:1/-1;color:#9a8674;font-style:italic;font-size:13px;padding:6px 2px;">No saved kits found in this browser yet — build one in a Pen Name Builder, or paste / start from scratch below.</div>';
+  }
+}
+
+function useKit(k){
+  state.kit=k;
+  // rotate tropes across books: 2 lead tropes each, wrapping
+  const T=(k.tropes||[]).slice();
+  state.books.forEach((b,i)=>{
+    if(!b.tropes.length && T.length){
+      b.tropes=[T[(i*2)%T.length]];
+      if(T.length>1) b.tropes.push(T[(i*2+1)%T.length]);
+      b.tropes=[...new Set(b.tropes)];
+    }
+  });
+  save(); paintAll();
+  toast('Kit loaded: '+k.genre+' — tropes rotated across your three books.');
+}
+
+function importPaste(){
+  const txt=document.getElementById('pasteBox').value;
+  if(!txt.trim()){ toast('Paste a kit first.'); return; }
+  const k=parseKit(txt);
+  if(!k.genre){ toast('That doesn\'t look like an Identity Kit — using it as raw notes.',3200); k.genre='(pasted kit)'; }
+  useKit(k);
+}
+function parseKit(txt){
+  const k={src:'pasted', updated:'', genre:'', pen:'', tropes:[], tagline:'', len:'', kit:txt};
+  const mg=txt.match(/^#\s*PEN NAME IDENTITY KIT\s*[—-]\s*(.+)$/mi); if(mg) k.genre=mg[1].trim();
+  const mp=txt.match(/-\s*Candidate 1:\s*(.+)/i); if(mp) k.pen=mp[1].trim();
+  const mt=txt.match(/-\s*Tagline:\s*(.+)/i); if(mt&&!mt[1].includes('⟨')) k.tagline=mt[1].trim();
+  const ml=txt.match(/-\s*Length & release norm:\s*(.+)/i); if(ml) k.len=ml[1].trim();
+  const sec=txt.match(/##\s*Signature (?:tropes|elements)[^\n]*\n([\s\S]*?)(?=\n##|$)/i);
+  if(sec){
+    sec[1].split('\n').forEach(line=>{
+      const m=line.match(/^\s*-\s*(.+)$/);
+      if(m && !m[1].includes('⟨')) k.tropes.push(m[1].trim());
+    });
+  }
+  return k;
+}
+function importManual(){
+  const genre=document.getElementById('manualGenre').value.trim();
+  if(!genre){ toast('Give the lane a name first.'); return; }
+  const k={src:'manual', updated:'', genre:genre, pen:document.getElementById('manualPen').value.trim(),
+    tropes:document.getElementById('manualTropes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    tagline:'', len:'', kit:''};
+  useKit(k);
+}
+
+/* ---------- paint ---------- */
+function paintAll(){
+  const k=state.kit;
+  const kl=document.getElementById('kitLoaded');
+  kl.classList.add('show');
+  kl.innerHTML='✅ Working from: <b>'+k.genre+'</b>'+(k.pen?(' · pen name <b>'+k.pen+'</b>'):'')+(k.tropes&&k.tropes.length?(' · '+k.tropes.length+' signature tropes'):'')+'. Everything below is prefilled from this kit.';
+  ['shapePanel','booksPanel','calPanel','outPanel'].forEach(id=>document.getElementById(id).style.display='block');
+  document.getElementById('s_name').value=state.seriesName||'';
+  document.getElementById('s_setting').value=state.setting||'';
+  document.getElementById('s_pace').value=state.pace||'';
+  ['d1','d2','d3'].forEach((id,i)=>{ document.getElementById(id).value=state.dates[i]||''; });
+  document.getElementById('paceHint').innerHTML='Lane norm: <b>'+(k.len||'set a pace you can actually sustain')+'</b>. Consistency beats speed — pick dates you can hit three times in a row.';
+  buildChipRow('ladderChips', LADDERS, 'ladder');
+  buildChipRow('glueChips', GLUES, 'glue');
+  renderKitCards();
+  renderBooks();
+  renderRunway();
+}
+function buildChipRow(containerId, items, key){
+  const c=document.getElementById(containerId); c.innerHTML='';
+  items.forEach(label=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state[key]===label?' on':''); ch.textContent=label;
+    ch.onclick=()=>{ state[key]=(state[key]===label?'':label); buildChipRow(containerId,items,key); save(); renderRunway(); };
+    c.appendChild(ch);
+  });
+}
+function renderBooks(){
+  const wrap=document.getElementById('bookCards'); wrap.innerHTML='';
+  const kitTropes=(state.kit&&state.kit.tropes)||[];
+  state.books.forEach((b,i)=>{
+    const card=document.createElement('div'); card.className='book';
+    const h=document.createElement('h3');
+    h.innerHTML='<span class="booknum">'+(i+1)+'</span> Book '+(i+1)+' <span class="role">— '+ROLES[i]+'</span>';
+    card.appendChild(h);
+
+    const tl=document.createElement('label'); tl.textContent='Working title'; card.appendChild(tl);
+    const ti=document.createElement('input'); ti.type='text'; ti.placeholder='Leave blank and Claude will title it'; ti.value=b.title||'';
+    ti.addEventListener('input',()=>{ b.title=ti.value; save(); renderRunway(); }); card.appendChild(ti);
+
+    const ll=document.createElement('label'); ll.textContent='Lead tropes for this book'; card.appendChild(ll);
+    const hint=document.createElement('div'); hint.className='hint'; hint.textContent='Rotated from your kit — every book leads with a fresh pair, all on brand.'; card.appendChild(hint);
+    const chips=document.createElement('div'); chips.className='chips';
+    const pool=[...new Set([...kitTropes, ...b.tropes])];
+    pool.forEach(t=>{
+      const ch=document.createElement('div'); ch.className='chip'+(b.tropes.includes(t)?' on':''); ch.textContent=t;
+      ch.onclick=()=>{ const ix=b.tropes.indexOf(t); if(ix>=0) b.tropes.splice(ix,1); else b.tropes.push(t); save(); renderBooks(); renderRunway(); };
+      chips.appendChild(ch);
+    });
+    card.appendChild(chips);
+
+    const hl=document.createElement('label'); hl.textContent='The hook'; card.appendChild(hl);
+    const hh=document.createElement('div'); hh.className='hint'; hh.textContent='One or two sentences: who, what goes wrong, why we can\'t look away.'; card.appendChild(hh);
+    const ht=document.createElement('textarea'); ht.placeholder='Leave blank and Claude will pitch it from the lead tropes'; ht.value=b.hook||'';
+    ht.addEventListener('input',()=>{ b.hook=ht.value; save(); renderRunway(); }); card.appendChild(ht);
+
+    const pl=document.createElement('label'); pl.innerHTML='Lead character seed <span class="opt">(optional)</span>'; card.appendChild(pl);
+    const pi=document.createElement('input'); pi.type='text'; pi.placeholder='Name + one line, or leave for Claude'; pi.value=b.proto||'';
+    pi.addEventListener('input',()=>{ b.proto=pi.value; save(); renderRunway(); }); card.appendChild(pi);
+
+    wrap.appendChild(card);
+  });
+}
+
+/* ---------- runway output ---------- */
+const PICK='⟨ Claude, pick this for me ⟩';
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : (what?'⟨ Claude, '+what+' ⟩':PICK); }
+function bookTitle(b,i){
+  return (b.title&&b.title.trim()) ? b.title.trim() : '⟨ Claude, title Book '+(i+1)+' to fit the series ⟩';
+}
+function buildRunway(){
+  const k=state.kit; if(!k) return 'Load an Identity Kit above to build your runway.';
+  const L=[];
+  L.push('# SERIES RUNWAY — first three books');
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — fill it in so it fits the lane, the series glue, and the escalation from book to book. List what you picked so I can tweak.');
+  L.push('');
+  L.push('## The pen name & lane');
+  L.push('- Pen name: '+c(k.pen,'confirm the pen name from my Identity Kit'));
+  L.push('- Lane: '+k.genre);
+  if(k.tagline) L.push('- Tagline: '+k.tagline);
+  if(k.heat) L.push('- Heat: '+k.heat);
+  if(k.tone) L.push('- Darkness & intensity: '+k.tone+(k.rom?(' · Romance subplot: '+k.rom):''));
+  if(k.tropes&&k.tropes.length) L.push('- Signature tropes: '+k.tropes.join(', '));
+  L.push('');
+  L.push('## Series shape');
+  L.push('- Series name: '+c(state.seriesName,'name the series'));
+  L.push('- Reader ladder: '+c(state.ladder,'choose how readers carry to book 2: same lead, interconnected standalones, or one serialized arc'));
+  L.push('- Series glue: '+c(state.glue));
+  L.push('- Setting / world anchor: '+c(state.setting,'anchor the series in a setting that fits the lane'));
+  L.push('');
+  state.books.forEach((b,i)=>{
+    L.push('## Book '+(i+1)+': '+bookTitle(b,i));
+    L.push('- Role in the runway: '+ROLES[i]);
+    L.push('- Lead tropes: '+(b.tropes.length?b.tropes.join(', '):'⟨ Claude, pick 2 from my signature tropes not yet used ⟩'));
+    L.push('- Hook: '+c(b.hook,'pitch a hook leading with these tropes that keeps the lane promise'));
+    L.push('- Lead character: '+c(b.proto,'sketch the lead in one line'));
+    L.push('- Release target: '+(state.dates[i]||'(TBD)'));
+    L.push('');
+  });
+  L.push('## Release plan');
+  L.push('- Lane norm: '+(k.len||'—'));
+  L.push('- My pace notes: '+c(state.pace,'suggest a realistic writing & launch order for these three dates'));
+  L.push('');
+  L.push('## Next step');
+  L.push('Take Book 1 into Story Spark (or straight to Claude) to build its full blueprint: cast, setting, twists, chapters.');
+  return L.join('\n');
+}
+function renderRunway(){
+  const r=buildRunway();
+  document.getElementById('runway').textContent=r;
+  const n=(r.match(/⟨ Claude/g)||[]).length;
+  const note=document.getElementById('pickNote');
+  if(note) note.innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Claude fills them in when you hand the runway over.'
+    : '✅ Every spot is filled — this runway is fully yours.';
+}
+function copyRunway(){ copyText(buildRunway(),'Runway copied.'); }
+function downloadRunway(){
+  const base=(state.seriesName||'series-runway').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'series-runway';
+  const blob=new Blob([buildRunway()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-runway.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  const msg='I\'ve planned my first three books as a series runway. First, fill in anything marked ⟨ Claude, … ⟩ so the three books escalate properly and stay on-lane, and tell me what you chose. Then pressure-test the runway: does each hook deliver the lane promise, does book 2 raise the stakes, does book 3 pay off and open book 4? Then let\'s build Book 1\'s full story blueprint. Here\'s the runway:\n\n'+buildRunway();
+  copyText(msg,'Prompt copied — paste it into Claude.');
+}
+
+/* ---------- Story Studio handoff ---------- */
+function sendToStudio(){
+  const k=state.kit; if(!k){ toast('Load a kit first.'); return; }
+  let studio;
+  try{ studio=JSON.parse(localStorage.getItem(STUDIO_KEY)); }catch(e){ studio=null; }
+  if(!studio||!studio.books) studio={version:1, books:[]};
+  const today=(function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+  const sName=(state.seriesName||'').trim();
+  let added=0, updated=0;
+  state.books.forEach((b,i)=>{
+    const title=(b.title&&b.title.trim()) ? b.title.trim() : ((sName||k.genre)+' — Book '+(i+1));
+    const nextAction='From First Three Books (Book '+(i+1)+' — '+ROLES[i]+'). Fill anything marked ⟨ Claude, … ⟩, then build the story bible & outline.\n\n'+
+      'Lane: '+k.genre+(sName?(' · Series: '+sName):'')+'\n'+
+      'Lead tropes: '+(b.tropes.length?b.tropes.join(', '):'(Claude picks)')+'\n'+
+      'Hook: '+(b.hook&&b.hook.trim()?b.hook.trim():'⟨ Claude, pitch from the lead tropes ⟩')+'\n'+
+      'Lead: '+(b.proto&&b.proto.trim()?b.proto.trim():'⟨ Claude, sketch ⟩')+
+      (state.dates[i]?('\nRelease target: '+state.dates[i]):'');
+    const existing=studio.books.find(x=>x.fromRunway && x.title===title);
+    if(existing){ existing.nextAction=nextAction; existing.updated=today; updated++; }
+    else {
+      studio.books.push({
+        id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Date.now().toString(36)+i,
+        title:title, penName:(k.pen||'Unassigned'),
+        format:sName?(sName+' (Book '+(i+1)+')'):('Book '+(i+1)+' of 3'),
+        stage:2, status:'production', nextAction:nextAction,
+        project:'First Three Books', fromRunway:true, updated:today
+      });
+      added++;
+    }
+  });
+  try{ localStorage.setItem(STUDIO_KEY, JSON.stringify(studio)); }
+  catch(e){ document.getElementById('studioMsg').innerHTML='⚠ Couldn\'t save to Story Studio in this browser. Use <b>Copy runway</b> instead.'; return; }
+  document.getElementById('studioMsg').innerHTML='✅ '+(added?added+' book'+(added>1?'s':'')+' added':'')+(added&&updated?', ':'')+(updated?updated+' updated':'')+
+    ' in Story Studio at Stage 2. <a href="story-studio.html" style="color:#6d2b4e;font-weight:700;">Open Story Studio →</a>';
+  toast('Runway sent to Story Studio 📚');
+}
+
+/* ---------- utils ---------- */
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the runway (your Identity Kits and Story Studio books are kept).')) return;
+  state=blank(); save();
+  ['shapePanel','booksPanel','calPanel','outPanel'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('kitLoaded').classList.remove('show');
+  renderKitCards();
+  window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh runway.');
+}
+init();
+</script>
+</body>
+</html>
