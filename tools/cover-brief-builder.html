@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Cover Brief Builder — Designer-Ready Cover Direction · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 880px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+/* kit cards */
+.kitcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media (max-width: 640px){ .kitcards { grid-template-columns: 1fr; } }
+.kitcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.kitcard:hover { border-color: #c79a4b; background: #fffaf0; }
+.kitcard.on { border-color: #6d2b4e; background: #f6ecf1; }
+.kitcard .kc-src { font-size: 11px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.kitcard .kc-genre { font-weight: 700; font-size: 15px; color: #6d2b4e; font-family: Georgia, serif; margin-top: 2px; }
+.kitcard .kc-meta { font-size: 12px; color: #9a8674; margin-top: 3px; }
+
+/* lane grid */
+.grp { margin-top: 14px; }
+.grp h3 { font-size: 13px; color: #c79a4b; text-transform: uppercase; letter-spacing: .07em; border-bottom: 1px solid #ecdfd0; padding-bottom: 4px; margin-bottom: 8px; }
+.ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.gcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 9px 11px; cursor: pointer; transition: all .15s; font-size: 13px; font-weight: 700; color: #4a3a2c; }
+.gcard:hover { border-color: #c79a4b; background: #fffaf0; }
+.gcard.on { border-color: #6d2b4e; background: #f6ecf1; color: #6d2b4e; }
+.gcard .mini { display: flex; gap: 3px; margin-top: 6px; }
+.gcard .mini span { flex: 1; height: 8px; border-radius: 3px; }
+
+/* baseline brief */
+#baseline { display: none; }
+#baseline.show { display: block; }
+.bl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .bl-grid { grid-template-columns: 1fr; } }
+.bl { background: #fff; border: 1px solid #ecdfd0; border-left: 3px solid #c79a4b; border-radius: 0 10px 10px 0; padding: 11px 14px; }
+.bl.full { grid-column: 1 / -1; }
+.bl h4 { font-size: 11.5px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; font-family: -apple-system, sans-serif; }
+.bl p { font-size: 13px; color: #4a3a2c; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 74px; text-align: center; }
+.swatch .box { height: 44px; border-radius: 8px; border: 1px solid rgba(0,0,0,.12); cursor: pointer; transition: transform .12s; position: relative; }
+.swatch .box:hover { transform: scale(1.06); }
+.swatch .box.on::after { content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,.6); font-size: 18px; }
+.swatch .hex { font-size: 10.5px; color: #9a8674; margin-top: 3px; font-family: ui-monospace, monospace; }
+.thumb-warn { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; font-size: 13px; color: #7a5e2e; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 56px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 640px){ .two, .three { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+.addrow { display: flex; gap: 8px; margin-top: 8px; }
+.addrow input { flex: 1; }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>🎨 Cover Brief Builder</h1></header>
+  <div class="tagline">Your lane's cover conventions, decoded — palette, imagery, typography, and the avoid-list — turned into a brief you can hand a designer (or an AI) today.</div>
+
+  <!-- STEP 1: lane -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>Pick your lane</h2>
+    <p class="lead">Covers are shelf signals: readers decide in a quarter-second whether your book is "for them." Import your <b>Identity Kit</b> or pick the lane by hand.</p>
+    <div class="kitcards" id="kitCards"></div>
+    <div id="laneGroups"></div>
+  </div>
+
+  <!-- STEP 2: baseline -->
+  <div class="panel" id="baseline">
+    <h2><span class="stepnum">2</span>Your lane's cover playbook</h2>
+    <p class="lead" id="blLead"></p>
+    <div class="bl-grid">
+      <div class="bl full"><h4>🎨 Palette — tap swatches to feature them in your brief</h4><div class="swatches" id="blPal"></div></div>
+      <div class="bl"><h4>Cover style</h4><p id="blStyle"></p></div>
+      <div class="bl"><h4>Typography direction</h4><p id="blType"></p></div>
+      <div class="bl full"><h4>Imagery &amp; motifs</h4><p id="blImg"></p></div>
+      <div class="bl full" style="border-left-color:#b56;"><h4 style="color:#b56;">🚫 What to avoid</h4><p id="blAvoid"></p></div>
+    </div>
+    <div class="thumb-warn">📱 <b>The thumbnail test:</b> your cover will be judged first at roughly 80×120 pixels in a store grid. One clear focal point, title readable when small, contrast over detail. If it doesn't work as a postage stamp, it doesn't work.</div>
+  </div>
+
+  <!-- STEP 3: your book -->
+  <div class="panel" id="custom" style="display:none;">
+    <h2><span class="stepnum">3</span>Your book</h2>
+    <p class="lead">Details the designer needs. Leave anything blank and Claude will pick it in the brief.</p>
+
+    <div class="two">
+      <div><label for="f_title">Title</label><input type="text" id="f_title" placeholder="The book's title"></div>
+      <div><label for="f_pen">Pen name <span class="opt">(as it appears on the cover)</span></label><input type="text" id="f_pen"></div>
+    </div>
+    <div class="two">
+      <div><label for="f_series">Series name &amp; number <span class="opt">(optional)</span></label><input type="text" id="f_series" placeholder="e.g. The Hale Files, Book 1"></div>
+      <div><label for="f_tagline">Cover tagline / strapline <span class="opt">(optional)</span></label><input type="text" id="f_tagline" placeholder="one short line, if any"></div>
+    </div>
+
+    <label>Cover style for this book</label>
+    <div class="hint">Pre-set to the lane convention — change it only on purpose.</div>
+    <div class="chips" id="styleChips"></div>
+
+    <label>Story motifs to feature</label>
+    <div class="hint">The lane's classic motifs are listed — turn on the ones in YOUR book, add your own (a specific object, setting, or symbol from the story).</div>
+    <div class="chips" id="motifChips"></div>
+    <div class="addrow"><input type="text" id="motifAdd" placeholder="Add a motif from your story…" onkeydown="if(event.key==='Enter'){event.preventDefault();addMotif();}"><button class="btn-ghost" onclick="addMotif()">+ Add</button></div>
+
+    <label for="f_vibe">Mood in five words or less</label>
+    <input type="text" id="f_vibe" placeholder="e.g. cozy menace under snow">
+
+    <label>Comparable covers <span class="opt">(the shelf you're joining)</span></label>
+    <div class="hint">Go to your Amazon subcategory's top 50. List 3 covers whose *shelf* you want to share — titles or links.</div>
+    <div class="three">
+      <input type="text" id="f_comp1" placeholder="Comp cover 1">
+      <input type="text" id="f_comp2" placeholder="Comp cover 2">
+      <input type="text" id="f_comp3" placeholder="Comp cover 3">
+    </div>
+
+    <label>Formats needed</label>
+    <div class="chips" id="fmtChips"></div>
+
+    <label for="f_seriesrules">Series branding rules <span class="opt">(optional)</span></label>
+    <div class="hint">What stays identical across the series — layout, title position, palette shifts per book, numbering style.</div>
+    <textarea id="f_seriesrules" placeholder="e.g. same layout every book; background hue shifts per book; series name banner across the top"></textarea>
+
+    <label for="f_notes">Anything else <span class="opt">(optional)</span></label>
+    <textarea id="f_notes" placeholder="character details that must be right, budget range, deadline, printer specs…"></textarea>
+  </div>
+
+  <!-- STEP 4: brief -->
+  <div class="panel" id="outPanel" style="display:none;">
+    <h2><span class="stepnum">4</span>Your Cover Brief</h2>
+    <p class="lead">Hand this to your designer as-is — or take it to Claude to pressure-test, or generate AI concept art to explore directions cheaply first.</p>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="brief"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="copyBrief()">📋 Copy brief</button>
+      <button class="btn-ghost" onclick="downloadBrief()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="copyArt()">🖼 Copy AI concept-art prompt</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+  </div>
+
+  <footer>
+    Autosaves in this page. The chain: <b>Pen Name Builder → First Three Books → Series Architect → Cover Brief → launch</b>.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='cover-brief-v1';
+const KIT_SOURCES=[["pen-name-kit-romance","Romance Pen Name Builder"],["pen-name-kit-fiction","Fiction Pen Name Builder"]];
+const STYLES=['Illustrated / cartoon','Photo — characters','Photo — scene / place','Object / symbolic','Typographic / bold text','Painted / artistic'];
+const FORMATS=['Ebook','Paperback (full wrap)','Hardcover / dust jacket','Audiobook square','Series template (reusable)'];
+
+/* Lane cover playbooks. pal = hex swatches; motifs = classic imagery chips; style = default STYLES entry. */
+const LANES=[
+/* ---------- ROMANCE ---------- */
+{k:'romcom',n:'Romantic Comedy',grp:'Romance — Contemporary',style:'Illustrated / cartoon',
+ pal:['#F65C51','#2AB3A6','#FFD166','#FFF3E2'],
+ img:'Cartoon couple mid-banter or back-to-back, playful props from the story, bold color blocking. The cover should look like the book feels: fun first, feelings underneath.',
+ motifs:['Cartoon couple','Back-to-back pose','City skyline','Coffee / wine','Pets','Confetti'],
+ type:'Hand-lettered or chunky rounded display for the title; author name clean sans. Title IS the design.',
+ avoid:'Photo covers (reads as drama), dark palettes, shirtless torsos (wrong heat signal for the shelf), cluttered scenes that die at thumbnail.'},
+{k:'steamy-smalltown',n:'Steamy Small Town',grp:'Romance — Contemporary',style:'Illustrated / cartoon',
+ pal:['#3E7C59','#F2A65A','#7FB3D5','#FAF3E0'],
+ img:'Illustrated town scene or couple on a porch/truck/main street; warm light, community texture in the background (bunting, shop signs, dogs).',
+ motifs:['Main street','Porch / swing','Pickup truck','Town festival','Dog / pets','Coffee shop'],
+ type:'Friendly serif or script title with a clean sans author name; series-branded by town name.',
+ avoid:'Cold urban palettes, moody photography, anything that hides the warmth — this shelf promises comfort with heat.'},
+{k:'billionaire',n:'Steamy Billionaire',grp:'Romance — Contemporary',style:'Object / symbolic',
+ pal:['#0B0B0D','#C9A227','#232B3A','#FFFFFF'],
+ img:'Luxury object (cufflinks, watch, skyline, car key) on black — or a suited hero cropped below the eyes. Wealth signaled through restraint.',
+ motifs:['Suit / tie','City skyline at night','Cufflinks / watch','Champagne','Penthouse view'],
+ type:'Elegant high-contrast serif, often all-caps with wide tracking; gold foil energy.',
+ avoid:'Cartoon style (kills the fantasy), cluttered scenes, cheap-looking gold gradients — the shelf sells polish.'},
+{k:'hockey',n:'Hockey / Athlete Romance',grp:'Romance — Contemporary',style:'Illustrated / cartoon',
+ pal:['#1D3557','#E63946','#F1FAEE','#A8DADC'],
+ img:'Illustrated athlete + heroine, jersey with a number, rink or stadium hints; team colors do the branding.',
+ motifs:['Jersey & number','Skates / stick','Rink','Team logo energy','Piggyback pose'],
+ type:'Sporty condensed sans or varsity-style display; number motifs in series branding.',
+ avoid:'Real-photo athletes (licensing + wrong vibe), generic abs covers — the shelf has gone illustrated.'},
+{k:'cowboy-steamy',n:'Cowboy — Steamy',grp:'Romance — Contemporary',style:'Photo — characters',
+ pal:['#8C5A32','#D9A05B','#4A6741','#F5E9D9'],
+ img:'Golden-hour ranch light: hat low, denim, worn leather; heat signaled by skin or stance. The land is the second character — keep horizon and sky.',
+ motifs:['Hat & denim','Golden hour ranch','Horse / barn','Boots','Storm on the horizon'],
+ type:'Distressed serif or western slab for the title; author name simple.',
+ avoid:'Studio-lit models with clean hats, illustrated style (signals sweet), city backgrounds.'},
+{k:'mountain',n:'Mountain Man',grp:'Romance — Contemporary',style:'Photo — characters',
+ pal:['#2F4034','#7A5C43','#B7C4B1','#E8E2D0'],
+ img:'Bearded hero in flannel, pines and cabin light; cozy-possessive energy — warmth inside the wild.',
+ motifs:['Flannel & beard','Cabin light','Pines / snow','Axe / firewood','Plaid blanket'],
+ type:'Rugged serif or outdoorsy display; keep it simple — this shelf is fast-browse KU.',
+ avoid:'Overdesigned covers — the shelf rewards instantly-readable tropes; don\'t bury the flannel.'},
+{k:'military',n:'Military / Protector',grp:'Romance — Contemporary',style:'Photo — characters',
+ pal:['#22303C','#5D6D7E','#B03A2E','#EAECEE'],
+ img:'Capable hero, dog tags or tactical hints, protective stance; a flag or team silhouette if the series is unit-based.',
+ motifs:['Dog tags','Tactical gear','Protective stance','Team silhouette','Flag hints'],
+ type:'Strong stencil-adjacent or bold serif; series-branded by unit/team name.',
+ avoid:'Actual combat gore, disrespectful uniform errors — this readership notices insignia.'},
+{k:'seasoned',n:'Later-in-Life / Seasoned',grp:'Romance — Contemporary',style:'Illustrated / cartoon',
+ pal:['#6C3483','#D4AC0D','#45B39D','#FDF2E9'],
+ img:'Visibly adult leads (silver in the hair, laugh lines) — illustrated or elegant photo; wine, beaches, second-act settings.',
+ motifs:['Silver-fox hero','Wine / beach','Empty-nest home','Vespa / travel','Bookshop'],
+ type:'Sophisticated serif or stylish script; jewel tones read "grown up".',
+ avoid:'Twenty-something models (the one-star magnet of this shelf), youth-coded pastels.'},
+{k:'smalltown-sweet',n:'Small Town Sweet',grp:'Romance — Sweet & Closed Door',style:'Illustrated / cartoon',
+ pal:['#F7CAC9','#92A8D1','#F9E79F','#FFFFFF'],
+ img:'Illustrated porches, main streets, bakeries; couple fully clothed, often not touching yet. Pastel warmth signals "safe read".',
+ motifs:['Bakery / café','Porch','Bicycle with basket','Flowers','Farmers market'],
+ type:'Soft script + serif pairing; gentle, hand-drawn warmth.',
+ avoid:'Any skin, dark palettes, photographic couples in embrace — one wrong signal loses the clean-read trust.'},
+{k:'cowboy-sweet',n:'Cowboy — Sweet',grp:'Romance — Sweet & Closed Door',style:'Photo — characters',
+ pal:['#C19A6B','#87CEEB','#F5DEB3','#FFFFFF'],
+ img:'Cowboy at golden hour — fully dressed, hat on, maybe a kid or dog; wheat and big sky. Warmth without heat.',
+ motifs:['Cowboy & kid/dog','Wheat field','Church steeple','Ranch gate','Big sky'],
+ type:'Classic serif, clean and sincere; often includes series tag ("A Sweet Creek Romance").',
+ avoid:'Shirtless heroes (that\'s the other shelf), moody darkness, romance-clinch poses.'},
+{k:'holiday',n:'Holiday Romance',grp:'Romance — Sweet & Closed Door',style:'Illustrated / cartoon',
+ pal:['#A93226','#1E8449','#F4D03F','#FDFEFE'],
+ img:'Snow, lights, tree farms, small-town squares in December; cozy illustrated warmth with gift-tag charm.',
+ motifs:['Christmas tree / farm','Snow & lights','Hot cocoa','Plaid & mittens','Inn / lodge'],
+ type:'Festive script or gift-tag serif; snow-dusted lettering welcome.',
+ avoid:'Ambiguity about the season — this cover has one job; also avoid summer releases with December covers unless it\'s Christmas-in-July.'},
+{k:'inspirational',n:'Christian / Inspirational',grp:'Romance — Sweet & Closed Door',style:'Photo — scene / place',
+ pal:['#AED6F1','#F9E79F','#A9DFBF','#FDFEFE'],
+ img:'Light-filled scenes — fields, coastlines, kitchen tables; a couple at respectful distance or a woman looking toward light.',
+ motifs:['Light through clouds','Field / coast','Kitchen table','Cross (subtle)','Letters / Bible'],
+ type:'Graceful serif + script; airy and sincere.',
+ avoid:'Anything sensual, dark moodiness, cluttered symbolism — trust is the entire brand.'},
+{k:'dark',n:'Dark Romance',grp:'Romance — Dark & Dangerous',style:'Object / symbolic',
+ pal:['#0A0A0A','#7A0E1F','#C19A49','#3D3D3D'],
+ img:'One visceral motif on black — rose with thorns, mask, dagger, smoke, chess piece. Luxury and threat in the same image.',
+ motifs:['Mask','Rose & thorns','Dagger / knife','Smoke','Chess piece','Butterfly in blood'],
+ type:'High-contrast elegant serif or gothic display; foil-look title treatments dominate the shelf.',
+ avoid:'Illustrated cuteness, bright palettes, smiling models — mixed signals get punished hard here.'},
+{k:'mafia',n:'Mafia Romance',grp:'Romance — Dark & Dangerous',style:'Photo — characters',
+ pal:['#0D0D0D','#B8860B','#5C0A14','#D5D8DC'],
+ img:'Suited hero (often cropped), city night, gold on black; rings, cigars, chess — power made visible.',
+ motifs:['Suit (cropped face)','Gold rings','City night','Roses & guns','Chess / crown'],
+ type:'Ornate serif with gold-foil energy; family/syndicate name as series brand.',
+ avoid:'Casual clothing, daylight scenes, playful fonts — the shelf sells dangerous opulence.'},
+{k:'mc',n:'MC Romance',grp:'Romance — Dark & Dangerous',style:'Photo — characters',
+ pal:['#111111','#6E2C00','#B3B6B7','#943126'],
+ img:'Bike, leather, tattoos, patches; hero straddling a motorcycle or heroine in his cut. Grit is the glamour.',
+ motifs:['Motorcycle','Leather cut & patches','Tattoos','Open road','Clubhouse neon'],
+ type:'Distressed display or stencil; club name styling as the series brand.',
+ avoid:'Clean-cut models, bright colors, illustrated style — authenticity signals matter to this readership.'},
+{k:'whychoose',n:'Why Choose / Reverse Harem',grp:'Romance — Dark & Dangerous',style:'Photo — characters',
+ pal:['#1A1A2E','#9B59B6','#C0392B','#F1C40F'],
+ img:'The heroine centered and lit — the star — with multiple male silhouettes behind or around her; jewel tones.',
+ motifs:['Heroine centered','Multiple silhouettes','Crown','Jewel tones','Academy crest'],
+ type:'Bold display with fantasy flair; her name/title dominant.',
+ avoid:'Making any single hero the focal point — the visual promise is her, chosen by all of them.'},
+{k:'cozy-mys',n:'Cozy Mystery',grp:'Mystery & Suspense',style:'Illustrated / cartoon',
+ pal:['#5DADE2','#F5B7B1','#F9E79F','#FDFEFE'],
+ img:'Bright illustrated scene of the hook — bakery, bookshop, garden — with the pet, and one sly clue hidden in the art (a tipped-over teacup, a shadow).',
+ motifs:['The shop (hook)','Cat / dog','Teacup & baked goods','Small town square','A hidden clue'],
+ type:'Punny title in playful serif/script; strict series-consistent layout — readers collect these.',
+ avoid:'Darkness, blood, photographic realism — the body is offscreen and the cover promises it stays there.'},
+{k:'suspense',n:'Romantic Suspense',grp:'Mystery & Suspense',style:'Photo — characters',
+ pal:['#17202A','#C0392B','#5D6D7E','#F4F6F7'],
+ img:'Couple in motion or protective embrace against a threat backdrop — city night, headlights, storm; one strong light source.',
+ motifs:['Protective embrace','City night','Headlights / rain','Silhouette with gun','Storm'],
+ type:'Bold sans or hard serif; title treatments lean thriller, author name leans romance.',
+ avoid:'Peaceful settings, pastel palettes — the cover must promise danger AND heat at a glance.'},
+{k:'regency',n:'Regency Romance',grp:'Romance — Historical',style:'Photo — characters',
+ pal:['#7D3C98','#D4AC0D','#F5EEF8','#1B2631'],
+ img:'The gown is the star — rich fabric, ballroom or garden, heroine turning toward or away; illustrated style now works for witty tone.',
+ motifs:['The gown','Ballroom','Fan / gloves','Garden gate','Carriage'],
+ type:'Elegant script + serif pairing; gold accents; series-branded by family name.',
+ avoid:'Historical inaccuracy in dress (readers know), modern makeup looks, muddy palettes.'},
+{k:'medieval',n:'Medieval Romance',grp:'Romance — Historical',style:'Photo — characters',
+ pal:['#4D5656','#7B241C','#1E8449','#F7DC6F'],
+ img:'Castle, cloak, sword; hero in armor-adjacent dress or heroine in a rich cloak against stone and mist.',
+ motifs:['Castle / stone','Cloak','Sword','Torchlight','Tartan (if Highland)'],
+ type:'Old-world serif with illuminated-manuscript accents.',
+ avoid:'Fantasy creature signals unless it IS romantasy — keep the history grounded.'},
+{k:'western-hist',n:'Historical Western Romance',grp:'Romance — Historical',style:'Photo — characters',
+ pal:['#A04000','#F0E68C','#6E2C00','#FDF2E9'],
+ img:'Prairie light, bonnets and work dresses, homesteads and wagons; sepia warmth with one saturated accent.',
+ motifs:['Bonnet / prairie dress','Homestead','Wagon','Wheat & sky','Letters (mail-order)'],
+ type:'Classic serif, modest and warm; series tag prominent.',
+ avoid:'Glamour styling — this shelf trusts plainness; and again: no skin if it\'s the sweet end.'},
+{k:'paranormal',n:'Paranormal Romance',grp:'Romance — Paranormal & Fantasy',style:'Photo — characters',
+ pal:['#1B2631','#8E44AD','#5DADE2','#EC7063'],
+ img:'Moonlit hero/heroine with a supernatural tell — glowing eyes, wolf shadow, fangs implied; midnight blues with one glow accent.',
+ motifs:['Moon','Wolf / shifter shadow','Glowing eyes','Dark forest','Claw marks'],
+ type:'Sleek display with a supernatural edge; series-branded by pack/coven.',
+ avoid:'Full monster reveals (save it), campy Halloween palettes.'},
+{k:'romantasy',n:'Romantasy',grp:'Romance — Paranormal & Fantasy',style:'Object / symbolic',
+ pal:['#101820','#C19A49','#5B2C6F','#148F77'],
+ img:'Object covers rule: dagger, crown, wings, flower-with-teeth on deep jewel ground; sprayed-edges energy, ornate frame devices.',
+ motifs:['Dagger','Crown','Wings','Magic flora','Constellations','Ornate frame'],
+ type:'Ornate serif, metallic foil energy, title dominant; series sigil per book.',
+ avoid:'Photo covers (wrong shelf), pastel cuteness, cluttered scenes — one icon, beautifully rendered.'},
+{k:'monster',n:'Monster Romance',grp:'Romance — Paranormal & Fantasy',style:'Illustrated / cartoon',
+ pal:['#117864','#6C3483','#F5CBA7','#1C2833'],
+ img:'Illustrated monster + heroine with tonal honesty: cozy-cute or dark-lush, pick one. Claws, horns, tentacles rendered appealing.',
+ motifs:['Horns / claws','Tentacles (tasteful)','Size difference','Cozy lair','Glowing markings'],
+ type:'Playful-dark display; a wink in the lettering.',
+ avoid:'Tone ambiguity — cozy readers picking up dark (or vice versa) is the genre\'s biggest complaint.'},
+{k:'alien',n:'Alien / Sci-Fi Romance',grp:'Romance — Paranormal & Fantasy',style:'Illustrated / cartoon',
+ pal:['#0B5345','#48C9B0','#7D3C98','#0B0B1A'],
+ img:'The alien hero — colored skin, markings, horns — often holding/shielding the human heroine; starfield or alien flora behind.',
+ motifs:['Alien hero (blue/teal skin)','Starfield','Alien flora','Glowing markings','Two moons'],
+ type:'Rounded sci-fi display or elegant serif; heat level signaled by pose.',
+ avoid:'Hard-SF austerity — this shelf wants the alien ON the cover, gloriously.'},
+{k:'shortreads',n:'90-Minute Author (Short Reads)',grp:'Romance — Rapid Release',style:'Photo — characters',
+ pal:['#E74C3C','#F39C12','#FFFFFF','#2C3E50'],
+ img:'High-contrast, template-driven: same layout every book, hero/couple swap, trope in the title. Built to be recognized at thumbnail in a KU scroll.',
+ motifs:['Template consistency','Trope-forward pose','Bold color block','Series numbering'],
+ type:'Big bold title (the trope IS the title), consistent author-name lockup.',
+ avoid:'Unique-snowflake covers — this business model runs on recognizable repetition.'},
+/* ---------- FICTION ---------- */
+{k:'psych',n:'Psychological Thriller',grp:'Thriller & Crime',style:'Typographic / bold text',
+ pal:['#101010','#E8112D','#FFFFFF','#95A5A6'],
+ img:'One arresting fractured image — a window, a door ajar, a face obscured — or pure type on a charged color field.',
+ motifs:['Window / curtain','Door ajar','Obscured face','Suburban house','Broken glass'],
+ type:'Massive title, tight kerning; the title treatment IS the cover. High contrast, acid accent.',
+ avoid:'Busy scenes, romance signals, literal depictions of the twist.'},
+{k:'domestic',n:'Domestic Thriller',grp:'Thriller & Crime',style:'Photo — scene / place',
+ pal:['#1C2833','#D98880','#F2F3F4','#7B7D7D'],
+ img:'The perfect home with one wrong detail — a toppled toy, a figure in the window; muted domestic imagery turned uneasy.',
+ motifs:['The house','A window watcher','Wedding ring','School run','Swimming pool'],
+ type:'Serif/sans hybrid, title large; a one-line hook ("Every family lies") welcome.',
+ avoid:'Gore, thriller clichés like crosshairs — the dread here is domestic.'},
+{k:'procedural',n:'Detective / Procedural',grp:'Thriller & Crime',style:'Photo — scene / place',
+ pal:['#1B2631','#2E86C1','#909497','#F4F6F7'],
+ img:'Moody cityscape, lone figure, police tape, rain; the city as character. Series-consistent layout is the brand.',
+ motifs:['City skyline','Lone figure','Police tape','Rain / neon','Bridge / river'],
+ type:'Strong sans or slab; author name grows bigger as the series does.',
+ avoid:'Changing the layout mid-series — readers shop these by visual habit.'},
+{k:'legal',n:'Legal Thriller',grp:'Thriller & Crime',style:'Object / symbolic',
+ pal:['#17202A','#B7950B','#FDFEFE','#4D5656'],
+ img:'Courthouse steps, scales, a lone figure against marble columns; navy-gold institutional gravitas.',
+ motifs:['Courthouse','Scales','Gavel (sparingly)','City towers','Briefcase'],
+ type:'Authoritative serif, all-caps; the author name is the brand on this shelf.',
+ avoid:'Action-movie explosions — the tension is procedural, signal accordingly.'},
+{k:'action',n:'Action / Vigilante',grp:'Thriller & Crime',style:'Photo — scene / place',
+ pal:['#0B0B0D','#E67E22','#78281F','#BFC9CA'],
+ img:'Lone silhouette walking toward/away, road or compound behind, muzzle-flash palette; big series number.',
+ motifs:['Lone silhouette','Open road','Explosion glow','Compound / warehouse','Storm sky'],
+ type:'Block letters, huge; hero name above the title (the Reacher pattern).',
+ avoid:'Faces in detail (readers cast the hero themselves), cluttered action scenes.'},
+{k:'darkcrime',n:'Serial Killer / Dark Crime',grp:'Thriller & Crime',style:'Object / symbolic',
+ pal:['#050505','#922B21','#D5D8DC','#39424E'],
+ img:'Stark and clinical: one visceral motif — tape, wire, a porcelain doll, a polaroid — restraint signaling dread.',
+ motifs:['Evidence bag / polaroid','Tape / wire','Doll / toy','Basement stairs','Crime-scene marker'],
+ type:'Cold, precise sans or typewriter serif; clinical spacing.',
+ avoid:'Actual gore on the cover — implication outsells depiction even on this shelf.'},
+{k:'caper',n:'Comic Caper / Cozy Crime',grp:'Mystery',style:'Illustrated / cartoon',
+ pal:['#F4D03F','#E74C3C','#3498DB','#FDFEFE'],
+ img:'Bold flat-color illustration with a wink — getaway scooter, flamingo, ensemble silhouettes mid-chaos.',
+ motifs:['Getaway vehicle','Ensemble silhouettes','A ridiculous prop','Money flying','Small-town chaos'],
+ type:'Playful display type with personality; title does comedy work.',
+ avoid:'Dark thriller styling — the cover must promise laughs with the body.'},
+{k:'hardboiled',n:'Hardboiled / PI',grp:'Mystery',style:'Photo — scene / place',
+ pal:['#0D0D0D','#C0392B','#D4AC0D','#5D6D7E'],
+ img:'Neon, rain, a doorway silhouette; noir palettes with one hot accent. The city\'s glamour and rot together.',
+ motifs:['Neon sign','Rain-slick street','Doorway silhouette','Cigarette smoke','Venetian blinds'],
+ type:'Condensed noir sans or deco-flavored display.',
+ avoid:'Pastiche overload — one noir signal strongly, not five weakly.'},
+{k:'histmystery',n:'Historical Mystery',grp:'Mystery',style:'Photo — scene / place',
+ pal:['#6E2C00','#D4AC0D','#1B2631','#F6DDCC'],
+ img:'Gaslit streets, period silhouette, fog; sepia plus one rich accent color; the era instantly readable.',
+ motifs:['Gaslight','Period silhouette','Fog','Carriage / steam train','Wax seal / letter'],
+ type:'Classic serif with period flourish; series-consistent frame device.',
+ avoid:'Modern elements in frame, over-bright palettes.'},
+{k:'epic',n:'Epic Fantasy',grp:'Fantasy',style:'Painted / artistic',
+ pal:['#0E2A47','#C19A49','#7B241C','#EAECEE'],
+ img:'Painted landscape with scale — tiny figure, vast world — or a sigil/artifact treatment; maps-and-monuments energy.',
+ motifs:['Vast landscape + small figure','Sigil / crest','Sword / artifact','Citadel','Dragons at distance'],
+ type:'Ornate but readable serif; metallic accents; consistent series spine design.',
+ avoid:'Character close-ups that fix the hero\'s face; cluttered battle scenes that die at thumbnail.'},
+{k:'urban',n:'Urban Fantasy',grp:'Fantasy',style:'Photo — characters',
+ pal:['#1A1A2E','#8E44AD','#16A085','#F39C12'],
+ img:'The lead mid-stride with visible magic — glowing hands, sigils — against a night city; attitude on the cover.',
+ motifs:['Lead with glowing magic','Night city','Leather jacket','Sigils','Weapon of choice'],
+ type:'Punchy display; character name big (the series brand is the person).',
+ avoid:'Static poses — this shelf sells motion and attitude.'},
+{k:'cozyfantasy',n:'Cozy Fantasy',grp:'Fantasy',style:'Illustrated / cartoon',
+ pal:['#7A9E7E','#E8C4A0','#B7C9E2','#FFF8EC'],
+ img:'Illustrated warmth — a shopfront, a dragon with a teacup, lantern-lit village; muted cottagecore palette.',
+ motifs:['Cozy shopfront','Dragon + teacup','Lanterns','Garden herbs','Rain on windows'],
+ type:'Hand-lettered friendly serif; soft edges everywhere.',
+ avoid:'Epic scale, battle imagery, darkness — the promise is a warm bath, keep it visible.'},
+{k:'grimdark',n:'Grimdark Fantasy',grp:'Fantasy',style:'Painted / artistic',
+ pal:['#1B1B1B','#7B241C','#797D7F','#B9770E'],
+ img:'Weathered figures, blood-and-iron palettes, broken banners; texture over polish.',
+ motifs:['Weathered warrior','Broken banner','Crows','Mud & iron','Burning field'],
+ type:'Brutalist serif or scratched display; the title can bleed.',
+ avoid:'Heroic golden light, clean armor — the shelf promises rust and consequences.'},
+{k:'litrpg',n:'LitRPG / Progression',grp:'Fantasy',style:'Painted / artistic',
+ pal:['#0F1B2D','#27AE60','#3498DB','#F1C40F'],
+ img:'Game-art energy: the lead facing a dungeon gate or boss, HUD elements, glowing stats; power visibly rising.',
+ motifs:['Dungeon gate','HUD / stat glow','Loot / weapon','Boss silhouette','Level-up light'],
+ type:'Game-logo display type; series number huge (readers binge in order).',
+ avoid:'Literary subtlety — this shelf wants the game ON the cover.'},
+{k:'yafantasy',n:'YA Fantasy',grp:'Fantasy',style:'Object / symbolic',
+ pal:['#12122B','#C0392B','#C9A227','#5B2C6F'],
+ img:'Symbol-driven: crown, dagger, flower with teeth on jewel ground — or a stylized heroine in profile; sprayed-edge prestige.',
+ motifs:['Crown / dagger','Flower with teeth','Birds / wings','Profile silhouette','Constellation'],
+ type:'Elegant display serif, title dominant, ornamental frame.',
+ avoid:'Photo covers, adult-romance heat signals — the crossover shelf has its own codes.'},
+{k:'spaceopera',n:'Space Opera',grp:'Sci-Fi',style:'Painted / artistic',
+ pal:['#0B0C2A','#2E86C1','#E67E22','#EAECEE'],
+ img:'Ships against nebulae, station silhouettes, planetary arcs; one hot accent against deep space.',
+ motifs:['Hero ship','Nebula','Station','Planetary ring','Fleet at distance'],
+ type:'Clean futuristic sans; series-consistent ship placement.',
+ avoid:'Character close-ups (the ship is the face of the series), muddy dark-on-dark.'},
+{k:'milsf',n:'Military Sci-Fi',grp:'Sci-Fi',style:'Painted / artistic',
+ pal:['#1C2833','#909497','#B03A2E','#F7DC6F'],
+ img:'Powered armor, dropships, orbital fire; gunmetal with flare accents; unit insignia as series brand.',
+ motifs:['Powered armor','Dropship','Orbital strike','Unit insignia','Rifle & visor'],
+ type:'Stencil or hard sans; series number prominent.',
+ avoid:'Fantasy signals, soft palettes; this shelf browses fast and literal.'},
+{k:'hardsf',n:'Hard SF / Techno-Thriller',grp:'Sci-Fi',style:'Object / symbolic',
+ pal:['#0B0B0D','#F2F3F4','#E74C3C','#5DADE2'],
+ img:'One clean high-concept object — helmet, capsule, DNA strand, moon base — on stark ground; the idea as image.',
+ motifs:['Helmet','Capsule / module','DNA / molecule','Red planet','Control panel'],
+ type:'Techy sans, lots of air; the concept carries it.',
+ avoid:'Space-opera spectacle — restraint signals rigor on this shelf.'},
+{k:'postapoc',n:'Dystopian / Post-Apocalyptic',grp:'Sci-Fi',style:'Photo — scene / place',
+ pal:['#39424E','#B9770E','#7B7D7D','#17202A'],
+ img:'Ruined skylines, lone figures on empty highways, ash tones with an ember accent; the road and what\'s left.',
+ motifs:['Ruined skyline','Empty highway','Lone figure with pack','Gas mask (dystopia)','Ember glow'],
+ type:'Weathered sans or stencil; series arc numbering clear.',
+ avoid:'Prepper shelf vs literary dystopia use different covers — pick your lane\'s and stay in it.'},
+{k:'supernatural',n:'Supernatural Horror',grp:'Horror',style:'Photo — scene / place',
+ pal:['#0D0D0D','#78281F','#95A5A6','#F4F6F7'],
+ img:'The house, the woods, the doorway at night — desaturated with one wrong color; negative space that breathes dread.',
+ motifs:['The house','Dark woods','Doorway / hallway','A figure that shouldn\'t be there','Crooked family photo'],
+ type:'Classic horror serif; restraint over gore-fonts.',
+ avoid:'Monster reveals, slasher-camp styling if your book is dread-driven.'},
+{k:'gothic',n:'Gothic Horror',grp:'Horror',style:'Painted / artistic',
+ pal:['#145A32','#641E16','#D4AC0D','#17202A'],
+ img:'Manor in mist, candlelight, wallpaper motifs gone wrong; beautiful rot — deep greens and burgundy.',
+ motifs:['The manor','Candelabra','Wallpaper pattern','Dead garden','Veiled figure'],
+ type:'Ornate serif with flourish; a frame device suits the shelf.',
+ avoid:'Modern styling, bright light; the cover should feel like velvet with something under it.'},
+{k:'cosmic',n:'Cosmic / Folk Horror',grp:'Horror',style:'Object / symbolic',
+ pal:['#050505','#B7950B','#1E8449','#EAECEE'],
+ img:'Vast landscape dwarfing a tiny figure, occult geometry, standing stones; black with sickly gold/green.',
+ motifs:['Standing stones','Occult geometry','Tiny figure, vast dark','Wheat ritual','Tentacled implication'],
+ type:'Stark serif or arcane display; symbols over scenes.',
+ avoid:'Showing the entity — the cover\'s job is scale and wrongness, not the reveal.'},
+{k:'bookclub',n:'Book Club / Women\'s Fiction',grp:'Book Club & Literary',style:'Photo — scene / place',
+ pal:['#5DADE2','#F5B041','#F2F3F4','#1B4F72'],
+ img:'Evocative single image — coastline, kitchen table, a woman walking away; soft literary palettes with emotional weather.',
+ motifs:['Coastline / pier','Kitchen table','Woman walking away','Front porch','Letters / photographs'],
+ type:'Literary serif, title and author balanced; a book-club-question energy.',
+ avoid:'Genre signals (thriller reds, romance clinches) — this shelf is its own quiet language.'},
+{k:'literary',n:'Literary / Upmarket',grp:'Book Club & Literary',style:'Typographic / bold text',
+ pal:['#F4F6F7','#1B2631','#E67E22','#7D3C98'],
+ img:'Painterly abstraction or bold typographic design; award-shelf aesthetics, restraint and wit.',
+ motifs:['Abstract shapes','Single painterly object','Pattern & texture','Negative space'],
+ type:'Distinctive typographic identity — the cover is a design object.',
+ avoid:'Genre-shelf conventions; this cover should look at home next to prize-winners.'},
+{k:'histfic',n:'Historical Fiction',grp:'Book Club & Literary',style:'Photo — characters',
+ pal:['#6E2C00','#D5D8DC','#B03A2E','#F6DDCC'],
+ img:'Period figure from behind or in profile, wartime skies, one saturated accent (the red coat effect); sepia with dignity.',
+ motifs:['Figure from behind','Wartime sky','Suitcase / train platform','Letters','A red accent garment'],
+ type:'Classic serif, often with a subtitle carrying the era.',
+ avoid:'Modern faces and styling; the era must be readable at thumbnail.'},
+{k:'western-trad',n:'Traditional Western',grp:'Western & Adventure',style:'Painted / artistic',
+ pal:['#A04000','#F0E68C','#1B2631','#FDF2E9'],
+ img:'Painted riders against big skies, six-guns and dust; classic pulp energy, weathered and honest.',
+ motifs:['Rider & horse','Six-gun','Canyon / mesa','Cattle drive','Frontier town street'],
+ type:'Weathered slab or western display; author name big (this shelf buys by author).',
+ avoid:'Romance-western signals (soft light, couples) — this is the trad shelf.'},
+{k:'adventure',n:'Action-Adventure / Treasure Hunt',grp:'Western & Adventure',style:'Object / symbolic',
+ pal:['#0E6655','#D4AC0D','#6E2C00','#EAECEE'],
+ img:'Temple doorway, ancient map, artifact glow; silhouettes rappelling into ruins; blockbuster-poster energy.',
+ motifs:['Temple / ruins','Ancient map','Artifact','Rappelling silhouette','Compass rose'],
+ type:'Blockbuster display type with metallic edge.',
+ avoid:'Quiet literary styling — this cover should feel like a matinee ticket.'}
+];
+const GROUPS=[...new Set(LANES.map(l=>l.grp))];
+
+/* ============ state ============ */
+let state=null;
+function blank(){ return {v:1, lane:'', pal:[], style:'', motifs:[], customMotifs:[], fmts:['Ebook','Paperback (full wrap)'], fields:{}}; }
+const FIELDS=['f_title','f_pen','f_series','f_tagline','f_vibe','f_comp1','f_comp2','f_comp3','f_seriesrules','f_notes'];
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function lane(){ return LANES.find(x=>x.k===state.lane); }
+
+/* ============ init ============ */
+function init(){
+  load();
+  renderKitCards();
+  const wrap=document.getElementById('laneGroups');
+  GROUPS.forEach(grp=>{
+    const d=document.createElement('div'); d.className='grp';
+    const h=document.createElement('h3'); h.textContent=grp; d.appendChild(h);
+    const grid=document.createElement('div'); grid.className='ggrid';
+    LANES.filter(x=>x.grp===grp).forEach(x=>{
+      const c=document.createElement('div'); c.className='gcard'; c.dataset.k=x.k;
+      const mini=x.pal.map(p=>'<span style="background:'+p+'"></span>').join('');
+      c.innerHTML=x.n+'<div class="mini">'+mini+'</div>';
+      c.onclick=()=>pickLane(x.k);
+      grid.appendChild(c);
+    });
+    d.appendChild(grid); wrap.appendChild(d);
+  });
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener('input',()=>{ state.fields[id]=el.value; save(); renderBrief(); });
+  });
+  if(state.lane) pickLane(state.lane, true);
+}
+
+function renderKitCards(){
+  const wrap=document.getElementById('kitCards'); wrap.innerHTML=''; let found=0;
+  KIT_SOURCES.forEach(([key,label])=>{
+    let k=null; try{ k=JSON.parse(localStorage.getItem(key)); }catch(e){}
+    if(!k||!k.genre) return; found++;
+    const c=document.createElement('div'); c.className='kitcard';
+    c.innerHTML='<div class="kc-src">'+label+'</div><div class="kc-genre">'+k.genre+'</div><div class="kc-meta">'+(k.pen?('Pen: '+k.pen+' · '):'')+'tap to import</div>';
+    c.onclick=()=>importKit(k);
+    wrap.appendChild(c);
+  });
+  if(!found) wrap.innerHTML='<div style="grid-column:1/-1;color:#9a8674;font-style:italic;font-size:13px;">No Identity Kits found in this browser — pick your lane below instead.</div>';
+}
+function importKit(k){
+  // exact lane-name match first, then keyword guess
+  let match=LANES.find(x=>x.n.toLowerCase()===(k.genre||'').toLowerCase());
+  if(!match){
+    const s=(k.genre||'').toLowerCase();
+    match=LANES.find(x=>s.includes(x.n.toLowerCase().split(' ')[0].toLowerCase()) && x.n.length>4) ||
+          LANES.find(x=>x.n.toLowerCase().split(/[ /—-]+/).some(w=>w.length>3&&s.includes(w)));
+  }
+  if(k.pen && !state.fields.f_pen){ state.fields.f_pen=k.pen; const el=document.getElementById('f_pen'); if(el) el.value=k.pen; }
+  if(match){ pickLane(match.k); toast('Kit imported — lane set to '+match.n+(k.pen?', pen name filled':'')); }
+  else { save(); renderBrief(); toast('Pen name imported — pick the closest lane below for "'+k.genre+'"'); }
+}
+
+function pickLane(k, restoring){
+  const prev=state.lane;
+  state.lane=k;
+  document.querySelectorAll('.gcard').forEach(c=>c.classList.toggle('on', c.dataset.k===k));
+  const L=lane();
+  document.getElementById('baseline').classList.add('show');
+  document.getElementById('custom').style.display='block';
+  document.getElementById('outPanel').style.display='block';
+  document.getElementById('blLead').innerHTML='<b>'+L.n+'</b> — this is what the shelf expects. Deviate on purpose or not at all.';
+  document.getElementById('blStyle').textContent=L.style+' — the dominant convention for this shelf.';
+  document.getElementById('blType').textContent=L.type;
+  document.getElementById('blImg').textContent=L.img;
+  document.getElementById('blAvoid').textContent=L.avoid;
+  if(!restoring && prev!==k){
+    state.pal=L.pal.slice(0,3);
+    state.style=L.style;
+    state.motifs=[]; state.customMotifs=[];
+    if(prev) toast('Lane switched to '+L.n+' — palette, style & motifs reset to its playbook.');
+  } else {
+    state.pal=state.pal.length?state.pal:L.pal.slice(0,3);
+    state.style=state.style||L.style;
+  }
+  renderSwatches(); buildStyleChips(); buildMotifChips(); buildFmtChips();
+  FIELDS.forEach(id=>{ if(state.fields[id]!=null) document.getElementById(id).value=state.fields[id]; });
+  save(); renderBrief();
+  if(!restoring) document.getElementById('baseline').scrollIntoView({behavior:'smooth'});
+}
+
+function renderSwatches(){
+  const L=lane(); const box=document.getElementById('blPal'); box.innerHTML='';
+  L.pal.forEach(hex=>{
+    const d=document.createElement('div'); d.className='swatch';
+    const b=document.createElement('div'); b.className='box'+(state.pal.includes(hex)?' on':''); b.style.background=hex;
+    b.onclick=()=>{ const i=state.pal.indexOf(hex); if(i>=0) state.pal.splice(i,1); else state.pal.push(hex); renderSwatches(); save(); renderBrief(); };
+    const h=document.createElement('div'); h.className='hex'; h.textContent=hex;
+    d.appendChild(b); d.appendChild(h); box.appendChild(d);
+  });
+}
+function buildStyleChips(){
+  const c=document.getElementById('styleChips'); c.innerHTML='';
+  STYLES.forEach(s=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state.style===s?' on':''); ch.textContent=s;
+    ch.onclick=()=>{ state.style=s; buildStyleChips(); save(); renderBrief(); };
+    c.appendChild(ch);
+  });
+}
+function buildMotifChips(){
+  const L=lane(); const c=document.getElementById('motifChips'); c.innerHTML='';
+  const all=[...L.motifs, ...state.customMotifs.filter(m=>!L.motifs.includes(m))];
+  all.forEach(m=>{
+    const on=state.motifs.includes(m);
+    const ch=document.createElement('div'); ch.className='chip'+(on?' on':''); ch.textContent=m;
+    ch.onclick=()=>{ const i=state.motifs.indexOf(m); if(i>=0) state.motifs.splice(i,1); else state.motifs.push(m); buildMotifChips(); save(); renderBrief(); };
+    c.appendChild(ch);
+  });
+}
+function addMotif(){
+  const el=document.getElementById('motifAdd'); const v=el.value.trim(); if(!v) return;
+  if(!state.customMotifs.includes(v)) state.customMotifs.push(v);
+  if(!state.motifs.includes(v)) state.motifs.push(v);
+  el.value=''; buildMotifChips(); save(); renderBrief(); toast('Added "'+v+'"');
+}
+function buildFmtChips(){
+  const c=document.getElementById('fmtChips'); c.innerHTML='';
+  FORMATS.forEach(f=>{
+    const on=state.fmts.includes(f);
+    const ch=document.createElement('div'); ch.className='chip'+(on?' on':''); ch.textContent=f;
+    ch.onclick=()=>{ const i=state.fmts.indexOf(f); if(i>=0) state.fmts.splice(i,1); else state.fmts.push(f); buildFmtChips(); save(); renderBrief(); };
+    c.appendChild(ch);
+  });
+}
+
+/* ============ brief ============ */
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : '⟨ Claude, '+(what||'pick this for me')+' ⟩'; }
+function buildBrief(){
+  const L=lane(); if(!L) return 'Pick a lane above to build your brief.';
+  const f=state.fields;
+  const comps=[f.f_comp1,f.f_comp2,f.f_comp3].filter(x=>x&&x.trim());
+  const out=[];
+  out.push('# COVER BRIEF — '+c(f.f_title,'suggest a working title')+' ('+L.n+')');
+  out.push('');
+  out.push('> NOTE TO CLAUDE / DESIGNER: anything marked ⟨ Claude, … ⟩ was left blank on purpose — fill it to fit the lane and the rest of this brief, then list what you picked.');
+  out.push('');
+  out.push('## The book');
+  out.push('- Title: '+c(f.f_title,'suggest a working title'));
+  out.push('- Pen name on cover: '+c(f.f_pen));
+  if(f.f_series&&f.f_series.trim()) out.push('- Series: '+f.f_series.trim());
+  if(f.f_tagline&&f.f_tagline.trim()) out.push('- Cover tagline: '+f.f_tagline.trim());
+  out.push('- Genre shelf: '+L.n);
+  out.push('- Mood: '+c(f.f_vibe,'give the cover mood in five words'));
+  out.push('');
+  out.push('## Art direction');
+  out.push('- Cover style: '+(state.style||L.style));
+  out.push('- Palette: '+(state.pal.length?state.pal.join(' · '):'⟨ Claude, pick 3 hexes that fit the lane: '+L.pal.join(' · ')+' ⟩'));
+  out.push('- Imagery direction (lane convention): '+L.img);
+  out.push('- Featured motifs: '+(state.motifs.length?state.motifs.join(', '):'⟨ Claude, pick 2–3 motifs from: '+L.motifs.join(', ')+' ⟩'));
+  out.push('- Typography: '+L.type);
+  out.push('');
+  out.push('## Shelf rules');
+  out.push('- What the shelf expects: '+L.img.split('.')[0]+'.');
+  out.push('- 🚫 Avoid: '+L.avoid);
+  out.push('- 📱 Thumbnail test: must read clearly at 80×120px — one focal point, title legible small, contrast over detail.');
+  out.push('');
+  out.push('## Comparable covers (the shelf we\'re joining)');
+  if(comps.length) comps.forEach(x=>out.push('- '+x));
+  else out.push('- ⟨ Claude, name 3 current bestselling '+L.n+' covers whose shelf this should join ⟩');
+  out.push('');
+  out.push('## Deliverables');
+  out.push('- Formats: '+(state.fmts.length?state.fmts.join(', '):'Ebook'));
+  if(f.f_seriesrules&&f.f_seriesrules.trim()){ out.push('- Series branding rules: '+f.f_seriesrules.trim()); }
+  else { out.push('- Series branding rules: ⟨ Claude, propose what stays identical across the series — layout, title lockup, palette shifts per book ⟩'); }
+  if(f.f_notes&&f.f_notes.trim()){ out.push('- Notes: '+f.f_notes.trim()); }
+  return out.join('\n');
+}
+function buildArtPrompt(){
+  const L=lane(); if(!L) return '';
+  const f=state.fields;
+  const motifs=state.motifs.length?state.motifs.join(', '):L.motifs.slice(0,3).join(', ');
+  return 'Book cover concept art (no text, no typography — title added later) for a '+L.n.toLowerCase()+' novel'+
+    (f.f_title&&f.f_title.trim()?(' titled "'+f.f_title.trim()+'"'):'')+'. Style: '+(state.style||L.style).toLowerCase()+
+    '. '+L.img+' Featured motifs: '+motifs+'. Color palette: '+(state.pal.length?state.pal.join(', '):L.pal.join(', '))+
+    '. Mood: '+((f.f_vibe&&f.f_vibe.trim())||'true to the genre')+
+    '. Composition: single strong focal point, clear space reserved at the top third for the title, high contrast, reads clearly at thumbnail size. Vertical 2:3 book cover ratio.';
+}
+function renderBrief(){
+  const b=buildBrief();
+  document.getElementById('brief').textContent=b;
+  const n=Math.max(0,(b.match(/⟨ Claude/g)||[]).length-(b.includes('NOTE TO CLAUDE')?1:0));
+  document.getElementById('pickNote').innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Claude (or your designer) fills them to fit the lane.'
+    : '✅ Every spot is filled — this brief is designer-ready.';
+}
+function copyBrief(){ copyText(buildBrief(),'Brief copied.'); }
+function downloadBrief(){
+  const base=((state.fields.f_title||'cover-brief')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'cover-brief';
+  const blob=new Blob([buildBrief()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-cover-brief.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  copyText('You\'re my art director. First, fill in anything marked ⟨ Claude, … ⟩ in this cover brief so it fits the genre shelf, and tell me what you chose. Then pressure-test it: does the style, palette, and motif set match what\'s currently selling on this shelf? Flag anything off-lane. Then give me 3 distinct cover concepts a designer could execute from this brief.\n\n'+buildBrief(),'Prompt copied — paste it into Claude.');
+}
+function copyArt(){
+  copyText(buildArtPrompt(),'AI concept-art prompt copied — paste into your image generator to explore directions.');
+}
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the whole brief.')) return;
+  state=blank(); save();
+  FIELDS.forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('.gcard').forEach(x=>x.classList.remove('on'));
+  document.getElementById('baseline').classList.remove('show');
+  document.getElementById('custom').style.display='none';
+  document.getElementById('outPanel').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh brief.');
+}
+init();
+</script>
+</body>
+</html>
