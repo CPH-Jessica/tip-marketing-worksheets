@@ -7,23 +7,38 @@
 <title>My Master Library (Private) — The Invisible Pen</title>
 <style>
 :root {
-  --coral: #E8735A;
-  --navy: #1B2A4A;
-  --cream: #FFF8F0;
-  --gold: #D4A853;
-  --sage: #7A9E7E;
-  --plum: #6d2b4e;
+  --coral: #B76E79;        /* rose gold */
+  --rose-light: #E8C4C9;   /* pale rose gold */
+  --rose-deep: #9C5460;    /* deep rose gold */
+  --navy: #0F5E66;         /* deep teal */
+  --teal: #17909A;         /* bright teal */
+  --teal-pale: #E2F1F2;    /* pale teal wash */
+  --cream: #FDF6F4;        /* rosy cream */
+  --gold: #D4A0A8;         /* rose-gold shimmer */
+  --sage: #17909A;
+  --plum: #9C5460;
   --text: #2D2D2D;
-  --light-gray: #F0EDE8;
-  --border: #D4CFC7;
+  --light-gray: #F3E9E7;
+  --border: #E0CBCE;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
-.header { background: var(--navy); color: white; padding: 2.5rem 2rem; text-align: center; }
-.header h1 { font-size: 2rem; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
-.header .subtitle { color: var(--coral); font-size: 1.05rem; font-style: italic; }
-.header .brand { color: var(--gold); font-size: 0.8rem; margin-top: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
-.private-ribbon { background: var(--plum); color: #fff; text-align: center; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.5rem; font-family: -apple-system, "Segoe UI", sans-serif; font-weight: bold; }
+.header { background: linear-gradient(135deg, #0B4A52 0%, #0F5E66 55%, #17707A 100%); color: white; padding: 2.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+.header h1 { font-size: 2rem; margin-bottom: 0.4rem; letter-spacing: 0.5px; position: relative; }
+.header .subtitle { color: var(--rose-light); font-size: 1.05rem; font-style: italic; position: relative; }
+.header .brand { color: var(--gold); font-size: 0.8rem; margin-top: 0.6rem; letter-spacing: 1px; text-transform: uppercase; position: relative; }
+.header .bfly { position: absolute; font-size: 1.3rem; opacity: 0.55; animation: flutter 7s ease-in-out infinite; pointer-events: none; }
+.header .bfly.b1 { top: 18%; left: 8%; animation-delay: 0s; }
+.header .bfly.b2 { top: 55%; left: 20%; font-size: 0.95rem; animation-delay: 1.6s; }
+.header .bfly.b3 { top: 24%; right: 10%; font-size: 1.6rem; animation-delay: 0.8s; }
+.header .bfly.b4 { top: 62%; right: 20%; font-size: 1rem; animation-delay: 2.4s; }
+@keyframes flutter {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  25% { transform: translateY(-9px) rotate(7deg); }
+  50% { transform: translateY(-3px) rotate(-4deg); }
+  75% { transform: translateY(-12px) rotate(5deg); }
+}
+.private-ribbon { background: linear-gradient(90deg, #9C5460, #B76E79 45%, #D4A0A8 75%, #B76E79); color: #fff; text-align: center; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.5rem; font-family: -apple-system, "Segoe UI", sans-serif; font-weight: bold; }
 .container { max-width: 900px; margin: 0 auto; padding: 2.25rem 2rem 4rem; }
 .intro-box { background: #fff; border-left: 4px solid var(--plum); padding: 1.25rem 1.5rem; margin-bottom: 2.25rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 0.95rem; }
 .intro-box strong { color: var(--plum); }
@@ -31,6 +46,7 @@ body { font-family: 'Georgia', serif; background: var(--cream); color: var(--tex
 .section { background: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-bottom: 1.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .section.paid { border: 1.5px solid var(--gold); }
 .section > h2 { color: var(--navy); font-size: 1.4rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
+.section > h2::after { content: " 🦋"; font-size: 0.85rem; opacity: 0.7; }
 .section.paid > h2 { border-bottom-color: var(--gold); }
 .section .section-note { font-style: italic; color: #6b6b6b; font-size: 0.92rem; margin: 0.5rem 0 1rem; }
 .part-label { color: var(--sage); font-size: 0.78rem; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.3rem 0 0.4rem; }
@@ -43,10 +59,10 @@ ol.lessons, ul.lessons { list-style: none; }
 .lessons .title { flex: 1; }
 .lessons a:hover .title { text-decoration: underline; }
 .badge { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.12rem 0.45rem; border-radius: 999px; vertical-align: middle; white-space: nowrap; }
-.badge.paid { background: #faf0d8; color: #9a7b1c; border: 1px solid var(--gold); }
-.badge.hidden { background: #f3e6ee; color: var(--plum); border: 1px solid #d6b3c4; }
-.badge.ext { background: #e9f0ea; color: #4d6b50; border: 1px solid #b9cdbb; }
-.badge.new { background: var(--plum); color: #fff; }
+.badge.paid { background: #FBEFF0; color: #9C5460; border: 1px solid var(--gold); }
+.badge.hidden { background: #F7E9EB; color: var(--plum); border: 1px solid #E0BFC5; }
+.badge.ext { background: var(--teal-pale); color: #0F5E66; border: 1px solid #A8D3D7; }
+.badge.new { background: var(--teal); color: #fff; }
 .toc { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
 .toc a { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; text-decoration: none; color: var(--navy); background: #fff; border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.85rem; transition: all 0.15s; }
 .toc a:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
@@ -55,9 +71,10 @@ ol.lessons, ul.lessons { list-style: none; }
 </style>
 </head>
 <body>
-<div class="private-ribbon">🔒 Private · For you only · Not linked anywhere public</div>
+<div class="private-ribbon">🔒 Private · For you only · Not linked anywhere public 🦋</div>
 <div class="header">
-  <h1>My Master Library</h1>
+  <span class="bfly b1">🦋</span><span class="bfly b2">🦋</span><span class="bfly b3">🦋</span><span class="bfly b4">🦋</span>
+  <h1>🦋 My Master Library</h1>
   <div class="subtitle">Every tool, lesson &amp; link in one place — public and paid</div>
   <div class="brand">The Invisible Pen · Clark Publishing House</div>
 </div>
@@ -67,7 +84,7 @@ ol.lessons, ul.lessons { list-style: none; }
   <div class="intro-box">
     <strong>This is your private index — your single source of truth.</strong> It lists everything: the member-facing tools <em>and</em> the paid/hidden ones that don't appear on the public library.
     Badges tell you what's what: <span class="badge paid">Paid</span> sold via Payhip · <span class="badge hidden">Hidden</span> off the public site · <span class="badge ext">tip-tools</span> lives on the other repo · <span class="badge new">New</span> just added.
-    <span class="warn">⚠ Keep this URL to yourself. It's hidden from search engines (noindex), but anyone with the link can open it — don't post it where members can see.</span>
+    <span class="warn" style="color:#9C5460;">⚠ Keep this URL to yourself. It's hidden from search engines (noindex), but anyone with the link can open it — don't post it where members can see.</span>
   </div>
 
   <div class="toc">
@@ -88,7 +105,7 @@ ol.lessons, ul.lessons { list-style: none; }
     <h2>Manage &amp; Share</h2>
     <p class="section-note">The pages you hand out — and this private one.</p>
     <ul class="lessons">
-      <li><a href="index.html"><span class="num">★</span><span class="title">Public Library</span> <span class="badge ext" style="background:#eef;color:#33566b;border-color:#bcd;">Member-facing</span></a></li>
+      <li><a href="index.html"><span class="num">★</span><span class="title">Public Library</span> <span class="badge ext">Member-facing</span></a></li>
       <li><a href="start-here.html"><span class="num">★</span><span class="title">Start Here — Plot Your Path quiz (onboarding / routing)</span></a></li>
       <li><a href="writing-space.html"><span class="num">★</span><span class="title">The Writing Space — cohort signup (Skool Premium co-working)</span></a></li>
       <li><a href="my-library.html"><span class="num">★</span><span class="title">My Master Library (this page)</span> <span class="badge hidden">Hidden</span></a></li>
@@ -311,7 +328,7 @@ ol.lessons, ul.lessons { list-style: none; }
 </div>
 
 <div class="footer">
-  The Invisible Pen · Clark Publishing House LLC — private master index<br>
+  🦋 The Invisible Pen · Clark Publishing House LLC — private master index 🦋<br>
   Public library: <a href="index.html">index.html</a>
 </div>
 </body>
