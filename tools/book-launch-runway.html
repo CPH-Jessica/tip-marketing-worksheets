@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Book Launch Runway — Your Dated Launch Plan · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 880px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], input[type=date], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+
+/* timeline */
+.phase { border: 1.5px solid #e6d8c7; border-radius: 12px; background: #fff; margin-top: 14px; overflow: hidden; }
+.phase-head { display: flex; align-items: baseline; gap: 12px; padding: 12px 16px; background: #f6ecf1; }
+.phase-head .when { font-family: Georgia, serif; font-weight: 700; color: #6d2b4e; font-size: 15px; white-space: nowrap; }
+.phase-head .date { font-size: 12.5px; color: #a07c2e; font-weight: 700; }
+.phase-body { padding: 10px 16px 14px; }
+.task { display: flex; gap: 9px; align-items: flex-start; padding: 6px 0; border-bottom: 1px dashed #f0e4d6; font-size: 13.5px; }
+.task:last-child { border-bottom: none; }
+.task input[type=checkbox] { width: 17px; height: 17px; accent-color: #6d2b4e; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+.task.done .t-label { text-decoration: line-through; color: #b0a08e; }
+.task .t-label a { color: #6d2b4e; font-weight: 700; }
+.progress-note { font-size: 12.5px; color: #a07c2e; font-weight: 700; margin-top: 10px; }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>🛫 Book Launch Runway</h1></header>
+  <div class="tagline">Pick your launch date and get the whole plan backward-scheduled — every task dated, every worksheet linked, nothing forgotten.</div>
+
+  <!-- STEP 1 -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>The launch</h2>
+    <div class="two">
+      <div><label for="f_title">Book title</label><input type="text" id="f_title" placeholder="The book you're launching"></div>
+      <div><label for="f_pen">Pen name</label><input type="text" id="f_pen"></div>
+    </div>
+    <div class="two">
+      <div><label for="f_date">Launch date</label><input type="date" id="f_date"></div>
+      <div><label>Distribution</label><div class="chips" id="distChips"></div></div>
+    </div>
+    <label>Launch type</label>
+    <div class="chips" id="typeChips"></div>
+    <label>Budget level</label>
+    <div class="hint">Changes which paid tasks appear on the runway.</div>
+    <div class="chips" id="budgetChips"></div>
+  </div>
+
+  <!-- STEP 2: timeline -->
+  <div class="panel" id="tlPanel" style="display:none;">
+    <h2><span class="stepnum">2</span>Your runway</h2>
+    <p class="lead" id="tlLead"></p>
+    <div id="timeline"></div>
+    <div class="progress-note" id="progressNote"></div>
+  </div>
+
+  <!-- STEP 3: export -->
+  <div class="panel" id="outPanel" style="display:none;">
+    <h2><span class="stepnum">3</span>Take it with you</h2>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="planOut"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="sendToStudio()">📚 Attach to Story Studio book</button>
+      <button class="btn-ghost" onclick="copyPlan()">📋 Copy plan</button>
+      <button class="btn-ghost" onclick="downloadPlan()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+    <div class="hint" id="studioMsg" style="margin-top:12px;"></div>
+  </div>
+
+  <footer>
+    Autosaves in this page. Each phase links the worksheet that does the deep work — the runway is the schedule, the worksheets are the muscle.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='launch-runway-v1';
+const STUDIO_KEY='story-studio-student-v1';
+const DISTS=['Kindle Unlimited','Wide (all stores)'];
+const TYPES=['Debut (new pen name)','Next in series','Standalone','Relaunch / rebrand'];
+const BUDGETS=['Shoestring (under $50)','Modest ($50–250)','Invested ($250+)'];
+
+/* Runway template: offset = days before (negative) / after (positive) launch.
+   budget: minimum budget tier index required (0=always). type filters optional. */
+const PHASES=[
+ {off:-56, when:'T minus 8 weeks', tasks:[
+   {t:'Cover finalized — brief built & designer booked', link:'cover-brief-builder.html', ln:'Cover Brief Builder'},
+   {t:'Blurb drafted & metadata chosen (categories + 7 keywords)', link:'../amazon-ads/02-keyword-research-workbook.html', ln:'Keyword Research Workbook'},
+   {t:'Reader magnet & newsletter funnel live (if debut)', link:'reader-magnet-builder.html', ln:'Reader Magnet Builder', type:0},
+   {t:'ARC team recruitment opens', link:'../book-marketing/04-review-launch-planner.html', ln:'Review Launch Planner'}]},
+ {off:-42, when:'T minus 6 weeks', tasks:[
+   {t:'ARCs distributed (BookFunnel/StoryOrigin), review expectations set'},
+   {t:'Preorder up (wide: everywhere; KU: consider skip or short preorder)'},
+   {t:'Newsletter tease #1 — cover reveal to your list'},
+   {t:'Ads accounts ready & pixel/attribution sanity check', link:'../amazon-ads/01-ads-readiness-checklist.html', ln:'Ads Readiness Checklist', budget:1}]},
+ {off:-28, when:'T minus 4 weeks', tasks:[
+   {t:'Newsletter swaps booked for launch week & week after', link:'../book-marketing/03-swap-strategy-builder.html', ln:'Swap Strategy Builder'},
+   {t:'Content calendar running (3 posts/week minimum)', link:'../book-marketing/05-content-marketing-calendar.html', ln:'Content Marketing Calendar'},
+   {t:'Channel audit — where are YOUR readers actually reachable?', link:'../book-marketing/01-marketing-channel-audit.html', ln:'Marketing Channel Audit'}]},
+ {off:-14, when:'T minus 2 weeks', tasks:[
+   {t:'Promo sites booked to stack launch week + week 2', link:'../book-marketing/02-promo-site-planner.html', ln:'Promo Site Planner'},
+   {t:'Newsletter tease #2 — first chapter or excerpt'},
+   {t:'ARC reviewers reminded (reviews post launch day/week)'},
+   {t:'Amazon ads campaigns built (paused, ready to switch on)', link:'../amazon-ads/03-campaign-builder.html', ln:'Campaign Builder', budget:1}]},
+ {off:-7, when:'T minus 1 week', tasks:[
+   {t:'Social countdown begins (daily beats)'},
+   {t:'Launch-day email drafted & scheduled'},
+   {t:'Back matter updated in previous books (if series) pointing to the new release'},
+   {t:'Final file upload & look-inside check'}]},
+ {off:0, when:'🚀 LAUNCH DAY', tasks:[
+   {t:'Launch email to your full list (morning, reader\'s timezone)'},
+   {t:'Social launch posts + pin the buy link'},
+   {t:'Ads ON (start modest, watch data not feelings)', budget:1},
+   {t:'Thank your ARC team — nudge reviews live'}]},
+ {off:7, when:'T plus 1 week', tasks:[
+   {t:'Review push — follow up with readers who finished'},
+   {t:'Ads: scale what works, kill what doesn\'t (data has arrived)', link:'../amazon-ads/04-ad-performance-tracker.html', ln:'Ad Performance Tracker', budget:1},
+   {t:'Swap deliveries — send the swaps you promised'},
+   {t:'Newsletter: launch-week recap + soft ask (review/share)'}]},
+ {off:28, when:'T plus 4 weeks', tasks:[
+   {t:'Launch retro: what moved sales, what didn\'t — write it down'},
+   {t:'Price/promo move (first discount or promo-stack test)', budget:1},
+   {t:'Next-book hook: is the follow-up on the calendar? Readers are warmest NOW', link:'first-three-books.html', ln:'First Three Books'}]}
+];
+
+let state=null;
+function blank(){ return {v:1, dist:'Kindle Unlimited', type:'', budget:'Modest ($50–250)', done:{}, fields:{}}; }
+const FIELDS=['f_title','f_pen','f_date'];
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+
+function budgetIdx(){ return Math.max(0, BUDGETS.indexOf(state.budget)); }
+function isDebut(){ return state.type===TYPES[0]; }
+function launchDate(){ const v=state.fields.f_date; if(!v) return null; const d=new Date(v+'T12:00:00'); return isNaN(d)?null:d; }
+function fmtDate(d){ return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'}); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+
+function init(){
+  load();
+  buildChipRow('distChips',DISTS,'dist');
+  buildChipRow('typeChips',TYPES,'type');
+  buildChipRow('budgetChips',BUDGETS,'budget');
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(state.fields[id]!=null) el.value=state.fields[id];
+    el.addEventListener('input',()=>{ state.fields[id]=el.value; save(); renderTimeline(); });
+  });
+  renderTimeline();
+}
+function buildChipRow(cid, items, key){
+  const c=document.getElementById(cid); c.innerHTML='';
+  items.forEach(v=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state[key]===v?' on':''); ch.textContent=v;
+    ch.onclick=()=>{ state[key]=v; buildChipRow(cid,items,key); save(); renderTimeline(); };
+    c.appendChild(ch);
+  });
+}
+
+function visibleTasks(ph){
+  return ph.tasks.filter(t=>{
+    if(t.budget && budgetIdx()<t.budget) return false;
+    if(t.type===0 && !isDebut()) return false;
+    return true;
+  });
+}
+function taskId(pi,ti){ return 'p'+pi+'t'+ti; }
+
+function renderTimeline(){
+  const d=launchDate();
+  const tl=document.getElementById('tlPanel'), out=document.getElementById('outPanel');
+  if(!d){ tl.style.display='none'; out.style.display='none'; return; }
+  tl.style.display='block'; out.style.display='block';
+  document.getElementById('tlLead').innerHTML='Backward-planned from <b>'+fmtDate(d)+'</b>'+(state.type?(' · '+state.type):'')+' · '+state.dist+' · '+state.budget+'. Tick tasks off as you go — progress saves here.';
+  const box=document.getElementById('timeline'); box.innerHTML='';
+  let total=0, done=0;
+  PHASES.forEach((ph,pi)=>{
+    const tasks=visibleTasks(ph); if(!tasks.length) return;
+    const el=document.createElement('div'); el.className='phase';
+    const when=addDays(d,ph.off);
+    const past = when < new Date() && ph.off<0;
+    el.innerHTML='<div class="phase-head"><span class="when">'+ph.when+'</span><span class="date">'+fmtDate(when)+(past?' · ⚠ already past — compress or adjust':'')+'</span></div>';
+    const body=document.createElement('div'); body.className='phase-body';
+    tasks.forEach((t)=>{
+      const ti=ph.tasks.indexOf(t);
+      const id=taskId(pi,ti); total++;
+      const isDone=!!state.done[id]; if(isDone) done++;
+      const row=document.createElement('div'); row.className='task'+(isDone?' done':'');
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=isDone;
+      cb.onchange=()=>{ state.done[id]=cb.checked; save(); renderTimeline(); };
+      const lbl=document.createElement('div'); lbl.className='t-label';
+      lbl.innerHTML=t.t+(t.link?(' — <a href="'+t.link+'" target="_blank">open '+t.ln+' →</a>'):'');
+      row.appendChild(cb); row.appendChild(lbl); body.appendChild(row);
+    });
+    el.appendChild(body); box.appendChild(el);
+  });
+  document.getElementById('progressNote').textContent=done+' of '+total+' tasks done ('+(total?Math.round(done/total*100):0)+'%)';
+  renderPlan();
+}
+
+/* ---------- export ---------- */
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : '⟨ Claude, '+(what||'pick this for me')+' ⟩'; }
+function buildPlan(){
+  const d=launchDate(); const f=state.fields;
+  if(!d) return 'Set a launch date to build the runway.';
+  const L=[];
+  L.push('# LAUNCH RUNWAY — '+c(f.f_title,'name the book')+' · launches '+fmtDate(d));
+  L.push('');
+  L.push('- Pen name: '+c(f.f_pen));
+  L.push('- Launch type: '+(state.type||'⟨ Claude, classify: debut / next in series / standalone / relaunch ⟩'));
+  L.push('- Distribution: '+state.dist+'  ·  Budget: '+state.budget);
+  L.push('');
+  PHASES.forEach((ph,pi)=>{
+    const tasks=visibleTasks(ph); if(!tasks.length) return;
+    L.push('## '+ph.when+' — '+fmtDate(addDays(d,ph.off)));
+    tasks.forEach(t=>{
+      const ti=ph.tasks.indexOf(t);
+      L.push('- ['+(state.done[taskId(pi,ti)]?'x':' ')+'] '+t.t+(t.ln?(' (worksheet: '+t.ln+')'):''));
+    });
+    L.push('');
+  });
+  L.push('> NOTE TO CLAUDE: adjust this runway to my real constraints when I give them — compress past-due phases, reorder around my life, and draft any email/post the plan calls for.');
+  return L.join('\n');
+}
+function renderPlan(){
+  const p=buildPlan();
+  document.getElementById('planOut').textContent=p;
+  const n=(p.match(/⟨ Claude/g)||[]).length;
+  document.getElementById('pickNote').innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot':'spots')+' left for Claude — plus Claude can compress the schedule if you\'re starting late.'
+    : '✅ Fully specified — Claude can still compress the schedule if you\'re starting late.';
+}
+function copyPlan(){ copyText(buildPlan(),'Runway copied.'); }
+function downloadPlan(){
+  const base=((state.fields.f_title||'launch-runway')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'launch-runway';
+  const blob=new Blob([buildPlan()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-launch-runway.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  copyText('Here\'s my dated launch runway. First fill anything marked ⟨ Claude, … ⟩. Then: (1) flag risks given my launch type and budget, (2) compress or reorder anything already past due, (3) draft the launch-day email and the three social posts for launch week. Runway:\n\n'+buildPlan(),'Prompt copied — paste it into Claude.');
+}
+function sendToStudio(){
+  const f=state.fields; const d=launchDate();
+  if(!d){ toast('Set a launch date first.'); return; }
+  const title=(f.f_title||'').trim();
+  if(!title){ toast('Give the book a title first.'); return; }
+  let studio; try{ studio=JSON.parse(localStorage.getItem(STUDIO_KEY)); }catch(e){ studio=null; }
+  if(!studio||!studio.books) studio={version:1, books:[]};
+  const today=(function(){ const x=new Date(); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); })();
+  const nextAction='Launch runway attached (launches '+fmtDate(d)+'). Work the dated checklist:\n\n'+buildPlan();
+  let book=studio.books.find(b=>b.title.toLowerCase()===title.toLowerCase());
+  if(book){ book.nextAction=nextAction; book.stage=Math.max(book.stage||1,9); book.updated=today; }
+  else{
+    book={ id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Date.now().toString(36),
+      title:title, penName:(f.f_pen||'Unassigned'), format:'', stage:9, status:'production',
+      nextAction:nextAction, project:'Book Launch Runway', updated:today };
+    studio.books.push(book);
+  }
+  try{ localStorage.setItem(STUDIO_KEY, JSON.stringify(studio)); }
+  catch(e){ document.getElementById('studioMsg').textContent='⚠ Couldn\'t save to Story Studio — use Copy plan instead.'; return; }
+  document.getElementById('studioMsg').innerHTML='✅ Runway attached to <b>'+title+'</b> in Story Studio (Stage 9 — Beta & Publish). <a href="story-studio.html" style="color:#6d2b4e;font-weight:700;">Open Story Studio →</a>';
+  toast('Runway attached in Story Studio 🛫');
+}
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the runway and its checked-off progress.')) return;
+  state=blank(); save();
+  FIELDS.forEach(id=>document.getElementById(id).value='');
+  buildChipRow('distChips',DISTS,'dist'); buildChipRow('typeChips',TYPES,'type'); buildChipRow('budgetChips',BUDGETS,'budget');
+  renderTimeline(); window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh runway.');
+}
+init();
+</script>
+</body>
+</html>

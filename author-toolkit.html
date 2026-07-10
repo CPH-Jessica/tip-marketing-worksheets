@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Author Toolkit — Pen Name to Launched Catalog · The Invisible Pen</title>
+<style>
+:root{
+  --plum:#6d2b4e; --plum-deep:#58213f; --gold:#c79a4b; --gold-deep:#b08538;
+  --rose:#b76e79; --rose-light:#e8c4c9; --teal:#17909a; --teal-deep:#0f5e66;
+  --cream:#faf6f0; --card:#fffdf9; --line:#ecdfd0; --ink:#3a3a3a; --dim:#8a7560;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.65}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px}
+.sans{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+
+/* hero */
+.hero{background:linear-gradient(120deg,var(--teal-deep) 0%,#134a52 45%,#4d2338 80%,var(--plum) 100%);color:#fff;padding:64px 0 56px;text-align:center}
+.kicker{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-light);font-weight:700;margin-bottom:14px}
+.hero h1{font-size:clamp(30px,5vw,44px);line-height:1.15;margin-bottom:14px}
+.hero .sub{font-size:17.5px;color:#f3e6ec;max-width:640px;margin:0 auto 22px}
+.badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 18px;font-size:13px;color:#ffe9d6}
+.cta-row{margin-top:26px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+a.buy{display:inline-block;background:var(--gold);color:#fff;text-decoration:none;font-weight:700;padding:14px 30px;border-radius:12px;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.25);transition:.15s}
+a.buy:hover{background:var(--gold-deep);transform:translateY(-1px)}
+a.buy.light{background:transparent;border:2px solid #fff}
+a.buy.light:hover{background:rgba(255,255,255,.12)}
+
+section{padding:46px 0}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+h2{color:var(--plum);font-size:28px;margin-bottom:10px}
+.lead{color:var(--dim);font-size:15.5px;margin-bottom:22px}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:18px 0 6px}
+.chain .step{background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:700;color:var(--plum)}
+.chain .arrow{color:var(--gold);font-weight:700}
+
+/* tool cards */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media(max-width:680px){.tools{grid-template-columns:1fr}}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(109,43,78,.06);position:relative}
+.tool .t-emoji{font-size:26px}
+.tool h3{color:var(--plum);font-size:17.5px;margin:6px 0 6px}
+.tool p{font-size:13.5px;color:#5a4636}
+.tool .t-tag{position:absolute;top:14px;right:16px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+.tag-rose{background:#f7e9eb;color:var(--rose);border:1px solid var(--rose-light)}
+.tag-teal{background:#e2f1f2;color:var(--teal-deep);border:1px solid #a8d3d7}
+.tag-both{background:#fcf3e4;color:#9a7b1c;border:1px solid #ecd9ae}
+
+/* value strip */
+.strip{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.strip .inner{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;text-align:center;padding:8px 0}
+@media(max-width:680px){.strip .inner{grid-template-columns:1fr}}
+.strip b{display:block;font-size:26px;color:var(--plum);font-family:Georgia,serif}
+.strip span{font-size:13px;color:var(--dim)}
+
+/* who */
+ul.who{list-style:none;margin-top:10px}
+ul.who li{padding:9px 0 9px 34px;position:relative;font-size:15px;border-bottom:1px dashed var(--line)}
+ul.who li:last-child{border-bottom:none}
+ul.who li::before{content:"🦋";position:absolute;left:2px;top:8px;font-size:15px}
+
+/* enroll */
+#enroll{background:linear-gradient(120deg,var(--plum) 0%,#4d2338 55%,var(--teal-deep) 100%);color:#fff;text-align:center;border-radius:20px;padding:46px 26px;margin:10px 0 40px}
+#enroll h2{color:#fff}
+#enroll .price{font-size:44px;font-family:Georgia,serif;margin:12px 0 2px}
+#enroll .price small{font-size:16px;color:var(--rose-light)}
+#enroll .price-note{font-size:13px;color:#e8d5dd;margin-bottom:20px}
+.includes{max-width:520px;margin:18px auto;text-align:left;font-size:14.5px}
+.includes li{list-style:none;padding:6px 0 6px 28px;position:relative;border-bottom:1px dashed rgba(255,255,255,.18)}
+.includes li::before{content:"✓";position:absolute;left:4px;color:var(--gold);font-weight:700}
+.guarantee{font-size:13px;color:#e8d5dd;max-width:480px;margin:14px auto 0;font-style:italic}
+
+/* faq */
+details.faq{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 18px;margin:10px 0}
+details.faq summary{cursor:pointer;font-weight:700;color:var(--plum);padding:12px 0;font-size:15px}
+details.faq p{padding:0 0 14px;font-size:14px;color:#5a4636}
+
+footer{text-align:center;color:#b0a08e;font-size:12.5px;padding:30px 20px 50px;border-top:1px solid var(--line)}
+.sign{font-style:italic;margin-top:16px}
+.butterfly{filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">The Invisible Pen &nbsp;·&nbsp; Author Tools</div>
+    <h1>From pen name idea<br>to launched catalog.</h1>
+    <p class="sub">Seven interactive tools that chain together: build the identity, plan the first three books, architect the series, brief the cover, wire the reader funnel, and launch on a dated runway — with Claude filling every blank you leave.</p>
+    <div class="badge">🦋 Works with the AI workflow you already use — every output is a Claude-ready brief</div>
+    <div class="cta-row">
+      <a class="buy" href="#enroll">Get the Toolkit →</a>
+      <a class="buy light" href="#tools">See what's inside</a>
+    </div>
+  </div>
+</div>
+
+<div class="strip"><div class="wrap"><div class="inner">
+  <div><b>7 tools</b><span>one connected pipeline</span></div>
+  <div><b>50+ genre lanes</b><span>romance &amp; genre fiction</span></div>
+  <div><b>Yours forever</b><span>runs in your browser, no subscription</span></div>
+</div></div></div>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The problem</div>
+    <h2>Starting a pen name is a hundred decisions in a trench coat.</h2>
+    <p class="lead">Genre, name, tropes, heat, series shape, covers, newsletter, launch plan — get them wrong and you find out six months and four books later. These tools front-load the decisions, pre-filled with what each genre's readers already expect, so you decide once, on purpose, and everything downstream inherits it.</p>
+    <div class="chain sans">
+      <span class="step">💄 Identity</span><span class="arrow">→</span>
+      <span class="step">📚 First 3 Books</span><span class="arrow">→</span>
+      <span class="step">🗺️ Series Bible</span><span class="arrow">→</span>
+      <span class="step">🎨 Cover Brief</span><span class="arrow">→</span>
+      <span class="step">🧲 Reader Funnel</span><span class="arrow">→</span>
+      <span class="step">🛫 Launch</span>
+    </div>
+    <p class="lead" style="text-align:center;margin-top:10px">Each tool hands its output to the next. Skip a field anywhere and it exports as <b>⟨ Claude, pick this for me ⟩</b> — your AI fills the gap to fit everything else.</p>
+  </div>
+</section>
+
+<section id="tools" style="padding-top:10px">
+  <div class="wrap">
+    <div class="eyebrow">What's inside</div>
+    <h2>The seven tools</h2>
+    <div class="tools">
+      <div class="tool"><span class="t-tag tag-rose">Romance</span><div class="t-emoji">💄</div>
+        <h3>Pen Name Identity Builder</h3>
+        <p>26 romance lanes decoded — reader promise, heat norms, signature tropes, naming vibe, brand look, comp authors, release rhythm. Pick a lane, tune the nuances, export your Identity Kit.</p></div>
+      <div class="tool"><span class="t-tag tag-teal">Genre fiction</span><div class="t-emoji">🖋️</div>
+        <h3>Fiction Pen Name Builder</h3>
+        <p>The same engine for thriller, mystery, fantasy, sci-fi, horror, western &amp; more — 28 lanes with darkness &amp; romance-subplot dials instead of heat.</p></div>
+      <div class="tool"><span class="t-tag tag-both">Both lanes</span><div class="t-emoji">📚</div>
+        <h3>First Three Books</h3>
+        <p>Turns your Identity Kit into a series runway: three story blueprints with your signature tropes rotated across them, a reader ladder, and a release calendar.</p></div>
+      <div class="tool"><span class="t-tag tag-both">Two editions</span><div class="t-emoji">🗺️</div>
+        <h3>Series Architect — Romance &amp; Genre Fiction</h3>
+        <p>Map an entire 3–10 book series: narrative engine, world bible, arc stack, side-character pipeline, promise-and-payoff threading board, per-book cards, and a live health check.</p></div>
+      <div class="tool"><span class="t-tag tag-both">53 lanes</span><div class="t-emoji">🎨</div>
+        <h3>Cover Brief Builder</h3>
+        <p>Every lane's cover conventions — palette swatches, imagery, typography, and the avoid-list — turned into a designer-ready brief plus an AI concept-art prompt.</p></div>
+      <div class="tool"><span class="t-tag tag-both">List building</span><div class="t-emoji">🧲</div>
+        <h3>Reader Magnet Builder</h3>
+        <p>Six magnet types with their watch-outs, a story seed from your signature tropes, the bridge that makes Book 1 inevitable, and the 3-email welcome sequence.</p></div>
+      <div class="tool"><span class="t-tag tag-both">Launch</span><div class="t-emoji">🛫</div>
+        <h3>Book Launch Runway</h3>
+        <p>Pick a launch date and the whole plan backward-schedules itself — T-minus-8-weeks to T-plus-4 — with checkbox progress and every task dated.</p></div>
+      <div class="tool"><span class="t-tag tag-both">Included</span><div class="t-emoji">📖</div>
+        <h3>+ Story Studio integration</h3>
+        <p>Every tool can push its books into Story Studio, your shelf dashboard — so the pipeline ends with real projects you can track from idea to published.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">Who it's for</div>
+    <h2>Built for working indie authors</h2>
+    <ul class="who">
+      <li><b>Starting a new pen name</b> and want the genre decisions made on data, not vibes.</li>
+      <li><b>Genre-hopping</b> — the fiction edition covers thriller to cozy fantasy with the same rigor as romance.</li>
+      <li><b>Planning a series</b> and tired of contradicting Book 1 in Book 5.</li>
+      <li><b>Working with AI</b> — every export is a structured brief Claude (or any AI) can complete, pressure-test, and build from.</li>
+      <li><b>Allergic to subscriptions</b> — these are files that run in your browser and save locally. Buy once, use forever, works offline.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap">
+  <div id="enroll">
+    <h2>Get the Author Toolkit</h2>
+    <div class="price">$XX <small>one-time</small></div>
+    <div class="price-note">Secure checkout through Payhip · Instant access · Yours forever</div>
+    <ul class="includes">
+      <li>All 7 tools (both Series Architect editions — 8 files total)</li>
+      <li>50+ genre lane playbooks across romance &amp; genre fiction</li>
+      <li>The ⟨ Claude, pick this for me ⟩ workflow baked into every export</li>
+      <li>Story Studio dashboard integration</li>
+      <li>Free updates to this edition</li>
+    </ul>
+    <div class="cta-row"><a class="buy" href="#">Buy the Toolkit →</a></div>
+    <p class="guarantee">Try every tool. If it doesn't save you its price in decisions avoided, reply to your receipt within 14 days for a refund.</p>
+  </div>
+</div>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">Questions</div>
+    <h2>FAQ</h2>
+    <details class="faq"><summary>Do I need Claude (or any AI) to use these?</summary>
+      <p>No — every tool works standalone and exports clean briefs you can use anywhere. But if you do use Claude, the tools are built for it: anything you leave blank exports as an instruction Claude fills in to fit the rest of your plan.</p></details>
+    <details class="faq"><summary>How are the tools delivered?</summary>
+      <p>As links to your private toolkit pages (plus downloadable files). They run in any modern browser, save your work locally on your device, and work offline. Nothing to install, no account, no subscription.</p></details>
+    <details class="faq"><summary>I write romance AND thrillers — is this one purchase?</summary>
+      <p>Yes. Both pen name builders and both Series Architect editions are included, and the downstream tools (First Three Books, Cover Brief, Reader Magnet, Launch Runway) work with either lane.</p></details>
+    <details class="faq"><summary>Is my work private?</summary>
+      <p>Completely. Everything saves in your own browser's storage — nothing is uploaded anywhere. Use the built-in export/backup buttons to keep copies.</p></details>
+  </div>
+</section>
+
+<footer>
+  The Invisible Pen · Clark Publishing House LLC · The Author Toolkit
+  <p class="sign">Keep the Dream Alive. I'm pulling for you — we're all in this together. <span class="butterfly">🦋</span></p>
+</footer>
+
+<!-- ============================================================= -->
+<!--  PAYHIP LINK: paste your Payhip product/checkout URL between   -->
+<!--  the quotes below. Every "Buy" button updates automatically.   -->
+<!--  Also swap the $XX price in the #enroll section.               -->
+<!-- ============================================================= -->
+<script>
+  var PAYHIP_URL = "";
+  if (PAYHIP_URL) {
+    document.querySelectorAll('a.buy').forEach(function(a){
+      if (a.getAttribute('href') === '#') a.href = PAYHIP_URL;
+    });
+  }
+</script>
+</body>
+</html>
