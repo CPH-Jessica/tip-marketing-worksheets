@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Translation Clinic — Edit Like a Boss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TRANSLATION CLINIC — third member of the Story Clinic family.
+     Compares an English source manuscript against its translation
+     (FR / IT / DE / ES / PT-BR), chapter pair by chapter pair.
+     Single file, no backend, no API key: instant offline parity
+     checks + copy-paste AI passes built from the author-translator
+     pipeline (fidelity, naturalness, anglicisms, genre vocabulary,
+     typography, glossary). Nothing is uploaded.
+     ============================================================ */
+  :root{
+    --plum:#0F766E; --plum-2:#134E4B; --rose:#C2727B; --rose-soft:#D4A5A5;
+    --gold:#C9A66B; --cream:#F8F1E9; --ink:#3F2A1E; --muted:#6B5C4E;
+    --line:#EDE4D9; --card:#ffffff; --ok:#5C8A63; --warn:#C97A33; --bad:#C0492F;
+    --shadow:0 10px 15px -3px rgba(15,118,110,.08),0 4px 6px -4px rgba(15,118,110,.08);
+    --shadow-sm:0 4px 6px -2px rgba(15,118,110,.06);
+    --r:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--ink);min-height:100vh;line-height:1.6;
+    background:linear-gradient(135deg,rgba(248,241,233,.95),rgba(244,237,228,.95)),
+    url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill-rule=%22evenodd%22%3E%3Cpath fill=%22%23EDE4D9%22 fill-opacity=%220.35%22 d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-10V8h-2v16h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 6v-4H4v4H0v2h4v4h2V8h4V6H6z%22/%3E%3C/g%3E%3C/svg%3E');
+    background-size:auto,60px 60px}
+  h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;letter-spacing:-0.02em}
+  a{color:var(--plum)}
+  .topbar{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);
+    padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:50;box-shadow:0 1px 0 rgba(15,118,110,.04)}
+  .topbar .logo{font-family:'Playfair Display',Georgia,serif;font-size:20px}
+  .topbar .logo b{color:var(--plum)}
+  .edpill{background:var(--gold);color:#2A2008;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.2px;padding:3px 11px;border-radius:999px;vertical-align:middle;margin-left:8px}
+  .topbar .spacer{flex:1}
+  .topbar button,.topbar a.fb{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:999px;
+    cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s;text-decoration:none}
+  .topbar button:hover,.topbar a.fb:hover{background:var(--cream)}
+  .topbar button.gold{background:var(--plum);border-color:var(--plum);color:#fff}
+  .topbar button.gold:hover{background:var(--plum-2)}
+  .tabs{display:flex;gap:8px;background:rgba(248,241,233,.92);backdrop-filter:blur(8px);padding:10px 14px;flex-wrap:wrap;
+    position:sticky;top:53px;z-index:49;border-bottom:1px solid var(--line)}
+  .tabs .tab{color:var(--muted);background:transparent;border:none;padding:9px 18px;cursor:pointer;font-size:14px;
+    border-radius:999px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+  .tabs .tab:hover{color:var(--plum);background:#fff}
+  .tabs .tab.on{color:#fff;background:var(--plum)}
+  .tabs .tab .badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:11px;background:var(--rose);color:#fff;font-size:11px;font-weight:700}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px}
+  @media(max-width:600px){.wrap{padding:13px}}
+  .view{display:none}.view.on{display:block}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:20px}
+  @media(max-width:560px){.panel{padding:16px}}
+  .panel h2{margin:0 0 4px;font-size:22px;color:var(--plum-2)}
+  .panel h3{margin:18px 0 6px;font-size:16px;color:var(--plum-2)}
+  .panel .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .panel.intro{border-top:4px solid var(--gold)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.row{grid-template-columns:1fr}}
+  label.fld{display:block;font-weight:600;color:var(--plum-2);font-size:13.5px;margin:12px 0 4px}
+  input[type=text],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:9px 13px;
+    font-size:14px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);transition:.15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--plum)}
+  textarea{resize:vertical}
+  .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .toolbar .gap{flex:1}
+  button.btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:9px 15px;border-radius:999px;
+    cursor:pointer;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1)}
+  button.btn:hover{transform:translateY(-1px)}
+  button.btn.primary{background:var(--plum);border-color:var(--plum);color:#fff}
+  button.btn.primary:hover{background:var(--plum-2)}
+  button.btn.gold{background:linear-gradient(90deg,#C9A66B,#D4A5A5);border-color:#C9A66B;color:#2A2008}
+  .stat{display:inline-flex;flex-direction:column;background:#FBF6EF;border:1px solid var(--line);border-radius:14px;padding:9px 16px;margin:4px 8px 4px 0}
+  .stat .n{font-size:20px;font-weight:800;color:var(--plum-2)}
+  .stat .l{font-size:11.5px;color:var(--muted)}
+  details.chap{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;background:#fff}
+  details.chap>summary{cursor:pointer;padding:11px 15px;font-weight:600;background:#FBF6EF;list-style:none;display:flex;gap:10px;align-items:center}
+  details.chap .cbody{padding:13px 16px;font-size:13.5px}
+  .cw{color:var(--muted);font-weight:400;font-size:12.5px;white-space:nowrap}
+  .find{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-left-width:5px;border-radius:12px;padding:10px 13px;margin-bottom:8px;background:#fff}
+  .find.crit{border-left-color:var(--bad)}
+  .find.rec{border-left-color:var(--warn)}
+  .find.opt{border-left-color:#7A9E7E}
+  .find.good{border-left-color:var(--ok)}
+  .find .ic{font-size:16px}
+  .find .ft{font-weight:700;font-size:13.5px;color:var(--plum-2)}
+  .find .fd{font-size:13px;color:#5A554F;margin-top:2px}
+  .find .ex{font-size:12.5px;background:#F6EFE6;border-radius:7px;padding:6px 9px;margin-top:6px;font-style:italic}
+  .note{background:#FBF6EF;border-left:4px solid var(--gold);border-radius:10px;padding:11px 14px;font-size:13px;margin:12px 0}
+  .passcard{border:1px solid var(--line);border-radius:16px;margin-bottom:11px;background:#fff;overflow:hidden;transition:all .2s cubic-bezier(.4,0,.2,1)}
+  .passcard:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(15,118,110,.10),0 8px 10px -6px rgba(15,118,110,.10)}
+  .passcard>.head{display:flex;gap:12px;align-items:center;padding:13px 16px;background:#FBF6EF;cursor:pointer}
+  .passcard .pno{width:26px;height:26px;border-radius:50%;background:var(--plum);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+  .passcard .pttl{font-weight:700;font-size:15px;color:var(--plum-2)}
+  .passcard .psub{font-size:12.5px;color:var(--muted)}
+  .passcard .pbody{display:none;padding:14px 16px}
+  .passcard.open .pbody{display:block}
+  .promptbox{font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;background:#123F3A;color:#EDE9E0;border-radius:14px;padding:14px;max-height:300px;overflow:auto}
+  .copied{color:var(--ok);font-weight:700;font-size:13px}
+  details.pasteback{margin-top:10px;border:1.5px dashed var(--line);border-radius:12px;background:var(--cream)}
+  details.pasteback>summary{cursor:pointer;padding:10px 14px;font-weight:600;color:var(--plum);list-style:none;font-size:13px}
+  details.pasteback .pbody2{padding:0 14px 12px}
+  .pbmsg{font-size:13px;color:var(--ok);font-weight:600}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+  .tbl th{background:#FBF6EF;color:var(--plum-2);text-align:left;padding:7px 9px;border:1px solid var(--line)}
+  .tbl td{padding:6px 9px;border:1px solid var(--line)}
+  .center{text-align:center}
+  .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 20px;color:#fff;font-weight:700;font-family:'Playfair Display',Georgia,serif;font-size:18px;margin-bottom:14px}
+  .verdict small{font-weight:400;font-family:'Inter',sans-serif;font-size:13px;opacity:.92}
+  .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
+  .dim{background:#fff;border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:12px;padding:10px 13px}
+  .dim.strong{border-left-color:var(--ok)}.dim.watch{border-left-color:var(--warn)}.dim.fix{border-left-color:var(--bad)}.dim.todo{border-left-color:var(--line)}
+  .dim .dk{font-weight:700;color:var(--plum-2);font-size:14px}
+  .dim .ds{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
+  .dim.strong .ds{color:var(--ok)}.dim.watch .ds{color:var(--warn)}.dim.fix .ds{color:var(--bad)}.dim.todo .ds{color:var(--muted)}
+  .dim .dn{font-size:12.5px;color:#5A554F;margin-top:3px}
+  .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+  @media(max-width:680px){.howto{grid-template-columns:1fr}}
+  .howto-card{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+  .howto-card.best{background:linear-gradient(135deg,#F6EBD9,#F8EFE4);border-color:var(--gold)}
+  .howto-card .hk{font-family:'Playfair Display',Georgia,serif;font-weight:700;color:var(--plum);font-size:14.5px;margin-bottom:5px}
+  .howto-card p{margin:0;font-size:13px;color:#5A554F}
+  .foot{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
+  .hidden{display:none!important}
+  .pill{display:inline-block;background:#F3E9E9;color:var(--plum);font-weight:700;font-size:11px;padding:2px 9px;border-radius:14px;margin-left:6px}
+  mark{background:#EBD8B4;color:#4a3413;border-radius:3px;padding:0 1px}
+  .benchband{font-size:12px;color:var(--muted)}
+  svg.chart{width:100%;height:auto;display:block;background:linear-gradient(180deg,#FFFDF8,#FCF6EE);border:1px solid var(--line);border-radius:14px}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="logo">Translation <b>Clinic</b><span class="edpill">EN → FR · IT · DE · ES · PT</span></span>
+    <span class="spacer"></span>
+    <a class="fb" href="story-clinic-feedback.html">💬 Feedback</a>
+    <button onclick="clearAll()" title="Wipe everything and start a new book pair">↺ Start over</button>
+    <button onclick="exportState()">Save file</button>
+    <button onclick="document.getElementById('importFile').click()">Open file</button>
+    <button class="gold" onclick="downloadReportHtml()">Export report</button>
+    <input type="file" id="importFile" accept="application/json" class="hidden" onchange="importState(event)">
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-v="setup">1 · Book Pair</button>
+    <button class="tab" data-v="scan">2 · Parity Scan <span class="badge hidden" id="scanBadge">0</span></button>
+    <button class="tab" data-v="passes">3 · Translation Passes</button>
+    <button class="tab" data-v="gloss">4 · Names &amp; Glossary</button>
+    <button class="tab" data-v="report">5 · Translation Report</button>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ============ 1 · BOOK PAIR ============ -->
+    <div class="view on" id="v-setup">
+      <div class="panel intro">
+        <h2>Welcome to the Translation Clinic <span class="pill">EN → FR · IT · DE · ES · PT</span></h2>
+        <p class="sub">The Story Clinic's sister tool for <b>translated books</b>. Load your English original and its translation side by side, and get: instant offline <b>parity checks</b> (dropped text, untranslated English, name &amp; number drift, typography), six <b>translation passes</b> for your AI (fidelity, naturalness, anglicisms, genre vocabulary, typography, glossary), and one exportable <b>Translation Report</b> with a ship-ready verdict. <i>Editing the story itself? That's the Story Clinic — this tool assumes the book is done and checks the translation.</i></p>
+        <div class="howto">
+          <div class="howto-card best">
+            <div class="hk">★ Pro tip: where to paste the prompts</div>
+            <p>This is just a webpage — it builds <b>prompts you copy</b>. Paste them into a chat in the <b>Claude Project (or custom GPT) that holds your book</b> so your AI knows the story while it judges the translation. A plain chat works too.</p>
+          </div>
+          <div class="howto-card">
+            <div class="hk">✓ Nothing uploads</div>
+            <p>Both manuscripts stay in your browser. No account, no API key — same privacy promise as the Story Clinic.</p>
+          </div>
+          <div class="howto-card">
+            <div class="hk">⤳ Built on the translator pipeline</div>
+            <p>The passes carry the same rules as the class translation system: register consistency (tu/vous, du/Sie), no literal idioms, genre-true vocabulary, correct typography.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Set up the pair</h2>
+        <div class="row">
+          <div><label class="fld">Book title</label><input id="bookTitle" type="text" placeholder="Book or series title…" oninput="save()"></div>
+          <div><label class="fld">Genre <span class="benchband">(optional)</span></label><input id="genre" type="text" placeholder="e.g. small-town romance, cozy mystery" oninput="save()"></div>
+        </div>
+        <div class="row">
+          <div><label class="fld">Target language</label>
+            <select id="tgtLang" onchange="renderFormality();save()"></select></div>
+          <div><label class="fld">Address register <span class="benchband">(tu/vous · du/Sie — the passes enforce it)</span></label>
+            <select id="formality" onchange="save()"></select></div>
+        </div>
+        <label class="fld">Register shift <span class="benchband">(optional but sacred — the deliberate formality transition, e.g. “vous→tu from Chapter 8, the first kiss”)</span></label>
+        <input id="formShift" type="text" placeholder="Deliberate address-form transition: what shifts, where, and why. The passes will PROTECT it." oninput="save()">
+        <label class="fld">Translation style notes <span class="benchband">(optional — glossary decisions, endearments, anything the translator must keep)</span></label>
+        <textarea id="styleNotes" rows="2" placeholder="e.g. 'sweetheart' → 'ma belle', keep place names in English, heat level 4 vocabulary…" oninput="save()"></textarea>
+      </div>
+
+      <div class="panel">
+        <h2>Load both manuscripts</h2>
+        <p class="sub">Chapters pair up in order: English Chapter 1 ↔ translated Chapter 1, and so on. Load whole books or build chapter by chapter — same Go button as the Story Clinic.</p>
+        <div class="row">
+          <div>
+            <label class="fld">🇬🇧 English source</label>
+            <textarea id="srcBox" rows="10" placeholder="Paste the ENGLISH original — whole book or one chapter." oninput="save()"></textarea>
+            <div class="toolbar">
+              <button class="btn primary" id="goSrc" onclick="goSide('src')">▶ Go — load English</button>
+              <button class="btn" onclick="addSide('src')">+ Add next chapter</button>
+            </div>
+          </div>
+          <div>
+            <label class="fld" id="tgtBoxLabel">🌍 Translation</label>
+            <textarea id="tgtBox" rows="10" placeholder="Paste the TRANSLATION — whole book or one chapter." oninput="save()"></textarea>
+            <div class="toolbar">
+              <button class="btn primary" id="goTgt" onclick="goSide('tgt')">▶ Go — load translation</button>
+              <button class="btn" onclick="addSide('tgt')">+ Add next chapter</button>
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn gold" onclick="loadDemo()">Load demo pair (flawed on purpose)</button>
+        </div>
+        <div id="pairStats" style="margin-top:14px"></div>
+        <div id="pairList" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <!-- ============ 2 · PARITY SCAN ============ -->
+    <div class="view" id="v-scan">
+      <div class="panel">
+        <h2>Parity Scan <span class="pill">runs offline · no AI</span></h2>
+        <p class="sub">The mechanical half of translation QC, instant and free: dropped text, untranslated English, missing names and numbers, wrong quote marks. These are the failures machine translation commits most — and the easiest to prove.</p>
+        <div id="scanSummary"></div>
+        <div id="ratioChart" style="margin:14px 0"></div>
+        <div id="scanResults"></div>
+      </div>
+    </div>
+
+    <!-- ============ 3 · TRANSLATION PASSES ============ -->
+    <div class="view" id="v-passes">
+      <div class="panel">
+        <h2>Translation Passes — prompts for your AI</h2>
+        <p class="sub">Six passes, each built from the Edit Like a Boss translator pipeline. Every prompt carries BOTH texts for the chapter pair you pick. <b>✏️ Edit</b> asks your AI to fix the translation and return it with a change log; <b>Review</b> gives notes only. Paste the revised translation back under the pass and the next pass runs on the new version.</p>
+        <div class="row">
+          <div><label class="fld">Chapter pair</label>
+            <select id="passScope" onchange="renderPasses()"></select></div>
+          <div style="display:flex;align-items:flex-end"><div class="note" style="margin:0">Target language, register, and style notes come from the Book Pair tab.</div></div>
+        </div>
+        <div id="passList" style="margin-top:16px"></div>
+      </div>
+    </div>
+
+    <!-- ============ 4 · GLOSSARY ============ -->
+    <div class="view" id="v-gloss">
+      <div class="panel">
+        <h2>Names &amp; Glossary <span class="pill">offline consistency grid</span></h2>
+        <p class="sub">Every recurring proper noun from the English source, counted in both texts. A name that appears 40 times in English and 0 times in the translation was renamed or lost — either is worth a look. Fill the "target term" column via the Glossary pass, paste the result below, and it rides along in your report.</p>
+        <div id="glossTable"></div>
+        <div class="toolbar" style="margin-top:12px">
+          <button class="btn primary" onclick="copyGlossPrompt(this)">Copy Glossary-builder prompt</button>
+        </div>
+        <label class="fld">Paste your AI's glossary back here <span class="benchband">(goes into the Translation Report)</span></label>
+        <textarea id="glossNotes" rows="5" placeholder="Paste the GLOSSARY table your AI returned…" oninput="state.glossNotes=this.value;save()"></textarea>
+      </div>
+    </div>
+
+    <!-- ============ 5 · REPORT ============ -->
+    <div class="view" id="v-report">
+      <div class="panel">
+        <h2>Translation Verdict <span class="pill">the clinic verdict</span></h2>
+        <p class="sub">Every dimension the clinic measures, graded, with one call: ship it, revise it, or retranslate it. The offline verdict is a proxy — the passes give you the human-grade read.</p>
+        <div id="assessCard"></div>
+      </div>
+      <div class="panel">
+        <h2>Translation report</h2>
+        <p class="sub">Paste back what your AI returned for each pass. <b>Export report</b> (top bar) saves the whole checkup — parity flags, ratio chart, glossary grid, verdict, and your pass notes — as one file on your computer.</p>
+        <div id="reportNotes"></div>
+        <div class="toolbar">
+          <button class="btn primary" onclick="downloadReportHtml()">⬇ Download Translation report (.html)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">Everything stays in your browser and saves automatically. “Save file” keeps a backup you can reopen anywhere. · <a href="story-clinic-feedback.html">💬 Tell us what to fix or build next</a></div>
+  </div>
+
+<script>
+const STORE='tip_translation_clinic_v1';
+/* Target-language conventions — distilled from the CPH author-translator
+   pipeline (references/language-guides). Ratios are CHARACTER-length
+   bands for translation-from-English; below the band usually means
+   dropped text, above it usually means padding. */
+const TLANGS={
+ fr:{name:'French',flag:'🇫🇷',ratio:[1.02,1.34],heading:'chapitre',
+   formal:['tu — informal throughout','vous — formal throughout','mixed — tu/vous by relationship (most novels)'],
+   conv:'French (Metropolitan): « guillemets » with non-breaking spaces (or em-dash dialogue); passé simple for narration; tu/vous register consistent per relationship; French punctuation spacing before ; : ! ?'},
+ it:{name:'Italian',flag:'🇮🇹',ratio:[0.98,1.30],heading:'capitolo',
+   formal:['tu — informal throughout','Lei — formal throughout','mixed — tu/Lei by relationship (most novels)'],
+   conv:'Standard Italian: «caporali» or em-dash dialogue; passato remoto for narration; correct congiuntivo; consistent tu/Lei; mandatory elision (l’amore, un’ora).'},
+ de:{name:'German',flag:'🇩🇪',ratio:[0.92,1.28],heading:'kapitel',
+   formal:['du — informal throughout','Sie — formal throughout','mixed — du/Sie by relationship (most novels)'],
+   conv:'German (Hochdeutsch): „Anführungszeichen“ or »Chevrons« for dialogue; all nouns capitalized; Rechtschreibreform spelling; du/Sie register per the declared arc — accidental slips are continuity errors, but the deliberate du/Sie transition is often the book\'s emotional centerpiece.'},
+ es:{name:'Spanish (Castilian)',flag:'🇪🇸',ratio:[1.02,1.34],heading:'capítulo',
+   formal:['tú — informal throughout','usted — formal throughout','mixed — tú/usted by relationship (most novels)'],
+   conv:'European Spanish: the raya (—) opens dialogue — non-negotiable in published fiction (—Ven aquí —dijo ella—.); «comillas» only for quotations inside narration; correct subjunctive; vosotros where natural; leísmo is acceptable standard Castilian (do not flag it); ¿ ¡ opening marks present.'},
+ pt:{name:'Brazilian Portuguese',flag:'🇧🇷',ratio:[1.00,1.32],heading:'capítulo',
+   formal:['você — standard Brazilian address','mixed — você + o senhor/a senhora for formality'],
+   conv:'Brazilian Portuguese (not European): você address, Brazilian vocabulary and grammar, travessão (—) for dialogue.'}
+};
+/* Distinctly-English markers for untranslated-text detection. Chosen to
+   avoid collisions with the five target languages; 3+ distinct hits in
+   one paragraph flags it. Contractions in 't are the strongest tell. */
+const ENMARKERS=new Set("the she they said because would could should with that have were been their which about before through something nothing everything anything himself herself really maybe never always".split(" "));
+const ENCONTR=/\b\w+n[''’]t\b|\b(?:I[''’]m|she[''’]s|he[''’]s|it[''’]s|they[''’]re|we[''’]re|you[''’]re|I[''’]ve|I[''’]ll)\b/g;
+
+let state={title:'',genre:'',tgt:'fr',formality:'',styleNotes:'',formShift:'',src:'',tgtBox:'',srcChapters:[],tgtChapters:[],passNotes:{},glossNotes:''};
+let lastRepl=null;
+
+function val(id){const e=document.getElementById(id);return e?e.value:'';}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function wc(s){return (s.trim().match(/\S+/g)||[]).length;}
+function L(){return TLANGS[state.tgt]||TLANGS.fr;}
+function save(){
+  state.title=val('bookTitle');state.genre=val('genre');state.tgt=val('tgtLang')||state.tgt;
+  state.formality=val('formality');state.styleNotes=val('styleNotes');state.formShift=val('formShift');
+  state.src=val('srcBox');state.tgtBox=val('tgtBox');
+  try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}
+}
+function load(){
+  try{const raw=localStorage.getItem(STORE);if(raw)state=JSON.parse(raw);}catch(e){}
+  hydrate();
+}
+function hydrate(){
+  state.srcChapters=(state.srcChapters||[]).map(x=>({title:String((x&&x.title)||'Chapter'),text:String((x&&x.text)||'')}));
+  state.tgtChapters=(state.tgtChapters||[]).map(x=>({title:String((x&&x.title)||'Chapter'),text:String((x&&x.text)||'')}));
+  state.passNotes=state.passNotes||{};
+  const sel=document.getElementById('tgtLang');
+  sel.innerHTML=Object.entries(TLANGS).map(([k,v])=>`<option value="${k}">${v.flag} ${v.name}</option>`).join('');
+  sel.value=state.tgt||'fr';
+  document.getElementById('bookTitle').value=state.title||'';
+  document.getElementById('genre').value=state.genre||'';
+  document.getElementById('styleNotes').value=state.styleNotes||'';
+  document.getElementById('formShift').value=state.formShift||'';
+  document.getElementById('srcBox').value=state.src||'';
+  document.getElementById('tgtBox').value=state.tgtBox||'';
+  document.getElementById('glossNotes').value=state.glossNotes||'';
+  renderFormality();
+  if(state.formality)document.getElementById('formality').value=state.formality;
+}
+function renderFormality(){
+  const f=document.getElementById('formality');
+  f.innerHTML=L().formal.map(o=>`<option>${o}</option>`).join('');
+  document.getElementById('tgtBoxLabel').textContent=L().flag+' '+L().name+' translation';
+}
+
+/* ---------- tabs ---------- */
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('.tab');if(!t)return;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');document.getElementById('v-'+t.dataset.v).classList.add('on');
+  if(t.dataset.v==='scan')renderScan();
+  if(t.dataset.v==='passes')renderPasses();
+  if(t.dataset.v==='gloss')renderGloss();
+  if(t.dataset.v==='report')renderReport();
+});
+
+/* ---------- chapter loading (same bones as the Story Clinic) ---------- */
+function splitManuscript(text){
+  if(!text||!text.trim())return [];
+  const lines=text.split(/\r?\n/);
+  const isHead=l=>{const t=l.trim();
+    return /^#{1,3}\s+\S/.test(t)||/^(chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b/i.test(t)||/^\*\s*\*\s*\*$/.test(t)||/^—{2,}$/.test(t);
+  };
+  const chaps=[];let cur={title:'',lines:[]};let started=false;
+  for(const l of lines){
+    if(isHead(l)){
+      if(started&&(cur.lines.join('').trim()||cur.title))chaps.push(cur);
+      cur={title:l.replace(/^#{1,3}\s+/,'').trim()||('Chapter '+(chaps.length+1)),lines:[]};started=true;
+    }else{cur.lines.push(l);started=true;}
+  }
+  if(cur.lines.join('').trim()||cur.title)chaps.push(cur);
+  let out=chaps.map((c,i)=>({title:c.title||('Chapter '+(i+1)),text:c.lines.join('\n').trim()})).filter(c=>c.text.length>0);
+  if(out.length===0&&text.trim())out=[{title:'Chapter 1',text:text.trim()}];
+  return out;
+}
+function sideKey(side){return side==='src'?'srcChapters':'tgtChapters';}
+function boxId(side){return side==='src'?'srcBox':'tgtBox';}
+function goSide(side){
+  save();
+  const t=val(boxId(side)).trim();
+  if(!t){alert('Paste the manuscript (or a chapter) into the box first.');return;}
+  const k=sideKey(side);
+  if(state[k].length&&!confirm('Go reloads this side: replace the '+state[k].length+' loaded chapter(s) with what is in the box? (Use “+ Add next chapter” to append instead.)'))return;
+  state[k]=splitManuscript(t);
+  finishLoad(side);
+}
+function addSide(side){
+  save();
+  const t=val(boxId(side)).trim();
+  if(!t){alert('Paste a chapter into the box first.');return;}
+  const k=sideKey(side);
+  state[k]=state[k].concat(splitManuscript(t));renumber(k);
+  finishLoad(side);
+}
+function finishLoad(side){
+  document.getElementById(boxId(side)).value='';
+  if(side==='src')state.src='';else state.tgtBox='';
+  save();renderPairs();refreshScanBadge();renderPassScope();
+  if(state.srcChapters.length&&state.tgtChapters.length)document.querySelector('.tab[data-v="scan"]').click();
+}
+function renumber(k){state[k].forEach((c,i)=>{if(/^chapter\s+\d+$/i.test((c.title||'').trim()))c.title='Chapter '+(i+1);});}
+function pairCount(){return Math.min(state.srcChapters.length,state.tgtChapters.length);}
+function renderPairs(){
+  const st=document.getElementById('pairStats'),el=document.getElementById('pairList');
+  const ns=state.srcChapters.length,nt=state.tgtChapters.length;
+  if(!ns&&!nt){st.innerHTML='';el.innerHTML='';return;}
+  st.innerHTML=`<span class="stat"><span class="n">${ns}</span><span class="l">EN chapters</span></span>
+    <span class="stat"><span class="n">${nt}</span><span class="l">${esc(L().name)} chapters</span></span>
+    <span class="stat"><span class="n">${pairCount()}</span><span class="l">pairs</span></span>`+
+    (ns!==nt&&ns&&nt?`<div class="note">⚠ Chapter counts differ (${ns} vs ${nt}) — the extra chapters are unpaired and unchecked. A missing chapter is the biggest dropped-text failure there is.</div>`:'');
+  let h='';
+  for(let i=0;i<Math.max(ns,nt);i++){
+    const s=state.srcChapters[i],t=state.tgtChapters[i];
+    const ratio=(s&&t)?(t.text.length/Math.max(1,s.text.length)):null;
+    h+=`<details class="chap"><summary><b style="flex:1">Pair ${i+1}: ${esc(s?s.title:'—')} ↔ ${esc(t?t.title:'— missing —')}</b><span class="cw">${s?wc(s.text)+'w EN':''} ${t?'· '+wc(t.text)+'w '+esc(state.tgt.toUpperCase()):''} ${ratio?'· ratio '+ratio.toFixed(2):''}</span>
+      <button class="del" title="Remove this pair" onclick="event.preventDefault();event.stopPropagation();removePair(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary>
+      <div class="cbody">${s?'<b>EN:</b> '+esc(s.text.slice(0,300))+'…':''}<br><br>${t?'<b>'+esc(state.tgt.toUpperCase())+':</b> '+esc(t.text.slice(0,300))+'…':'<i>no translated chapter loaded for this slot</i>'}
+      ${t?`<div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised translation</button></div>
+      <div id="repl-${i}" class="hidden"><textarea id="replTa-${i}" rows="6" placeholder="Paste the REVISED ${esc(L().name)} chapter — it replaces this translation and re-scans."></textarea>
+      <div class="toolbar" style="margin-top:6px"><button class="btn primary" onclick="applyRepl(${i})">Replace &amp; re-scan</button><button class="btn" onclick="toggleRepl(${i})">Cancel</button></div></div>`:''}
+      </div></details>`;
+  }
+  el.innerHTML=h;
+}
+function removePair(i){
+  if(!confirm('Remove pair '+(i+1)+' (both the English and translated chapter)?'))return;
+  const sel=document.getElementById('passScope');
+  const cur=sel?parseInt(sel.value,10):NaN;
+  state.srcChapters.splice(i,1);state.tgtChapters.splice(i,1);
+  save();renderPairs();refreshScanBadge();renderPassScope();
+  if(sel&&sel.options.length){
+    let nv=isNaN(cur)?0:(cur>i?cur-1:(cur===i?Math.min(i,pairCount()-1):cur));
+    if(nv<0)nv=0;sel.value=String(nv);
+  }
+  renderPasses(true);
+}
+function stripLeadHeading(t){
+  const nl=t.indexOf('\n');if(nl<0)return t;
+  const first=t.slice(0,nl).trim();
+  const looksHeading=/^(?:#{1,3}\s+\S|(?:chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b)/i.test(first);
+  if(looksHeading&&(first.match(/\S+/g)||[]).length<=8)return t.slice(nl).replace(/^\n+/,'');
+  return t;
+}
+function flagCount(i){const f=pairChecks(i);return f.crit.length+f.rec.length+f.opt.length;}
+function replaceTgt(i,t){
+  const before=flagCount(i);
+  state.tgtChapters[i].text=t;
+  const after=flagCount(i);
+  lastRepl={title:'Pair '+(i+1),before,after};
+  save();renderPairs();refreshScanBadge();
+  return{before,after};
+}
+function toggleRepl(i){const el=document.getElementById('repl-'+i);if(el)el.classList.toggle('hidden');}
+function applyRepl(i){
+  const ta=document.getElementById('replTa-'+i);
+  const t=(ta&&ta.value||'').trim();
+  if(!t){alert('Paste the revised translation first.');return;}
+  replaceTgt(i,stripLeadHeading(t));
+  document.querySelector('.tab[data-v="scan"]').click();
+}
+
+/* ---------- parity engine (offline) ---------- */
+function paras(t){return t.split(/\n{2,}/).filter(p=>p.trim()).length;}
+function properNouns(text){
+  const cand={};
+  text.split(/(?<=[.!?…"”])\s+|\n+/).forEach(s=>{
+    s.trim().split(/\s+/).forEach((wd,wi)=>{
+      const m=wd.match(/^["'“‘(]*([A-Z][a-z]{2,})['’]?s?[,.!?;:"'”)\-—…]*$/);
+      if(!m)return;if(wi>0)cand[m[1]]=(cand[m[1]]||0)+1;
+    });
+  });
+  const STOP=new Set("The She He They But And When While After Before Chapter There This That What Then With From Mrs Miss Mister Aunt Uncle".split(" "));
+  return Object.keys(cand).filter(n=>cand[n]>=3&&!STOP.has(n));
+}
+function countWord(text,w){const m=text.match(new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'));return m?m.length:0;}
+function numbersIn(text){const m=text.match(/\b\d[\d.,  ]*\d\b|\b\d\b/g)||[];return m.map(x=>x.replace(/[^\d]/g,''));}
+function pairChecks(i){
+  const f={crit:[],rec:[],opt:[]};
+  const s=state.srcChapters[i],t=state.tgtChapters[i];
+  if(!s||!t)return f;
+  const add=(arr,ic,tt,d,ex)=>arr.push({ic,t:tt,d,ex});
+  const lang=L();
+  // 1) length ratio (characters — dodges German compound-word counting)
+  const ratio=t.text.length/Math.max(1,s.text.length);
+  if(ratio<0.75)add(f.crit,'✂️','Probably missing text (ratio '+ratio.toFixed(2)+')','The '+lang.name+' runs far shorter than English-to-'+lang.name+' ever should ('+lang.ratio[0]+'–'+lang.ratio[1]+' expected). Whole passages are likely dropped.');
+  else if(ratio<lang.ratio[0])add(f.rec,'📉','Short for '+lang.name+' (ratio '+ratio.toFixed(2)+')','Expected '+lang.ratio[0]+'–'+lang.ratio[1]+'× the English character count. Worth checking for trimmed or summarized passages.');
+  else if(ratio>lang.ratio[1]+0.15)add(f.opt,'📈','Long for '+lang.name+' (ratio '+ratio.toFixed(2)+')','Above the usual band — sometimes fine, sometimes the AI padded or explained.');
+  // 2) paragraph parity
+  const dp=paras(t.text)-paras(s.text);
+  if(dp<=-2)add(f.crit,'🧱','Paragraphs missing ('+paras(t.text)+' vs '+paras(s.text)+')','The translation has '+Math.abs(dp)+' fewer paragraphs than the English. Dropped paragraphs are the #1 machine-translation failure.');
+  else if(Math.abs(dp)>=4)add(f.rec,'🧱','Paragraph structure drifted ('+paras(t.text)+' vs '+paras(s.text)+')','Merged or re-split paragraphs aren\'t always wrong — but check that nothing fell out in the reflow.');
+  // 3) untranslated English leakage
+  let leaks=0,leakEx='';
+  t.text.split(/\n{2,}/).forEach(p=>{
+    const toks=(p.toLowerCase().match(/[a-z''’]+/g)||[]);
+    const hits=new Set(toks.filter(x=>ENMARKERS.has(x)&&!(state.tgt==='it'&&x==='the')));
+    const contr=(p.match(ENCONTR)||[]).length;
+    if(hits.size>=3||contr>=2){leaks++;if(!leakEx)leakEx=p.slice(0,140).replace(/\s+/g,' ')+'…';}
+  });
+  if(leaks)add(f.crit,'🇬🇧','Untranslated English ('+leaks+' paragraph'+(leaks>1?'s':'')+')','English sentences are hiding inside the '+lang.name+'. This is the most embarrassing shipped-book failure — fix first.',leakEx);
+  // 4) proper-noun consistency
+  const missing=[],dropped=[];
+  properNouns(s.text).forEach(n=>{
+    const cs=countWord(s.text,n),ct=countWord(t.text,n);
+    if(cs>=5&&ct===0)missing.push(n+' ('+cs+'× in EN, 0 in '+state.tgt.toUpperCase()+')');
+    else if(cs>=8&&ct<cs*0.5)dropped.push(n+' ('+cs+'→'+ct+')');
+  });
+  if(missing.length)add(f.rec,'🪪','Names absent from the translation',missing.slice(0,6).join(' · ')+' — renamed on purpose, or lost? If renamed, add it to the glossary so it stays consistent.');
+  if(dropped.length)add(f.opt,'🪪','Name frequency dropped',dropped.slice(0,6).join(' · ')+' — often fine (pronouns), occasionally a merged or missing scene.');
+  // 5) numbers
+  const ns=numbersIn(s.text),nt=numbersIn(t.text);
+  const missNums=ns.filter(x=>{const k=nt.indexOf(x);if(k>=0){nt.splice(k,1);return false;}return true;});
+  if(missNums.length)add(f.rec,'🔢','Numbers missing ('+missNums.length+')','These digits appear in the English but not the translation: '+[...new Set(missNums)].slice(0,8).join(', ')+'. Spelled out is fine — vanished is not.');
+  // 6) typography
+  const straight=(t.text.match(/"[^"\n]{2,400}"/g)||[]).length;
+  if(straight>2)add(f.rec,'🖋','Straight quotes ('+straight+'×)',lang.name+' dialogue should use its own marks — '+ (state.tgt==='fr'?'« guillemets » with non-breaking spaces':state.tgt==='de'?'„low-high“ or »chevrons«':'the conventions in the Typography pass')+' — not English straight quotes.');
+  if(state.tgt==='es'&&/[?!]/.test(t.text)&&!/[¿¡]/.test(t.text))add(f.rec,'🖋','No opening ¿ ¡ marks','Spanish questions and exclamations open with ¿ and ¡ — none found.');
+  return f;
+}
+function refreshScanBadge(){
+  const b=document.getElementById('scanBadge');
+  const n=pairCount();if(!n){b.classList.add('hidden');return;}
+  let tot=0;for(let i=0;i<n;i++)tot+=pairChecks(i).crit.length;
+  if(tot>0){b.textContent=tot;b.classList.remove('hidden');}else b.classList.add('hidden');
+}
+function ratioChartSvg(){
+  const n=pairCount();if(n<2)return'';
+  const lang=L();const vals=[];
+  for(let i=0;i<n;i++)vals.push(state.tgtChapters[i].text.length/Math.max(1,state.srcChapters[i].text.length));
+  const W=1000,H=260,pl=46,pr=16,pt=16,pb=38,pw=W-pl-pr,ph=H-pt-pb;
+  const mn=Math.min(0.6,...vals),mx=Math.max(1.5,...vals);
+  const x=i=>pl+(n>1?i/(n-1):0.5)*pw, y=v=>pt+ph-((v-mn)/(mx-mn))*ph;
+  let sv=`<rect x="${pl}" y="${y(lang.ratio[1]).toFixed(1)}" width="${pw}" height="${(y(lang.ratio[0])-y(lang.ratio[1])).toFixed(1)}" fill="#5C8A63" opacity="0.13"/>`;
+  sv+=`<text x="${pl+6}" y="${(y(lang.ratio[1])+14).toFixed(1)}" font-size="11" fill="#5C8A63">healthy ${lang.name} band ${lang.ratio[0]}–${lang.ratio[1]}</text>`;
+  const step=Math.max(1,Math.ceil(n/10));
+  for(let i=0;i<n;i+=step){sv+=`<text x="${x(i).toFixed(1)}" y="${H-12}" font-size="11" fill="#A89F90" text-anchor="middle">Ch ${i+1}</text>`;}
+  [mn,1,mx].forEach(v=>{sv+=`<text x="${pl-8}" y="${(y(v)+4).toFixed(1)}" font-size="11" fill="#A89F90" text-anchor="end">${v.toFixed(1)}</text>`;});
+  sv+=`<polyline points="${vals.map((v,i)=>x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ')}" fill="none" stroke="#0F766E" stroke-width="3" stroke-linejoin="round"/>`;
+  vals.forEach((v,i)=>{const bad=v<lang.ratio[0]||v>lang.ratio[1]+0.15;sv+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="5" fill="${bad?'#C0492F':'#fff'}" stroke="#0F766E" stroke-width="2"/>`;});
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${sv}</svg><div class="benchband" style="margin-top:4px">Length ratio per chapter pair (${lang.name} characters ÷ English characters). Red dots sit outside the healthy band — low usually means dropped text.</div>`;
+}
+function renderScan(){
+  const sum=document.getElementById('scanSummary'),res=document.getElementById('scanResults'),rc=document.getElementById('ratioChart');
+  const n=pairCount();
+  if(!n){sum.innerHTML='';rc.innerHTML='';res.innerHTML='<div class="note">Load BOTH manuscripts on the Book Pair tab — the scan compares chapter pairs.</div>';return;}
+  let replBanner='';
+  if(lastRepl){
+    const drop=lastRepl.after<lastRepl.before;
+    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — parity flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan and pass now uses the revised translation.</div></div></div>`;
+    lastRepl=null;
+  }
+  let totC=0,totR=0,totO=0,blocks='';
+  for(let i=0;i<n;i++){
+    const f=pairChecks(i);totC+=f.crit.length;totR+=f.rec.length;totO+=f.opt.length;
+    const all=[...f.crit.map(x=>['crit',x]),...f.rec.map(x=>['rec',x]),...f.opt.map(x=>['opt',x])];
+    blocks+=`<details class="chap" ${f.crit.length?'open':''}><summary><b style="flex:1">Pair ${i+1}: ${esc(state.srcChapters[i].title)}</b><span class="cw">${all.length?[f.crit.length?f.crit.length+' critical':'',f.rec.length?f.rec.length+' recommended':'',f.opt.length?f.opt.length+' optional':''].filter(Boolean).join(' · '):'✓ clean'}</span></summary>
+      <div class="cbody">${all.length?all.map(([cls,x])=>`<div class="find ${cls}"><div class="ic">${x.ic}</div><div><div class="ft">${esc(x.t)}</div><div class="fd">${esc(x.d)}</div>${x.ex?`<div class="ex">${esc(x.ex)}</div>`:''}</div></div>`).join(''):'<div class="find good"><div class="ic">✓</div><div><div class="ft">No parity flags</div><div class="fd">Mechanics look clean — run the Fidelity and Naturalness passes for the judgment calls.</div></div></div>'}</div></details>`;
+  }
+  sum.innerHTML=replBanner+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
+    <span class="stat"><span class="n" style="color:var(--warn)">${totR}</span><span class="l">recommended</span></span>
+    <span class="stat"><span class="n" style="color:#7A9E7E">${totO}</span><span class="l">optional</span></span>`;
+  rc.innerHTML=ratioChartSvg();
+  res.innerHTML=blocks;
+}
+
+/* ---------- translation passes ---------- */
+const TPASSES=[
+ {n:1,id:'fidelity',name:'Fidelity Audit',edit:true,role:'a bilingual fiction editor auditing a translation against its source, scene by scene',
+  list:["Nothing dropped — every sentence, beat, and detail in the English exists in the translation; list anything missing with its location.","Nothing added — no invented sentences, explanations, or embellishments; translators may not co-author.","Nothing changed — meaning, tone, POV, and subtext survive; flag any line whose meaning shifted.","Dialogue attribution intact — the right character says every line.","Chronology intact — no reordered beats.","Chapter endings match — the hook lands on the same beat in both languages."]},
+ {n:2,id:'natural',name:'Naturalness & Register',edit:true,role:'a native-speaker line editor who makes translations read like published fiction, not translationese',
+  list:["Reads like it was WRITTEN in the target language — flag calqued sentence structures that mirror English word order.","Register consistency — the address form follows REGISTER (and the REGISTER ARC if declared): accidental slips are continuity errors, but a DECLARED deliberate shift (vous→tu, du→Sie at a turning point) is the emotional centerpiece — protect it, never normalize it. Found an undeclared shift that reads intentional? Flag it under NEEDS AUTHOR; do not fix it.","Narrative tense conventions respected (passé simple / passato remoto where the language expects them).","Rhythm — sentence music rebuilt for the target language, not transplanted.","Dialogue sounds spoken — contractions, elisions, and colloquial forms where natural.","Idiomatic prose — the translation uses the target language's own turns of phrase."]},
+ {n:3,id:'anglicism',name:'Idiom & Anglicism Sweep',edit:true,role:'a translation editor hunting literal calques and false friends',
+  list:["English idioms translated literally — every one must become a native equivalent, never word-for-word.","False friends — words that look alike but mean differently (actuellement/actually, eventuell/eventually, sensible/sensato…).","Anglicisms — unnecessary English loanwords where a native word exists.","Terms of endearment — NEVER literal; use the language's own (list each one found and its rendering).","Gestures & body language — culturally adapted where the literal reads oddly.","Measurements, money, and formats — converted or localized per the style notes."]},
+ {n:4,id:'genre',name:'Genre & Heat Vocabulary',edit:true,role:'a genre-fiction translation specialist',
+  list:["Romance/genre vocabulary matches published fiction in the target language — not clinical, not purple, not machine-stilted.","Heat-level language calibrated — intimate scenes use genre-appropriate vocabulary at the book's heat level; this is where machine translation fails hardest.","Emotional vocabulary carries the same temperature — 'love' words at the right weight for the language.","Tension and interiority survive — the reader of the translation should feel what the English reader felt.","Genre conventions localized — the tropes still read as the genre in the target market."]},
+ {n:5,id:'typo',name:'Typography & Mechanics',edit:true,role:'a print-ready proofreader for the target language',
+  list:["Dialogue marks correct for the language and consistent throughout (see CONVENTIONS above).","Language-specific punctuation spacing and marks (French spacing before ; : ! ? · Spanish ¿ ¡ · German noun capitalization).","Numbers, dates, and times formatted per the target locale.","Accents and special characters correct everywhere — no ASCII substitutions.","Ellipses, dashes, and quotation nesting per the language's rules.","Chapter headings localized and consistently formatted."]},
+ {n:6,id:'gloss',name:'Glossary Enforcer',edit:false,role:'a continuity editor who keeps every name and invented term identical across the whole book',
+  list:["Character names — identical spelling every time (accents included); list every variant found.","Place names — real places take their local exonym where one exists; fictional places follow the glossary.","Recurring terms & endearments — one rendering, used everywhere.","Titles and honorifics — consistent and register-correct.","Series terms (if applicable) — match earlier translated books.","Output the full GLOSSARY: English term | Target term | Notes."]}
+];
+function renderPassScope(){
+  const sel=document.getElementById('passScope');if(!sel)return;
+  const cur=sel.value;let opts='';
+  for(let i=0;i<pairCount();i++)opts+=`<option value="${i}">Pair ${i+1}: ${esc(state.srcChapters[i].title)}</option>`;
+  sel.innerHTML=opts||'<option value="">— load both manuscripts first —</option>';
+  if(cur&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
+}
+function buildTPrompt(pass,mode){
+  const i=+val('passScope')||0;
+  const s=state.srcChapters[i],t=state.tgtChapters[i];
+  const lang=L();
+  let p='';
+  if(mode==='edit'&&pass.edit){
+    p=`You are ${pass.role}. EDIT this ${lang.name} translation directly — do not just report problems. Run the "${pass.name}" pass against the English source and DELIVER THE REVISED TRANSLATION.\n\n`;
+  }else{
+    p=`You are ${pass.role}. Run the "${pass.name}" pass on this ${lang.name} translation against its English source${state.title?` (from "${state.title}")`:''}.\n\n`;
+  }
+  p+=`TARGET LANGUAGE: ${lang.name}.\nCONVENTIONS: ${lang.conv}\nREGISTER: ${state.formality||lang.formal[lang.formal.length-1]}.\n`;
+  if(state.formShift)p+=`REGISTER ARC (deliberate — protect it, NEVER normalize it): ${state.formShift}\n`;
+  if(state.genre)p+=`GENRE: ${state.genre}.\n`;
+  if(state.styleNotes)p+=`STYLE NOTES / GLOSSARY DECISIONS (binding): ${state.styleNotes}\n`;
+  p+=`\nWrite your analysis in English so the author can follow it; all quoted fixes and revised text must be in ${lang.name}.\n\n`;
+  p+=`Check every item. Quote the exact ${lang.name} text for every finding — no vague notes:\n`;
+  p+=pass.list.map((x,j)=>`${j+1}. ${x}`).join('\n')+'\n';
+  if(mode==='edit'&&pass.edit){
+    p+=`\nEDITING RULES:\n- Correct the translation only — NEVER rewrite the story. The English source is the single source of truth for meaning.\n- The REGISTER ARC (if declared above) is sacred: never normalize the formality transition; route any doubt about address forms to NEEDS AUTHOR.\n- If something can't be fixed without an author decision (a renamed character, a cut passage), do NOT guess — list it under NEEDS AUTHOR.\n\nRETURN, in this order:\n1. THE REVISED ${lang.name.toUpperCase()} TEXT — complete, ready to paste back.\n2. CHANGE LOG — each change: original → revised, one line each, tagged with the checklist item.\n3. NEEDS AUTHOR — decisions only the author can make.\n`;
+  }else{
+    p+=`\nFinish with a section titled "REVISION PROMPTS": 3–5 copy-paste prompts to fix the highest-priority issues, each naming the location and exact change.\n`;
+  }
+  p+=`\n----- ENGLISH SOURCE (${s?s.title:'chapter'}) -----\n${s?s.text:'(load the English chapter)'}\n\n----- ${lang.name.toUpperCase()} TRANSLATION -----\n${t?t.text:'(load the translated chapter)'}\n----- END -----`;
+  return p;
+}
+function renderPasses(skipKeep){
+  renderPassScope();
+  const listEl=document.getElementById('passList');
+  if(!pairCount()){listEl.innerHTML='<div class="note">Load both manuscripts on the Book Pair tab first — every pass needs the pair.</div>';return;}
+  const keep={};
+  if(!skipKeep)TPASSES.forEach(p=>{const el=document.getElementById('pb-'+p.id);if(el&&el.value)keep['v'+p.id]=el.value;const d=document.getElementById('pbd-'+p.id);if(d&&d.open)keep['o'+p.id]=1;const cc=document.getElementById('pc-'+p.id);if(cc&&cc.classList.contains('open'))keep['c'+p.id]=1;});
+  listEl.innerHTML=TPASSES.map(pass=>{
+    const prompt=buildTPrompt(pass);
+    const buttons=pass.edit?`<button class="btn gold" onclick="copyTPrompt('${pass.id}',this,'edit')">✏️ Copy EDIT prompt — fix the translation</button>
+        <button class="btn" onclick="copyTPrompt('${pass.id}',this)">Copy review prompt — notes only</button>`:
+      `<button class="btn primary" onclick="copyTPrompt('${pass.id}',this)">Copy prompt</button>
+        <span class="benchband">Builds the glossary — decisions stay yours.</span>`;
+    return `<div class="passcard" id="pc-${pass.id}">
+      <div class="head" onclick="document.getElementById('pc-${pass.id}').classList.toggle('open')">
+        <div class="pno">${pass.n}</div>
+        <div><div class="pttl">${pass.name}</div><div class="psub">${pass.list.length} checks</div></div>
+      </div>
+      <div class="pbody">
+        <div class="toolbar" style="margin:0 0 10px">${buttons}<span class="copied hidden">copied ✓</span></div>
+        <div class="promptbox">${esc(prompt)}</div>
+        ${pass.edit?`<details class="pasteback" id="pbd-${pass.id}"><summary>📥 Done with this pass? Paste the revised translation here — the next pass runs on the new version</summary><div class="pbody2">
+          <textarea id="pb-${pass.id}" rows="6" placeholder="Paste the full REVISED ${esc(L().name)} chapter your AI returned."></textarea>
+          <div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick="applyTPassRepl('${pass.id}')">Update translation &amp; re-scan</button><span class="pbmsg" id="pbmsg-${pass.id}"></span></div>
+        </div></details>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  TPASSES.forEach(p=>{
+    if(keep['v'+p.id]){const el=document.getElementById('pb-'+p.id);if(el)el.value=keep['v'+p.id];}
+    if(keep['o'+p.id]){const d=document.getElementById('pbd-'+p.id);if(d)d.open=true;}
+    if(keep['c'+p.id]){const cc=document.getElementById('pc-'+p.id);if(cc)cc.classList.add('open');}
+  });
+}
+function copyTPrompt(id,btn,mode){
+  const pass=TPASSES.find(p=>p.id===id);
+  navigator.clipboard.writeText(buildTPrompt(pass,mode)).then(()=>{
+    const tag=btn.parentElement.querySelector('.copied');tag.classList.remove('hidden');
+    setTimeout(()=>tag.classList.add('hidden'),1500);
+  });
+}
+function applyTPassRepl(passId){
+  const v=val('passScope');if(v==='' ){alert('Pick a chapter pair first.');return;}
+  const ta=document.getElementById('pb-'+passId);
+  const t=(ta&&ta.value||'').trim();
+  if(!t){alert('Paste the revised translation first.');return;}
+  const i=+v;
+  const r=replaceTgt(i,stripLeadHeading(t));
+  if(ta)ta.value='';
+  renderPasses();
+  const card=document.getElementById('pc-'+passId);if(card)card.classList.add('open');
+  const det=document.getElementById('pbd-'+passId);if(det)det.open=true;
+  const msg=document.getElementById('pbmsg-'+passId);
+  if(msg)msg.textContent='✅ Pair '+(i+1)+' updated — parity flags '+r.before+' → '+r.after+'. Every pass now uses this revision.';
+}
+
+/* ---------- glossary grid ---------- */
+function glossRows(){
+  const rows=[];
+  const nsrc=state.srcChapters.map(c=>c.text).join('\n\n'),ntgt=state.tgtChapters.map(c=>c.text).join('\n\n');
+  if(!nsrc||!ntgt)return rows;
+  properNouns(nsrc).sort((a,b)=>countWord(nsrc,b)-countWord(nsrc,a)).slice(0,24).forEach(n=>{
+    rows.push({name:n,en:countWord(nsrc,n),tgt:countWord(ntgt,n)});
+  });
+  return rows;
+}
+function renderGloss(){
+  const el=document.getElementById('glossTable');
+  const rows=glossRows();
+  if(!rows.length){el.innerHTML='<div class="note">Load both manuscripts first — the grid counts every recurring name in both texts.</div>';return;}
+  el.innerHTML=`<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Name / term (from English)</th><th class="center">In English</th><th class="center">In ${esc(L().name)}</th><th>Read</th></tr></thead><tbody>`+
+    rows.map(r=>{
+      const verdict=r.tgt===0?'<b style="color:var(--bad)">missing or renamed — glossary decision needed</b>':(r.tgt<r.en*0.5?'<span style="color:var(--warn)">frequency dropped — spot-check</span>':'<span style="color:var(--ok)">consistent</span>');
+      return `<tr><td><b>${esc(r.name)}</b></td><td class="center">${r.en}</td><td class="center">${r.tgt}</td><td>${verdict}</td></tr>`;
+    }).join('')+`</tbody></table></div>`;
+}
+function copyGlossPrompt(btn){
+  const lang=L();
+  const rows=glossRows();
+  let p=`You are a continuity editor building the master glossary for a ${lang.name} translation${state.title?` of "${state.title}"`:''}.\n\nCONVENTIONS: ${lang.conv}\nREGISTER: ${state.formality||''}\n${state.formShift?('REGISTER ARC (protect it): '+state.formShift+'\n'):''}${state.styleNotes?('STYLE NOTES (binding): '+state.styleNotes+'\n'):''}\nBelow are the recurring proper nouns detected in the English source. For EACH: give the rendering used in the ${lang.name} text (quote it), say whether it should stay, be localized, or be fixed, and add any recurring endearments/terms you find that I missed. Output one GLOSSARY table: English term | ${lang.name} term | Rule.\n\nDETECTED TERMS:\n${rows.map(r=>'- '+r.name+' (EN ×'+r.en+', '+state.tgt.toUpperCase()+' ×'+r.tgt+')').join('\n')}\n\n----- ENGLISH SOURCE -----\n${state.srcChapters.map(c=>'### '+c.title+'\n'+c.text).join('\n\n')}\n\n----- ${lang.name.toUpperCase()} TRANSLATION -----\n${state.tgtChapters.map(c=>'### '+c.title+'\n'+c.text).join('\n\n')}\n----- END -----`;
+  navigator.clipboard.writeText(p).then(()=>{const t=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=t,1500);});
+}
+
+/* ---------- verdict + report ---------- */
+function assessData(){
+  const n=pairCount();if(!n)return null;
+  let crit=0,rec=0,leakPairs=0,ratioCrit=0,ratioRec=0,paraCrit=0,nameMiss=0,typoFlags=0,numMiss=0;
+  for(let i=0;i<n;i++){
+    const f=pairChecks(i);crit+=f.crit.length;rec+=f.rec.length;
+    f.crit.concat(f.rec).forEach(x=>{
+      if(x.t.indexOf('Untranslated')===0)leakPairs++;
+      if(x.t.indexOf('Probably missing')===0)ratioCrit++;
+      if(x.t.indexOf('Short for')===0||x.t.indexOf('Paragraph structure')===0)ratioRec++;
+      if(x.t.indexOf('Paragraphs missing')===0)paraCrit++;
+      if(x.t.indexOf('Names absent')===0)nameMiss++;
+      if(x.t.indexOf('Straight quotes')===0||x.t.indexOf('No opening')===0)typoFlags++;
+      if(x.t.indexOf('Numbers missing')===0)numMiss++;
+    });
+  }
+  const dims=[];
+  const mk=(key,icon,bad,warn,posNote,badNote,warnNote)=>dims.push({key,icon,status:bad?'fix':(warn?'watch':'strong'),note:bad?badNote:(warn?warnNote:posNote)});
+  mk('Coverage','✂️',(ratioCrit+paraCrit)>0,ratioRec>0,'Every pair sits in the healthy length band with matching paragraphs.',(ratioCrit+paraCrit)+' sign(s) of dropped text — short ratio or missing paragraphs.',ratioRec+' pair(s) drift from the healthy band — spot-check.');
+  mk('English leakage','🇬🇧',leakPairs>0,false,'No untranslated English detected.',leakPairs+' pair(s) contain untranslated English paragraphs.','');
+  mk('Names & numbers','🪪',false,nameMiss+numMiss>0,'Names and numbers carry over consistently.','',(nameMiss+numMiss)+' consistency flag(s) — check the Glossary tab.');
+  mk('Typography','🖋',false,typoFlags>0,'Dialogue marks and punctuation look native.','',typoFlags+' typography flag(s) — run the Typography pass.');
+  const passDone=TPASSES.filter(p=>(state.passNotes[p.id]||'').trim()).length;
+  dims.push({key:'Pass coverage',icon:'📋',status:passDone>=4?'strong':(passDone>0?'watch':'todo'),note:passDone+' of 6 translation passes pasted back.'});
+  const nFix=dims.filter(d=>d.status==='fix').length,nWatch=dims.filter(d=>d.status==='watch').length;
+  const verdict=nFix?{t:'RETRANSLATE / MAJOR REVISION',c:'#C0492F',d:'Red dimensions mean missing or untranslated text — fix before any polish.'}:
+    nWatch?{t:'REVISE',c:'#C97A33',d:'Mechanics are close — work the amber flags and run the passes.'}:
+    {t:'SHIP-READY (MECHANICS)',c:'#5C8A63',d:'Parity is clean. The Fidelity and Naturalness passes make the final call.'};
+  return{dims,verdict,passDone};
+}
+function assessCardHtml(a){
+  if(!a)return'<div class="note">Load both manuscripts and the verdict builds itself.</div>';
+  return `<div class="verdict" style="background:${a.verdict.c}">${esc(a.verdict.t)}<small>${esc(a.verdict.d)}</small></div>
+    <div class="dimgrid">${a.dims.map(d=>`<div class="dim ${d.status}"><div class="dk">${d.icon} ${esc(d.key)}<span class="ds">${d.status==='strong'?'Strong':d.status==='watch'?'Watch':d.status==='fix'?'Fix':'To do'}</span></div><div class="dn">${esc(d.note)}</div></div>`).join('')}</div>`;
+}
+function renderReport(){
+  document.getElementById('assessCard').innerHTML=assessCardHtml(assessData());
+  const el=document.getElementById('reportNotes');
+  el.innerHTML=TPASSES.map(p=>`<label class="fld">Pass ${p.n} — ${p.name}</label>
+    <textarea rows="3" placeholder="Paste your AI's notes or CHANGE LOG for ${p.name} here…" oninput="state.passNotes['${p.id}']=this.value;save()">${esc(state.passNotes[p.id]||'')}</textarea>`).join('');
+}
+function buildReportHtml(){
+  const lang=L();const a=assessData();const n=pairCount();
+  let pairsHtml='';
+  for(let i=0;i<n;i++){
+    const f=pairChecks(i);const all=[...f.crit.map(x=>['#C0492F',x]),...f.rec.map(x=>['#C97A33',x]),...f.opt.map(x=>['#7A9E7E',x])];
+    pairsHtml+=`<h3 class="ssec">Pair ${i+1}: ${esc(state.srcChapters[i].title)}</h3>`+
+      (all.length?('<ul>'+all.map(([c,x])=>`<li><b style="color:${c}">${esc(x.t)}.</b> ${esc(x.d)}${x.ex?` <i>${esc(x.ex)}</i>`:''}</li>`).join('')+'</ul>'):'<p class="clean">✓ No parity flags.</p>');
+  }
+  const rows=glossRows();
+  const glossHtml=rows.length?`<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Name</th><th class="center">EN</th><th class="center">${esc(state.tgt.toUpperCase())}</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td class="center">${r.en}</td><td class="center">${r.tgt}</td></tr>`).join('')}</tbody></table></div>`:'';
+  let notesHtml='';
+  TPASSES.forEach(p=>{const x=state.passNotes[p.id];if(x&&x.trim())notesHtml+=`<div class="passnote"><h3>Pass ${p.n} — ${esc(p.name)}</h3><div>${esc(x.trim()).replace(/\n/g,'<br>')}</div></div>`;});
+  if((state.glossNotes||'').trim())notesHtml+=`<div class="passnote"><h3>Glossary (AI)</h3><div>${esc(state.glossNotes.trim()).replace(/\n/g,'<br>')}</div></div>`;
+  if(!notesHtml)notesHtml='<p class="clean">No pass notes pasted yet.</p>';
+  const css=`*{box-sizing:border-box}body{font-family:Georgia,serif;color:#3F2A1E;background:#F8F1E9;margin:0;line-height:1.6}
+  .hd{background:#0F766E;color:#fff;padding:30px 24px;text-align:center}.hd h1{margin:0 0 6px;font-size:1.7rem}.hd .meta{color:#EAD9C4;font-size:.95rem}.hd .brand{color:#C9A66B;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+  .wrap{max-width:840px;margin:0 auto;padding:24px 20px 60px}
+  h2.sec{color:#134E4B;border-bottom:2px solid #0F766E;padding-bottom:6px;margin:30px 0 14px;font-size:1.3rem}
+  h3.ssec{color:#134E4B;margin:20px 0 6px;font-size:1.02rem}
+  ul{margin:6px 0 0;padding-left:20px}.clean{color:#5C8A63;font-style:italic}
+  .verdict{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 20px;color:#fff;font-weight:bold;font-size:1.1rem;margin-bottom:14px}
+  .verdict small{font-weight:normal;font-size:.8rem;opacity:.92}
+  .dimgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0}
+  .dim{background:#fff;border:1px solid #EDE4D9;border-left:5px solid #6B5C4E;border-radius:9px;padding:10px 13px}
+  .dim.strong{border-left-color:#5C8A63}.dim.watch{border-left-color:#C97A33}.dim.fix{border-left-color:#C0492F}.dim.todo{border-left-color:#EDE4D9}
+  .dim .dk{font-weight:bold;color:#134E4B;font-size:.92rem}.dim .ds{font-size:.68rem;font-weight:bold;text-transform:uppercase;margin-left:6px}
+  .dim.strong .ds{color:#5C8A63}.dim.watch .ds{color:#C97A33}.dim.fix .ds{color:#C0492F}.dim.todo .ds{color:#6B5C4E}
+  .dim .dn{font-size:.8rem;color:#5A554F;margin-top:3px}
+  .tbl{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}.tbl th{background:#F6EFE6;color:#134E4B;text-align:left;padding:7px 9px;border:1px solid #EDE4D9}.tbl td{padding:6px 9px;border:1px solid #EDE4D9}.center{text-align:center}
+  .passnote{background:#fff;border:1px solid #EDE4D9;border-radius:9px;padding:12px 15px;margin-bottom:10px}.passnote h3{margin:0 0 6px;color:#134E4B;font-size:1.02rem}
+  .foot{text-align:center;color:#888;font-size:.8rem;margin-top:40px}`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Translation Report — ${esc(state.title||'Untitled')}</title><style>${css}</style></head>
+<body><div class="hd"><h1>Translation Clinic — Report</h1><div class="meta">${esc(state.title||'Untitled')} · English → ${esc(lang.name)}${state.genre?` · ${esc(state.genre)}`:''}</div><div class="brand">The Invisible Pen · Edit Like a Boss</div></div>
+<div class="wrap">
+  <h2 class="sec">The verdict</h2>
+  ${a?`<div class="verdict" style="background:${a.verdict.c}">${esc(a.verdict.t)}<small>${esc(a.verdict.d)}</small></div><div class="dimgrid">${a.dims.map(d=>`<div class="dim ${d.status}"><div class="dk">${d.icon} ${esc(d.key)}<span class="ds">${d.status}</span></div><div class="dn">${esc(d.note)}</div></div>`).join('')}</div>`:''}
+  <h2 class="sec">Parity flags, pair by pair</h2>
+  ${pairsHtml||'<p class="clean">No pairs loaded.</p>'}
+  <h2 class="sec">Names &amp; glossary</h2>
+  ${glossHtml||'<p class="clean">No recurring names detected.</p>'}
+  <h2 class="sec">Pass notes</h2>
+  ${notesHtml}
+  <div class="foot">Generated by the Translation Clinic · The Invisible Pen — Edit Like a Boss. Everything stayed in your browser; nothing was uploaded.</div>
+</div></body></html>`;
+}
+function downloadReportHtml(){
+  const blob=new Blob([buildReportHtml()],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(state.title||'translation-report').replace(/[^\w-]+/g,'_')+'_translation-report.html';a.click();
+}
+
+/* ---------- save/open/demo ---------- */
+function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'translation-clinic').replace(/[^\w-]+/g,'_')+'.json';a.click();}
+function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({srcChapters:[],tgtChapters:[],passNotes:{},glossNotes:'',formShift:''},o);hydrate();try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e2){}renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
+function clearAll(){
+  if(!confirm('Clear EVERYTHING — both manuscripts, notes, and the glossary? This can\'t be undone. (Hit "Save file" first for a backup.)'))return;
+  try{localStorage.removeItem(STORE);}catch(e){}
+  state={title:'',genre:'',tgt:'fr',formality:'',styleNotes:'',formShift:'',src:'',tgtBox:'',srcChapters:[],tgtChapters:[],passNotes:{},glossNotes:''};
+  load();renderAll();renderScan();renderPasses();renderGloss();renderReport();
+}
+const DEMO_EN=`Chapter One
+
+Prudence counted the 12 fresh scones twice before the bell rang at 7 sharp. Constable Abernathy stood in the doorway with mud on his boots and an envelope in his hand. Abernathy never visited before closing. Abernathy never carried envelopes.
+
+"You'd better sit down," he said.
+
+She did not sit down. She poured two cups of tea instead, because bad news was easier to hear holding something warm.
+
+The envelope held a photograph of the church roof, a ladder, and a shadow that should not have been there on a Sunday.
+
+Outside, the rain started again, and the village went quiet the way it only did when everyone already knew something she didn't.`;
+const DEMO_FR=`Chapitre Un
+
+Prudence compta les scones frais deux fois avant que la cloche ne sonne. Le constable se tenait dans l'embrasure, les bottes couvertes de boue, une enveloppe à la main.
+
+"You'd better sit down," he said. She stared at him because the translator missed this paragraph entirely, and it should not have shipped like this.
+
+"Non," dit-elle. "Pas avant mon thé." Elle versa deux tasses, parce que les mauvaises nouvelles s'écoutaient mieux avec quelque chose de chaud entre les mains.`;
+function loadDemo(){
+  state.srcChapters=splitManuscript(DEMO_EN);
+  state.tgtChapters=splitManuscript(DEMO_FR);
+  document.getElementById('tgtLang').value='fr';state.tgt='fr';renderFormality();
+  save();renderPairs();refreshScanBadge();renderPassScope();
+  document.querySelector('.tab[data-v="scan"]').click();
+}
+function renderAll(){renderFormality();renderPairs();refreshScanBadge();renderPassScope();}
+(function init(){
+  load();
+  renderAll();
+})();
+</script>
+</body>
+</html>
