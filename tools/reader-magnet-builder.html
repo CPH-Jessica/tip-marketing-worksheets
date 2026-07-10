@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Reader Magnet Builder — Turn Readers Into Subscribers · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+.kitcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media (max-width: 640px){ .kitcards { grid-template-columns: 1fr; } }
+.kitcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.kitcard:hover { border-color: #c79a4b; background: #fffaf0; }
+.kitcard.on { border-color: #6d2b4e; background: #f6ecf1; }
+.kitcard .kc-src { font-size: 11px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.kitcard .kc-genre { font-weight: 700; font-size: 15px; color: #6d2b4e; font-family: Georgia, serif; margin-top: 2px; }
+.kitcard .kc-meta { font-size: 12px; color: #9a8674; margin-top: 3px; }
+.kit-loaded { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 8px; font-size: 13px; color: #7a5e2e; display: none; }
+.kit-loaded.show { display: block; }
+.kit-loaded b { color: #6d2b4e; }
+
+/* magnet type cards */
+.mtypes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+@media (max-width: 680px){ .mtypes { grid-template-columns: 1fr; } }
+.mtype { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.mtype:hover { border-color: #c79a4b; background: #fffaf0; }
+.mtype.on { border-color: #6d2b4e; background: #f6ecf1; box-shadow: 0 2px 8px rgba(109,43,78,.12); }
+.mtype .mt-name { font-weight: 700; font-size: 14px; color: #6d2b4e; font-family: Georgia, serif; }
+.mtype .mt-best { font-size: 12px; color: #4a3a2c; margin-top: 3px; }
+.mtype .mt-len { font-size: 11.5px; color: #a07c2e; margin-top: 4px; font-weight: 700; }
+.mtype .mt-warn { font-size: 11.5px; color: #9a8674; margin-top: 3px; font-style: italic; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 56px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+.warnbar { background: #fcf3ee; border: 1px solid #eccfbf; border-left: 3px solid #b56; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; font-size: 13px; color: #8a4a30; }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>🧲 Reader Magnet Builder</h1></header>
+  <div class="tagline">Plan the free story that turns readers into subscribers — the magnet, the funnel, and the welcome emails that make Book 1 inevitable.</div>
+
+  <!-- STEP 1: kit / lane -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>Whose list are we building?</h2>
+    <p class="lead">A magnet works when it promises <b>exactly</b> what your books deliver. Import your Identity Kit so the magnet stays on-brand, or enter the lane by hand.</p>
+    <div class="kitcards" id="kitCards"></div>
+    <div class="two">
+      <div><label for="f_lane">Genre lane</label><input type="text" id="f_lane" placeholder="e.g. Steamy Small Town, Cozy Mystery"></div>
+      <div><label for="f_pen">Pen name</label><input type="text" id="f_pen" placeholder="Whose list is this?"></div>
+    </div>
+    <label for="f_tropes">Signature tropes / elements <span class="opt">(comma-separated)</span></label>
+    <input type="text" id="f_tropes" placeholder="prefills from your kit — the magnet should lead with these">
+    <div class="kit-loaded" id="kitLoaded"></div>
+  </div>
+
+  <!-- STEP 2: magnet type -->
+  <div class="panel">
+    <h2><span class="stepnum">2</span>Pick your magnet type</h2>
+    <p class="lead">Each type has a job. Pick the one that matches where your catalog is right now.</p>
+    <div class="mtypes" id="mtypeGrid"></div>
+    <div class="warnbar" id="typeWarn" style="display:none;"></div>
+  </div>
+
+  <!-- STEP 3: the story -->
+  <div class="panel">
+    <h2><span class="stepnum">3</span>The magnet story</h2>
+    <p class="lead">Small book, same promise. The magnet is many readers' <b>first taste</b> of your brand — it must deliver your signature tropes at your heat level, just shorter.</p>
+
+    <div class="two">
+      <div><label for="f_title">Magnet working title</label><input type="text" id="f_title" placeholder="Leave blank and Claude will title it"></div>
+      <div><label for="f_connect">Connection to your catalog</label><input type="text" id="f_connect" placeholder="e.g. prequel to Book 1 / side character from the series"></div>
+    </div>
+
+    <label>Lead tropes for the magnet</label>
+    <div class="hint">From your signature set — the magnet should lead with 1–2 of the same promises your books make.</div>
+    <div class="chips" id="tropeChips"></div>
+    <div class="addrow" style="display:flex;gap:8px;margin-top:8px;">
+      <input type="text" id="tropeAdd" placeholder="Add a trope…" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addTrope();}">
+      <button class="btn-ghost" onclick="addTrope()">+ Add</button>
+    </div>
+
+    <label for="f_premise">Premise in a sentence or two</label>
+    <textarea id="f_premise" placeholder="Leave blank and Claude will pitch it from your tropes and lane"></textarea>
+
+    <label for="f_bridge">The bridge to Book 1</label>
+    <div class="hint">The magnet's last page has one job: make Book 1 inevitable. What thread, character, or question hands the reader to your catalog?</div>
+    <textarea id="f_bridge" placeholder="e.g. the epilogue introduces the brother whose story IS Book 1 — with his heroine walking into the bar on the final page"></textarea>
+  </div>
+
+  <!-- STEP 4: funnel -->
+  <div class="panel">
+    <h2><span class="stepnum">4</span>The funnel</h2>
+    <p class="lead">A magnet without a funnel is just a free book. Wire the path: offer → signup → delivery → welcome → Book 1.</p>
+
+    <label for="f_offer">The signup offer, in one line</label>
+    <div class="hint">What the reader sees on the signup page / back-matter ad. Lead with the fantasy, not the format.</div>
+    <input type="text" id="f_offer">
+
+    <label>Delivery platform</label>
+    <div class="chips" id="deliverChips"></div>
+
+    <label>Where the magnet is offered</label>
+    <div class="chips" id="whereChips"></div>
+
+    <label>Welcome sequence <span class="opt">(the 3 emails after signup)</span></label>
+    <div class="hint">Email 1 delivers, Email 2 connects, Email 3 sells. Sketch each in a line — or leave for Claude.</div>
+    <div class="two">
+      <div><label style="margin-top:6px;font-size:12.5px;">Email 1 — deliver &amp; delight <span class="opt">(day 0)</span></label><textarea id="f_e1" placeholder="deliver the magnet + one line of who you are"></textarea></div>
+      <div><label style="margin-top:6px;font-size:12.5px;">Email 2 — connect <span class="opt">(day 2–3)</span></label><textarea id="f_e2" placeholder="the story behind the story / your world, ask a question"></textarea></div>
+    </div>
+    <label style="margin-top:6px;font-size:12.5px;">Email 3 — the hand-off to Book 1 <span class="opt">(day 5–7)</span></label>
+    <textarea id="f_e3" placeholder="did you catch the thread? Book 1 picks it up — link + hook"></textarea>
+  </div>
+
+  <!-- STEP 5: plan -->
+  <div class="panel">
+    <h2><span class="stepnum">5</span>Your Magnet Plan</h2>
+    <p class="lead">The whole funnel in one brief. Send the magnet itself to <b>Story Studio</b> as a project — it's a book too, just a small one.</p>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="plan"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="sendToStudio()">📚 Send magnet to Story Studio</button>
+      <button class="btn-ghost" onclick="copyPlan()">📋 Copy plan</button>
+      <button class="btn-ghost" onclick="downloadPlan()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+    <div class="hint" id="studioMsg" style="margin-top:12px;"></div>
+  </div>
+
+  <footer>
+    Autosaves in this page. Pairs with <b>Pen Name Launcher — Lesson 3: Writing Your Reader Magnet</b>; this plans it, the lesson writes it.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='reader-magnet-v1';
+const STUDIO_KEY='story-studio-student-v1';
+const KIT_SOURCES=[["pen-name-kit-romance","Romance Pen Name Builder"],["pen-name-kit-fiction","Fiction Pen Name Builder"]];
+
+const MTYPES=[
+ {k:'prequel',n:'Prequel novella',best:'Best all-rounder: how the world/series began, ends where Book 1 opens.',len:'15–30k words',
+  warn:'Must stand alone AND feed Book 1 — don\'t make Book 1 confusing without it.'},
+ {k:'side',n:'Side-character story',best:'For a running series: a fan-favorite side character gets their moment.',len:'10–25k words',
+  warn:'Works best once readers exist — weaker as a cold-start magnet.'},
+ {k:'bonus',n:'Bonus epilogue / extra scene',best:'Cheap to make from an existing book; converts that book\'s readers.',len:'3–8k words',
+  warn:'Only converts people who already read the book — pair with a stronger cold magnet later.'},
+ {k:'standalone',n:'Standalone short in-world',best:'New pen name with no catalog yet: a complete taste of your brand.',len:'7–15k words',
+  warn:'Must deliver a complete arc — a fragment that just stops kills trust on page one of the relationship.'},
+ {k:'first-free',n:'Book 1 free (loss leader)',best:'For a finished series of 4+: give away the front door.',len:'Full novel',
+  warn:'Only works with read-through behind it — never do this with one book out.'},
+ {k:'sampler',n:'Themed sampler / prequel bundle',best:'Multi-series authors: 2–3 openers or shorts in one download.',len:'varies',
+  warn:'Diluted promise — better for established names than new ones.'}
+];
+const DELIVERY=['BookFunnel','StoryOrigin','MailerLite direct (attachment/link)','Website download'];
+const WHERE=['Back matter of every book','Website / link in bio','Newsletter swaps','Social pinned post','Facebook/BookBub ads','QR at events'];
+
+let state=null;
+function blank(){ return {v:1, kitSrc:'', mtype:'', tropes:[], customTropes:[], kitTropes:[], delivery:'BookFunnel', where:['Back matter of every book','Website / link in bio'], fields:{}}; }
+const FIELDS=['f_lane','f_pen','f_tropes','f_title','f_connect','f_premise','f_bridge','f_offer','f_e1','f_e2','f_e3'];
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function mt(){ return MTYPES.find(x=>x.k===state.mtype); }
+
+function init(){
+  load();
+  renderKits();
+  const grid=document.getElementById('mtypeGrid');
+  MTYPES.forEach(m=>{
+    const d=document.createElement('div'); d.className='mtype'+(state.mtype===m.k?' on':''); d.dataset.k=m.k;
+    d.innerHTML='<div class="mt-name">'+m.n+'</div><div class="mt-best">'+m.best+'</div><div class="mt-len">'+m.len+'</div><div class="mt-warn">⚠ '+m.warn+'</div>';
+    d.onclick=()=>{ state.mtype=m.k; document.querySelectorAll('.mtype').forEach(x=>x.classList.toggle('on',x.dataset.k===m.k)); showTypeWarn(); save(); renderPlan(); };
+    grid.appendChild(d);
+  });
+  showTypeWarn();
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(state.fields[id]!=null) el.value=state.fields[id];
+    el.addEventListener('input',()=>{
+      state.fields[id]=el.value;
+      if(id==='f_tropes'){ state.kitTropes=el.value.split(',').map(s=>s.trim()).filter(Boolean); buildTropeChips(); }
+      save(); renderPlan();
+    });
+  });
+  buildTropeChips(); buildDeliver(); buildWhere();
+  if(!state.fields.f_offer) prefillOffer();
+  renderPlan();
+}
+
+function renderKits(){
+  const wrap=document.getElementById('kitCards'); wrap.innerHTML=''; let found=0;
+  KIT_SOURCES.forEach(([key,label])=>{
+    let k=null; try{ k=JSON.parse(localStorage.getItem(key)); }catch(e){}
+    if(!k||!k.genre) return; found++;
+    const c=document.createElement('div'); c.className='kitcard'+(state.kitSrc===key?' on':'');
+    c.innerHTML='<div class="kc-src">'+label+'</div><div class="kc-genre">'+k.genre+'</div><div class="kc-meta">'+(k.pen?('Pen: '+k.pen+' · '):'')+(k.tropes?k.tropes.length+' tropes · ':'')+'tap to import</div>';
+    c.onclick=()=>importKit(key,k);
+    wrap.appendChild(c);
+  });
+  if(!found) wrap.innerHTML='<div style="grid-column:1/-1;color:#9a8674;font-style:italic;font-size:13px;">No Identity Kits found in this browser — fill the lane below by hand.</div>';
+}
+function importKit(key,k){
+  state.kitSrc=key;
+  state.fields.f_lane=k.genre||''; state.fields.f_pen=k.pen||state.fields.f_pen||'';
+  state.kitTropes=(k.tropes||[]).slice();
+  state.fields.f_tropes=state.kitTropes.join(', ');
+  state.tropes=state.kitTropes.slice(0,2);
+  ['f_lane','f_pen','f_tropes'].forEach(id=>{ document.getElementById(id).value=state.fields[id]||''; });
+  const kl=document.getElementById('kitLoaded'); kl.classList.add('show');
+  kl.innerHTML='✅ Working from your <b>'+k.genre+'</b> kit'+(k.heat?(' · heat: <b>'+k.heat+'</b> — the magnet must match it'):(k.tone?(' · tone: <b>'+k.tone+'</b> — the magnet must match it'):''))+'.';
+  prefillOffer(true);
+  renderKits(); buildTropeChips(); save(); renderPlan();
+  toast('Kit imported — magnet stays on-brand for '+k.genre);
+}
+function prefillOffer(force){
+  const lane=(state.fields.f_lane||'your lane').replace(/\.$/,'');
+  const t=state.tropes[0]||state.kitTropes[0]||'your signature trope';
+  const v='FREE '+(mt()?mt().n.toLowerCase():'story')+': a '+lane.toLowerCase()+' '+('read')+' with '+t.toLowerCase()+' — yours when you join my newsletter.';
+  if(force || !state.fields.f_offer){ state.fields.f_offer=v; const el=document.getElementById('f_offer'); if(el) el.value=v; }
+}
+function showTypeWarn(){
+  const m=mt(); const w=document.getElementById('typeWarn');
+  if(!m){ w.style.display='none'; return; }
+  w.style.display='block'; w.innerHTML='<b>'+m.n+':</b> '+m.warn;
+}
+function buildTropeChips(){
+  const c=document.getElementById('tropeChips'); c.innerHTML='';
+  const all=[...new Set([...state.kitTropes, ...state.customTropes, ...state.tropes])];
+  if(!all.length){ c.innerHTML='<span style="color:#9a8674;font-style:italic;font-size:12.5px;">Add signature tropes above (or import a kit) and they\'ll appear here.</span>'; return; }
+  all.forEach(t=>{
+    const on=state.tropes.includes(t);
+    const ch=document.createElement('div'); ch.className='chip'+(on?' on':''); ch.textContent=t;
+    ch.onclick=()=>{ const i=state.tropes.indexOf(t); if(i>=0) state.tropes.splice(i,1); else state.tropes.push(t); buildTropeChips(); save(); renderPlan(); };
+    c.appendChild(ch);
+  });
+}
+function addTrope(){
+  const el=document.getElementById('tropeAdd'); const v=el.value.trim(); if(!v) return;
+  if(!state.customTropes.includes(v)) state.customTropes.push(v);
+  if(!state.tropes.includes(v)) state.tropes.push(v);
+  el.value=''; buildTropeChips(); save(); renderPlan(); toast('Added "'+v+'"');
+}
+function buildDeliver(){
+  const c=document.getElementById('deliverChips'); c.innerHTML='';
+  DELIVERY.forEach(d=>{
+    const ch=document.createElement('div'); ch.className='chip'+(state.delivery===d?' on':''); ch.textContent=d;
+    ch.onclick=()=>{ state.delivery=d; buildDeliver(); save(); renderPlan(); };
+    c.appendChild(ch);
+  });
+}
+function buildWhere(){
+  const c=document.getElementById('whereChips'); c.innerHTML='';
+  WHERE.forEach(w=>{
+    const on=state.where.includes(w);
+    const ch=document.createElement('div'); ch.className='chip'+(on?' on':''); ch.textContent=w;
+    ch.onclick=()=>{ const i=state.where.indexOf(w); if(i>=0) state.where.splice(i,1); else state.where.push(w); buildWhere(); save(); renderPlan(); };
+    c.appendChild(ch);
+  });
+}
+
+/* ---------- plan ---------- */
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : '⟨ Claude, '+(what||'pick this for me')+' ⟩'; }
+function buildPlan(){
+  const f=state.fields; const m=mt();
+  const L=[];
+  L.push('# READER MAGNET PLAN — '+c(f.f_title,'suggest a working title'));
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — fill it to fit the lane, the tropes, and the funnel, then list what you picked.');
+  L.push('');
+  L.push('## The brand this feeds');
+  L.push('- Pen name: '+c(f.f_pen));
+  L.push('- Genre lane: '+c(f.f_lane,'name the lane'));
+  L.push('- Signature tropes: '+(state.kitTropes.length?state.kitTropes.join(', '):c('','list the pen name\'s signature tropes')));
+  L.push('');
+  L.push('## The magnet');
+  L.push('- Type: '+(m?(m.n+' ('+m.len+')'):'⟨ Claude, recommend a magnet type for where this catalog is ⟩'));
+  if(m) L.push('- Type watch-out: '+m.warn);
+  L.push('- Lead tropes: '+(state.tropes.length?state.tropes.join(', '):'⟨ Claude, pick 1–2 from the signature set ⟩'));
+  L.push('- Premise: '+c(f.f_premise,'pitch a premise that delivers the lead tropes at the brand\'s heat level'));
+  L.push('- Connection to catalog: '+c(f.f_connect,'connect the magnet to Book 1 or the series world'));
+  L.push('- The bridge to Book 1: '+c(f.f_bridge,'design the last-page thread that makes Book 1 inevitable'));
+  L.push('- ⚠ Non-negotiable: the magnet delivers the SAME promise as the books — same tropes, same heat/tone, just shorter. A mismatched magnet fills the list with the wrong readers.');
+  L.push('');
+  L.push('## The funnel');
+  L.push('- Signup offer (one line): '+c(f.f_offer,'write the one-line signup offer, fantasy first'));
+  L.push('- Delivery: '+(state.delivery||'BookFunnel'));
+  L.push('- Offered at: '+(state.where.length?state.where.join(', '):'⟨ Claude, pick the offer points ⟩'));
+  L.push('');
+  L.push('## Welcome sequence');
+  L.push('- Email 1 (day 0 — deliver & delight): '+c(f.f_e1,'draft the beats: deliver the magnet, one warm line of who you are'));
+  L.push('- Email 2 (day 2–3 — connect): '+c(f.f_e2,'draft the beats: story behind the story, ask one easy question'));
+  L.push('- Email 3 (day 5–7 — hand-off): '+c(f.f_e3,'draft the beats: pick up the bridge thread, present Book 1'));
+  L.push('');
+  L.push('## Success measures');
+  L.push('- Signup → download rate, welcome-sequence open rate, Email 3 click-through to Book 1, unsubscribe rate after Email 3 (high = magnet promised the wrong thing).');
+  return L.join('\n');
+}
+function renderPlan(){
+  const p=buildPlan();
+  document.getElementById('plan').textContent=p;
+  const n=Math.max(0,(p.match(/⟨ Claude/g)||[]).length-(p.includes('NOTE TO CLAUDE')?1:0));
+  document.getElementById('pickNote').innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Claude fills them when you hand the plan over.'
+    : '✅ Every spot is filled — this funnel is ready to build.';
+}
+function copyPlan(){ copyText(buildPlan(),'Plan copied.'); }
+function downloadPlan(){
+  const base=((state.fields.f_title||'reader-magnet')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'reader-magnet';
+  const blob=new Blob([buildPlan()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-magnet-plan.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  copyText('I\'m planning the reader magnet for my pen name. First, fill in anything marked ⟨ Claude, … ⟩ so it fits the lane and the funnel, and tell me what you chose. Then pressure-test it: does the magnet promise EXACTLY what the books deliver, and does the bridge make Book 1 inevitable? Then outline the magnet story chapter by chapter. Here\'s the plan:\n\n'+buildPlan(),'Prompt copied — paste it into Claude.');
+}
+
+/* ---------- Story Studio ---------- */
+function sendToStudio(){
+  const f=state.fields; const m=mt();
+  let studio; try{ studio=JSON.parse(localStorage.getItem(STUDIO_KEY)); }catch(e){ studio=null; }
+  if(!studio||!studio.books) studio={version:1, books:[]};
+  const today=(function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+  const title=(f.f_title&&f.f_title.trim())?f.f_title.trim():((f.f_pen||'New pen name')+' — reader magnet');
+  const nextAction='Reader magnet from Reader Magnet Builder ('+(m?m.n:'type TBD')+'). Fill anything marked ⟨ Claude, … ⟩, then outline and draft it — it\'s a small book with one extra job: the bridge to Book 1.\n\n'+buildPlan();
+  const existing=studio.books.find(x=>x.fromMagnet && x.title===title);
+  if(existing){ existing.nextAction=nextAction; existing.updated=today; }
+  else{
+    studio.books.push({ id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Date.now().toString(36),
+      title:title, penName:(f.f_pen||'Unassigned'),
+      format:'Reader magnet'+(m?(' — '+m.n.toLowerCase()):''),
+      stage:2, status:'production', nextAction:nextAction,
+      project:'Reader Magnet Builder', fromMagnet:true, updated:today });
+  }
+  try{ localStorage.setItem(STUDIO_KEY, JSON.stringify(studio)); }
+  catch(e){ document.getElementById('studioMsg').textContent='⚠ Couldn\'t save to Story Studio — use Copy plan instead.'; return; }
+  document.getElementById('studioMsg').innerHTML='✅ Magnet added to Story Studio at Stage 2. <a href="story-studio.html" style="color:#6d2b4e;font-weight:700;">Open Story Studio →</a>';
+  toast('Magnet sent to Story Studio 🧲');
+}
+
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the magnet plan.')) return;
+  state=blank(); save();
+  FIELDS.forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('.mtype').forEach(x=>x.classList.remove('on'));
+  document.getElementById('kitLoaded').classList.remove('show');
+  renderKits(); buildTropeChips(); buildDeliver(); buildWhere(); showTypeWarn(); renderPlan();
+  window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh magnet.');
+}
+init();
+</script>
+</body>
+</html>
