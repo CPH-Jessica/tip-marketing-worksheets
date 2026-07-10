@@ -418,8 +418,23 @@ let state=null;
 function blank(){ return {v:1, genre:'', heat:'', tropes:[], customTropes:[], fields:{}, edited:{}}; }
 const FIELDS=['pn1','pn2','pn3','f_words','f_tagline','f_avatar','f_bio','f_release','f_bound','f_twist'];
 
+const KIT_KEY='pen-name-kit-romance';
 function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
-function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  publishKit();
+}
+function publishKit(){
+  try{
+    const G=g(); if(!G) return;
+    localStorage.setItem(KIT_KEY, JSON.stringify({
+      src:'romance', updated:new Date().toISOString().slice(0,10), genre:G.n,
+      pen:(state.fields.pn1||'').trim(), heat:state.heat,
+      tropes:state.tropes.slice(), tagline:(state.fields.f_tagline||'').trim(),
+      len:G.len, kit:buildKit()
+    }));
+  }catch(e){}
+}
 function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
 function g(){ return GENRES.find(x=>x.k===state.genre); }
 
@@ -471,12 +486,13 @@ function pickGenre(k, restoring){
   if(!restoring){
     if(prev && prev!==k){
       // new lane: re-prefill everything not hand-edited… simplest honest behavior: re-prefill all prefillable fields, keep pen names & twist
-      state.tropes=G.tropes.slice(); state.customTropes=[];
+      state.tropes=G.tropes.slice(); state.customTropes=[]; state.tropesSetFor=k;
       state.heat=defaultHeat(G);
       prefill(G, false);
       toast('Baseline loaded: '+G.n+' — prefills updated (your pen names were kept).');
     } else {
-      state.tropes=state.tropes.length?state.tropes:G.tropes.slice();
+      // only seed baseline tropes once per lane — an emptied list is a deliberate choice, not "unset"
+      if(state.tropesSetFor!==k){ if(!state.tropes.length) state.tropes=G.tropes.slice(); state.tropesSetFor=k; }
       state.heat=state.heat||defaultHeat(G);
       prefill(G, true);
     }
@@ -628,7 +644,8 @@ function buildKit(){
 function renderKit(){
   const kit=buildKit();
   document.getElementById('kit').textContent=kit;
-  const n=(kit.match(/⟨ Claude/g)||[]).length;
+  // the always-present NOTE TO CLAUDE header contains the marker glyph — exclude it from the count
+  const n=Math.max(0,(kit.match(/⟨ Claude/g)||[]).length-(kit.includes('NOTE TO CLAUDE')?1:0));
   const note=document.getElementById('pickNote');
   note.innerHTML = n
     ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Hand the kit to Claude and it fills them in to fit your lane.'
@@ -656,7 +673,9 @@ function fallbackCopy(txt,okMsg){
 }
 function resetAll(){
   if(!confirm('Start over? This clears the whole identity.')) return;
-  state=blank(); save();
+  state=blank();
+  try{ localStorage.removeItem(KIT_KEY); }catch(e){}
+  save();
   FIELDS.forEach(id=>document.getElementById(id).value='');
   document.querySelectorAll('.gcard').forEach(c=>c.classList.remove('on'));
   document.getElementById('baseline').classList.remove('show');
