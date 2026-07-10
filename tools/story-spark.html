@@ -642,7 +642,8 @@ function copyLokiPrompt(){ copyText(buildLokiPrompt(),'Loki brainstorm prompt co
 
 /* ---------------- blueprint ---------------- */
 const PICK = '⟨ Claude, pick this for me ⟩';
-function countPicks(brief){ return (brief.match(/⟨ Claude/g)||[]).length; }
+// the always-present NOTE TO CLAUDE header contains the marker glyph — exclude it from the count
+function countPicks(brief){ return Math.max(0,(brief.match(/⟨ Claude/g)||[]).length-(brief.includes('NOTE TO CLAUDE')?1:0)); }
 function buildBrief(){
   const f=state.fields;
   // creative field: use the answer, or a Claude-pick marker if left blank

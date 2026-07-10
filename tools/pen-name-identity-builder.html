@@ -486,12 +486,13 @@ function pickGenre(k, restoring){
   if(!restoring){
     if(prev && prev!==k){
       // new lane: re-prefill everything not hand-edited… simplest honest behavior: re-prefill all prefillable fields, keep pen names & twist
-      state.tropes=G.tropes.slice(); state.customTropes=[];
+      state.tropes=G.tropes.slice(); state.customTropes=[]; state.tropesSetFor=k;
       state.heat=defaultHeat(G);
       prefill(G, false);
       toast('Baseline loaded: '+G.n+' — prefills updated (your pen names were kept).');
     } else {
-      state.tropes=state.tropes.length?state.tropes:G.tropes.slice();
+      // only seed baseline tropes once per lane — an emptied list is a deliberate choice, not "unset"
+      if(state.tropesSetFor!==k){ if(!state.tropes.length) state.tropes=G.tropes.slice(); state.tropesSetFor=k; }
       state.heat=state.heat||defaultHeat(G);
       prefill(G, true);
     }
@@ -643,7 +644,8 @@ function buildKit(){
 function renderKit(){
   const kit=buildKit();
   document.getElementById('kit').textContent=kit;
-  const n=(kit.match(/⟨ Claude/g)||[]).length;
+  // the always-present NOTE TO CLAUDE header contains the marker glyph — exclude it from the count
+  const n=Math.max(0,(kit.match(/⟨ Claude/g)||[]).length-(kit.includes('NOTE TO CLAUDE')?1:0));
   const note=document.getElementById('pickNote');
   note.innerHTML = n
     ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Hand the kit to Claude and it fills them in to fit your lane.'

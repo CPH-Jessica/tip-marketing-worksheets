@@ -148,6 +148,13 @@ function init(){
   try { state = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e){ state=null; }
   if (!state || !state.books) { state = seed(); save(); }
   buildToolbar(); render();
+  // pick up books added by other tools (Story Spark, First Three Books) while this tab is open,
+  // instead of clobbering them with our stale in-memory copy on the next save
+  window.addEventListener('storage', function(e){
+    if (e.key === LS_KEY && e.newValue) {
+      try { const s = JSON.parse(e.newValue); if (s && s.books) { state = s; render(); } } catch(err){}
+    }
+  });
 }
 
 function buildToolbar(){

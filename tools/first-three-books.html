@@ -224,18 +224,24 @@ function renderKitCards(){
 }
 
 function useKit(k){
+  // switching to a different kit re-rotates every book's tropes; same kit keeps manual edits
+  const switching = !!(state.kit && (state.kit.src!==k.src || state.kit.genre!==k.genre));
   state.kit=k;
-  // rotate tropes across books: 2 lead tropes each, wrapping
   const T=(k.tropes||[]).slice();
   state.books.forEach((b,i)=>{
-    if(!b.tropes.length && T.length){
-      b.tropes=[T[(i*2)%T.length]];
-      if(T.length>1) b.tropes.push(T[(i*2+1)%T.length]);
-      b.tropes=[...new Set(b.tropes)];
+    if(switching || !b.tropes.length){
+      b.tropes=[];
+      if(T.length){
+        b.tropes=[T[(i*2)%T.length]];
+        if(T.length>1) b.tropes.push(T[(i*2+1)%T.length]);
+        b.tropes=[...new Set(b.tropes)];
+      }
     }
   });
   save(); paintAll();
-  toast('Kit loaded: '+k.genre+' — tropes rotated across your three books.');
+  toast(T.length
+    ? 'Kit loaded: '+k.genre+' — tropes rotated across your three books.'
+    : 'Kit loaded: '+k.genre+'.');
 }
 
 function importPaste(){
@@ -251,6 +257,9 @@ function parseKit(txt){
   const mp=txt.match(/-\s*Candidate 1:\s*(.+)/i); if(mp) k.pen=mp[1].trim();
   const mt=txt.match(/-\s*Tagline:\s*(.+)/i); if(mt&&!mt[1].includes('⟨')) k.tagline=mt[1].trim();
   const ml=txt.match(/-\s*Length & release norm:\s*(.+)/i); if(ml) k.len=ml[1].trim();
+  const mh=txt.match(/-\s*My heat level:\s*(.+)/i); if(mh&&!mh[1].includes('⟨')) k.heat=mh[1].trim();
+  const mtone=txt.match(/-\s*Darkness & intensity:\s*(.+)/i); if(mtone&&!mtone[1].includes('⟨')) k.tone=mtone[1].trim();
+  const mrom=txt.match(/-\s*Romance subplot:\s*(.+)/i); if(mrom&&!mrom[1].includes('⟨')) k.rom=mrom[1].trim();
   const sec=txt.match(/##\s*Signature (?:tropes|elements)[^\n]*\n([\s\S]*?)(?=\n##|$)/i);
   if(sec){
     sec[1].split('\n').forEach(line=>{
@@ -379,7 +388,8 @@ function buildRunway(){
 function renderRunway(){
   const r=buildRunway();
   document.getElementById('runway').textContent=r;
-  const n=(r.match(/⟨ Claude/g)||[]).length;
+  // the always-present NOTE TO CLAUDE header contains the marker glyph — exclude it from the count
+  const n=Math.max(0,(r.match(/⟨ Claude/g)||[]).length-(r.includes('NOTE TO CLAUDE')?1:0));
   const note=document.getElementById('pickNote');
   if(note) note.innerHTML = n
     ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Claude fills them in when you hand the runway over.'

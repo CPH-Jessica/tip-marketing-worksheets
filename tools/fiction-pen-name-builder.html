@@ -261,7 +261,7 @@ const GENRES=[
 {k:'hardboiled',n:'Hardboiled / PI',e:'🚬',grp:'Mystery',tone:'Dark',rom:'Background romance',heatLabel:'Dark · rain-slick streets',
  promise:'A private eye with a bruised code, clients who lie, and a city that never comes clean. The case closes; the loneliness doesn\'t.',
  tropes:['Down-at-heel PI','The client is the villain','Femme fatale (or subverted)','Corrupt everything','One honest cop','Voice-driven first person'],
- names:'Worn leather — classic, terse.',ex:'e.g. Mick Calder · Ray Donovan (style) · Sal Moreno',
+ names:'Worn leather — classic, terse.',ex:'e.g. Mick Calder · Frank Corrigan · Sal Moreno',
  look:'Neon, rain, silhouette in a doorway — noir palettes, condensed type.',
  voice:'wry, weathered, first-person music',comps:['Robert Crais','Sue Grafton','Dennis Lehane'],
  len:'80–95k · one PI series · 1–2/year',
@@ -401,7 +401,7 @@ const GENRES=[
 {k:'histfic',n:'Historical Fiction',e:'🕊️',grp:'Book Club & Literary',tone:'Balanced',rom:'Background romance',heatLabel:'Balanced · history with a heartbeat',
  promise:'The past made personal — ordinary women inside extraordinary history, meticulous research worn lightly, and a dual-timeline secret that survives the war.',
  tropes:['WWII resistance/homefront','Dual timeline: then & now','Real events, invented hearts','Letters/diaries discovered','Women history forgot','The choice that echoes generations'],
- names:'Timeless, slightly formal.',ex:'e.g. Eleanor Vance · M.K. Ashford · Lena Brandt',
+ names:'Timeless, slightly formal.',ex:'e.g. Eleanor Whitlock · M.K. Ashford · Lena Brandt',
  look:'Period figures from behind, wartime skies — sepia + one saturated accent; classic serif.',
  voice:'immersive, elegiac, humane',comps:['Kate Quinn','Pam Jenoff','Kristin Hannah (historical titles)'],
  len:'100–120k · standalones · 1/year',
@@ -497,12 +497,13 @@ function pickGenre(k, restoring){
 
   if(!restoring){
     if(prev && prev!==k){
-      state.tropes=G.tropes.slice(); state.customTropes=[];
+      state.tropes=G.tropes.slice(); state.customTropes=[]; state.tropesSetFor=k;
       state.tone=G.tone; state.rom=G.rom;
       prefill(G, false);
       toast('Baseline loaded: '+G.n+' — prefills updated (your pen names were kept).');
     } else {
-      state.tropes=state.tropes.length?state.tropes:G.tropes.slice();
+      // only seed baseline tropes once per lane — an emptied list is a deliberate choice, not "unset"
+      if(state.tropesSetFor!==k){ if(!state.tropes.length) state.tropes=G.tropes.slice(); state.tropesSetFor=k; }
       state.tone=state.tone||G.tone; state.rom=state.rom||G.rom;
       prefill(G, true);
     }
@@ -654,7 +655,8 @@ function buildKit(){
 function renderKit(){
   const kit=buildKit();
   document.getElementById('kit').textContent=kit;
-  const n=(kit.match(/⟨ Claude/g)||[]).length;
+  // the always-present NOTE TO CLAUDE header contains the marker glyph — exclude it from the count
+  const n=Math.max(0,(kit.match(/⟨ Claude/g)||[]).length-(kit.includes('NOTE TO CLAUDE')?1:0));
   const note=document.getElementById('pickNote');
   note.innerHTML = n
     ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Hand the kit to Claude and it fills them in to fit your lane.'
