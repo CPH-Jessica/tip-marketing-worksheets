@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Blurb &amp; Metadata Kit — Your Product Page, Decoded · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 18px; text-align: center; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+
+.kitcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media (max-width: 640px){ .kitcards { grid-template-columns: 1fr; } }
+.kitcard { border: 1.5px solid #e6d8c7; background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.kitcard:hover { border-color: #c79a4b; background: #fffaf0; }
+.kitcard .kc-src { font-size: 11px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.kitcard .kc-genre { font-weight: 700; font-size: 15px; color: #6d2b4e; font-family: Georgia, serif; margin-top: 2px; }
+.kitcard .kc-meta { font-size: 12px; color: #9a8674; margin-top: 3px; }
+.kit-loaded { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 8px; font-size: 13px; color: #7a5e2e; display: none; }
+.kit-loaded.show { display: block; }
+.kit-loaded b { color: #6d2b4e; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin-bottom: 6px; }
+input[type=text], textarea, select {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 52px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+
+/* blurb beats */
+.beat { background: #fff; border: 1px solid #ecdfd0; border-left: 3px solid #c79a4b; border-radius: 0 10px 10px 0; padding: 11px 14px; margin-top: 12px; }
+.beat h4 { font-size: 12px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; font-family: -apple-system, sans-serif; }
+.beat .bhint { font-size: 12px; color: #9a8674; font-style: italic; margin: 2px 0 6px; }
+.beat textarea { min-height: 46px; font-size: 13.5px; }
+
+/* blurb preview */
+.preview { background: #fff; border: 2px solid #e6d8c7; border-radius: 12px; padding: 18px 20px; font-family: Georgia, serif; font-size: 14.5px; line-height: 1.6; color: #3a3a3a; margin-top: 14px; }
+.preview .ph { color: #b09a86; font-style: italic; }
+.preview .hookline { font-weight: 700; font-style: italic; color: #6d2b4e; }
+.wordcount { font-size: 12px; color: #a07c2e; font-weight: 700; margin-top: 6px; text-align: right; }
+
+/* keywords */
+.kwgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 6px; }
+@media (max-width: 640px){ .kwgrid { grid-template-columns: 1fr; } }
+.kwrow { display: flex; gap: 6px; align-items: center; }
+.kwrow .n { font-family: Georgia, serif; font-weight: 700; color: #c79a4b; min-width: 18px; text-align: right; }
+.rules { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; font-size: 12.5px; color: #7a5e2e; }
+.rules b.no { color: #b56; }
+
+.kit { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; max-height: 480px; overflow-y: auto; margin-bottom: 14px; }
+.suggested-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #7a5e2e; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>📝 Blurb &amp; Metadata Kit</h1></header>
+  <div class="tagline">Your product page, decoded per shelf — hook line, blurb formula, 7 keywords, and categories, built to convert the midnight scroller.</div>
+
+  <!-- STEP 1 -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>The book &amp; the lane</h2>
+    <p class="lead">Import your Identity Kit and the blurb formula adapts to your shelf — the beats a romance blurb needs are not the beats a thriller needs.</p>
+    <div class="kitcards" id="kitCards"></div>
+    <div class="two">
+      <div><label for="f_title">Book title</label><input type="text" id="f_title"></div>
+      <div><label for="f_pen">Pen name</label><input type="text" id="f_pen"></div>
+    </div>
+    <div class="two">
+      <div><label for="f_lane">Genre lane</label><input type="text" id="f_lane" placeholder="e.g. Steamy Small Town, Psychological Thriller"></div>
+      <div><label for="f_formula">Blurb formula <span class="opt">(auto-picked from lane)</span></label><select id="f_formula"></select></div>
+    </div>
+    <label for="f_tropes">Tropes / hooks to sell <span class="opt">(comma-separated — these feed the keywords)</span></label>
+    <input type="text" id="f_tropes" placeholder="prefills from your kit">
+    <div class="kit-loaded" id="kitLoaded"></div>
+  </div>
+
+  <!-- STEP 2: hook + blurb -->
+  <div class="panel" id="blurbPanel" style="display:none;">
+    <h2><span class="stepnum">2</span>Hook line &amp; blurb</h2>
+    <p class="lead" id="formulaLead"></p>
+
+    <label>Hook line patterns for this shelf <span class="opt">(tap one to start from it)</span></label>
+    <div class="chips" id="hookChips"></div>
+    <label for="f_hook" style="margin-top:10px;">Your hook line</label>
+    <div class="hint">The bolded first line of the blurb. One sentence. Its only job: stop the scroll.</div>
+    <input type="text" id="f_hook" placeholder="Leave blank and Claude will write it">
+
+    <div id="beats"></div>
+
+    <h3 style="margin-top:20px;">Live preview</h3>
+    <div class="preview" id="preview"></div>
+    <div class="wordcount" id="wordcount"></div>
+  </div>
+
+  <!-- STEP 3: keywords + categories -->
+  <div class="panel" id="metaPanel" style="display:none;">
+    <h2><span class="stepnum">3</span>Keywords &amp; categories</h2>
+    <p class="lead">Amazon gives you 7 keyword slots — phrases readers actually type. Tap suggestions (built from your tropes + lane) or write your own.</p>
+
+    <label>Suggested keyword phrases</label>
+    <div class="chips" id="kwSuggest"></div>
+
+    <label style="margin-top:14px;">Your 7 keyword slots</label>
+    <div class="kwgrid" id="kwSlots"></div>
+    <div class="rules">
+      <b>Do:</b> reader language ("grumpy sunshine romance"), settings ("small town montana"), audience terms ("clean and wholesome"), series words.
+      &nbsp;<b class="no">Don't:</b> other authors' names, book titles you don't own, "free"/"bestseller"/"Kindle", words already in your title or categories (wasted slots), quotation marks.
+    </div>
+
+    <label style="margin-top:16px;">Category picks <span class="opt">(suggested for this shelf — you get 2–3 at publish)</span></label>
+    <div class="hint" id="catHint"></div>
+    <input type="text" id="f_cat1" placeholder="Category path 1">
+    <input type="text" id="f_cat2" placeholder="Category path 2" style="margin-top:8px;">
+    <input type="text" id="f_cat3" placeholder="Category path 3 (backup)" style="margin-top:8px;">
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="panel" id="outPanel" style="display:none;">
+    <h2><span class="stepnum">4</span>Your Metadata Kit</h2>
+    <div class="suggested-bar" id="pickNote"></div>
+    <div class="kit" id="out"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="copyBlurbOnly()">📋 Copy blurb only</button>
+      <button class="btn-ghost" onclick="copyKitOut()">📄 Copy full kit</button>
+      <button class="btn-ghost" onclick="downloadKit()">⬇ Download (.md)</button>
+      <button class="btn-ghost" onclick="copyClaude()">💬 Copy prompt for Claude</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+  </div>
+
+  <footer>
+    Autosaves in this page. Sits between <b>Cover Brief Builder</b> and <b>Book Launch Runway</b> — the cover stops the scroll, this page closes the sale.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='blurb-metadata-v1';
+const KIT_SOURCES=[["pen-name-kit-romance","Romance Pen Name Builder"],["pen-name-kit-fiction","Fiction Pen Name Builder"]];
+
+/* ============ FORMULAS (shelf families) ============ */
+const FORMULAS={
+ 'romance-steamy':{n:'Steamy Romance (dual intro)',lead:'Romance blurbs sell the collision. Introduce her in her voice, him as her problem, the forced collision, the "but," then promise the tropes.',
+  hooks:['He\'s everything I should run from. So why am I unpacking?','One [event]. One [complication]. Zero chance of keeping my hands to myself.','I hated him first. That should have protected me.'],
+  beats:[['her','HER — voice + want','who she is, what she wants, the flaw she\'d deny'],
+         ['him','HIM — the problem in human form','who he is and why he\'s exactly wrong (i.e., right)'],
+         ['collide','THE COLLISION','the trope machinery that traps them together'],
+         ['but','THE BUT','what makes falling impossible — stakes, history, rules'],
+         ['promise','THE PROMISE','tropes named + heat signal + HEA guarantee, e.g. "a grumpy/sunshine, forced-proximity romance with all the steam and a guaranteed HEA"']],
+  cats:['Romance > Contemporary','Romance > [your subgenre]','Fiction > Small Town & Rural (if it fits)'],
+  kws:['[trope] romance','small town romance steamy','enemies to lovers','grumpy hero romance','forced proximity']},
+ 'romcom':{n:'Romantic Comedy',lead:'The blurb must be funny — it\'s the free sample of the voice. Jokes in the setup, heart in the promise.',
+  hooks:['The plan was simple. The plan is on fire.','There are worse things than fake-dating your nemesis. I just can\'t think of any right now.','I have a list of rules. He\'s broken nine of them. Today.'],
+  beats:[['her','HER — the mess we root for','voicey intro, the disaster that starts everything'],
+         ['him','HIM — the last person on earth','why he\'s the worst (adorably)'],
+         ['scheme','THE SCHEME','the fake date/bet/plan that forces them together'],
+         ['unravel','THE UNRAVELING','feelings arrive; chaos compounds'],
+         ['promise','THE PROMISE','laugh-out-loud + swoon + HEA signal']],
+  cats:['Romance > Romantic Comedy','Romance > Contemporary','Humor & Entertainment > Humor > Love, Sex & Marriage'],
+  kws:['romantic comedy','fake dating romcom','enemies to lovers funny','laugh out loud romance','beach read']},
+ 'sweet':{n:'Sweet / Clean Romance',lead:'Warmth is the promise. Signal "clean" clearly — readers on this shelf check before they click.',
+  hooks:['She came home to fix the inn. She didn\'t plan on fixing her heart.','A fresh start, a small town, and the one man she never forgot.'],
+  beats:[['her','HER — the new beginning','what brings her (back) to this place'],
+         ['him','HIM — steady and true','the good man with his own quiet wound'],
+         ['together','DRAWN TOGETHER','community, project, or season that keeps them close'],
+         ['doubt','THE DOUBT','the gentle obstacle — fear, past, leaving again'],
+         ['promise','THE PROMISE','sweet/clean signal + community warmth + happily ever after']],
+  cats:['Romance > Clean & Wholesome','Romance > Contemporary','Religion & Spirituality > Fiction (if inspirational)'],
+  kws:['clean and wholesome romance','sweet small town romance','no spice romance','christian romance (if it fits)','second chance sweet romance']},
+ 'dark':{n:'Dark Romance / Mafia / MC',lead:'Menace is the perfume. Write it in his voice or her dread, state the claim, and warn-promise the darkness.',
+  hooks:['They sold me to settle a debt. He collected me like I was already his.','I should fear the monster. Instead, I sleep in his bed.','He watched me for a year before I knew his name.'],
+  beats:[['claim','THE CLAIM','the deal, debt, abduction, or arrangement that binds her to him'],
+         ['him','HIM — the beautiful nightmare','power, obsession, the one soft spot: her'],
+         ['her','HER — walking into the dark','what she\'s made of; why she doesn\'t break'],
+         ['line','THE LINE CROSSED','the point of no return'],
+         ['promise','THE WARNING-PROMISE','dark content note + possessive hero + HEA if you give one, e.g. "a dark mafia romance with a morally black hero who kneels for no one but her. Reader discretion advised — HEA guaranteed."']],
+  cats:['Romance > Mystery & Suspense > Suspense','Romance > New Adult & College (if it fits)','Romance > Multicultural (if it fits)'],
+  kws:['dark romance','mafia romance arranged marriage','enemies to lovers dark','possessive hero','captive romance']},
+ 'romantasy':{n:'Romantasy / Fantasy Romance',lead:'World first in one breath, then the bond, then the stakes. Fate does the selling.',
+  hooks:['The bargain was simple: her life for her sister\'s. Nobody mentioned the wedding.','In the court of the [fae/dragon] king, mercy is a blade with two edges.'],
+  beats:[['world','THE WORLD + HER','one line of world, then the heroine and what she\'s forced into'],
+         ['him','HIM — the beautiful enemy','the prince/commander/monster she can\'t trust (or resist)'],
+         ['bond','THE BOND / BARGAIN','the magic that ties them — mates, bargain, curse'],
+         ['stakes','THE STAKES','kingdoms, war, the truth that changes everything'],
+         ['promise','THE PROMISE','tropes + slow burn/steam signal + series arc note']],
+  cats:['Romance > Fantasy','Science Fiction & Fantasy > Fantasy > Romantic','Teen & Young Adult (only if YA)'],
+  kws:['romantasy','fated mates fantasy romance','enemies to lovers fantasy','fae romance','dragon rider romance']},
+ 'paranormal':{n:'Paranormal Romance',lead:'The bond is biology; the choice is the story. Lead with the supernatural collision.',
+  hooks:['The wolf knew before I did. The wolf is rarely wrong.','Every alpha in the territory wants me dead. Except the one who says I\'m his.'],
+  beats:[['her','HER — crossing the veil','the human/newcomer and the world she stumbles into'],
+         ['him','HIM — the bonded','alpha/vampire/demon, and what the bond does to him'],
+         ['bond','FATE SAYS MATE','the bond, the bite, the mark — and why it\'s a problem'],
+         ['threat','THE THREAT','pack politics, hunters, the war underneath'],
+         ['promise','THE PROMISE','fated mates + heat + series world']],
+  cats:['Romance > Paranormal','Romance > Fantasy','Science Fiction & Fantasy > Fantasy > Paranormal & Urban'],
+  kws:['fated mates','wolf shifter romance','rejected mate','vampire romance','paranormal romance alpha']},
+ 'cozy-mystery':{n:'Cozy Mystery',lead:'Charm + corpse + amateur nerve. Name the hook (bakery/books/knitting), keep the body bloodless, tease the series.',
+  hooks:['The scones were perfect. The body in the pantry was not.','Small towns keep secrets. Mine keeps them buried behind the bakery.'],
+  beats:[['sleuth','THE SLEUTH + HOOK','who she is, the charming business, the town'],
+         ['body','THE BODY','the murder that lands on her doorstep (offscreen, wry tone)'],
+         ['twist','THE COMPLICATION','why the police are useless / why it\'s personal'],
+         ['stakes','THE STAKES','her shop, her friend accused, the town\'s trust'],
+         ['promise','THE PROMISE','cozy signals: no gore, no swearing, quirky cast, recipes/craft, book N of series']],
+  cats:['Mystery, Thriller & Suspense > Mystery > Cozy > Crafts & Hobbies (or Culinary/Animals)','Mystery > Women Sleuths','Mystery > Amateur Sleuths'],
+  kws:['cozy mystery','culinary cozy mystery','small town mystery series','amateur sleuth female','cozy mystery with recipes']},
+ 'thriller':{n:'Psychological / Domestic Thriller',lead:'Sell the question, not the plot. Short paragraphs. Each line raises the temperature. End on the turn.',
+  hooks:['My husband is a liar. I know, because so am I.','The perfect family lives next door. I know what they buried.'],
+  beats:[['setup','THE PERFECT SURFACE','the life that looks enviable — one line of crack'],
+         ['crack','THE CRACK','the discovery/arrival/message that breaks it'],
+         ['spiral','THE SPIRAL','2–3 short "But…/Until…/Unless…" lines, each worse'],
+         ['question','THE QUESTION','the one the reader must have answered'],
+         ['turn','THE TURN','the last line that flips it: "…and that\'s when I realized the body wasn\'t the secret."']],
+  cats:['Mystery, Thriller & Suspense > Thrillers > Psychological','Thrillers > Domestic','Literature & Fiction > Psychological'],
+  kws:['psychological thriller with twist','domestic thriller','unreliable narrator','gripping suspense','books like [comp phrase without author name]']},
+ 'crime':{n:'Detective / Crime',lead:'The case, the detective, the cost. Procedural readers buy the character — give them the flaw and the city.',
+  hooks:['The first body was a message. Detective [Name] just couldn\'t read it yet.','This city buries its sins. He digs.'],
+  beats:[['case','THE CASE','the crime that opens the book — specific, visual'],
+         ['detective','THE DETECTIVE','name, flaw, why this case hooks into his past'],
+         ['complication','THE COMPLICATION','the case widens; the department/city pushes back'],
+         ['stakes','THE COST','what solving it will take from him'],
+         ['promise','THE PROMISE','series line: "Book N in the [Name] series — a case closed in every book, a city that never is."']],
+  cats:['Mystery, Thriller & Suspense > Mystery > Police Procedurals','Mystery > Hard-Boiled','Thrillers > Crime'],
+  kws:['police procedural series','detective mystery','crime thriller series','flawed detective','serial killer thriller (if it fits)']},
+ 'fantasy':{n:'Epic / Urban Fantasy',lead:'World in a breath, hero with a wound, stakes at scale. Don\'t summarize the map — sell the ache.',
+  hooks:['The empire fell in a night. The reckoning has taken twenty years.','Magic came back on a Tuesday. It came back angry.'],
+  beats:[['world','THE WORLD','one breath of premise — what\'s broken or hidden'],
+         ['hero','THE HERO','who they are, the power/duty they didn\'t ask for'],
+         ['call','THE CALL','the event that drags them in'],
+         ['stakes','THE STAKES','what falls if they fail — and what it costs to win'],
+         ['promise','THE PROMISE','found fellowship/magic system/series arc signals']],
+  cats:['Science Fiction & Fantasy > Fantasy > Epic','Fantasy > Sword & Sorcery','Fantasy > Paranormal & Urban (if UF)'],
+  kws:['epic fantasy series','urban fantasy','hard magic system','found family fantasy','dragon fantasy']},
+ 'scifi':{n:'Sci-Fi',lead:'Concept first — this shelf buys ideas. Then the crew/lead, then the countdown.',
+  hooks:['The colony went silent nine years ago. This morning, it answered.','First contact was supposed to take centuries. We had six hours.'],
+  beats:[['concept','THE CONCEPT','the idea in one line — the hook this shelf pays for'],
+         ['lead','THE LEAD / CREW','who has to deal with it, and why them'],
+         ['escalate','THE ESCALATION','the problem compounds; the physics/politics bite'],
+         ['stakes','THE STAKES','ship, colony, species — pick your scale'],
+         ['promise','THE PROMISE','tone signal: hard SF rigor / space-opera crew / military unit']],
+  cats:['Science Fiction & Fantasy > Science Fiction > Space Opera (or Hard SF/Military)','Science Fiction > First Contact','Science Fiction > Colonization'],
+  kws:['space opera series','hard science fiction','military scifi','first contact','ai science fiction']},
+ 'horror':{n:'Horror / Gothic',lead:'Dread, not gore. The blurb is a slow door opening — end before the reader is ready.',
+  hooks:['Every house has a history. This one has a hunger.','They warned her not to buy the Blackmoor place. They didn\'t say why.'],
+  beats:[['arrival','THE ARRIVAL','who comes to the place, and why they can\'t leave'],
+         ['wrong','THE WRONGNESS','the small things first — the details that don\'t add up'],
+         ['escalate','THE ESCALATION','it notices them back'],
+         ['cost','THE COST TEASE','what the place/entity takes — implied, not shown'],
+         ['promise','THE PROMISE','tone: atmospheric dread / gothic / cosmic; content note if extreme']],
+  cats:['Literature & Fiction > Horror > Ghosts','Horror > Occult','Horror > Gothic'],
+  kws:['haunted house horror','gothic horror novel','supernatural suspense','folk horror','atmospheric horror']},
+ 'bookclub':{n:'Book Club / Historical Fiction',lead:'Sell the emotional question and the era/secret. This shelf buys "what would I have done?"',
+  hooks:['Three generations of women. One secret that shaped them all.','In 1943, she made a choice. In 2024, her granddaughter finds the letters.'],
+  beats:[['moment','THE MOMENT','the event/discovery that cracks open the life'],
+         ['her','HER (OR THEM)','the woman/women at the center — then and/or now'],
+         ['secret','THE SECRET / CHOICE','what was hidden, and what it cost'],
+         ['threads','THEN & NOW','how the timelines/generations pull at each other'],
+         ['question','THE QUESTION','the book-club question the story asks — forgiveness, duty, truth']],
+  cats:['Literature & Fiction > Women\'s Fiction','Literature & Fiction > Historical Fiction','Literature & Fiction > Family Life'],
+  kws:['book club fiction','dual timeline historical fiction','ww2 historical fiction','family saga secrets','emotional women\'s fiction']},
+ 'western-action':{n:'Western / Action-Adventure',lead:'The code, the man, the trouble. Plain talk, big country, justice by the last page.',
+  hooks:['He rode in looking for supper and a bed. He found a town on its knees.','Some maps are drawn in ink. This one was drawn in blood.'],
+  beats:[['man','THE MAN','the drifter/marshal/expert and his code'],
+         ['trouble','THE TROUBLE','what\'s wrong in the town / what the artifact awakens'],
+         ['line','THE LINE','why he can\'t ride past it'],
+         ['odds','THE ODDS','who he\'s up against — make it lopsided'],
+         ['promise','THE PROMISE','justice delivered / world saved; series hero line']],
+  cats:['Literature & Fiction > Westerns','Action & Adventure','Thrillers > Historical'],
+  kws:['classic western','gunfighter western series','action adventure treasure','frontier justice','clean western']},
+ 'litrpg':{n:'LitRPG / Progression',lead:'The system, the underdog, the climb. Numbers-go-up readers want the mechanics IN the blurb.',
+  hooks:['Level 1. No class. No skills. The dungeon doesn\'t care.','When the System arrived, it ranked humanity. It ranked Marcus last.'],
+  beats:[['system','THE SYSTEM','the apocalypse/game rules in one line'],
+         ['underdog','THE UNDERDOG','the lead and his laughable starting stats'],
+         ['build','THE BUILD','the broken skill/edge he discovers'],
+         ['climb','THE CLIMB','dungeons, tournaments, rankings — the ladder'],
+         ['promise','THE PROMISE','progression signals: stat sheets, no harem (or yes), grind pays off, book N']],
+  cats:['Science Fiction & Fantasy > Fantasy > LitRPG (via keywords)','Fantasy > Sword & Sorcery','Science Fiction > Adventure'],
+  kws:['litrpg series','progression fantasy','dungeon crawl litrpg','system apocalypse','weak to strong fantasy']}
+};
+
+/* lane string → formula key */
+function guessFormula(lane){
+  const s=(lane||'').toLowerCase();
+  const rules=[['romantic comedy','romcom'],['romcom','romcom'],
+   ['dark','dark'],['mafia','dark'],['motorcycle','dark'],['mc ','dark'],['why choose','dark'],['harem','dark'],
+   ['romantasy','romantasy'],['fantasy romance','romantasy'],
+   ['paranormal','paranormal'],['monster','paranormal'],['alien','paranormal'],
+   ['sweet','sweet'],['clean','sweet'],['inspirational','sweet'],['christian','sweet'],['holiday','sweet'],
+   ['cozy','cozy-mystery'],
+   ['psychological','thriller'],['domestic','thriller'],
+   ['detective','crime'],['procedural','crime'],['hardboiled','crime'],['pi','crime'],['legal','crime'],['serial killer','crime'],['crime','crime'],
+   ['thriller','thriller'],['suspense','romance-steamy'],
+   ['litrpg','litrpg'],['progression','litrpg'],
+   ['epic','fantasy'],['urban fantasy','fantasy'],['grimdark','fantasy'],['ya','romantasy'],
+   ['space','scifi'],['sci-fi','scifi'],['science','scifi'],['military sci','scifi'],['dystop','scifi'],['apocalyp','scifi'],['hard sf','scifi'],
+   ['horror','horror'],['gothic','horror'],['cosmic','horror'],
+   ['book club','bookclub'],['women','bookclub'],['literary','bookclub'],['historical fiction','bookclub'],
+   ['western','western-action'],['cowboy','romance-steamy'],['adventure','western-action'],['treasure','western-action'],
+   ['historical','romance-steamy'],['regency','romance-steamy'],['medieval','romance-steamy'],
+   ['romance','romance-steamy'],['billionaire','romance-steamy'],['hockey','romance-steamy'],['small town','romance-steamy'],['mountain','romance-steamy']];
+  for(const [kw,key] of rules){ if(s.includes(kw)) return key; }
+  return 'romance-steamy';
+}
+
+/* ============ state ============ */
+let state=null;
+function blank(){ return {v:1, formula:'', beats:{}, kws:['','','','','','',''], fields:{}, kitTropes:[]}; }
+const FIELDS=['f_title','f_pen','f_lane','f_tropes','f_hook','f_cat1','f_cat2','f_cat3'];
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function F(){ return FORMULAS[state.formula]; }
+
+function init(){
+  load();
+  renderKits();
+  const sel=document.getElementById('f_formula');
+  sel.innerHTML='<option value="">— pick or import a kit —</option>'+Object.keys(FORMULAS).map(k=>'<option value="'+k+'">'+FORMULAS[k].n+'</option>').join('');
+  sel.value=state.formula||'';
+  sel.addEventListener('change',()=>{ setFormula(sel.value,true); });
+  FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(state.fields[id]!=null) el.value=state.fields[id];
+    el.addEventListener('input',()=>{
+      state.fields[id]=el.value;
+      if(id==='f_lane' && !state.formula){ setFormula(guessFormula(el.value)); }
+      if(id==='f_tropes'){ state.kitTropes=el.value.split(',').map(s=>s.trim()).filter(Boolean); buildKwSuggest(); }
+      save(); renderAllOut();
+    });
+  });
+  if(state.formula) setFormula(state.formula, false, true);
+}
+
+function renderKits(){
+  const wrap=document.getElementById('kitCards'); wrap.innerHTML=''; let found=0;
+  KIT_SOURCES.forEach(([key,label])=>{
+    let k=null; try{ k=JSON.parse(localStorage.getItem(key)); }catch(e){}
+    if(!k||!k.genre) return; found++;
+    const c=document.createElement('div'); c.className='kitcard';
+    c.innerHTML='<div class="kc-src">'+label+'</div><div class="kc-genre">'+k.genre+'</div><div class="kc-meta">'+(k.pen?('Pen: '+k.pen+' · '):'')+'tap to import</div>';
+    c.onclick=()=>{
+      state.fields.f_lane=k.genre||''; state.fields.f_pen=k.pen||state.fields.f_pen||'';
+      state.kitTropes=(k.tropes||[]).slice(); state.fields.f_tropes=state.kitTropes.join(', ');
+      ['f_lane','f_pen','f_tropes'].forEach(id=>{ document.getElementById(id).value=state.fields[id]||''; });
+      const kl=document.getElementById('kitLoaded'); kl.classList.add('show');
+      kl.innerHTML='✅ Working from your <b>'+k.genre+'</b> kit'+((k.heat||k.tone)?(' · '+(k.heat||k.tone)+' — signal it in the blurb\'s promise'):'')+'.';
+      setFormula(guessFormula(k.genre), true);
+      toast('Kit imported — formula set to '+F().n);
+    };
+    wrap.appendChild(c);
+  });
+  if(!found) wrap.innerHTML='<div style="grid-column:1/-1;color:#9a8674;font-style:italic;font-size:13px;">No Identity Kits found in this browser — fill the lane by hand and the formula auto-picks.</div>';
+}
+
+function setFormula(key, announce, restoring){
+  if(!FORMULAS[key]) return;
+  const changed=state.formula && state.formula!==key;
+  state.formula=key;
+  document.getElementById('f_formula').value=key;
+  if(changed && !restoring){ state.beats={}; state.fields.f_hook=''; document.getElementById('f_hook').value=''; }
+  const F0=FORMULAS[key];
+  document.getElementById('blurbPanel').style.display='block';
+  document.getElementById('metaPanel').style.display='block';
+  document.getElementById('outPanel').style.display='block';
+  document.getElementById('formulaLead').innerHTML='<b>'+F0.n+' formula.</b> '+F0.lead;
+  // hooks
+  const hc=document.getElementById('hookChips'); hc.innerHTML='';
+  F0.hooks.forEach(h=>{
+    const ch=document.createElement('div'); ch.className='chip'; ch.textContent=h;
+    ch.onclick=()=>{ state.fields.f_hook=h; document.getElementById('f_hook').value=h; save(); renderAllOut(); toast('Hook pattern loaded — make it yours'); };
+    hc.appendChild(ch);
+  });
+  // beats
+  const bb=document.getElementById('beats'); bb.innerHTML='';
+  F0.beats.forEach(([bk,label,hint])=>{
+    const d=document.createElement('div'); d.className='beat';
+    d.innerHTML='<h4>'+label+'</h4><div class="bhint">'+hint+'</div>';
+    const ta=document.createElement('textarea'); ta.placeholder='Leave blank and Claude will write this beat';
+    ta.value=(state.beats[bk]||'');
+    ta.addEventListener('input',()=>{ state.beats[bk]=ta.value; save(); renderAllOut(); });
+    d.appendChild(ta); bb.appendChild(d);
+  });
+  // categories
+  document.getElementById('catHint').textContent='Suggested for this shelf: '+F0.cats.join('  ·  ');
+  ['f_cat1','f_cat2','f_cat3'].forEach((id,i)=>{
+    if(!state.fields[id]){ state.fields[id]=F0.cats[i]||''; document.getElementById(id).value=state.fields[id]; }
+  });
+  buildKwSuggest(); buildKwSlots();
+  save(); renderAllOut();
+  if(announce && !restoring) document.getElementById('blurbPanel').scrollIntoView({behavior:'smooth'});
+}
+
+/* keywords */
+function kwCandidates(){
+  const F0=F(); if(!F0) return [];
+  const fromTropes=state.kitTropes.map(t=>t.toLowerCase().replace(/\(.*?\)/g,'').replace(/[\/&]/g,' ').replace(/\s+/g,' ').trim()).filter(t=>t.length>3).slice(0,8);
+  const lane=(state.fields.f_lane||'').toLowerCase();
+  const set=[...new Set([...fromTropes.map(t=>t+(lane.includes('romance')||F0.n.toLowerCase().includes('romance')?' romance':'')), ...F0.kws])];
+  return set.slice(0,14);
+}
+function buildKwSuggest(){
+  const c=document.getElementById('kwSuggest'); if(!c) return; c.innerHTML='';
+  kwCandidates().forEach(kw=>{
+    const used=state.kws.includes(kw);
+    const ch=document.createElement('div'); ch.className='chip'+(used?' on':''); ch.textContent=kw;
+    ch.onclick=()=>{
+      const i=state.kws.indexOf(kw);
+      if(i>=0){ state.kws[i]=''; }
+      else { const slot=state.kws.findIndex(x=>!x); if(slot<0){ toast('All 7 slots full — clear one first.'); return; } state.kws[slot]=kw; }
+      buildKwSuggest(); buildKwSlots(); save(); renderAllOut();
+    };
+    c.appendChild(ch);
+  });
+}
+function buildKwSlots(){
+  const g=document.getElementById('kwSlots'); g.innerHTML='';
+  for(let i=0;i<7;i++){
+    const row=document.createElement('div'); row.className='kwrow';
+    const n=document.createElement('span'); n.className='n'; n.textContent=(i+1)+'.';
+    const inp=document.createElement('input'); inp.type='text'; inp.value=state.kws[i]||''; inp.placeholder='keyword phrase '+(i+1);
+    inp.addEventListener('input',()=>{ state.kws[i]=inp.value; save(); buildKwSuggest(); renderAllOut(); });
+    row.appendChild(n); row.appendChild(inp); g.appendChild(row);
+  }
+}
+
+/* ============ output ============ */
+function c(v, what){ return (v&&(''+v).trim()) ? (''+v).trim() : '⟨ Claude, '+(what||'pick this for me')+' ⟩'; }
+function assembledBlurb(claudeMode){
+  const F0=F(); if(!F0) return '';
+  const parts=[];
+  const hook=state.fields.f_hook&&state.fields.f_hook.trim();
+  parts.push(claudeMode ? c(hook,'write the hook line — one sentence that stops the scroll') : (hook||''));
+  F0.beats.forEach(([bk,label,hint])=>{
+    const v=state.beats[bk]&&state.beats[bk].trim();
+    parts.push(claudeMode ? c(v,'write the '+label+' beat: '+hint) : (v||''));
+  });
+  return parts.filter(Boolean).join('\n\n');
+}
+function renderAllOut(){
+  const F0=F(); if(!F0) return;
+  // preview
+  const pv=document.getElementById('preview');
+  const hook=state.fields.f_hook&&state.fields.f_hook.trim();
+  let html=hook?('<div class="hookline">'+esc(hook)+'</div>'):'<div class="ph">— hook line —</div>';
+  F0.beats.forEach(([bk,label])=>{
+    const v=state.beats[bk]&&state.beats[bk].trim();
+    html+=v?('<p style="margin-top:10px">'+esc(v)+'</p>'):('<p class="ph" style="margin-top:10px">— '+label.toLowerCase()+' —</p>');
+  });
+  pv.innerHTML=html;
+  const words=assembledBlurb(false).split(/\s+/).filter(Boolean).length;
+  document.getElementById('wordcount').textContent=words+' words '+(words===0?'':words<80?'· short — fine for short reads':words<=200?'· ✓ sweet spot (100–200)':'· ⚠ long — trim toward 200 max');
+  // kit
+  const out=buildOut();
+  document.getElementById('out').textContent=out;
+  const n=Math.max(0,(out.match(/⟨ Claude/g)||[]).length-(out.includes('NOTE TO CLAUDE')?1:0));
+  document.getElementById('pickNote').innerHTML = n
+    ? '✍️ <b>'+n+'</b> '+(n===1?'spot is':'spots are')+' blank — marked <code>⟨ Claude, pick this for me ⟩</code>. Claude writes those beats to fit the rest.'
+    : '✅ Every spot is filled — this product page is ready.';
+}
+function buildOut(){
+  const F0=F(); if(!F0) return 'Pick a lane or formula above.';
+  const f=state.fields;
+  const L=[];
+  L.push('# METADATA KIT — '+c(f.f_title,'suggest a title')+' ('+F0.n+')');
+  L.push('');
+  L.push('> NOTE TO CLAUDE: anything marked ⟨ Claude, … ⟩ was left blank on purpose — write it to fit the lane, the tropes, and the rest of this kit, then list what you wrote.');
+  L.push('');
+  L.push('## The book');
+  L.push('- Title: '+c(f.f_title,'suggest a title'));
+  L.push('- Pen name: '+c(f.f_pen));
+  L.push('- Lane: '+c(f.f_lane,'name the lane'));
+  L.push('- Selling tropes: '+(state.kitTropes.length?state.kitTropes.join(', '):'⟨ Claude, list the tropes this book should sell ⟩'));
+  L.push('');
+  L.push('## Blurb ('+F0.n+' formula)');
+  L.push(assembledBlurb(true));
+  L.push('');
+  L.push('## 7 KDP keyword slots');
+  const anyKw=state.kws.some(k=>k&&k.trim());
+  if(anyKw){ state.kws.forEach((k,i)=>L.push((i+1)+'. '+(k&&k.trim()?k.trim():'⟨ Claude, fill slot '+(i+1)+' with a reader-language phrase ⟩'))); }
+  else L.push('⟨ Claude, fill all 7 slots with reader-language phrases from the tropes and lane — no author names, no "free"/"bestseller", no words already in the title ⟩');
+  L.push('');
+  L.push('## Categories');
+  L.push('1. '+c(f.f_cat1,'pick the primary category path for this shelf'));
+  L.push('2. '+c(f.f_cat2,'pick the secondary category path'));
+  L.push('3. '+c(f.f_cat3,'pick a less-competitive backup category'));
+  L.push('');
+  L.push('## Rules applied');
+  L.push('- Hook line bolded as line one; paragraphs 1–3 sentences; total 100–200 words.');
+  L.push('- Keywords: reader language, no comp author names, no banned terms, no title-word repeats.');
+  L.push('- The blurb promises ONLY what the book delivers — tropes, heat/tone, and ending type.');
+  return L.join('\n');
+}
+function esc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copyBlurbOnly(){
+  const b=assembledBlurb(false);
+  if(!b.trim()){ toast('Blurb is empty — fill beats or use "Copy full kit" for the Claude version.'); return; }
+  copyText(b,'Blurb copied.');
+}
+function copyKitOut(){ copyText(buildOut(),'Full kit copied.'); }
+function downloadKit(){
+  const base=((state.fields.f_title||'metadata-kit')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'metadata-kit';
+  const blob=new Blob([buildOut()],{type:'text/markdown'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=base+'-metadata.md'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Downloaded.');
+}
+function copyClaude(){
+  copyText('You\'re a blurb doctor for the '+(F()?F().n:'')+' shelf. First, write anything marked ⟨ Claude, … ⟩ so it fits the lane and tropes, and show me what you wrote. Then pressure-test the whole blurb like a reader scrolling at midnight: does the hook stop the thumb, does each paragraph raise the temperature, does the promise match the tropes and heat? Rewrite weak beats. Then check my 7 keywords for wasted slots and my categories for better-fit or less-competitive options. Here\'s the kit:\n\n'+buildOut(),'Prompt copied — paste it into Claude.');
+}
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the blurb and metadata.')) return;
+  state=blank(); save();
+  FIELDS.forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_formula').value='';
+  ['blurbPanel','metaPanel','outPanel'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('kitLoaded').classList.remove('show');
+  renderKits(); window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh page.');
+}
+init();
+</script>
+</body>
+</html>
