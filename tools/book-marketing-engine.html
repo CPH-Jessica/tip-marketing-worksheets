@@ -195,9 +195,22 @@ footer{max-width:1100px;margin:40px auto;padding:0 20px;color:var(--ink2);font-s
 
     <h3>The people on the page</h3>
     <div class="grid2">
-      <div class="fitem"><label class="f">Main character 1 (name)</label><input type="text" id="fCharA"></div>
-      <div class="fitem"><label class="f">Main character 2 / love interest (name)</label><input type="text" id="fCharB"></div>
+      <div class="fitem"><label class="f">Main character 1 — the blurb centers on this one</label><input type="text" id="fCharA">
+        <select id="fCharAPro" style="margin-top:6px">
+          <option value="she" selected>she / her</option>
+          <option value="he">he / him</option>
+          <option value="they">they / them</option>
+        </select>
+      </div>
+      <div class="fitem"><label class="f">Main character 2 / love interest</label><input type="text" id="fCharB">
+        <select id="fCharBPro" style="margin-top:6px">
+          <option value="she">she / her</option>
+          <option value="he" selected>he / him</option>
+          <option value="they">they / them</option>
+        </select>
+      </div>
     </div>
+    <div class="btnrow" style="margin-top:4px"><button class="btn sec sm" onclick="swapLeads()">⇄ Swap who is who</button><span class="hint" style="font-size:13px;color:var(--ink2)">The scan guesses from pronouns near each name — flip them if it guessed wrong. Every blurb pronoun follows these two menus.</span></div>
 
     <h3>Three questions that make your blurb sing <span class="pill">optional but powerful</span></h3>
     <div class="fitem"><label class="f">What does your main character want more than anything?</label><input type="text" id="fWant" placeholder="e.g. to save the family orchard before the bank takes it"></div>
@@ -639,62 +652,62 @@ const DETECT = [
 /* Marketing extras for high-traffic tropes: kw = keyword phrases,
    tag = tagline templates, hash = hashtags, hook = blurb collision line. */
 const TROPE_EXTRA = {
-"Enemies to Lovers":{kw:["enemies to lovers romance","rivals to lovers","hate to love romance"],hash:["#enemiestolovers","#rivalstolovers","#hatetolove"],tag:["She hates everything about him. Except the way he looks at her.","The only thing stronger than the feud… is the pull.","They were supposed to destroy each other. They did — just not like that."],hook:"{B} is everything {A} can't stand — arrogant, infuriating, and impossible to ignore. So why can't {A} stop thinking about {B}?"},
-"Friends to Lovers":{kw:["friends to lovers romance","best friends romance","friendship to love story"],hash:["#friendstolovers","#bestfriendsromance"],tag:["One kiss could ruin everything. Or finally make it right.","The love of her life has been standing beside her the whole time."],hook:"They've been best friends forever. One night blurs the line — and there's no unseeing what's on the other side."},
+"Enemies to Lovers":{kw:["enemies to lovers romance","rivals to lovers","hate to love romance"],hash:["#enemiestolovers","#rivalstolovers","#hatetolove"],tag:["{as} hates everything about {bo}. Except the way {bs} looks at {ao}.","The only thing stronger than the feud… is the pull.","They were supposed to destroy each other. They did — just not like that."],hook:"{B} is everything {A} can't stand — arrogant, infuriating, and impossible to ignore. So why can't {A} stop thinking about {B}?"},
+"Friends to Lovers":{kw:["friends to lovers romance","best friends romance","friendship to love story"],hash:["#friendstolovers","#bestfriendsromance"],tag:["One kiss could ruin everything. Or finally make it right.","The love of {ap} life has been standing beside {ao} the whole time."],hook:"They've been best friends forever. One night blurs the line — and there's no unseeing what's on the other side."},
 "Second Chance Romance":{kw:["second chance romance","reunited lovers","old flame romance"],hash:["#secondchanceromance","#reunitedlovers"],tag:["Some flames don't die. They wait.","Ten years. One town. Zero chance of avoiding each other."],hook:"{A} swore never to come back. But {B} — and everything they left unfinished — is still here."},
 "Fake Dating / Marriage":{kw:["fake dating romance","fake relationship","marriage pact romance","fake fiancee romance"],hash:["#fakedating","#fakerelationship"],tag:["The relationship is fake. The feelings forgot the script.","Rule one: don't fall in love. They broke rule one."],hook:"It's the perfect arrangement: {A} needs a date, {B} needs a favor. Nobody mentioned what happens when the pretending starts feeling real."},
 "Forced Proximity":{kw:["forced proximity romance","stranded together romance","close quarters romance"],hash:["#forcedproximity","#strandedtogether"],tag:["Nowhere to run. No one else to blame. No way to keep pretending."],hook:"Fate locks {A} and {B} in the same four walls — and every escape route leads straight through each other."},
-"Grumpy / Sunshine":{kw:["grumpy sunshine romance","grumpy hero romance","opposites attract love"],hash:["#grumpysunshine","#grumpyxsunshine"],tag:["He scowls at everyone. She's about to become the exception.","Warning: persistent sunshine may melt even the frostiest grump."],hook:"{B} hasn't smiled in years. {A} is about to make that personally offensive."},
-"Age Gap":{kw:["age gap romance","older man younger woman romance","forbidden age gap"],hash:["#agegapromance","#olderman"],tag:["He should know better. She's done waiting for him to remember that."],hook:"The years between them should matter. Every moment they're together, they matter less."},
+"Grumpy / Sunshine":{kw:["grumpy sunshine romance","grumpy hero romance","opposites attract love"],hash:["#grumpysunshine","#grumpyxsunshine"],tag:["{bs} scowls at everyone. {as} is about to become the exception.","Warning: persistent sunshine may melt even the frostiest grump."],hook:"{B} hasn't smiled in years. {A} is about to make that personally offensive."},
+"Age Gap":{kw:["age gap romance","older man younger woman romance","forbidden age gap"],hash:["#agegapromance","#olderman"],tag:["{bs} should know better. {as} is done waiting for {bo} to remember that."],hook:"The years between them should matter. Every moment they're together, they matter less."},
 "Forbidden Love":{kw:["forbidden romance","off limits romance","secret love story"],hash:["#forbiddenlove","#offlimits"],tag:["Everything about this is wrong. Nothing has ever felt so right."],hook:"There are a hundred reasons {A} can't have {B}. None of them survive a locked door and a secret worth keeping."},
 "Marriage of Convenience":{kw:["marriage of convenience romance","contract marriage","in name only romance"],hash:["#marriageofconvenience","#contractmarriage"],tag:["It's strictly business. Until it strictly isn't."],hook:"The contract was simple: a marriage on paper, nothing more. But paper burns."},
-"Secret Baby":{kw:["secret baby romance","surprise baby romance","hidden child second chance"],hash:["#secretbaby","#secretbabyromance"],tag:["He left without knowing. He's back without warning."],hook:"{A} kept one secret from {B}. It's four years old and has {B}'s eyes."},
-"Billionaire Romance":{kw:["billionaire romance","ceo romance","rich alpha hero"],hash:["#billionaireromance","#ceoromance"],tag:["He can buy anything. She's not for sale.","His empire runs on his rules. She rewrites them in a week."],hook:"{B} owns half the city and everyone in it. {A} is the one thing money can't touch — which makes her the only thing he wants."},
-"Small Town Romance":{kw:["small town romance","hometown love story","cozy small town series"],hash:["#smalltownromance","#hometownlove"],tag:["In a town this small, there's no such thing as avoiding him.","Population 3,000. Secrets: zero. Sparks: everywhere."],hook:"In {TOWN}, everyone knows everyone's business — so the whole town sees what's happening between {A} and {B} before they'll admit it themselves."},
+"Secret Baby":{kw:["secret baby romance","surprise baby romance","hidden child second chance"],hash:["#secretbaby","#secretbabyromance"],tag:["{bs} left without knowing. {bs} is back without warning."],hook:"{A} kept one secret from {B}. It's four years old and has {B}'s eyes."},
+"Billionaire Romance":{kw:["billionaire romance","ceo romance","rich alpha hero"],hash:["#billionaireromance","#ceoromance"],tag:["{bs} can buy anything. {as} is not for sale.","{bp} empire runs on {bp} rules. {as} rewrites them in a week."],hook:"{B} owns half the city and everyone in it. {A} is the one thing money can't touch — which makes {ao} the only thing {bs} wants."},
+"Small Town Romance":{kw:["small town romance","hometown love story","cozy small town series"],hash:["#smalltownromance","#hometownlove"],tag:["In a town this small, there's no such thing as avoiding {bo}.","Population 3,000. Secrets: zero. Sparks: everywhere."],hook:"In {TOWN}, everyone knows everyone's business — so the whole town sees what's happening between {A} and {B} before they'll admit it themselves."},
 "Workplace / Office Romance":{kw:["office romance","boss employee romance","workplace enemies to lovers"],hash:["#officeromance","#bossromance"],tag:["HR would like a word. Several, actually."],hook:"Falling for {B} could cost {A} everything — the job, the reputation, the carefully ordered life. The office has never felt so small."},
-"Brother's Best Friend":{kw:["brothers best friend romance","best friends sister","off limits romance"],hash:["#brothersbestfriend","#offlimits"],tag:["Ten years of hands-off. One weekend to break every rule."],hook:"{B} has been off-limits since forever — her brother made sure of it. But some lines were drawn to be crossed."},
-"Bodyguard Romance":{kw:["bodyguard romance","protector romance","romantic suspense bodyguard"],hash:["#bodyguardromance","#protectorromance"],tag:["His job is to guard her body. Nobody said anything about his heart."],hook:"{B} was hired to keep {A} alive. The threat he can't neutralize is the one building between them."},
-"Single Parent":{kw:["single dad romance","single mom romance","small town single parent"],hash:["#singledadromance","#singlemomromance"],tag:["She wasn't looking for love. Especially not a package deal."],hook:"{B} comes as a package deal — and the small human attached is the toughest gatekeeper {A} has ever charmed."},
-"He Falls First":{kw:["he falls first romance","hero falls first","devoted hero romance"],hash:["#hefallsfirst","#hefallsharder"],tag:["He's been gone for her since day one. She just hasn't noticed yet."],hook:"{B} fell first. Hard. Now he just has to survive watching {A} figure it out."},
-"Pining":{kw:["slow burn pining romance","unrequited love story","yearning romance"],hash:["#pining","#yearning","#slowburn"],tag:["He's loved her from across the room for years. Tonight the room got smaller."],hook:"Years of wanting from a distance. One moment that closes it."},
-"Hurt / Comfort":{kw:["hurt comfort romance","healing love story","emotional wounded hero"],hash:["#hurtcomfort","#healingromance"],tag:["He's not broken. But she's the first person who makes him want to be whole."],hook:"{A} is holding it together with tape and stubbornness. {B} is the first person who sees through it — and stays."},
+"Brother's Best Friend":{kw:["brothers best friend romance","best friends sister","off limits romance"],hash:["#brothersbestfriend","#offlimits"],tag:["Ten years of hands-off. One weekend to break every rule."],hook:"{B} has been off-limits since forever — {ap} brother made sure of it. But some lines were drawn to be crossed."},
+"Bodyguard Romance":{kw:["bodyguard romance","protector romance","romantic suspense bodyguard"],hash:["#bodyguardromance","#protectorromance"],tag:["{bp} job is to guard {ap} body. Nobody said anything about {bp} heart."],hook:"{B} was hired to keep {A} alive. The threat {bs} can't neutralize is the one building between them."},
+"Single Parent":{kw:["single dad romance","single mom romance","small town single parent"],hash:["#singledadromance","#singlemomromance"],tag:["{as} wasn't looking for love. Especially not a package deal."],hook:"{B} comes as a package deal — and the small human attached is the toughest gatekeeper {A} has ever charmed."},
+"He Falls First":{kw:["he falls first romance","hero falls first","devoted hero romance"],hash:["#hefallsfirst","#hefallsharder"],tag:["{bs} has been gone for {ao} since day one. {as} just hasn't noticed yet."],hook:"{B} fell first. Hard. Now {bs} just has to survive watching {A} figure it out."},
+"Pining":{kw:["slow burn pining romance","unrequited love story","yearning romance"],hash:["#pining","#yearning","#slowburn"],tag:["{bs} has loved {ao} from across the room for years. Tonight the room got smaller."],hook:"Years of wanting from a distance. One moment that closes it."},
+"Hurt / Comfort":{kw:["hurt comfort romance","healing love story","emotional wounded hero"],hash:["#hurtcomfort","#healingromance"],tag:["{bs} is not broken. But {as} is the first person who makes {bo} want to be whole."],hook:"{A} is holding it together with tape and stubbornness. {B} is the first person who sees through it — and stays."},
 "Found Family":{kw:["found family romance","chosen family fiction","heartwarming found family"],hash:["#foundfamily","#chosenfamily"],tag:["Family isn't who you're born to. It's who shows up."],hook:"They're nobody's first choice — misfits, strays, leftovers. Together, they're something no one saw coming: home."},
-"Christmas / Holiday Romance":{kw:["christmas romance","holiday love story","small town christmas romance"],hash:["#christmasromance","#holidayromance"],tag:["All she wanted for Christmas was to survive it. He had other plans."],hook:"One snow-globe town, one season of forced cheer, and one person {A} absolutely did not put on any wish list."},
-"Touch Her and Die":{kw:["protective hero romance","touch her and die","possessive alpha romance"],hash:["#touchherandie","#protectivehero"],tag:["He's not a good man. But he's hers."],hook:"{B} has exactly one rule, and the whole city knows it: nobody touches {A}."},
-"Cowboy / Ranch Romance":{kw:["cowboy romance","ranch romance","western small town love"],hash:["#cowboyromance","#ranchromance"],tag:["Boots, dust, and a heart he swore was retired."],hook:"The ranch is failing, the town is talking, and the last thing {A} needs is {B} riding back into the picture."},
-"Hockey Romance":{kw:["hockey romance","hockey player hero","sports romance series"],hash:["#hockeyromance","#hockeyboyfriend"],tag:["He's lethal on the ice. She melts him in one period."],hook:"{B} plays the most dangerous game on ice — but nothing on the rink scares him like what {A} makes him feel."},
-"Sports Romance":{kw:["sports romance","athlete hero romance","game changer love story"],hash:["#sportsromance","#athleteromance"],tag:["The season on the line. The girl in the stands. One shot at both."],hook:"{B}'s career runs on discipline. {A} is the beautiful wrecking ball his focus never saw coming."},
-"Military / Veteran Hero":{kw:["military romance","veteran hero romance","soldier coming home love"],hash:["#militaryromance","#veteranhero"],tag:["He survived the war. Coming home is the fight he didn't train for."],hook:"{B} came home with medals he won't discuss and walls {A} isn't supposed to breach. She never was good at following orders."},
-"Firefighter / First Responder":{kw:["firefighter romance","first responder hero","rescue romance"],hash:["#firefighterromance","#firstresponder"],tag:["He runs into burning buildings. She's the fire he can't put out."],hook:"{B} spends his life saving strangers. {A} is the one rescue he can't stay professional about."},
-"Rockstar Romance":{kw:["rockstar romance","musician hero romance","fame and love story"],hash:["#rockstarromance","#musicianromance"],tag:["Twenty thousand people scream his name. He only hears hers."],hook:"The whole world wants a piece of {B}. {A} is the only one who wants the man behind the noise — which is exactly why he can't stay away."},
-"Mafia Romance":{kw:["mafia romance","dark mafia arranged marriage","crime boss romance"],hash:["#mafiaromance","#darkromance"],tag:["He rules the city's underworld. She just became its queen.","Loyalty is his religion. She's about to become his faith."],hook:"{B}'s world runs on blood and loyalty. {A} was never supposed to be part of it — now she's at the center, and he'd burn it all down before he lets anyone touch her."},
-"Dark Captive / Captor":{kw:["dark captive romance","captor romance","dark romance kidnapping"],hash:["#darkromance","#captiveromance"],tag:["He stole her freedom. She stole something worse."],hook:"{B} took {A} for reasons that had nothing to do with her. Keeping her is becoming a reason of its own."},
-"Obsessed Hero":{kw:["obsessed hero romance","possessive hero dark romance","obsession love story"],hash:["#obsessedhero","#possessivehero"],tag:["He knows it's too much. He doesn't care."],hook:"{B} doesn't do halfway. From the moment he sees {A}, there is no version of this where he walks away."},
+"Christmas / Holiday Romance":{kw:["christmas romance","holiday love story","small town christmas romance"],hash:["#christmasromance","#holidayromance"],tag:["All {as} wanted for Christmas was to survive it. {bs} had other plans."],hook:"One snow-globe town, one season of forced cheer, and one person {A} absolutely did not put on any wish list."},
+"Touch Her and Die":{kw:["protective hero romance","touch her and die","possessive alpha romance"],hash:["#touchherandie","#protectivehero"],tag:["{bs} is not a good {bnoun}. But {bs} is {A}'s."],hook:"{B} has exactly one rule, and the whole city knows it: nobody touches {A}."},
+"Cowboy / Ranch Romance":{kw:["cowboy romance","ranch romance","western small town love"],hash:["#cowboyromance","#ranchromance"],tag:["Boots, dust, and a heart {bs} swore was retired."],hook:"The ranch is failing, the town is talking, and the last thing {A} needs is {B} riding back into the picture."},
+"Hockey Romance":{kw:["hockey romance","hockey player hero","sports romance series"],hash:["#hockeyromance","#hockeyboyfriend"],tag:["{bs} is lethal on the ice. {as} melts {bo} in one period."],hook:"{B} plays the most dangerous game on ice — but nothing on the rink scares {bo} like what {A} makes {bo} feel."},
+"Sports Romance":{kw:["sports romance","athlete hero romance","game changer love story"],hash:["#sportsromance","#athleteromance"],tag:["The season on the line. The {anoun} in the stands. One shot at both."],hook:"{B}'s career runs on discipline. {A} is the beautiful wrecking ball {bp} focus never saw coming."},
+"Military / Veteran Hero":{kw:["military romance","veteran hero romance","soldier coming home love"],hash:["#militaryromance","#veteranhero"],tag:["{bs} survived the war. Coming home is the fight {bs} didn't train for."],hook:"{B} came home with medals {bs} won't discuss and walls {A} isn't supposed to breach. {as} never was good at following orders."},
+"Firefighter / First Responder":{kw:["firefighter romance","first responder hero","rescue romance"],hash:["#firefighterromance","#firstresponder"],tag:["{bs} runs into burning buildings. {as} is the fire {bs} can't put out."],hook:"{B} spends {bp} life saving strangers. {A} is the one rescue {bs} can't stay professional about."},
+"Rockstar Romance":{kw:["rockstar romance","musician hero romance","fame and love story"],hash:["#rockstarromance","#musicianromance"],tag:["Twenty thousand people scream {bp} name. {bs} only hears {A}'s."],hook:"The whole world wants a piece of {B}. {A} is the only one who wants the {bnoun} behind the noise — which is exactly why {bs} can't stay away."},
+"Mafia Romance":{kw:["mafia romance","dark mafia arranged marriage","crime boss romance"],hash:["#mafiaromance","#darkromance"],tag:["{bs} rules the city's underworld. {as} just took its throne.","Loyalty is {bp} religion. {as} is about to become {bp} faith."],hook:"{B}'s world runs on blood and loyalty. {A} was never supposed to be part of it — now {as} is at the center, and {bs} would burn it all down before {bs} lets anyone touch {ao}."},
+"Dark Captive / Captor":{kw:["dark captive romance","captor romance","dark romance kidnapping"],hash:["#darkromance","#captiveromance"],tag:["{bs} stole {ap} freedom. {as} stole something worse."],hook:"{B} took {A} for reasons that had nothing to do with {ao}. Keeping {ao} is becoming a reason of its own."},
+"Obsessed Hero":{kw:["obsessed hero romance","possessive hero dark romance","obsession love story"],hash:["#obsessedhero","#possessivehero"],tag:["{bs} knows it's too much. {bs} doesn't care."],hook:"{B} doesn't do halfway. From the moment {bs} sees {A}, there is no version of this where {bs} walks away."},
 "Fated Mates":{kw:["fated mates romance","mate bond fantasy romance","destined mates shifter"],hash:["#fatedmates","#matebond"],tag:["The bond chose them. Everything else is war.","Fate made them mates. It didn't make them ready."],hook:"The bond snaps into place the moment they meet — undeniable, unbreakable, and absolutely not what either of them wanted."},
-"Dragon / Shifter Romance":{kw:["shifter romance","dragon shifter romance","wolf pack romance"],hash:["#shifterromance","#dragonshifter","#wolfshifter"],tag:["The beast chose her before the man admitted it."],hook:"{B} has spent a lifetime controlling what lives under his skin. One scent of {A}, and control stops being an option."},
-"Vampire / Undead Romance":{kw:["vampire romance","immortal love story","paranormal vampire series"],hash:["#vampireromance","#paranormalromance"],tag:["He's had centuries to forget what wanting feels like. She undid it in one night."],hook:"{B} has outlived empires. {A} is mortal, fleeting, forbidden — and the first thing in three hundred years he can't walk away from."},
-"Fae Romance":{kw:["fae romance","fae king fantasy romance","court of fae series"],hash:["#faeromance","#faeking"],tag:["Never trust the fae. Especially the one who looks at you like that."],hook:"Every bargain with the fae has a price. {A} is about to learn what {B} really wanted from the deal — and it was never what she signed."},
-"Shadow Daddy":{kw:["shadow daddy romantasy","dark fae romance","morally gray fantasy love"],hash:["#shadowdaddy","#romantasy","#morallygray"],tag:["Ancient. Powerful. Patient. And down bad for one mortal woman."],hook:"{B} has had centuries to perfect his indifference. {A} dismantles it in a season — and the shadows tell everyone."},
-"Rejected Mate":{kw:["rejected mate romance","rejected mate shifter","mate bond rejection"],hash:["#rejectedmate","#shifterromance"],tag:["He rejected the bond. The bond is about to reject his peace."],hook:"{B} rejected {A} in front of everyone. Now the bond won't die, she won't break, and his regret has teeth."},
-"Monster Romance":{kw:["monster romance","orc romance","cryptid monster love"],hash:["#monsterromance","#orcromance"],tag:["He's exactly what they warned her about. That's the appeal."],hook:"{B} is not human — not softened, not tamed, not safe. {A} wouldn't have him any other way."},
-"Alien Abduction Romance":{kw:["alien abduction romance","alien mate scifi romance","abducted by aliens love"],hash:["#alienromance","#scifiromance"],tag:["Abducted Tuesday. Worshipped by Friday."],hook:"{A} was taken from Earth by beings who see her as cargo. {B} is the one who decides she's something else entirely: his."},
-"Alien Warrior Mate":{kw:["alien warrior romance","fated alien mate","alien mate sci fi"],hash:["#alienmate","#alienwarrior"],tag:["His species mates once. Forever. And his biology just picked the human."],hook:"{B}'s people bond once in a lifetime. The moment he meets {A}, the choice is made — now he just has to convince a very unimpressed human."},
+"Dragon / Shifter Romance":{kw:["shifter romance","dragon shifter romance","wolf pack romance"],hash:["#shifterromance","#dragonshifter","#wolfshifter"],tag:["The beast chose {ao} before the {bnoun} admitted it."],hook:"{B} has spent a lifetime controlling what lives under {bp} skin. One scent of {A}, and control stops being an option."},
+"Vampire / Undead Romance":{kw:["vampire romance","immortal love story","paranormal vampire series"],hash:["#vampireromance","#paranormalromance"],tag:["{bs} has had centuries to forget what wanting feels like. {as} undid it in one night."],hook:"{B} has outlived empires. {A} is mortal, fleeting, forbidden — and the first thing in three hundred years {bs} can't walk away from."},
+"Fae Romance":{kw:["fae romance","fae king fantasy romance","court of fae series"],hash:["#faeromance","#faeking"],tag:["Never trust the fae. Especially the one who looks at you like that."],hook:"Every bargain with the fae has a price. {A} is about to learn what {B} really wanted from the deal — and it was never what {as} signed."},
+"Shadow Daddy":{kw:["shadow daddy romantasy","dark fae romance","morally gray fantasy love"],hash:["#shadowdaddy","#romantasy","#morallygray"],tag:["Ancient. Powerful. Patient. And down bad for one mortal {anoun}."],hook:"{B} has had centuries to perfect {bp} indifference. {A} dismantles it in a season — and the shadows tell everyone."},
+"Rejected Mate":{kw:["rejected mate romance","rejected mate shifter","mate bond rejection"],hash:["#rejectedmate","#shifterromance"],tag:["{bs} rejected the bond. The bond is about to reject {bp} peace."],hook:"{B} rejected {A} in front of everyone. Now the bond won't die, {as} won't break, and {bp} regret has teeth."},
+"Monster Romance":{kw:["monster romance","orc romance","cryptid monster love"],hash:["#monsterromance","#orcromance"],tag:["{bs} is exactly what they warned {ao} about. That's the appeal."],hook:"{B} is not human — not softened, not tamed, not safe. {A} wouldn't have {bo} any other way."},
+"Alien Abduction Romance":{kw:["alien abduction romance","alien mate scifi romance","abducted by aliens love"],hash:["#alienromance","#scifiromance"],tag:["Abducted Tuesday. Worshipped by Friday."],hook:"{A} was taken from Earth by beings who see {ao} as cargo. {B} is the one who decides {as} is something else entirely: {bp} own."},
+"Alien Warrior Mate":{kw:["alien warrior romance","fated alien mate","alien mate sci fi"],hash:["#alienmate","#alienwarrior"],tag:["{bp} species mates once. Forever. And {bp} biology just picked the human."],hook:"{B}'s people bond once in a lifetime. The moment {bs} meets {A}, the choice is made — now {bs} just has to convince a very unimpressed human."},
 "Time Travel Romance":{kw:["time travel romance","across time love story","timeslip romance"],hash:["#timetravelromance","#outlandervibes"],tag:["The wrong century. The right person."],hook:"{A} is two hundred years from home. {B} is the reason going back stops feeling like rescue."},
-"Gothic Romance":{kw:["gothic romance","dark manor mystery romance","atmospheric gothic love"],hash:["#gothicromance","#darkacademia"],tag:["The house is beautiful. The house is lying."],hook:"{A} arrives at the manor with questions. The manor — and the man who owns it — has been waiting with secrets."},
+"Gothic Romance":{kw:["gothic romance","dark manor mystery romance","atmospheric gothic love"],hash:["#gothicromance","#darkacademia"],tag:["The house is beautiful. The house is lying."],hook:"{A} arrives at the manor with questions. The manor — and the {bnoun} who owns it — has been waiting with secrets."},
 "Murder Mystery / Whodunit":{kw:["murder mystery","whodunit crime novel","detective mystery series"],hash:["#murdermystery","#whodunit","#crimefiction"],tag:["Everyone in town had a reason. One of them had the nerve."],hook:"A body, a town full of suspects, and a detective who's starting to realize the killer is watching the investigation."},
 "Cozy Mystery":{kw:["cozy mystery","small town cozy crime","amateur sleuth series"],hash:["#cozymystery","#amateursleuth"],tag:["Murder, muffins, and a sleuth nobody saw coming."],hook:"{A} just wanted to run the shop in peace. Then the body turned up — and the police arrested exactly the wrong person."},
 "Domestic Thriller":{kw:["domestic thriller","psychological suspense marriage","dark family secrets thriller"],hash:["#domesticthriller","#psychologicalthriller"],tag:["The perfect marriage. The perfect house. The perfect lie."],hook:"From the outside it's the life everyone envies. From the inside, {A} is counting exits."},
-"Stalker / Obsession":{kw:["stalker thriller","obsession psychological suspense","watching her thriller"],hash:["#psychologicalthriller","#stalkerthriller"],tag:["He knows her coffee order. Her schedule. Her locks."],hook:"It starts small — a feeling, a note, a shadow that keeps the same hours she does. By the time {A} is sure, he's already inside her life."},
-"Final Girl":{kw:["final girl horror","slasher survivor thriller","horror final girl novel"],hash:["#finalgirl","#horrorbooks"],tag:["She survived the massacre. Surviving the aftermath is harder."],hook:"Everyone knows what happened at the lake. Only {A} knows what really happened — and it knows she knows."},
+"Stalker / Obsession":{kw:["stalker thriller","obsession psychological suspense","watching her thriller"],hash:["#psychologicalthriller","#stalkerthriller"],tag:["{bs} knows {ap} coffee order. {ap} schedule. {ap} locks."],hook:"It starts small — a feeling, a note, a shadow that keeps the same hours {as} does. By the time {A} is sure, {bs} is already inside {ap} life."},
+"Final Girl":{kw:["final girl horror","slasher survivor thriller","horror final girl novel"],hash:["#finalgirl","#horrorbooks"],tag:["{as} survived the massacre. Surviving the aftermath is harder."],hook:"Everyone knows what happened at the lake. Only {A} knows what really happened — and it knows {as} knows."},
 "Locked Room Mystery":{kw:["locked room mystery","closed circle crime","isolated island murder mystery"],hash:["#lockedroommystery","#closedcircle"],tag:["Eight guests. One storm. No way in. No way out. One killer."],hook:"The storm sealed them in at nightfall. By morning, one of them was dead — and the killer is still at the table."},
-"Omegaverse (A/B/O)":{kw:["omegaverse romance","alpha omega romance","pack dynamics romance"],hash:["#omegaverse","#whychoose"],tag:["Biology made the claim. The pack makes it home."],hook:"{A}'s designation was supposed to be a footnote. One scent in a crowded room rewrites her whole future."},
-"Why Choose (Dark RH)":{kw:["why choose romance","reverse harem dark romance","one heroine multiple heroes"],hash:["#whychoose","#reverseharem"],tag:["They said choose. She said no."],hook:"Every one of them is a different kind of dangerous. {A} was never going to pick just one."},
+"Omegaverse (A/B/O)":{kw:["omegaverse romance","alpha omega romance","pack dynamics romance"],hash:["#omegaverse","#whychoose"],tag:["Biology made the claim. The pack makes it home."],hook:"{A}'s designation was supposed to be a footnote. One scent in a crowded room rewrites {ap} whole future."},
+"Why Choose (Dark RH)":{kw:["why choose romance","reverse harem dark romance","one heroine multiple heroes"],hash:["#whychoose","#reverseharem"],tag:["They said choose. {as} said no."],hook:"Every one of them is a different kind of dangerous. {A} was never going to pick just one."},
 "Beauty & the Beast Retelling":{kw:["beauty and the beast retelling","cursed prince romance","fairytale retelling romance"],hash:["#beautyandthebeast","#fairytaleretelling"],tag:["The curse said love. It never said gentle."],hook:"The castle has rules. The beast has secrets. {A} has a bad habit of breaking both."},
 "Dark Academia":{kw:["dark academia novel","secret society campus thriller","elite academy dark fiction"],hash:["#darkacademia","#secretsociety"],tag:["Knowledge is power. Power is worth killing for. They teach both here."],hook:"Admission was the dream. The society behind the school is the nightmare — and {A} is already initiated."},
 "Haunted House / Location":{kw:["haunted house horror","ghost story novel","paranormal haunting fiction"],hash:["#hauntedhouse","#ghoststory"],tag:["Every house has a history. This one has a pulse."],hook:"The price was too good. The town was too quiet. And the house — the house has been waiting for someone exactly like them."},
 "Cosmic Horror":{kw:["cosmic horror","lovecraftian horror novel","eldritch dread fiction"],hash:["#cosmichorror","#lovecraftian"],tag:["The worst part isn't that we're not alone. It's that we never mattered."],hook:"It started with the survey data that couldn't be right. It ends with knowledge that should never fit inside a human mind."},
 "Post-Apocalyptic Survival":{kw:["post apocalyptic novel","survival after collapse fiction","end of the world story"],hash:["#postapocalyptic","#survivalfiction"],tag:["The world ended. The hard part started after."],hook:"The rules died with the old world. Trust is the only currency left — and it's counterfeit more often than not."},
-"Dystopian Rebellion":{kw:["dystopian rebellion novel","resistance uprising fiction","dystopia series"],hash:["#dystopian","#rebellion"],tag:["They built the perfect system. She's the flaw."],hook:"The regime sees everything. Which is why the rebellion needed someone the regime would never suspect: {A}."}
+"Dystopian Rebellion":{kw:["dystopian rebellion novel","resistance uprising fiction","dystopia series"],hash:["#dystopian","#rebellion"],tag:["They built the perfect system. {as} is the flaw."],hook:"The regime sees everything. Which is why the rebellion needed someone the regime would never suspect: {A}."}
 };
 
 /* ═══════════════════ GENRES ═══════════════════ */
@@ -756,6 +769,11 @@ const SETTING_LEX = [
 {tag:"regency ballroom",pat:[/\bballroom\b/gi,/\bcarriage\b/gi,/\bthe season\b/gi,/\bthe ton\b/gi,/\bchaperone\b/gi]}
 ];
 const NAME_STOP = new Set(["The","She","He","But","And","Then","When","They","His","Her","You","Your","That","This","There","What","Why","How","Not","Now","Just","Chapter","Prologue","Epilogue","God","Okay","Yes","Yeah","Oh","Hey","Well","Mom","Dad","Mr","Mrs","Ms","Miss","Dr","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","January","February","March","April","May","June","July","August","September","October","November","December","Christmas","Maybe","Because","Before","After","Every","Once","Still","Even","Right","Look","Wait","Please","Thanks","Thank","Sorry","Fine","Sure","Good","Great","Jesus","Damn","Hell","If","So","No","It","At","On","In","We","Of","To","For","With","From","My","Was","Is","As","All","One","Two","Like","Come","Stop","Don","Didn","Wasn","Isn","Aren","Couldn","Wouldn","Shouldn","Ll","Ve","Re"]);
+
+/* First-name gender lists — strong signal for the pronoun guess.
+   Unisex names (Riley, Quinn, Sage, Jordan…) are deliberately absent. */
+const FEM_NAMES=new Set("Abigail Ada Adeline Alice Amelia Anna Annie Aria Ariana Ashley Aspen Aubrey Audrey Aurora Autumn Ava Beatrice Bella Belle Bianca Brooke Callie Camille Cara Carly Caroline Cassidy Catherine Cecilia Celeste Charlotte Chelsea Chloe Claire Clara Cora Daisy Dahlia Daniela Daphne Delaney Delia Delilah Diana Eden Eleanor Elena Eliza Elizabeth Ella Ellie Eloise Emilia Emily Emma Erin Esme Estelle Evangeline Eve Evelyn Everly Faith Felicity Fiona Freya Gemma Genevieve Georgia Grace Gracie Hadley Hannah Harlow Harper Hazel Heidi Holly Hope Imogen Iris Isabella Isabelle Isla Ivy Jade Jasmine Jenna Jessica Jillian Josephine Josie Julia Juliet June Junie Juniper Kate Katherine Kayla Keira Kinsley Lacey Laila Lana Lara Laura Lauren Layla Leah Lena Lila Lily Louisa Lucy Luna Lydia Mabel Mackenzie Macy Maddie Madeline Madison Maeve Magnolia Maisie Mara Margaret Margot Maria Marina Mary Matilda Maya Megan Melody Mia Mila Millie Molly Naomi Natalie Nell Nina Noelle Nora Olive Olivia Paige Pearl Penelope Penny Phoebe Piper Poppy Priya Prudence Rachel Raven Rebecca Rhea Rosalie Rose Rosemary Ruby Ruth Ruthie Sadie Samantha Sara Sarah Savannah Scarlett Selena Seraphina Sienna Sierra Skye Sloane Sophia Sophie Stella Summer Sutton Sydney Talia Tessa Thea Valentina Vanessa Vera Victoria Violet Vivian Willa Willow Wren Zoe".split(" "));
+const MASC_NAMES=new Set("Aaron Adam Aiden Alex Alexander Alistair Ambrose Andrew Anthony Asher Austin Axel Beau Beckett Ben Benjamin Bennett Blake Brandon Brooks Bryce Caleb Callum Carter Cash Cedric Chase Chris Christian Cole Colt Colton Connor Cooper Damian Damon Daniel David Dean Declan Derek Dominic Dorian Drew Dylan Edmund Eli Elias Elijah Elliot Emmett Ethan Evan Everett Ezra Finn Ford Frederick Gabriel Gage Garrett Gavin Gideon Grant Grayson Griffin Gunnar Harrison Hayes Henry Holden Hudson Hugh Hunter Ian Isaac Jack Jackson Jacob Jake James Jameson Jasper Jax Jaxon Jesse Joel John Jonah Jonathan Joseph Josh Joshua Josiah Jude Julian Kai Kane Kian Knox Kyle Landon Levi Liam Lincoln Logan Louis Luca Lucas Luke Malcolm Marcus Mark Mason Matt Matthew Maverick Max Maxwell Micah Michael Miles Mitchell Nash Nathan Nathaniel Nick Nicholas Noah Nolan Oliver Owen Patrick Paul Percival Peter Phillip Pierce Preston Reed Rhett Rhys Roman Ronan Rupert Ryan Ryder Sam Samuel Sawyer Sebastian Seth Shane Shawn Silas Simon Spencer Sterling Tanner Tate Theo Theodore Thomas Tobias Tristan Tucker Tyler Victor Vincent Walker Wesley Weston Will William Wyatt Xavier Zach Zachary Zane".split(" "));
 
 /* Amazon 7 keyword slot themes */
 const KW_SLOT_LABELS = ["Trope stack (your #1 search phrase)","Genre + heat/tone","Character archetypes","Setting & world","Mood / reader promise","Length & format hooks","Series / world terms"];
@@ -849,6 +867,10 @@ function firstEvidence(text,re){
 }
 function analyze(text){
   const words=text.trim().split(/\s+/).length;
+  /* dialogue-stripped copy — POV/tense/pronoun votes must come from narration,
+     not from what characters say to each other */
+  const narration=text.replace(/["“][^"“”\n]{0,400}["”]/g," ");
+  const narWords=narration.trim().split(/\s+/).length||1;
   const per10k=n=>n/words*10000;
   /* front matter: title, subtitle, author */
   let title=null,subtitle=null,author=null;
@@ -866,12 +888,12 @@ function analyze(text){
     }
     if(!subtitle&&/^(a|an|the)\b.{4,70}\b(romance|novel|novella|mystery|thriller|story|tale)\b/i.test(l)){subtitle=l;continue;}
   }
-  /* POV & tense */
-  const iCount=countMatches(text,/\bI\b/g);
-  const pov=per10k(iCount)>120?"First person":"Third person";
-  const pastC=countMatches(text,/\b(?:said|was|were|had|walked|looked|turned)\b/gi);
-  const presC=countMatches(text,/\b(?:says|is|am|walks|looks|turns)\b/gi);
-  const tense=presC>pastC*0.8?"Present tense":"Past tense";
+  /* POV & tense — measured on narration only */
+  const iCount=countMatches(narration,/\bI\b/g);
+  const pov=(iCount/narWords*10000)>60?"First person":"Third person";
+  const pastC=countMatches(narration,/\b(?:was|were|had|said|asked|looked|walked|turned|felt|knew|reached|smiled)\b/gi);
+  const presC=countMatches(narration,/\b(?:is|are|am|says|asks|looks|walks|turns|feels|knows|reaches|smiles)\b/gi);
+  const tense=presC>pastC?"Present tense":"Past tense";
   /* heat */
   const h1=per10k(HEAT_LEX.t1.reduce((a,re)=>a+countMatches(text,re),0));
   const h3=per10k(HEAT_LEX.t3.reduce((a,re)=>a+countMatches(text,re),0));
@@ -894,12 +916,38 @@ function analyze(text){
   const bigRe=/\b([A-Z][a-z]{2,})\s+([A-Z][a-z]{2,})\b/g;
   let bm;
   while((bm=bigRe.exec(text))!==null){
-    for(const w of [bm[1],bm[2]]){if(!NAME_STOP.has(w))bigrams[w]=(bigrams[w]||0)+1;}
+    if(NAME_STOP.has(bm[1])||NAME_STOP.has(bm[2]))continue; /* "When Elena" is not a compound */
+    bigrams[bm[1]]=(bigrams[bm[1]]||0)+1;
+    bigrams[bm[2]]=(bigrams[bm[2]]||0)+1;
   }
   const characters=Object.keys(nameMid)
     .filter(n=>nameMid[n]>=5)
     .filter(n=>(bigrams[n]||0)<nameMid[n]*0.8)
     .sort((a,b)=>nameMid[b]-nameMid[a]).slice(0,8).map(n=>({name:n,count:nameTotals[n]}));
+  /* gender guess per character — layered signals, strongest first:
+     name dictionary > reflexives ("told himself") > sentence-initial
+     coreference ("Wyatt scowled. He…") > raw pronoun-window vote (weak:
+     "Wyatt walked out of HER bakery" votes wrong, so it only breaks ties) */
+  for(const c of characters){
+    let f=0,mm2=0;
+    const nm=c.name.replace(/[.*+?^$()|[\]\\]/g,"");
+    if(FEM_NAMES.has(c.name))f+=4;
+    if(MASC_NAMES.has(c.name))mm2+=4;
+    f+=3*countMatches(narration,new RegExp("\\b"+nm+"\\b[^.!?\\n]{0,60}\\bherself\\b","g"));
+    mm2+=3*countMatches(narration,new RegExp("\\b"+nm+"\\b[^.!?\\n]{0,60}\\bhimself\\b","g"));
+    f+=2*countMatches(narration,new RegExp("\\b"+nm+"\\b[^.!?\\n]{0,80}[.!?][\"”']?\\s+She\\b","g"));
+    mm2+=2*countMatches(narration,new RegExp("\\b"+nm+"\\b[^.!?\\n]{0,80}[.!?][\"”']?\\s+He\\b","g"));
+    if(f===0&&mm2===0){
+      let sheV=0,heV=0,wm;
+      const winRe=new RegExp("\\b"+nm+"(?:'s)?\\b[^.!?\\n]{0,60}","g");
+      while((wm=winRe.exec(narration))!==null){
+        sheV+=countMatches(wm[0],/\b(?:she|hers|herself)\b/gi);
+        heV+=countMatches(wm[0],/\b(?:he|his|himself)\b/gi);
+      }
+      if(sheV>=heV*2&&sheV>=3)f=1;else if(heV>=sheV*2&&heV>=3)mm2=1;
+    }
+    c.g=f>mm2?"she":mm2>f?"he":null;
+  }
   /* settings */
   const settings=SETTING_LEX.map(s=>({tag:s.tag,n:s.pat.reduce((a,re)=>a+countMatches(text,re),0)})).filter(s=>s.n>=4).sort((a,b)=>b.n-a.n).slice(0,3);
   /* real place names — "in Maple Falls", "back to Cedar Creek" */
@@ -994,8 +1042,13 @@ function prefillDetails(){
   if(an.title)$("fTitle").value=an.title;
   if(an.subtitle)$("fSubtitle").value=an.subtitle;
   if(an.author)$("fAuthor").value=an.author;
-  if(an.characters[0])$("fCharA").value=an.characters[0].name;
-  if(an.characters[1])$("fCharB").value=an.characters[1].name;
+  let cA=an.characters[0]||null,cB=an.characters[1]||null;
+  /* romance blurbs center the heroine — if the scan found he-first/she-second, flip */
+  if(cA&&cB&&cA.g==="he"&&cB.g==="she"){const tmp=cA;cA=cB;cB=tmp;}
+  if(cA)$("fCharA").value=cA.name;
+  if(cB)$("fCharB").value=cB.name;
+  if($("fCharAPro"))$("fCharAPro").value=(cA&&cA.g)||"she";
+  if($("fCharBPro"))$("fCharBPro").value=(cB&&cB.g)||"he";
   const setBits=[];
   if(an.places&&an.places[0])setBits.push(an.places[0]);
   if(an.settings[0])setBits.push(an.settings.map(s=>s.tag).join(", "));
@@ -1014,9 +1067,17 @@ function readDetails(){
     seriesNum:$("fSeriesNum").value.trim(),genre:$("fGenre").value,heat:+$("fHeat").value,
     audience:$("fAudience").value,shape:$("fShape").value,setting:$("fSetting").value.trim(),
     A:$("fCharA").value.trim()||"the heroine",B:$("fCharB").value.trim()||"the hero",
+    aPro:$("fCharAPro").value,bPro:$("fCharBPro").value,
     want:$("fWant").value.trim(),obstacle:$("fObstacle").value.trim(),hook:$("fHook").value.trim(),
     comps:$("fComps").value.trim(),formats:fm,plan,translate:tr,langs
   };
+}
+function swapLeads(){
+  const a=$("fCharA"),b=$("fCharB"),ap=$("fCharAPro"),bp=$("fCharBPro");
+  if(!a||!b)return;
+  let t=a.value;a.value=b.value;b.value=t;
+  if(ap&&bp){t=ap.value;ap.value=bp.value;bp.value=t;}
+  toast("Swapped — character 1 is now "+$("fCharA").value);
 }
 /* chip toggle behaviour */
 document.querySelectorAll(".radiochips").forEach(g=>{
@@ -1125,6 +1186,8 @@ function restoreState(){
       if(d.setting)$("fSetting").value=d.setting;
       if(d.A&&d.A!=="the heroine")$("fCharA").value=d.A;
       if(d.B&&d.B!=="the hero")$("fCharB").value=d.B;
+      if(d.aPro&&$("fCharAPro"))$("fCharAPro").value=d.aPro;
+      if(d.bPro&&$("fCharBPro"))$("fCharBPro").value=d.bPro;
       if(d.want)$("fWant").value=d.want;
       if(d.obstacle)$("fObstacle").value=d.obstacle;
       if(d.hook)$("fHook").value=d.hook;
@@ -1159,6 +1222,8 @@ function prefillFromLoaded(){
   $("fSeries").value=d.series||"";$("fSeriesNum").value=d.seriesNum||"";
   if(d.genre)$("fGenre").value=d.genre;if(d.heat!=null)$("fHeat").value=String(d.heat);
   $("fSetting").value=d.setting||"";$("fCharA").value=d.A||"";$("fCharB").value=d.B||"";
+  if(d.aPro&&$("fCharAPro"))$("fCharAPro").value=d.aPro;
+  if(d.bPro&&$("fCharBPro"))$("fCharBPro").value=d.bPro;
   $("fWant").value=d.want||"";$("fObstacle").value=d.obstacle||"";$("fHook").value=d.hook||"";$("fComps").value=d.comps||"";
 }
 
@@ -1166,6 +1231,7 @@ function prefillFromLoaded(){
 let KIT={};
 const HEATWORD=["clean","sweet","warm","steamy","hot","scorching"];
 const TROPE_SHORT={"Grumpy / Sunshine":"Grumpy Sunshine","Hurt / Comfort":"Hurt-Comfort","Fake Dating / Marriage":"Fake Dating","Workplace / Office Romance":"Office Romance","Royalty / Prince":"Royalty","Cowboy / Ranch Romance":"Cowboy Romance","Military / Veteran Hero":"Military Hero","Firefighter / First Responder":"First Responder","Vegas Wedding / Accidental Marriage":"Accidental Marriage","Later-in-Life Romance (40+)":"Later-in-Life Love","Dragon / Shifter Romance":"Shifter Romance","Vampire / Undead Romance":"Vampire Romance","Villain Redemption / Dark Lord":"Villain Redemption","Magical Contract / Bond":"Magical Bond","Omegaverse (A/B/O)":"Omegaverse","Why Choose (Dark RH)":"Why Choose","Murder Mystery / Whodunit":"Whodunit","Hidden Identity / Secret":"Hidden Identity","Gaslighting / Manipulation":"Gaslighting","Kidnapping / Captivity":"Captivity","Stalker / Obsession":"Obsession","Beauty & the Beast Retelling":"Beauty & the Beast","Dark Fairytale Retelling":"Dark Fairytale","Tournament / Deadly Trials":"Deadly Trials","Enemy Courts / Kingdoms at War":"Kingdoms at War","AI / Android Awakening":"Android Awakening","Twin Swap / Doppelgänger":"Twin Swap","Haunted House / Location":"Haunted House","Possession / Entity Control":"Possession","Found Footage / Epistolary":"Found Footage","Dark Captive / Captor":"Captive Romance","Priest / Taboo Vows":"Forbidden Vows"};
+const PRO={she:{s:"she",o:"her",p:"her",self:"herself",noun:"woman"},he:{s:"he",o:"him",p:"his",self:"himself",noun:"man"},they:{s:"they",o:"them",p:"their",self:"themself",noun:"person"}};
 function shortTrope(t){return TROPE_SHORT[t]||t.split(" / ")[0];}
 function G(){return GENRES.find(g=>g.v===S.d.genre)||GENRES[0];}
 function fam(){return G().family;}
@@ -1174,7 +1240,13 @@ function heatWord(){return HEATWORD[S.d.heat]||"emotional";}
 function fill(t){
   const d=S.d;
   const town=(d.setting||"").split(/[—,\/]/)[0].trim()||"town";
-  return t.replace(/\{A\}/g,d.A).replace(/\{B\}/g,d.B).replace(/\{SETTING\}/g,d.setting||"town").replace(/\{TOWN\}/g,town).replace(/\{TITLE\}/g,d.title).replace(/\{AUTHOR\}/g,d.author).replace(/\{SERIES\}/g,d.series||d.title);
+  const a=PRO[d.aPro||"she"],b=PRO[d.bPro||"he"];
+  return t.replace(/\{A\}/g,d.A).replace(/\{B\}/g,d.B).replace(/\{SETTING\}/g,d.setting||"town").replace(/\{TOWN\}/g,town).replace(/\{TITLE\}/g,d.title).replace(/\{AUTHOR\}/g,d.author).replace(/\{SERIES\}/g,d.series||d.title)
+    .replace(/\{as\}/g,a.s).replace(/\{ao\}/g,a.o).replace(/\{ap\}/g,a.p).replace(/\{aself\}/g,a.self).replace(/\{anoun\}/g,a.noun)
+    .replace(/\{bs\}/g,b.s).replace(/\{bo\}/g,b.o).replace(/\{bp\}/g,b.p).replace(/\{bself\}/g,b.self).replace(/\{bnoun\}/g,b.noun)
+    .replace(/\b(t|T)hey (is|was|has|does)\b/g,(m,t,v)=>t+"hey "+({is:"are",was:"were",has:"have",does:"do"}[v]))
+    .replace(/\b(t|T)hey (isn|wasn|hasn|doesn)'t\b/g,(m,t,v)=>t+"hey "+({isn:"aren",wasn:"weren",hasn:"haven",doesn:"don"}[v])+"'t")
+    .replace(/(^|[.!?…]\s+|\n\s*)([a-z])/g,(m,p,c)=>p+c.toUpperCase());
 }
 function extras(name){
   const e=TROPE_EXTRA[name];
@@ -1211,7 +1283,7 @@ function genBlurbs(){
   const wantS=d.want?fill(`{A} wants one thing: ${d.want.replace(/\.$/,"")}.`):fill(`{A} has life exactly where it needs to be — steady, managed, under control.`);
   const collide=S.primary&&extras(S.primary).hook?fill(extras(S.primary).hook):fill(`Then {B} arrives — and every careful plan {A} made stops mattering.`);
   const obst=d.obstacle?fill(`There's just one problem: ${d.obstacle.replace(/\.$/,"")}.`):(isRom()?fill(`But wanting {B} means risking everything {A} has built — and neither of them does anything halfway.`):`And the closer the truth gets, the more dangerous it becomes.`);
-  const tension={romance:`Every rule they set gets harder to keep. Every line they draw gets crossed.`,clean:`It starts with small kindnesses. It becomes the kind of love neither of them saw coming.`,dark:`He's not safe. He's not sorry. And walking away stopped being an option the moment he learned her name.`,romantasy:`The magic has rules. The bond doesn't care. And fate has never once asked permission.`,thriller:`Trust the wrong person, and it's over. Trust no one, and it's over slower.`,cozy:`Between the gossip, the suspects, and one very unhelpful detective, solving this might take the whole town.`,horror:`It's patient. It's close. And it already knows their names.`,scifi:`The mission had rules. The galaxy has other ideas.`,fantasy:`Kingdoms fall on choices smaller than this one.`,general:`Some choices can't be unmade. This is the story of what happens after.`}[f]||"";
+  const tension=fill({romance:`Every rule they set gets harder to keep. Every line they draw gets crossed.`,clean:`It starts with small kindnesses. It becomes the kind of love neither of them saw coming.`,dark:`{bs} is not safe. {bs} is not sorry. And walking away stopped being an option the moment {bs} learned {ap} name.`,romantasy:`The magic has rules. The bond doesn't care. And fate has never once asked permission.`,thriller:`Trust the wrong person, and it's over. Trust no one, and it's over slower.`,cozy:`Between the gossip, the suspects, and one very unhelpful detective, solving this might take the whole town.`,horror:`It's patient. It's close. And it already knows their names.`,scifi:`The mission had rules. The galaxy has other ideas.`,fantasy:`Kingdoms fall on choices smaller than this one.`,general:`Some choices can't be unmade. This is the story of what happens after.`}[f]||"");
   const lenNote=S.an&&["short","novella"].includes(S.an.len.key)?` A quick, binge-in-one-sitting read.`:"";
   let promise="";
   if(isRom()){
@@ -1424,7 +1496,7 @@ PANEL.audio=function(){
 Genre: ${G().label} · Heat ${d.heat}/5 · ${an.pov}, ${an.tense}
 Length: ~${an.words.toLocaleString()} words ≈ ${hrs} finished hours
 Leads: ${d.A} & ${d.B}${d.setting?`\nSetting/accent flavor: ${d.setting}`:""}
-Tone: ${{romance:"warm, intimate, emotionally present; banter light on its feet",clean:"warm, wholesome, gentle humor; nothing breathy",dark:"low, controlled menace from the MMC; vulnerability under the FMC's steel",romantasy:"epic but intimate; gravitas without stiffness",thriller:"taut, propulsive; let silences work",cozy:"bright, wry, companionable — like a friend telling you the story",horror:"restrained dread; never oversell the scares",scifi:"clean and confident; keep tech talk casual",fantasy:"measured, immersive storyteller voice",general:"grounded and sincere"}[fam()]}
+Tone: ${fill({romance:"warm, intimate, emotionally present; banter light on its feet",clean:"warm, wholesome, gentle humor; nothing breathy",dark:"low, controlled menace from {B}; vulnerability under {A}'s steel",romantasy:"epic but intimate; gravitas without stiffness",thriller:"taut, propulsive; let silences work",cozy:"bright, wry, companionable — like a friend telling you the story",horror:"restrained dread; never oversell the scares",scifi:"clean and confident; keep tech talk casual",fantasy:"measured, immersive storyteller voice",general:"grounded and sincere"}[fam()])}
 Heat scenes: ${d.heat>=3?"present — read intimate, not performative; pacing slows, tone drops":"none/closed door — tension lives in the dialogue"}
 Tropes to honor in performance: ${selTropes().slice(0,4).join(", ")}
 ${dual}`;
