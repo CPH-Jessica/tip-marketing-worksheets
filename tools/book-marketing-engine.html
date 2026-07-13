@@ -212,7 +212,8 @@ footer{max-width:1100px;margin:40px auto;padding:0 20px;color:var(--ink2);font-s
     </div>
     <div class="btnrow" style="margin-top:4px"><button class="btn sec sm" onclick="swapLeads()">⇄ Swap who is who</button><span class="hint" style="font-size:13px;color:var(--ink2)">The scan guesses from pronouns near each name — flip them if it guessed wrong. Every blurb pronoun follows these two menus.</span></div>
 
-    <h3>Three questions that make your blurb sing <span class="pill">optional but powerful</span></h3>
+    <h3>Three questions that make your blurb sing <span class="pill grn">drafted from your manuscript</span></h3>
+    <p class="hint">The scan hunted your manuscript for the answers and drafted them below — they're pulled from your actual sentences, so polish them like copy, not like homework. These three lines drive the whole blurb.</p>
     <div class="fitem"><label class="f">What does your main character want more than anything?</label><input type="text" id="fWant" placeholder="e.g. to save the family orchard before the bank takes it"></div>
     <div class="fitem"><label class="f">What (or who) stands in the way?</label><input type="text" id="fObstacle" placeholder="e.g. the developer who came back to town — her ex"></div>
     <div class="fitem"><label class="f">What's the hook — the twist you'd put on the cover?</label><input type="text" id="fHook" placeholder="e.g. the only contractor who can save it is the man who left her at the altar"></div>
@@ -856,6 +857,68 @@ function loadSample(){
 }
 
 /* ═══════════════════ THE SCAN ═══════════════════ */
+/* Draft the three blurb questions (want / obstacle / hook) from the
+   manuscript itself. Pattern-hunts desire, complication, and premise
+   sentences, favoring early chapters and sentences naming a lead. */
+function extractStory(text,names){
+  const early=text.slice(0,Math.max(4000,Math.floor(text.length*0.45)));
+  const nameRe=names.length?new RegExp("\\b(?:"+names.map(n=>n.replace(/[.*+?^$()|[\]\\]/g,"")).join("|")+")\\b"):null;
+  function hunt(patterns,zone){
+    let best=null;
+    for(const[src,flags,grp,w] of patterns){
+      const r=new RegExp(src,flags.includes("g")?flags:flags+"g");
+      let m;
+      while((m=r.exec(zone))!==null){
+        const sentStart=Math.max(zone.lastIndexOf(".",m.index),zone.lastIndexOf("!",m.index),zone.lastIndexOf("?",m.index),zone.lastIndexOf("\n",m.index));
+        let clause=grp===0?zone.slice(sentStart+1,m.index+m[0].length):(m[grp]||"");
+        clause=clause.replace(/\s+/g," ").trim().replace(/^["“”']+|["“”']+$/g,"");
+        clause=clause.replace(/[,;:—–-]\s*(?:and|but|or|so|because|which|though)?\s*$/i,"").trim();
+        if(clause.length<8)continue;
+        if(clause.length>140){
+          clause=clause.slice(0,140).replace(/\s+\S*$/,"");
+          /* drop dangling function words a truncation leaves behind */
+          clause=clause.replace(/(?:\s+(?:a|an|the|of|to|and|or|but|with|for|in|on|at|had|has|have|was|were|is|are|it|that|not|could|would|she|he|they))+$/i,"");
+        }
+        clause=clause.replace(/[,;:—–-]\s*$/,"").trim();
+        if(((clause.match(/["“”]/g)||[]).length)%2===1)clause=clause.replace(/\s*["“”]\s*/g," ").replace(/\s+/g," ").trim();
+        let score=w-(m.index/zone.length)*2;
+        const sent=zone.slice(sentStart+1,m.index+m[0].length+40);
+        if(nameRe&&nameRe.test(sent))score+=2;
+        if(!best||score>best.score)best={clause,score};
+      }
+    }
+    if(!best)return null;
+    /* keep the capital when the clause opens with a character's name */
+    const fw=best.clause.split(/\s+/)[0].replace(/[^A-Za-z]/g,"");
+    if(names.indexOf(fw)>-1||(typeof FEM_NAMES!=="undefined"&&(FEM_NAMES.has(fw)||MASC_NAMES.has(fw))))return best.clause;
+    return best.clause.charAt(0).toLowerCase()+best.clause.slice(1);
+  }
+  const want=hunt([
+    ["\\bhad (?:exactly )?one (?:rule|goal|plan|job|mission)[^:.!?\\n]{0,45}:\\s*([^.!?\\n]{8,110})","i",1,5],
+    ["\\ball (?:she|he|they) (?:had ever |ever )?wanted was ([^.!?\\n]{6,100})","i",1,5],
+    ["\\bwant(?:ed|s) (?:nothing more than |only |just )?(to [^.!?\\n]{6,100})","i",1,4],
+    ["\\b(?:her|his|their) plan was (?:simple:? )?([^.!?\\n]{6,100})","i",1,4],
+    ["\\bneed(?:ed|s) (to [^.!?\\n]{6,100})","i",1,3],
+    ["\\bdetermined (to [^.!?\\n]{6,100})","i",1,3],
+    ["\\bdream(?:ed|t|s)? of ([^.!?\\n]{6,100})","i",1,2],
+    ["\\bswore (?:to )?(?:that )?([^.!?\\n]{6,100})","i",1,2]
+  ],early);
+  const obstacle=hunt([
+    ["\\b(?:the )?only problem(?: was|:)\\s*([^.!?\\n]{6,110})","i",1,5],
+    ["\\bst(?:ood|ands) (?:squarely )?(?:between [^.!?\\n]{4,60}|in (?:the|her|his|their) way)","i",0,4],
+    ["\\bcould(?:n't| not) (?:be )?[^.!?\\n]{4,70}\\b(?:unless|until|without)\\b [^.!?\\n]{4,70}","i",0,4],
+    ["\\bthe last thing (?:she|he|they) (?:needed|wanted) was ([^.!?\\n]{6,100})","i",1,3],
+    ["\\bunless ([^.!?\\n]{10,100})","i",1,2],
+    ["\\bexcept (?:for )?([^.!?\\n]{10,100})","i",1,2]
+  ],early);
+  const hook=hunt([
+    ["\\bthe only way to [^.!?\\n]{4,70} (?:was|is) (?:to )?[^.!?\\n]{4,70}","i",0,5],
+    ["\\bthat was how ([^.!?\\n]{10,120})","i",1,5],
+    ["\\bwhich (?:was|is) how ([^.!?\\n]{10,120})","i",1,5],
+    ["\\bso (?:she|he|they) did the only thing [^.!?\\n]{4,80}","i",0,4]
+  ],text.slice(0,Math.max(6000,Math.floor(text.length*0.6))));
+  return {want,obstacle,hook};
+}
 function countMatches(text,re){const m=text.match(re);return m?m.length:0;}
 function firstEvidence(text,re){
   const r=new RegExp(re.source,re.flags.replace("g",""));
@@ -1003,7 +1066,8 @@ function analyze(text){
   if(mysteryAnchor<3){const ci=tropes.findIndex(t=>t.name==="Cozy Mystery");if(ci>-1)tropes.splice(ci,1);}
   tropes.sort((a,b)=>b.score-a.score);
   const chapters=(text.match(/^\s*(chapter|prologue|epilogue)\b/gim)||[]).length;
-  return {words,chapters,pov,tense,heat,heatRates:{h1:h1.toFixed(1),h3:h3.toFixed(1),h5:h5.toFixed(1)},characters,settings,warnings,tropes,len:lengthClass(words),title,subtitle,author,places,pullQuotes,opening};
+  const story=extractStory(text,characters.slice(0,3).map(c=>c.name));
+  return {words,chapters,pov,tense,heat,heatRates:{h1:h1.toFixed(1),h3:h3.toFixed(1),h5:h5.toFixed(1)},characters,settings,warnings,tropes,len:lengthClass(words),title,subtitle,author,places,pullQuotes,opening,story};
 }
 function runAnalysis(){
   const text=$("msBox").value;
@@ -1053,6 +1117,9 @@ function prefillDetails(){
   if(an.places&&an.places[0])setBits.push(an.places[0]);
   if(an.settings[0])setBits.push(an.settings.map(s=>s.tag).join(", "));
   if(setBits.length)$("fSetting").value=setBits.join(" — ");
+  $("fWant").value=(an.story&&an.story.want)||"";
+  $("fObstacle").value=(an.story&&an.story.obstacle)||"";
+  $("fHook").value=(an.story&&an.story.hook)||"";
   $("fHeat").value=String(an.heat);
   $("fGenre").value=guessGenre(an);
 }
@@ -1266,7 +1333,7 @@ function genTaglines(){
   selTropes().forEach(t=>extras(t).tag.forEach(x=>out.push(fill(x))));
   const d=S.d;
   const gen=[
-    d.hook?cap(d.hook.replace(/\.$/,""))+".":null,
+    d.hook?cap(d.hook.replace(/[.…]+\s*$/,""))+".":null,
     isRom()?fill("{A} had a plan. {B} was never part of it."):null,
     isRom()?fill("Falling for {B} was never the plan. Plans change."):null,
     fam()==="thriller"?"Everyone has secrets. Someone here has a body count.":null,
@@ -1279,10 +1346,10 @@ function genTaglines(){
 function genBlurbs(){
   const d=S.d,g=G(),f=fam();
   const tags=genTaglines();
-  const hookLine=d.hook?cap(d.hook.replace(/\.$/,""))+".":tags[0]||("A story readers won't put down.");
-  const wantS=d.want?fill(`{A} wants one thing: ${d.want.replace(/\.$/,"")}.`):fill(`{A} has life exactly where it needs to be — steady, managed, under control.`);
+  const hookLine=d.hook?cap(d.hook.replace(/[.…]+\s*$/,""))+".":tags[0]||("A story readers won't put down.");
+  const wantS=d.want?fill(`{A} wants one thing: ${d.want.replace(/[.…]+\s*$/,"")}.`):fill(`{A} has life exactly where it needs to be — steady, managed, under control.`);
   const collide=S.primary&&extras(S.primary).hook?fill(extras(S.primary).hook):fill(`Then {B} arrives — and every careful plan {A} made stops mattering.`);
-  const obst=d.obstacle?fill(`There's just one problem: ${d.obstacle.replace(/\.$/,"")}.`):(isRom()?fill(`But wanting {B} means risking everything {A} has built — and neither of them does anything halfway.`):`And the closer the truth gets, the more dangerous it becomes.`);
+  const obst=d.obstacle?fill(`There's just one problem: ${d.obstacle.replace(/[.…]+\s*$/,"")}.`):(isRom()?fill(`But wanting {B} means risking everything {A} has built — and neither of them does anything halfway.`):`And the closer the truth gets, the more dangerous it becomes.`);
   const tension=fill({romance:`Every rule they set gets harder to keep. Every line they draw gets crossed.`,clean:`It starts with small kindnesses. It becomes the kind of love neither of them saw coming.`,dark:`{bs} is not safe. {bs} is not sorry. And walking away stopped being an option the moment {bs} learned {ap} name.`,romantasy:`The magic has rules. The bond doesn't care. And fate has never once asked permission.`,thriller:`Trust the wrong person, and it's over. Trust no one, and it's over slower.`,cozy:`Between the gossip, the suspects, and one very unhelpful detective, solving this might take the whole town.`,horror:`It's patient. It's close. And it already knows their names.`,scifi:`The mission had rules. The galaxy has other ideas.`,fantasy:`Kingdoms fall on choices smaller than this one.`,general:`Some choices can't be unmade. This is the story of what happens after.`}[f]||"");
   const lenNote=S.an&&["short","novella"].includes(S.an.len.key)?` A quick, binge-in-one-sitting read.`:"";
   let promise="";
@@ -1299,8 +1366,20 @@ function genBlurbs(){
   const inside=isRom()?`Inside you'll find: ${selTropes().slice(0,7).map(t=>"✔ "+shortTrope(t)).join("  ")}`:`Perfect for readers who love: ${tropeListLine(5)}`;
   const compLine=d.comps?`Perfect for fans of ${d.comps}.`:"";
 
-  const full=[hookLine,"",wantS+" "+collide,"",obst+" "+tension,"",inside,"",promise,compLine].filter(x=>x!==""||true).join("\n").replace(/\n{3,}/g,"\n\n").trim();
-  const amazonHTML=`<b>${esc(hookLine)}</b><br><br>${esc(wantS)} ${esc(collide)}<br><br>${esc(obst)} ${esc(tension)}<br><br><b>${esc(inside)}</b><br><br><i>${esc(promise)}</i>${compLine?`<br><br>${esc(compLine)}`:""}`;
+  /* Amazon description — structured for skimming readers AND for Amazon's
+     search/AI (Rufus): trope stack on top, explicit read-this-if list with
+     comp authors named, machine-readable metadata close */
+  const stack=selTropes().slice(0,5).map(shortTrope);
+  const stackLine=stack.join(" ✕ ");
+  const fitExtra={romance:heatWord()+" tension",clean:"closed-door warmth",dark:"morally gray obsession",romantasy:"immersive worlds and "+heatWord()+" tension",thriller:"twists you won't see coming",cozy:"puzzles with zero gore",horror:"creeping dread",scifi:"high-stakes adventure",fantasy:"epic stakes",general:"emotional depth"}[f]||"a story that delivers";
+  const readFitLine=`Read this if you love: ${stack.map(s=>s.toLowerCase()).join(" • ")} • ${fitExtra}.`;
+  const kWords=S.an?Math.round(S.an.words/1000):null;
+  const lenPhrase=kWords&&kWords>=8?(kWords>=50?`full-length ${kWords.toLocaleString()},000-word `:`${kWords.toLocaleString()},000-word quick-read `):"";
+  const povPhrase=S.an?`, told in ${S.an.pov.toLowerCase()} (${S.an.tense.toLowerCase()})`:"";
+  const aiMeta=`${d.title} is a ${lenPhrase}${heatWord()} ${g.label.toLowerCase().replace(" (romantasy)","")}${povPhrase}, featuring ${stack.map(s=>s.toLowerCase()).join(", ")}. ${promise}${d.plan==="ku"?" Available in Kindle Unlimited.":""}`;
+
+  const full=[hookLine,"",stackLine,"",wantS+" "+collide,"",obst+" "+tension,"",readFitLine,compLine,"",aiMeta].join("\n").replace(/\n{3,}/g,"\n\n").trim();
+  const amazonHTML=`<b>${esc(hookLine)}</b><br><br><b>${esc(stackLine)}</b><br><br>${esc(wantS)} ${esc(collide)}<br><br>${esc(obst)} ${esc(tension)}<br><br><b>Read this if you love:</b><ul>${stack.map(s=>`<li>${esc(s)}</li>`).join("")}<li>${esc(cap(fitExtra))}</li></ul>${compLine?`<b>${esc(compLine)}</b><br><br>`:""}<i>${esc(aiMeta)}</i>`;
   const paperback=[hookLine,"",collide,"",obst,"",promise].join("\n").replace(/\n{3,}/g,"\n\n").trim();
   const hrs=S.an?Math.max(1,Math.round(S.an.words/9300*10)/10):null;
   const audio=[hookLine,"",wantS+" "+collide,"",obst+" "+tension,"",`${promise}`,hrs?`\nApprox. ${hrs} hours of listening — the perfect ${hrs<5?"commute companion":"binge listen"}.`:""].join("\n").replace(/\n{3,}/g,"\n\n").trim();
@@ -1393,7 +1472,8 @@ PANEL.blurbs=function(){
   const polish=`You are a book-blurb specialist. Polish the blurb below without changing its structure or promises. Keep it under 200 words, punchy, with short paragraphs. Genre: ${G().label}. Heat: ${S.d.heat}/5. Lead trope: ${S.primary}. Tropes to keep visible: ${selTropes().join(", ")}. Do not invent plot details.\n\n---BLURB---\n${S.edits["bAmazon"]||b.full}`;
   return `<div class="card"><h2>Blurbs — one per format, each doing a different job</h2>
   <p class="hint">The ebook blurb sells a click in 2 seconds of skimming. The paperback back cover sells a hand-hold in a store. The audio blurb sells a listen. Never paste the same text everywhere.</p>
-  ${edit("Amazon ebook blurb (product page)","bAmazon",b.full,14)}
+  ${edit("Amazon ebook blurb (product page)","bAmazon",b.full,16)}
+  <div class="callout grn"><b>Why this shape:</b> Amazon's search — and its AI shopping assistant (Rufus) — reads your description to decide which searches and recommendations you belong in. So the trope stack sits at the very top, the "read this if you love" list names your tropes in plain words, comp authors are named outright (allowed <i>here</i> — never in keywords), and the final line states genre, length, POV, heat, and series status in one machine-readable sentence.</div>
   <div class="callout">Amazon lets you format the description. Paste the HTML version below into the KDP description box via the <i>toolbar's</i> formatting or a tool like Kindlepreneur's generator — bold hook, spaced paragraphs. Max 4,000 characters.</div>
   ${cb("Same blurb, Amazon-ready HTML","bAmazonHTML",b.amazonHTML,true)}
   ${edit("Paperback back-cover blurb (shorter, bigger type)","bPaper",b.paperback,9)}
