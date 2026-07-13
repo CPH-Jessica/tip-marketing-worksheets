@@ -781,7 +781,7 @@ const KW_SLOT_LABELS = ["Trope stack (your #1 search phrase)","Genre + heat/tone
 /* Launch checklist */
 const CHECKLIST = [
 {phase:"8–6 weeks out",items:["Finalize cover (ebook + full paperback wrap)","Lock title, subtitle, and series name (matching everywhere)","Set up the book on Amazon KDP as a pre-order (ebook)","Upload to Draft2Digital / IngramSpark if going wide (print needs longer lead time)","Order paperback proof copy and check spine, margins, cover colors","Start teasing on socials: cover reveal countdown, trope reveals"]},
-{phase:"6–4 weeks out",items:["Cover reveal post (all platforms, same day — make it an event)","Recruit ARC readers (StoryOrigin / BookFunnel / your reader group)","Send ARC copies with a review-on-release-day ask","Write your launch newsletter (and a second 'it's live' follow-up)","Book newsletter swaps for release week","Add the book to Goodreads (or ask a librarian to)","Claim the book on BookBub and Amazon Author Central"]},
+{phase:"6–4 weeks out",items:["Cover reveal post (all platforms, same day — make it an event)","Set up your BookFunnel ARC page (the BookFunnel tab has the settings + ready-made copy)","Recruit ARC readers with the invitation from the BookFunnel tab","Send ARC copies with a review-on-release-day ask","Write your launch newsletter (and a second 'it's live' follow-up)","Book newsletter swaps for release week","Add the book to Goodreads (or ask a librarian to)","Claim the book on BookBub and Amazon Author Central"]},
 {phase:"4–2 weeks out",items:["Post 2–3 trope/quote/aesthetic posts per week from your social plan","Share an excerpt or first-chapter tease","Run a preorder push to your newsletter","Prepare release-day graphics (quote cards, 'it's live' banner)","Line up your review ask messages for ARC readers","Double-check all store links, series links, and also-bought pages"]},
 {phase:"Release week",items:["'It's LIVE' post on every platform (morning of)","Send the launch newsletter with a direct buy link","Message ARC readers — reviews up today, please!","Update your website / Linktree / bio links","Post daily from the social plan (different angle each day)","Thank early reviewers publicly (no quoting Amazon reviews in ads without care)","Check the book's categories went live correctly on Amazon"]},
 {phase:"Weeks 1–4 after",items:["Start Amazon Ads with your keyword starter list (low bids, broad harvest)","Apply for BookBub Featured Deal (and note the date to retry)","Keep 2–3 posts per week rotating tropes and reader quotes","Add review quotes to your A+ Content and social graphics","Newsletter swap circuit — 2–4 swaps over the month","Watch also-boughts and adjust keywords/categories if misfiring","Start back-matter check: is your next-book link and newsletter signup in the book?"]}
@@ -1333,7 +1333,7 @@ function genKeywords(){
 }
 
 /* ═══════════════ TAB RENDERING ═══════════════ */
-const TABS=[["pos","🎯 Positioning"],["blurbs","📖 Blurbs"],["keywords","🔑 Keywords"],["amazon","🛒 Amazon KDP"],["wide","🌍 Wide · D2D & Ingram"],["audio","🎧 Audiobook"],["social","📣 Social Plan"],["launch","🚀 Launch Checklist"],["translate","🌐 Translation"],["export","📦 Export"]];
+const TABS=[["pos","🎯 Positioning"],["blurbs","📖 Blurbs"],["keywords","🔑 Keywords"],["amazon","🛒 Amazon KDP"],["wide","🌍 Wide · D2D & Ingram"],["audio","🎧 Audiobook"],["bookfunnel","📚 BookFunnel"],["social","📣 Social Plan"],["launch","🚀 Launch Checklist"],["translate","🌐 Translation"],["export","📦 Export"]];
 function showTab(k){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.k===k));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id==="panel-"+k));
@@ -1514,6 +1514,88 @@ ${dual}`;
   <h3>Audio retail blurb</h3>
   <p class="hint">Already drafted in the Blurbs tab — the audio version leads with listening time and experience.</p></div>`;
 };
+/* ───────── BOOKFUNNEL ───────── */
+PANEL.bookfunnel=function(){
+  const d=S.d,b=KIT.blurbs;
+  const audio=d.formats.includes("audiobook");
+  const ku=d.plan==="ku";
+  const newsBlurb=S.edits["bNews"]||b.newsletter;
+  const arcBlurb=`ADVANCE REVIEW COPY — ${d.title} by ${d.author}${d.series?` (${d.series} #${d.seriesNum||"1"})`:""}
+
+${newsBlurb}
+
+You're getting this before everyone else. If you enjoy it, an honest review on release day is the single most helpful thing you can do for this book — I'll send you the link the morning it goes live. Thank you for reading early. 🖤`;
+  const arcInvite=`Subject: Want an early copy of ${d.title}?
+
+Hi — I'm ${d.author}, and my ${heatWord()} ${G().label.toLowerCase()} ${d.title} releases soon. I'd love to send you a free advance copy through BookFunnel (it delivers straight to your Kindle, phone, or app — their support team helps if anything hiccups).
+
+The deal is simple: read it before release, and if you enjoyed it, leave an honest review within the first week it's live. That's it.
+
+If you love ${tropeListLine(3).toLowerCase()}, this one was written for you.
+
+Grab your copy here: [YOUR BOOKFUNNEL ARC LINK]`;
+  const reviewNudge=`Subject: ${d.title} is LIVE — review day! 🎉
+
+It's here! ${d.title} is officially out in the world.
+
+If you read your ARC and have two minutes, would you pop your honest review onto Amazon today? Release-week reviews are the ones that convince the algorithm — and strangers — to give a new book a chance.
+
+Review link: [YOUR AMAZON REVIEW LINK — amazon.com/review/create-review?asin=YOUR ASIN]
+
+Thank you for being an early reader. You're the reason this works.
+— ${d.author}`;
+  const magnetBlurb=`FREE from ${d.author}: [MAGNET TITLE]
+
+${isRom()?`A ${heatWord()} ${G().label.toLowerCase().replace(" (romantasy)","")} short — a complete little love story you can finish with one cup of coffee.`:`A free taste of the world of ${d.title}.`}
+
+Join my reader list and it's yours instantly, delivered by BookFunnel to any device. New-release news, bonus scenes, and zero spam — unsubscribe anytime.`;
+  return `<div class="card"><h2>BookFunnel — get the book onto readers' devices</h2>
+  <p class="hint">BookFunnel does one job brilliantly: it delivers your ebook (and audio) to any reader's device and handles the "how do I load this on my Kindle?" support for you. You'll use it for three things: <b>ARC copies</b>, a <b>reader-magnet signup funnel</b>, and — if you sell direct — <b>delivery for your store</b>.</p>
+
+  <h3>Step 1 · Account &amp; plan</h3>
+  <div class="fieldrow"><div class="fn">Sign up</div><div class="fv"><span class="val">bookfunnel.com</span> → Pricing. Plans are billed yearly and priced by <b>pen name count</b> and <b>monthly downloads</b>.</div></div>
+  <div class="fieldrow"><div class="fn">Which plan?</div><div class="fv">
+    <b>Just ARCs for one pen name?</b> The entry-level plan (around $20/yr) is plenty to start.<br>
+    <b>Signup-gated reader magnet + mailing-list integration?</b> You need the mid tier (~$100/yr) — that's the one that connects to MailerLite and can require an email before download.<br>
+    <b>Multiple pen names${audio?" or audiobook delivery":""}?</b> Higher tiers add pen names${audio?" and audio":""}.<br>
+    <small>Prices and limits drift — confirm on their pricing page before buying.</small></div></div>
+  <div class="fieldrow"><div class="fn">Pen name</div><div class="fv">Register as <span class="val">${esc(d.author)}</span> — it appears on your landing pages and delivery emails.</div></div>
+
+  <h3>Step 2 · Upload the book</h3>
+  <div class="fieldrow"><div class="fn">Add a book</div><div class="fv">Dashboard → <span class="val">Add a New Book</span></div></div>
+  <div class="fieldrow"><div class="fn">Title / Author / Series</div><div class="fv"><span class="val">${esc(d.title)}</span> · <span class="val">${esc(d.author)}</span>${d.series?` · <span class="val">${esc(d.series)} #${esc(d.seriesNum||"1")}</span>`:""}<br><small>Match your store metadata exactly — readers see this on the download page.</small></div></div>
+  <div class="fieldrow"><div class="fn">Cover</div><div class="fv"><span class="val">Your ebook cover, JPG, ~1600 × 2560</span> — same file you gave Amazon.</div></div>
+  <div class="fieldrow"><div class="fn">Book file</div><div class="fv"><span class="val">EPUB</span> (the same file you upload to KDP/D2D). BookFunnel generates the Kindle-ready version itself; PDF is optional for the "read on computer" crowd.</div></div>
+  <div class="fieldrow"><div class="fn">ARC vs. final</div><div class="fv">Upload the ARC file now and <b>swap in the final proofed EPUB later</b> — BookFunnel lets you replace the file without changing any links.</div></div>
+
+  <h3>Step 3 · Your ARC page (do this 4–6 weeks out)</h3>
+  <div class="fieldrow"><div class="fn">Page type</div><div class="fv"><span class="val">Restricted download page</span> — you control who gets in.</div></div>
+  <div class="fieldrow"><div class="fn">Settings</div><div class="fv">Download limit: <span class="val">your ARC team size + ~20%</span> · Expiration: <span class="val">1–2 weeks after release day</span> · Collect email addresses: <span class="val">ON</span> (so you know who has it)</div></div>
+  <div class="fieldrow"><div class="fn">Page text</div><div class="fv">Paste the ARC page blurb below.</div></div>
+  ${edit("ARC page blurb","bfArcBlurb",arcBlurb,8)}
+  ${edit("ARC team invitation (post it or send it)","bfArcInvite",arcInvite,10)}
+  ${edit("Release-day review nudge (send to ARC readers)","bfReviewNudge",reviewNudge,9)}
+  <div class="callout">Find your review link: once the book is live, your product page → "Write a customer review" — or use the create-review URL with your ASIN. Never incentivize reviews beyond the free copy; that's the line Amazon enforces.</div>
+
+  <h3>Step 4 · Reader-magnet funnel (builds your list between books)</h3>
+  <div class="fieldrow"><div class="fn">Page type</div><div class="fv"><span class="val">Signup / mailing-list page</span> — reader enters email → gets the book → lands on your list.</div></div>
+  <div class="fieldrow"><div class="fn">Connect MailerLite</div><div class="fv">Dashboard → <span class="val">Integrations → MailerLite</span> → paste your API key → pick the group new readers join. Turn on double opt-in ("certified") if you want only genuinely interested readers.</div></div>
+  <div class="fieldrow"><div class="fn">What to give away</div><div class="fv">${isRom()?`A prequel scene, bonus epilogue, or short story in the same world as ${esc(d.title)} converts best — readers who loved <i>these</i> tropes are the ones you want.`:`A prequel story, first-in-series, or bonus chapter tied to ${esc(d.title)}.`}</div></div>
+  ${edit("Magnet page blurb (template — swap in your magnet's title)","bfMagnet",magnetBlurb,7)}
+  <div class="fieldrow"><div class="fn">Where the link lives</div><div class="fv">Back matter of ${esc(d.title)} (right after "The End"), your bio links, and the D+2 newsletter-push post in your Social Plan.</div></div>
+
+  <h3>Step 5 · Swaps &amp; group promos</h3>
+  <div class="fieldrow"><div class="fn">Group promos</div><div class="fv">Dashboard → <span class="val">Promos</span> → join genre giveaways (${esc(G().label)}) — every promo puts your magnet page in front of other authors' readers. Aim for 1–2 a month.</div></div>
+  <div class="fieldrow"><div class="fn">Newsletter swaps</div><div class="fv">Your swap partners need exactly two things: the <b>newsletter blurb</b> (Blurbs tab) and your <b>BookFunnel page link</b>. That pairing is the whole swap kit.</div></div>
+
+  ${audio?`<h3>Step 6 · Audiobook delivery</h3>
+  <div class="fieldrow"><div class="fn">Audio on BookFunnel</div><div class="fv">Plans with audio let you upload the audiobook and hand out <b>codes/direct delivery</b> through the BookFunnel app — perfect for audio ARC teams without burning your 25 ACX codes, and for selling audio direct.</div></div>`:""}
+
+  ${ku?`<div class="callout red"><b>Kindle Unlimited reality check:</b> while ${esc(d.title)} is in KDP Select you may NOT <b>sell</b> the ebook anywhere else — including direct from your own store. You absolutely CAN still use BookFunnel for free ARC copies and a <i>different</i> book/story as your reader magnet. Just don't put this book's ebook up for sale off-Amazon.</div>`
+  :`<h3>Selling direct? BookFunnel is your delivery guy</h3>
+  <div class="fieldrow"><div class="fn">Store integration</div><div class="fv">Dashboard → <span class="val">Integrations</span> → connect your store (Payhip, Shopify, WooCommerce…). Buyer pays on your store → BookFunnel automatically emails the download → BookFunnel handles the tech support. Check their current integrations list for your store.</div></div>`}
+  </div>`;
+};
 /* ───────── SOCIAL ───────── */
 function genPosts(){
   const d=S.d,b=KIT.blurbs,k=KIT.kw;
@@ -1684,6 +1766,12 @@ ${G().cats.join("\n")}
 
 ## BISAC (D2D / IngramSpark)
 ${G().bisac.join("\n")}
+
+## BookFunnel ARC page blurb
+${$("bfArcBlurb")?$("bfArcBlurb").value:"(see BookFunnel tab)"}
+
+## BookFunnel ARC invitation
+${$("bfArcInvite")?$("bfArcInvite").value:"(see BookFunnel tab)"}
 `;
   download((d.title||"book")+" - marketing kit.md",md,"text/markdown;charset=utf-8");
 }
