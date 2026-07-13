@@ -386,6 +386,11 @@ function splitManuscript(text){
 }
 function sideKey(side){return side==='src'?'srcChapters':'tgtChapters';}
 function boxId(side){return side==='src'?'srcBox':'tgtBox';}
+function warnGiantChapters(chaps){
+  const giants=(chaps||[]).filter(c=>wc(c.text)>12000);
+  if(!giants.length)return;
+  alert('Heads up: '+(giants.length===1?'"'+giants[0].title+'" loaded as one BIG chapter ('+wc(giants[0].text).toLocaleString()+' words).':giants.length+' chapters came in over 12,000 words each.')+'\n\nChapter pairs this big overload AI edit replies — the AI hits its reply limit mid-chapter and the edit fails.\n\nIf the book has real chapters, make sure each one starts on its own line (like "Chapter 1" / "Chapitre 1"), hit Start over, and paste both sides again. The parity scan and review prompts still work fine either way.');
+}
 function goSide(side){
   save();
   const t=val(boxId(side)).trim();
@@ -393,20 +398,22 @@ function goSide(side){
   const k=sideKey(side);
   if(state[k].length&&!confirm('Go reloads this side: replace the '+state[k].length+' loaded chapter(s) with what is in the box? (Use “+ Add next chapter” to append instead.)'))return;
   state[k]=splitManuscript(t);
-  finishLoad(side);
+  finishLoad(side,state[k]);
 }
 function addSide(side){
   save();
   const t=val(boxId(side)).trim();
   if(!t){alert('Paste a chapter into the box first.');return;}
   const k=sideKey(side);
-  state[k]=state[k].concat(splitManuscript(t));renumber(k);
-  finishLoad(side);
+  const added=splitManuscript(t);
+  state[k]=state[k].concat(added);renumber(k);
+  finishLoad(side,added);
 }
-function finishLoad(side){
+function finishLoad(side,warnChaps){
   document.getElementById(boxId(side)).value='';
   if(side==='src')state.src='';else state.tgtBox='';
   save();renderPairs();refreshScanBadge();renderPassScope();
+  if(warnChaps)warnGiantChapters(warnChaps);
   if(state.srcChapters.length&&state.tgtChapters.length)document.querySelector('.tab[data-v="scan"]').click();
 }
 function renumber(k){state[k].forEach((c,i)=>{if(/^chapter\s+\d+$/i.test((c.title||'').trim()))c.title='Chapter '+(i+1);});}
@@ -423,7 +430,7 @@ function renderPairs(){
   for(let i=0;i<Math.max(ns,nt);i++){
     const s=state.srcChapters[i],t=state.tgtChapters[i];
     const ratio=(s&&t)?(t.text.length/Math.max(1,s.text.length)):null;
-    h+=`<details class="chap"><summary><b style="flex:1">Pair ${i+1}: ${esc(s?s.title:'—')} ↔ ${esc(t?t.title:'— missing —')}</b><span class="cw">${s?wc(s.text)+'w EN':''} ${t?'· '+wc(t.text)+'w '+esc(state.tgt.toUpperCase()):''} ${ratio?'· ratio '+ratio.toFixed(2):''}</span>
+    h+=`<details class="chap"><summary><b style="flex:1">Pair ${i+1}: ${esc(s?s.title:'—')} ↔ ${esc(t?t.title:'— missing —')}</b><span class="cw">${s?wc(s.text)+'w EN':''} ${t?'· '+wc(t.text)+'w '+esc(state.tgt.toUpperCase()):''} ${ratio?'· ratio '+ratio.toFixed(2):''}</span>${((s&&wc(s.text)>6000)||(t&&wc(t.text)>6000))?'<span class="cw" style="color:#B0483F" title="Long chapters can overrun your AI’s reply limit in EDIT mode — the prompt now delivers in parts, but splitting the chapter is safer.">⚠ long</span>':''}
       <button class="del" title="Remove this pair" onclick="event.preventDefault();event.stopPropagation();removePair(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary>
       <div class="cbody">${s?'<b>EN:</b> '+esc(s.text.slice(0,300))+'…':''}<br><br>${t?'<b>'+esc(state.tgt.toUpperCase())+':</b> '+esc(t.text.slice(0,300))+'…':'<i>no translated chapter loaded for this slot</i>'}
       ${t?`<div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised translation</button></div>
@@ -614,7 +621,7 @@ function buildTPrompt(pass,mode){
   p+=`Check every item. Quote the exact ${lang.name} text for every finding — no vague notes:\n`;
   p+=pass.list.map((x,j)=>`${j+1}. ${x}`).join('\n')+'\n';
   if(mode==='edit'&&pass.edit){
-    p+=`\nEDITING RULES:\n- Correct the translation only — NEVER rewrite the story. The English source is the single source of truth for meaning.\n- The REGISTER ARC (if declared above) is sacred: never normalize the formality transition; route any doubt about address forms to NEEDS AUTHOR.\n- If something can't be fixed without an author decision (a renamed character, a cut passage), do NOT guess — list it under NEEDS AUTHOR.\n\nRETURN, in this order:\n1. THE REVISED ${lang.name.toUpperCase()} TEXT — complete, ready to paste back.\n2. CHANGE LOG — each change: original → revised, one line each, tagged with the checklist item.\n3. NEEDS AUTHOR — decisions only the author can make.\n`;
+    p+=`\nEDITING RULES:\n- Correct the translation only — NEVER rewrite the story. The English source is the single source of truth for meaning.\n- The REGISTER ARC (if declared above) is sacred: never normalize the formality transition; route any doubt about address forms to NEEDS AUTHOR.\n- If something can't be fixed without an author decision (a renamed character, a cut passage), do NOT guess — list it under NEEDS AUTHOR.\n\nREPLY-SIZE RULES (never skip these — oversized replies get cut off mid-sentence and waste the author's usage):\n- Deliver AT MOST ~3,500 words of revised text per reply. If the text is longer, deliver it in parts: send PART 1 only, end the reply with "[PART 1 of N — say NEXT for the next part]", and wait to be asked. The author will combine the parts before pasting them back.\n- Never reprint the source text or the original translation in full.\n- Cap the CHANGE LOG at the 40 most meaningful changes. Roll repetitive fixes into one line with a count (e.g., "fixed 24 straight-quote dialogue marks").\n- The complete source and translation are included below — work from them directly. Do not re-read project files, skills, or story bibles beyond a quick canon check, and reply in chat (do not write files).\n\nRETURN, in this order:\n1. THE REVISED ${lang.name.toUpperCase()} TEXT — complete (in parts if the size rules require it), ready to paste back.\n2. CHANGE LOG — each change: original → revised, one line each, tagged with the checklist item (after the final part if delivering in parts).\n3. NEEDS AUTHOR — decisions only the author can make.\n`;
   }else{
     p+=`\nFinish with a section titled "REVISION PROMPTS": 3–5 copy-paste prompts to fix the highest-priority issues, each naming the location and exact change.\n`;
   }
@@ -627,6 +634,10 @@ function renderPasses(skipKeep){
   if(!pairCount()){listEl.innerHTML='<div class="note">Load both manuscripts on the Book Pair tab first — every pass needs the pair.</div>';return;}
   const keep={};
   if(!skipKeep)TPASSES.forEach(p=>{const el=document.getElementById('pb-'+p.id);if(el&&el.value)keep['v'+p.id]=el.value;const d=document.getElementById('pbd-'+p.id);if(d&&d.open)keep['o'+p.id]=1;const cc=document.getElementById('pc-'+p.id);if(cc&&cc.classList.contains('open'))keep['c'+p.id]=1;});
+  const selIdx=+val('passScope')||0;
+  const selS=state.srcChapters[selIdx],selT=state.tgtChapters[selIdx];
+  const selBig=Math.max(selS?wc(selS.text):0,selT?wc(selT.text):0);
+  const longWarn=selBig>6000?`<div class="note">⚠ Pair ${selIdx+1}${selS?': '+esc(selS.title):''} is ${selBig.toLocaleString()} words at its longest — long for EDIT mode. The prompt tells your AI to deliver the revised translation in parts: say “next” until you have them all, combine them, then paste the result below. If it stalls or errors, split this chapter (both sides) into smaller ones instead of retrying.</div>`:'';
   listEl.innerHTML=TPASSES.map(pass=>{
     const prompt=buildTPrompt(pass);
     const buttons=pass.edit?`<button class="btn gold" onclick="copyTPrompt('${pass.id}',this,'edit')">✏️ Copy EDIT prompt — fix the translation</button>
@@ -639,6 +650,7 @@ function renderPasses(skipKeep){
         <div><div class="pttl">${pass.name}</div><div class="psub">${pass.list.length} checks</div></div>
       </div>
       <div class="pbody">
+        ${pass.edit?longWarn:''}
         <div class="toolbar" style="margin:0 0 10px">${buttons}<span class="copied hidden">copied ✓</span></div>
         <div class="promptbox">${esc(prompt)}</div>
         ${pass.edit?`<details class="pasteback" id="pbd-${pass.id}"><summary>📥 Done with this pass? Paste the revised translation here — the next pass runs on the new version</summary><div class="pbody2">

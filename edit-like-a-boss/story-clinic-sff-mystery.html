@@ -642,11 +642,17 @@ function splitManuscript(text){
   if(out.length===0)out=[{title:'Chapter 1',text:text.trim()}];
   return out;
 }
+function warnGiantChapters(chaps){
+  const giants=(chaps||[]).filter(c=>wc(c.text)>12000);
+  if(!giants.length)return;
+  alert('Heads up: '+(giants.length===1?'"'+giants[0].title+'" loaded as one BIG chapter ('+wc(giants[0].text).toLocaleString()+' words).':giants.length+' chapters came in over 12,000 words each.')+'\n\nChapters this big overload AI edit replies — the AI hits its reply limit mid-chapter and the edit fails.\n\nIf your book has real chapters, make sure each one starts on its own line (like "Chapter 1"), hit Start over, and paste again. Scans and review prompts still work fine either way.');
+}
 function splitNow(){
   save();
   state.chapters=splitManuscript(state.manuscript);
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
   const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';
+  warnGiantChapters(state.chapters);
   // jump to scan
   document.querySelector('.tab[data-v="scan"]').click();
 }
@@ -659,6 +665,7 @@ function addChapters(){
   state.chapters.forEach((c,i)=>{if(/^chapter\s+\d+$/i.test((c.title||'').trim()))c.title='Chapter '+(i+1);});
   state.manuscript=''; document.getElementById('manuscript').value='';
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
+  warnGiantChapters(added);
   document.querySelector('.tab[data-v="scan"]').click();
 }
 function goSmart(){
@@ -686,7 +693,7 @@ function renderChapList(){
   const el=document.getElementById('chapList');
   if(!state.chapters.length){el.innerHTML='';return;}
   el.innerHTML=`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, remove with ✕, or open one to paste its revised version</span></h3>`+
-    state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span><button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}
+    state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span>${wc(c.text)>6000?'<span class="cw" style="color:#B0483F" title="Long chapters can overrun your AI’s reply limit in EDIT mode — the prompt now delivers in parts, but splitting the chapter is safer.">⚠ long</span>':''}<button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}
       <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised text</button></div>
       <div id="repl-${i}" class="hidden">
         <textarea id="replTa-${i}" rows="7" placeholder="Paste the REVISED chapter your AI returned — it replaces this chapter, and every scan and report updates instantly."></textarea>
@@ -926,9 +933,14 @@ function buildPrompt(pass,mode){
     p+=`- Never invent new plot events, facts, objects, or dialogue that changes what happens. If a real fix would need new story content, do NOT write it — list it under NEEDS AUTHOR instead.\n`;
     p+=`- Stay inside the pen-name voice the whole way. Enforce the banned list as you edit: no AI-isms, no dramatic triplets ("X. Y. Z." parallel fragments), no filter words (felt/noticed/realized/seemed/watched/saw/heard/wondered/thought).\n`;
     p+=`- Do not smooth the voice into generic prose — an edit that loses the voice is worse than the flaw it fixed.\n`;
+    p+=`\nREPLY-SIZE RULES (never skip these — oversized replies get cut off mid-sentence and waste the author's usage):\n`;
+    p+=`- Deliver AT MOST ~3,500 words of revised text per reply. If the text is longer, deliver it in parts: send PART 1 only, end the reply with "[PART 1 of N — say NEXT for the next part]", and wait to be asked. The author will combine the parts before pasting them back.\n`;
+    p+=`- Never reprint the original text in your reply.\n`;
+    p+=`- Cap the CHANGE LOG at the 40 most meaningful changes. Roll repetitive fixes into one line with a count (e.g., "removed 37 filter words").\n`;
+    p+=`- The complete text to edit is included below — work from it directly. Do not re-read project files, skills, or story bibles beyond a quick canon check, and reply in chat (do not write files).\n`;
     p+=`\nRETURN, in this order:\n`;
-    p+=`1. THE REVISED TEXT — complete, ready to paste over the original.\n`;
-    p+=`2. CHANGE LOG — each meaningful change on one line: before → after, tagged with the checklist item that drove it.\n`;
+    p+=`1. THE REVISED TEXT — complete (in parts if the size rules require it), ready to paste over the original.\n`;
+    p+=`2. CHANGE LOG — each meaningful change on one line: before → after, tagged with the checklist item that drove it (after the final part if delivering in parts).\n`;
     p+=`3. NEEDS AUTHOR — anything you flagged but did NOT change because it requires a story decision.\n`;
     p+=`\n----- TEXT BEGINS -----\n${sc.text||'(paste your text here)'}\n----- TEXT ENDS -----`;
     return {prompt:p,usable};
@@ -952,8 +964,9 @@ function renderPasses(){
   list.innerHTML=PASSES.map(pass=>{
     const {prompt,usable}=buildPrompt(pass);
     const scopeTag=pass.scope==='manuscript'?'manuscript':pass.scope==='chapter'?'per chapter':'chapter or book';
-    const warn=(pass.scope==='manuscript'&&!sc.isMs)?`<div class="note">Pass ${pass.n} reasons across chapters — switch “Apply to” to <b>Whole manuscript</b> for the real result.</div>`:'';
+    let warn=(pass.scope==='manuscript'&&!sc.isMs)?`<div class="note">Pass ${pass.n} reasons across chapters — switch “Apply to” to <b>Whole manuscript</b> for the real result.</div>`:'';
     const canEdit=pass.scope==='chapter';
+    if(canEdit&&!sc.isMs&&wc(sc.text)>6000)warn+=`<div class="note">⚠ ${esc(sc.label)} is ${wc(sc.text).toLocaleString()} words — long for EDIT mode. The prompt tells your AI to deliver the revision in parts: say “next” until you have them all, combine them, then paste the result below. If it stalls or errors, split this chapter into smaller ones instead of retrying.</div>`;
     let buttons;
     if(canEdit&&!sc.isMs){
       buttons=`<button class="btn gold" onclick="copyPrompt('${pass.id}',this,'edit')">✏️ Copy EDIT prompt — fix it for me</button>
@@ -1883,7 +1896,7 @@ function copyMasterRevision(btn){
     `1. Remove every banned-list hit flagged in the auto-scan (AI-isms, dramatic triplets, filter words, banned names/words/phrases) — replace with specific, in-voice prose.\n`+
     `2. Address the developmental and dialogue notes I paste below.\n`+
     (leaks.length?`3. Fix the satisfaction leaks at: ${leaks.join('; ')} — add closeness/aftermath so the bond rises to catch the released tension.\n`:'')+
-    `\nWork chapter by chapter. After each chapter, list what you changed.\n\n[PASTE THE RELEVANT PASS NOTES HERE]`;
+    `\nWork chapter by chapter. After each chapter, list what you changed. Keep each reply under ~3,500 words of revised text — if a chapter runs longer, deliver it in parts (end the reply with "[PART 1 of N — say NEXT for the next part]" and wait).\n\n[PASTE THE RELEVANT PASS NOTES HERE]`;
   navigator.clipboard.writeText(p).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy master revision prompt',1500);});
 }
 
