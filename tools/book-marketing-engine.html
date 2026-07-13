@@ -650,7 +650,7 @@ const TROPE_EXTRA = {
 "Marriage of Convenience":{kw:["marriage of convenience romance","contract marriage","in name only romance"],hash:["#marriageofconvenience","#contractmarriage"],tag:["It's strictly business. Until it strictly isn't."],hook:"The contract was simple: a marriage on paper, nothing more. But paper burns."},
 "Secret Baby":{kw:["secret baby romance","surprise baby romance","hidden child second chance"],hash:["#secretbaby","#secretbabyromance"],tag:["He left without knowing. He's back without warning."],hook:"{A} kept one secret from {B}. It's four years old and has {B}'s eyes."},
 "Billionaire Romance":{kw:["billionaire romance","ceo romance","rich alpha hero"],hash:["#billionaireromance","#ceoromance"],tag:["He can buy anything. She's not for sale.","His empire runs on his rules. She rewrites them in a week."],hook:"{B} owns half the city and everyone in it. {A} is the one thing money can't touch — which makes her the only thing he wants."},
-"Small Town Romance":{kw:["small town romance","hometown love story","cozy small town series"],hash:["#smalltownromance","#hometownlove"],tag:["In a town this small, there's no such thing as avoiding him.","Population 3,000. Secrets: zero. Sparks: everywhere."],hook:"In {SETTING}, everyone knows everyone's business — so the whole town sees what's happening between {A} and {B} before they'll admit it themselves."},
+"Small Town Romance":{kw:["small town romance","hometown love story","cozy small town series"],hash:["#smalltownromance","#hometownlove"],tag:["In a town this small, there's no such thing as avoiding him.","Population 3,000. Secrets: zero. Sparks: everywhere."],hook:"In {TOWN}, everyone knows everyone's business — so the whole town sees what's happening between {A} and {B} before they'll admit it themselves."},
 "Workplace / Office Romance":{kw:["office romance","boss employee romance","workplace enemies to lovers"],hash:["#officeromance","#bossromance"],tag:["HR would like a word. Several, actually."],hook:"Falling for {B} could cost {A} everything — the job, the reputation, the carefully ordered life. The office has never felt so small."},
 "Brother's Best Friend":{kw:["brothers best friend romance","best friends sister","off limits romance"],hash:["#brothersbestfriend","#offlimits"],tag:["Ten years of hands-off. One weekend to break every rule."],hook:"{B} has been off-limits since forever — her brother made sure of it. But some lines were drawn to be crossed."},
 "Bodyguard Romance":{kw:["bodyguard romance","protector romance","romantic suspense bodyguard"],hash:["#bodyguardromance","#protectorromance"],tag:["His job is to guard her body. Nobody said anything about his heart."],hook:"{B} was hired to keep {A} alive. The threat he can't neutralize is the one building between them."},
@@ -850,6 +850,22 @@ function firstEvidence(text,re){
 function analyze(text){
   const words=text.trim().split(/\s+/).length;
   const per10k=n=>n/words*10000;
+  /* front matter: title, subtitle, author */
+  let title=null,subtitle=null,author=null;
+  const headLines=text.split(/\n/).map(l=>l.trim()).filter(l=>l).slice(0,12);
+  for(const l of headLines){
+    if(/^(chapter|prologue|part)\b/i.test(l))break;
+    const by=l.match(/^(?:by|written by)[:\s]+(.{2,60})$/i);
+    if(by){author=by[1].trim();continue;}
+    if(l.length<2||l.length>80||l.split(/\s+/).length>14)continue;
+    if(/^(copyright|©|all rights|dedication|acknowledg|edited by|cover by|draft|version|www\.|http)/i.test(l))continue;
+    if(!title){
+      title=l.replace(/^["“]|["”]$/g,"");
+      if(title===title.toUpperCase()&&/[A-Z]/.test(title))title=title.toLowerCase().replace(/(^|[\s\-—:])([a-z])/g,(m,p,c)=>p+c.toUpperCase());
+      continue;
+    }
+    if(!subtitle&&/^(a|an|the)\b.{4,70}\b(romance|novel|novella|mystery|thriller|story|tale)\b/i.test(l)){subtitle=l;continue;}
+  }
   /* POV & tense */
   const iCount=countMatches(text,/\bI\b/g);
   const pov=per10k(iCount)>120?"First person":"Third person";
@@ -872,9 +888,56 @@ function analyze(text){
     nameTotals[n]=(nameTotals[n]||0)+1;
     if(!m[1])nameMid[n]=(nameMid[n]||0)+1;
   }
-  const characters=Object.keys(nameMid).filter(n=>nameMid[n]>=5).sort((a,b)=>nameMid[b]-nameMid[a]).slice(0,8).map(n=>({name:n,count:nameTotals[n]}));
+  /* words that almost always travel in a capitalized pair ("Maple Falls",
+     "Wyatt Calder"'s surname) are compound proper nouns, not characters */
+  const bigrams={};
+  const bigRe=/\b([A-Z][a-z]{2,})\s+([A-Z][a-z]{2,})\b/g;
+  let bm;
+  while((bm=bigRe.exec(text))!==null){
+    for(const w of [bm[1],bm[2]]){if(!NAME_STOP.has(w))bigrams[w]=(bigrams[w]||0)+1;}
+  }
+  const characters=Object.keys(nameMid)
+    .filter(n=>nameMid[n]>=5)
+    .filter(n=>(bigrams[n]||0)<nameMid[n]*0.8)
+    .sort((a,b)=>nameMid[b]-nameMid[a]).slice(0,8).map(n=>({name:n,count:nameTotals[n]}));
   /* settings */
   const settings=SETTING_LEX.map(s=>({tag:s.tag,n:s.pat.reduce((a,re)=>a+countMatches(text,re),0)})).filter(s=>s.n>=4).sort((a,b)=>b.n-a.n).slice(0,3);
+  /* real place names — "in Maple Falls", "back to Cedar Creek" */
+  const charSet=new Set(characters.map(c=>c.name));
+  const placeCounts={};
+  const placeRe=/\b(?:in|at|to|from|near|outside|around|welcome to|back to|all of)\s+((?:[A-Z][a-z]+)(?:\s+[A-Z][a-z]+){0,2})\b/g;
+  let pm;
+  while((pm=placeRe.exec(text))!==null){
+    const p=pm[1];
+    if(NAME_STOP.has(p.split(" ")[0]))continue;
+    placeCounts[p]=(placeCounts[p]||0)+1;
+  }
+  const places=Object.keys(placeCounts)
+    .filter(p=>placeCounts[p]>=3&&!charSet.has(p)&&!p.split(" ").every(w=>charSet.has(w)))
+    .sort((a,b)=>(placeCounts[b]+b.split(" ").length*2)-(placeCounts[a]+a.split(" ").length*2))
+    .slice(0,3);
+  /* quotable dialogue for quote graphics & social posts */
+  const quotes=[];
+  const qre=/["“]([^"“”\n]{25,160})["”]/g;
+  let qm;
+  while((qm=qre.exec(text))!==null){
+    const q=qm[1].trim();
+    if(/\b(said|asked|replied|muttered|whispered)\b/i.test(q)&&q.length>100)continue;
+    let s=0;
+    if(/[!?]$/.test(q))s+=2;
+    if(/\b(love|hate|want|need|never|always|mine|yours|stay|leave|go|promise|afraid|scared|marry|kiss|forever|done|enough|please|can't|won't|shouldn't|believe|pretend|fake|real|sorry|forgive|trust|truth|lie|lied|wrong|home|heart)\b/i.test(q))s+=3;
+    if(q.length<90)s+=1;
+    if(/[,;]$/.test(q))s-=3;
+    if(s>=3&&!quotes.some(x=>x.q===q))quotes.push({q,s});
+  }
+  quotes.sort((a,b)=>b.s-a.s);
+  const pullQuotes=quotes.slice(0,6).map(x=>x.q);
+  /* opening line */
+  let opening=null;
+  const chm=text.match(/^\s*(?:chapter|prologue)[^\n]*\n+([\s\S]{0,500})/im);
+  const body=(chm?chm[1]:text.slice(0,500)).replace(/\s+/g," ").trim();
+  const om=body.match(/^(.{30,220}?[.!?])(?:\s|$)/);
+  if(om)opening=om[1];
   /* content notes */
   const warnings=WARN_LEX.filter(w=>w.pat.reduce((a,re)=>a+countMatches(text,re),0)>=w.min).map(w=>w.label);
   /* tropes */
@@ -892,7 +955,7 @@ function analyze(text){
   if(mysteryAnchor<3){const ci=tropes.findIndex(t=>t.name==="Cozy Mystery");if(ci>-1)tropes.splice(ci,1);}
   tropes.sort((a,b)=>b.score-a.score);
   const chapters=(text.match(/^\s*(chapter|prologue|epilogue)\b/gim)||[]).length;
-  return {words,chapters,pov,tense,heat,heatRates:{h1:h1.toFixed(1),h3:h3.toFixed(1),h5:h5.toFixed(1)},characters,settings,warnings,tropes,len:lengthClass(words)};
+  return {words,chapters,pov,tense,heat,heatRates:{h1:h1.toFixed(1),h3:h3.toFixed(1),h5:h5.toFixed(1)},characters,settings,warnings,tropes,len:lengthClass(words),title,subtitle,author,places,pullQuotes,opening};
 }
 function runAnalysis(){
   const text=$("msBox").value;
@@ -927,9 +990,16 @@ function guessGenre(an){
 }
 function prefillDetails(){
   const an=S.an;
-  if(an.characters[0]&&!$("fCharA").value)$("fCharA").value=an.characters[0].name;
-  if(an.characters[1]&&!$("fCharB").value)$("fCharB").value=an.characters[1].name;
-  if(an.settings[0]&&!$("fSetting").value)$("fSetting").value=an.settings.map(s=>s.tag).join(", ");
+  /* a fresh scan always refreshes what it actually found — stale test data was overriding new books */
+  if(an.title)$("fTitle").value=an.title;
+  if(an.subtitle)$("fSubtitle").value=an.subtitle;
+  if(an.author)$("fAuthor").value=an.author;
+  if(an.characters[0])$("fCharA").value=an.characters[0].name;
+  if(an.characters[1])$("fCharB").value=an.characters[1].name;
+  const setBits=[];
+  if(an.places&&an.places[0])setBits.push(an.places[0]);
+  if(an.settings[0])setBits.push(an.settings.map(s=>s.tag).join(", "));
+  if(setBits.length)$("fSetting").value=setBits.join(" — ");
   $("fHeat").value=String(an.heat);
   $("fGenre").value=guessGenre(an);
 }
@@ -974,9 +1044,12 @@ function renderStep3(){
   /* preselect strong detections on first visit */
   if(S.sel.size===0)an.tropes.filter(t=>t.score>=6).slice(0,7).forEach(t=>S.sel.add(t.name));
   $("scanFacts").innerHTML=[
+    an.title?["Title found",an.title]:null,
     ["Words",an.words.toLocaleString()],["Length",an.len.name],["POV",an.pov],["Tense",an.tense],
-    ["Heat scan",an.heat+" / 5"],["Cast",an.characters.slice(0,4).map(c=>c.name).join(", ")||"—"]
-  ].map(([l,n])=>`<div class="stat"><div class="n" style="font-size:15px">${esc(n)}</div><div class="l">${l}</div></div>`).join("");
+    ["Heat scan",an.heat+" / 5"],["Cast",an.characters.slice(0,4).map(c=>c.name).join(", ")||"—"],
+    (an.places&&an.places.length)?["Places",an.places.join(", ")]:null,
+    (an.pullQuotes&&an.pullQuotes.length)?["Pull quotes",an.pullQuotes.length+" found"]:null
+  ].filter(Boolean).map(([l,n])=>`<div class="stat"><div class="n" style="font-size:15px">${esc(n)}</div><div class="l">${l}</div></div>`).join("");
   $("warnStrip").innerHTML=an.warnings.length?`<div class="callout"><b>Possible content notes detected:</b> ${an.warnings.map(esc).join(" · ")} — you'll get a ready-made content note block in the kit.</div>`:"";
   renderDetected();renderLibrary();renderPrimary();
 }
@@ -1100,7 +1173,8 @@ function isRom(){return["romance","romantasy","dark","clean"].includes(fam());}
 function heatWord(){return HEATWORD[S.d.heat]||"emotional";}
 function fill(t){
   const d=S.d;
-  return t.replace(/\{A\}/g,d.A).replace(/\{B\}/g,d.B).replace(/\{SETTING\}/g,d.setting||"town").replace(/\{TITLE\}/g,d.title).replace(/\{AUTHOR\}/g,d.author).replace(/\{SERIES\}/g,d.series||d.title);
+  const town=(d.setting||"").split(/[—,\/]/)[0].trim()||"town";
+  return t.replace(/\{A\}/g,d.A).replace(/\{B\}/g,d.B).replace(/\{SETTING\}/g,d.setting||"town").replace(/\{TOWN\}/g,town).replace(/\{TITLE\}/g,d.title).replace(/\{AUTHOR\}/g,d.author).replace(/\{SERIES\}/g,d.series||d.title);
 }
 function extras(name){
   const e=TROPE_EXTRA[name];
@@ -1228,6 +1302,10 @@ PANEL.pos=function(){
   <p class="hint">Use these on the cover, in ads, as pinned comments, on quote graphics.</p>
   <ul class="taglinelist">${b.tags.map(t=>`<li>“${esc(t)}”</li>`).join("")}</ul>
   ${cb("All taglines","posTags",b.tags.join("\n"))}
+  <h3>Pulled straight from your manuscript</h3>
+  <p class="hint">Real lines from the book — the strongest marketing material you own. Use the quotes on Canva quote cards; the opening line is a classic "first line reveal" post.</p>
+  ${an.opening?cb("Your opening line","posOpen",an.opening):""}
+  ${(an.pullQuotes&&an.pullQuotes.length)?cb("Quotable dialogue (best "+an.pullQuotes.length+", scored for punch)","posQuotes",an.pullQuotes.map(q=>"“"+q+"”").join("\n\n")):`<div class="callout">No standout short dialogue quotes found — if your best lines are longer than 160 characters, grab them by hand for quote graphics.</div>`}
   ${an.warnings.length?`<h3>Content notes block</h3><p class="hint">Modern romance/dark readers expect this. Put it in the book's front matter and optionally at the end of the blurb.</p>${cb("Content notes","posCW","Content notes: this book contains "+an.warnings.map(w=>w.toLowerCase()).join(", ")+". Reader discretion advised.")}`:""}
   <h3>The facts sheet</h3>
   <table class="meta"><tr><th>Word count</th><td>${an.words.toLocaleString()} (${an.len.name})</td></tr>
@@ -1378,7 +1456,8 @@ function genPosts(){
   add("D-11","Facebook","Character intro",`Meet ${d.A}. ${d.want?cap(d.want)+" — that's the whole plan.":"Life under control — or so it looks."} Then the plan meets ${d.B}.\n\n${d.title}, coming soon.`,"Character aesthetic board (Canva/Pinterest style) or a single mood image.");
   add("D-10","Threads / X","Hook post","“"+(b.tags[1]||b.oneline)+"”\n\n"+d.title+" 🗓 coming soon","Text-only — let the tagline breathe. Pin it.");
   add("D-9","TikTok / Reels","POV video","POV: "+(isRom()?`you swore you'd never fall for ${shortTrope(t(0)).toLowerCase()} and the universe said 'watch this'`:`you opened ${d.title} at midnight 'just to check the first page'`),"Trend format. Caption overlays; end-card = cover + date.");
-  add("D-8","Instagram","Excerpt tease","(Your spiciest *quotable* line of dialogue — 1–2 sentences, no context.)\n\n— "+d.title,"Quote card: line over textured background, cover thumbnail in corner.");
+  const q1=(S.an.pullQuotes&&S.an.pullQuotes[0])||null;
+  add("D-8","Instagram","Excerpt tease",(q1?"“"+q1+"”":"(Your spiciest *quotable* line of dialogue — 1–2 sentences, no context.)")+"\n\n— "+d.title,"Quote card: line over textured background, cover thumbnail in corner."+(S.an.pullQuotes&&S.an.pullQuotes.length>1?" More pulled quotes are waiting in the Positioning tab.":""));
   add("D-7","All platforms","One week countdown","ONE WEEK. 🗓\n\n"+b.newsletter,"Countdown graphic. Start daily posting from here.");
   add("D-6","Facebook / IG","ARC reviews","Early readers are saying things. 👀\n\n(Screenshot 2–3 ARC reactions — with permission.)","Review-quote collage. Tag the reviewers if they're public.");
   add("D-5","TikTok / Reels","Trope explainer","“"+shortTrope(t(1))+"” explained in 20 seconds — and why readers can't get enough of it. (End: 'I may have written one. It's called "+d.title+".')","Talking-head or voiceover. Educational hook = wider reach than pure promo.");
@@ -1392,6 +1471,7 @@ function genPosts(){
   add("D+5","Facebook / IG","Review ask","If "+d.title+" kept you up past bedtime, a 2-line review is the single biggest thing you can do for it (and me). 🙏","Screenshot of a favorite early review as the visual.");
   add("D+7","All platforms","Week-one recap","One week of "+d.title+"! (Numbers if proud, feelings if not.) Next: (tease the next book/bonus epilogue/signed copies.)","Carousel: best moments, reader quotes, what's next.");
   add("D+10","TikTok / Reels","Deep-cut trope","The "+(shortTrope(ts[2]||ts[0]).toLowerCase())+" scene in "+d.title+" — no spoilers, but chapter "+(Math.min(7,Math.max(3,Math.floor((S.an.chapters||10)/3))))+" is why the group chat isn't okay.","Vague-posting drives comments. Reply with 'read it' energy.");
+  if(S.an.opening)add("D+12","Instagram / Threads","First line reveal","Every book starts somewhere. "+d.title+" starts here:\n\n“"+S.an.opening+"”\n\nWhere it goes from there… link in bio. 🖤","First-line quote card — big serif type, cover in the corner. Readers love judging books by their first line; let them.");
   add("D+14","Newsletter + FB","Swap week","(Newsletter-swap week: your book appears in 2–4 author newsletters. Post: 'If you found me through [genre] newsletters — welcome! Start here.')","Intro graphic for new readers: who you are, what you write, where to start.");
   return P;
 }
@@ -1537,7 +1617,11 @@ ${G().bisac.join("\n")}
 }
 
 /* ═══════════════════ SAMPLE ═══════════════════ */
-const SAMPLE_MS=`Chapter One
+const SAMPLE_MS=`Moonlight Over Maple Falls
+A Small Town Fake Dating Romance
+by Delia Hartwell
+
+Chapter One
 
 Hazel Monroe had exactly one rule about coming back to Maple Falls: get in, sell the bakery, get out. The small town had a way of holding on to people, and Hazel had spent ten years proving she could outrun it. Main Street looked the same — the diner still glowing, the hardware store still leaning, the whole town square wrapped in October light.
 
@@ -1555,7 +1639,7 @@ The lawyer's letter changed everything. The bakery could not be sold for six mon
 
 "So pretend," her best friend Junie said over pie at the diner. "Pretend to be partners. Fake it for the council. He needs the lease, you need the sale. It's perfect."
 
-"It's insane. Everyone knows everyone here. The whole town would have to believe that Wyatt Calder and I are — what, together?"
+"It's insane. Everyone in Maple Falls knows everyone. The whole town would have to believe that Wyatt Calder and I are — what, together?"
 
 Junie grinned. "Sweetheart, half of Main Street already thinks it. You two have been glaring at each other across the farmers market since high school."
 
