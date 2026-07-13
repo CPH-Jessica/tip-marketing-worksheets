@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Launch Videos — TIP YouTube Launch Kit</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+.header { background: var(--navy); color: white; padding: 3rem 2rem; text-align: center; }
+.header h1 { font-size: 2.1rem; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
+.header .subtitle { color: var(--coral); font-size: 1.05rem; font-style: italic; }
+.header .brand { color: var(--gold); font-size: 0.85rem; margin-top: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+.container { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.intro-box { background: white; border-left: 4px solid var(--coral); padding: 1.5rem; margin-bottom: 2.5rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.video-card { background: white; border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.video-card > h2 { color: var(--navy); font-size: 1.35rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
+.meta-line { font-style: italic; color: #6b6b6b; font-size: 0.9rem; margin: 0.5rem 0 1rem; }
+.field-label { color: var(--sage); font-size: 0.8rem; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.25rem 0 0.25rem; }
+.char-note { font-size: 0.8rem; color: #999; font-style: italic; font-weight: normal; text-transform: none; letter-spacing: 0; }
+.copy-block { position: relative; background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; margin: 0.4rem 0 0.75rem; white-space: pre-wrap; font-size: 0.93rem; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--navy); color: white; border: none; font-family: inherit; font-size: 0.78rem; padding: 0.3rem 0.8rem; border-radius: 99px; cursor: pointer; z-index: 2; }
+.copy-btn:hover { background: var(--coral); }
+details { margin: 0.4rem 0 0.75rem; }
+summary { cursor: pointer; color: var(--navy); font-weight: bold; padding: 0.5rem 0; }
+summary:hover { color: var(--coral); }
+.script { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; font-size: 0.95rem; position: relative; }
+.script .cue { display: block; color: var(--sage); font-size: 0.78rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin: 1.1rem 0 0.2rem; }
+.script .cue:first-child { margin-top: 0; }
+.script .broll { color: #999; font-style: italic; font-size: 0.85rem; }
+.pill { display: inline-block; background: var(--gold); color: var(--navy); font-size: 0.7rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 0.1rem 0.55rem; border-radius: 99px; margin-left: 0.4rem; position: relative; top: -2px; }
+.footer { text-align: center; color: #888; font-size: 0.85rem; padding: 2rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--coral); }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Launch Videos</h1>
+  <div class="subtitle">Trailer + 6 videos — scripted, packaged, ready to record</div>
+  <div class="brand">The Invisible Pen · YouTube Launch Kit</div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p>Each card is one complete video: word-for-word script (click to expand), title, full description, tags, thumbnail text, and a pinned comment. Scripts are written in your teaching voice — direct, warm, zero fluff — and each one funnels to a specific Payhip class. <strong>Read them out loud once before recording;</strong> cross out anything that doesn't sound like you.</p>
+    <p style="margin-top:0.75rem;">Filming setup for all of these: talking head + screen share. Nothing fancier needed. <em>SCREEN</em> cues mark where to cut to your screen; <em>[B-ROLL]</em> notes are optional.</p>
+  </div>
+
+  <!-- ══════════ TRAILER ══════════ -->
+  <div class="video-card">
+    <h2>Video 0 · Channel Trailer <span class="pill">90 sec</span></h2>
+    <p class="meta-line">Purpose: convert channel-page visitors into subscribers. Set as Channel Trailer under Customization → Layout.</p>
+
+    <div class="field-label">Title <span class="char-note">(72 chars)</span></div>
+    <div class="copy-block">Your Books Should Sound Like YOU — Even With AI | The Invisible Pen</div>
+
+    <details open>
+      <summary>Full Script — 90 seconds</summary>
+      <div class="script"><span class="cue">Hook — to camera</span>Here's the thing nobody tells you about using AI to write books: the tool isn't the problem. The setup is.
+
+<span class="cue">The problem</span>Most authors open ChatGPT or Claude, type "edit my chapter," and get back something that sounds like a LinkedIn post wrote a romance novel. So they decide AI doesn't work for fiction. It does. They just skipped the invisible work.
+
+<span class="cue">Who I am</span>I'm Jessica Waldron. I run The Invisible Pen, where I teach indie authors — a lot of romance authors, a lot of genre fiction authors — how to set up AI so it writes and edits in YOUR voice. Not its voice. Yours.
+
+<span class="cue">What you'll get — over b-roll of worksheets/screen</span>On this channel: how to teach Claude who you are in ten minutes. My 9-pass editing system that takes a messy draft to ready-to-publish. How to launch a pen name from zero — newsletter, reader magnet, covers, KDP. And the marketing side: tropes, blurbs, keywords, and Amazon ads that don't burn your money.
+
+<span class="cue">Proof / promise</span>Everything is step-by-step. Everything comes with worksheets you can actually use. And nothing — nothing — requires you to publish a book that sounds like a robot.
+
+<span class="cue">CTA</span>New videos every week. Subscribe, and if you want to know exactly where to start, take the free Plot Your Path quiz linked below. Two minutes, and you'll have your roadmap. See you in the next one.</div>
+    </details>
+
+    <div class="field-label">Description <span class="char-note">(paste above the upload default)</span></div>
+    <div class="copy-block">AI can write and edit WITH you without erasing your voice — if you do the invisible setup work first. I'm Jessica Waldron, and that's exactly what this channel teaches.
+
+🗺️ Start here — the free 2-minute Plot Your Path quiz:
+https://cph-jessica.github.io/tip-marketing-worksheets/start-here.html
+
+What you'll find on The Invisible Pen:
+✒️ Setting up Claude so it sounds like YOU
+✒️ The 9-Pass AI Editing System (Edit Like a Boss)
+✒️ Launching a pen name from scratch
+✒️ Tropes, blurbs, keywords &amp; Amazon ads that convert
+
+New videos weekly.</div>
+
+    <div class="field-label">Extra Tags <span class="char-note">(added on top of upload defaults)</span></div>
+    <div class="copy-block">channel trailer, ai writing voice, make ai sound like you, authortube channel</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "AI THAT SOUNDS LIKE *YOU*"  ("YOU" in coral, rest cream, navy background)
+Your face: right third, warm smile, arms crossed
+Gold pen nib: top left corner</div>
+  </div>
+
+  <!-- ══════════ VIDEO 1 ══════════ -->
+  <div class="video-card">
+    <h2>Video 1 · Stop Sounding Like AI <span class="pill">8–10 min · flagship search video</span></h2>
+    <p class="meta-line">Funnel: Your Style Sheet / AI Banned Words tool → Foundations of Claude. This topic has the biggest search demand — it goes first.</p>
+
+    <div class="field-label">Title <span class="char-note">(69 chars)</span></div>
+    <div class="copy-block">Your AI Writing Sounds Like AI — 5 Fixes for Fiction Authors</div>
+
+    <details>
+      <summary>Full Script — ~1,100 words ≈ 8–9 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>"She felt a shiver run down her spine. Little did she know, her world was about to change forever." If AI has ever handed you a sentence like that, this video is for you. Five fixes, most of them take under ten minutes, and by the end your AI drafts will stop sounding like every other AI draft on the internet.
+
+<span class="cue">Intro — 15 sec max</span>I'm Jessica Waldron from The Invisible Pen. I teach indie authors how to use Claude and other AI tools without losing their voice. Let's fix yours.
+
+<span class="cue">Fix 1 — Ban the banned words · SCREEN: AI Banned Words tool</span>Fix one: the banned words list. Every AI model has pet phrases. "A testament to." "Little did she know." "She let out a breath she didn't know she was holding." Eyes that "sparkle with mischief." Your readers have seen these a thousand times, and they're the number one tell.
+
+So you give the AI a banned list, up front, in every project. I keep a free tool for this — the AI Banned Words tool, linked below — that builds the list for you. Copy it into your project instructions once, and those phrases are gone. Ten minutes, biggest single improvement you can make.
+
+<span class="cue">Fix 2 — Feed it YOUR pages, not adjectives</span>Fix two: stop describing your voice, start showing it. "Write in a witty, warm style" means nothing to an AI — witty according to who? Instead, paste in three to five pages of YOUR writing — the pages you're proudest of — and say: "This is my voice. Match sentence length, rhythm, dialogue style, and interiority."
+
+AI is a mimic. Mimics need something to mimic. Adjectives don't work; samples do.
+
+<span class="cue">Fix 3 — The style sheet · SCREEN: Your Style Sheet tool</span>Fix three: turn those samples into a permanent style sheet. This is a one-page document: how you handle dialogue tags, how much interiority you use, your comma habits, your heat level, words you overuse on purpose because they're YOURS.
+
+You build it once, you attach it to every project, and the AI stops drifting back to its factory defaults halfway through chapter three. There's a free Style Sheet builder in my library — link below — that walks you through it question by question.
+
+<span class="cue">Fix 4 — Small asks, not big asks</span>Fix four: shrink your requests. "Edit my chapter" is a big ask, and big asks get generic answers — the AI averages everything at once and sands your voice off in the process. Small asks keep you in control: "Tighten this paragraph but keep my sentence rhythm." "Flag every cliché in this scene — don't rewrite anything."
+
+One job per pass. This is the entire philosophy behind my 9-pass editing system, and it's also why the edits stay YOURS: the AI flags, you decide.
+
+<span class="cue">Fix 5 — The human pass</span>Fix five, and it's non-negotiable: the last pass is you. Read it out loud. Every place you stumble, every line you'd never actually say — that's the AI showing through. Fix it by hand.
+
+Here's the mindset shift: AI is your assistant, not your ghostwriter. It does the invisible work — the flagging, the consistency checks, the tedious passes. The voice on the page is the one thing you never delegate.
+
+<span class="cue">Recap — fast</span>Quick recap. One: banned words list. Two: show your voice with samples, don't describe it. Three: permanent style sheet. Four: small asks, one job per pass. Five: the human pass, out loud, every time.
+
+<span class="cue">CTA</span>Both free tools from this video — the AI Banned Words tool and the Style Sheet builder — are linked below, no email required. And if you want the full setup, where Claude actually knows who you are, your pen name, and your project before you type a word — that's my Foundations of Claude class, also linked below. Subscribe for a new video every week. Now go un-robot your manuscript.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">"A testament to her resilience…" — if your AI drafts sound like that, here are 5 fixes that actually work for fiction, most of them in under 10 minutes.
+
+⏱️ CHAPTERS
+0:00 The problem with AI fiction
+0:45 Fix 1 — The banned words list
+2:20 Fix 2 — Show your voice, don't describe it
+3:50 Fix 3 — Build a permanent style sheet
+5:30 Fix 4 — Small asks, one job per pass
+7:00 Fix 5 — The human pass
+8:10 Recap + free tools
+
+🆓 FREE TOOLS FROM THIS VIDEO
+The AI Banned Words Tool: https://cph-jessica.github.io/tip-marketing-worksheets/tools/ai-banned-words.html
+Your Style Sheet builder: https://cph-jessica.github.io/tip-marketing-worksheets/tools/your-style-sheet.html
+
+🎓 Want the full setup? Foundations of Claude:
+https://payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">ai writing sounds robotic, make ai sound human, ai banned words, ai fiction writing, claude fiction, style sheet for authors, ai voice fiction</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "STOP SOUNDING LIKE *AI*"  ("AI" coral, struck through with a gold line)
+Your face: right third, skeptical eyebrow
+Optional: tiny robot emoji with a red X</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">Which AI phrase makes YOU cringe hardest? Mine's "she let out a breath she didn't know she was holding" 😅 Drop yours below — I'm adding the best ones to the free Banned Words tool (link in description).</div>
+  </div>
+
+  <!-- ══════════ VIDEO 2 ══════════ -->
+  <div class="video-card">
+    <h2>Video 2 · Teach Claude Who You Are <span class="pill">7–8 min</span></h2>
+    <p class="meta-line">Funnel: free worksheet → Foundations of Claude. The "get set up right" video you'll link in every future description.</p>
+
+    <div class="field-label">Title <span class="char-note">(66 chars)</span></div>
+    <div class="copy-block">Set Up Claude for Fiction Writing in 10 Minutes (Author Setup)</div>
+
+    <details>
+      <summary>Full Script — ~950 words ≈ 7–8 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>Ten minutes of setup. That's the difference between Claude being a generic chatbot and Claude being a writing partner who knows your pen name, your genre, your voice, and your current book. Let me show you the exact setup, step by step.
+
+<span class="cue">Intro</span>I'm Jessica Waldron from The Invisible Pen. If you're new: I teach indie authors to use AI without sounding like AI. Today is lesson zero — the setup everything else builds on.
+
+<span class="cue">Why this matters</span>Here's what most people do: they open a fresh chat, paste a chapter, and ask for help. Every single chat starts from zero. Claude doesn't know if you write cozy mysteries or dark romance, doesn't know your heat level, doesn't know that your heroine's name is spelled with two Ns. So it guesses. And its guesses are the most average guesses on the internet.
+
+The fix is called a Project — and inside it, custom instructions that travel with every conversation.
+
+<span class="cue">Step 1 — Create the project · SCREEN: Claude, new Project</span>Step one. In Claude, create a new Project. Name it after your pen name or your current book — one project per pen name is the rule, because each pen name has its own voice.
+
+<span class="cue">Step 2 — The Who-You-Are block · SCREEN: project instructions</span>Step two: the instructions. This is where you teach Claude who you are. Four things, in plain English:
+
+Who you are — your pen name, your genre, your subgenre, your heat level. Who your reader is — "I write for romance readers who want banter and a guaranteed HEA," for example. How you want Claude to behave — flag, don't rewrite; ask before changing anything plot-related; match my voice, never impose yours. And what you're working on right now — book title, series position, where you are in the draft.
+
+I have a free worksheet — Teach Claude Who You Are, linked below — that literally writes this block for you. You answer the questions, click generate, paste the result in. That's the ten minutes.
+
+<span class="cue">Step 3 — Attach your voice · SCREEN: project knowledge</span>Step three: attach your voice samples and style sheet to the project knowledge. Three to five of your best pages. Now every conversation in this project starts already knowing how you sound.
+
+<span class="cue">The test · SCREEN: live demo</span>Now the test. Same prompt, two chats. In a fresh, un-set-up chat: "Suggest an opening line for my next chapter." Watch — it's generic, it could be anyone's book. Now the same prompt inside the project… and look at the difference. It knows the book. It knows the tone. It's building on MY pages, not the internet's average.
+
+<span class="cue">CTA</span>The Teach Claude Who You Are worksheet is free, linked below, no email required. This video is actually lesson one of my full class, Foundations of Claude — sixteen lessons that go from this setup all the way to a complete writing system: skills, beta readers, series planning. Link's below if you're ready for the whole thing. Subscribe either way — the next video in this series builds directly on today's setup.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">Claude is only as good as what it knows about you. Here's the exact 10-minute setup that turns it from generic chatbot into a writing partner that knows your pen name, genre, voice, and current book.
+
+⏱️ CHAPTERS
+0:00 Why every chat starts from zero
+1:10 Step 1 — One project per pen name
+2:00 Step 2 — The "who you are" instructions
+4:15 Step 3 — Attach your voice samples
+5:30 The before/after test
+6:45 What's next
+
+🆓 FREE WORKSHEET — it writes your setup block for you:
+https://cph-jessica.github.io/tip-marketing-worksheets/foundations/lesson-1-teach-claude-who-you-are.html
+
+🎓 This is Lesson 1 of Foundations of Claude (16 lessons, full writing system):
+https://payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">claude setup, claude projects, claude custom instructions, claude for fiction writers, ai writing setup, claude ai tutorial</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "CLAUDE, MEET *YOUR AUTHOR*" (or "10-MIN CLAUDE *SETUP*")
+Your face: right third, pointing at the text
+Screenshot fragment of a Claude project behind the text, dimmed to 40%</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">What's YOUR pen name's one-line identity? (Genre + reader promise — like "small-town romance with banter and a guaranteed HEA.") Practice writing it below 👇 — it's the first line of your project instructions.</div>
+  </div>
+
+  <!-- ══════════ VIDEO 3 ══════════ -->
+  <div class="video-card">
+    <h2>Video 3 · The 9-Pass AI Editing System <span class="pill">10–12 min · pillar video</span></h2>
+    <p class="meta-line">Funnel: Edit Like a Boss. Your flagship system — this becomes the video you point to forever.</p>
+
+    <div class="field-label">Title <span class="char-note">(74 chars)</span></div>
+    <div class="copy-block">I Edit My Novels With AI in 9 Passes — Full System (Edit Like a Boss)</div>
+
+    <details>
+      <summary>Full Script — ~1,250 words ≈ 10–11 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>One editing pass will never be enough. Not for a human editor, and definitely not for AI. When you ask AI to "edit everything" in one go, it does everything badly — it averages. The fix is nine passes, one job each. This is the exact system I use on every manuscript, start to finish.
+
+<span class="cue">Intro</span>I'm Jessica Waldron from The Invisible Pen. This system is called Edit Like a Boss, and today you get the whole map — what each pass does, in what order, and why the order matters.
+
+<span class="cue">The principle</span>The principle first: one pass, one job. When AI has a single job — find plot holes, nothing else — it's shockingly good. When it has five jobs, it's mediocre at all of them and it starts rewriting your voice while it's at it. Nine focused passes beat one giant one, every time. Here we go.
+
+<span class="cue">Pass 1 — Quality Check · SCREEN: worksheet</span>Pass one: the quality check. Before you fix anything, you diagnose. The AI reads the manuscript and reports — where the pacing sags, which characters blur, what's working. You're not editing yet. You're getting the map so the next eight passes have targets.
+
+<span class="cue">Pass 2 — Plot holes</span>Pass two: plot holes. Continuity, logic, the gun that was never fired, the injury that vanished by Thursday. AI is genuinely better at this than most humans — it doesn't get absorbed in the story, which for once is an advantage. It flags; you decide what's actually a problem.
+
+<span class="cue">Pass 3 — Timeline</span>Pass three: timeline. If your heroine is pregnant for eleven months, this is where you catch it. Days of the week, travel time, healing time, school semesters. Tedious for you, trivial for AI. That's exactly the kind of work you should be delegating.
+
+<span class="cue">Pass 4 — Line edit</span>Pass four: the line edit. Sentence-level tightening — filter words, echoes, flabby constructions. This is the pass where your banned words list and style sheet earn their keep, because a line edit without them is how manuscripts get their voice sanded off. Flag mode, always: the AI suggests, you choose.
+
+<span class="cue">Pass 5 — Dialogue</span>Pass five: dialogue. Does every character sound distinct? Could you strip the tags and still know who's talking? This pass checks rhythm, slang consistency, and whether your teenager talks like a forty-five-year-old lawyer. Unless both characters are supposed to sound the same — that's a flag you overrule.
+
+<span class="cue">Pass 6 — Heat scenes</span>Pass six: heat scenes — and if you don't write romance, this is your high-stakes-scene pass: fights, reveals, deaths. The scenes readers actually bought the book for get their own dedicated pass. Choreography, emotional continuity, heat level consistent with the promise on the cover.
+
+<span class="cue">Pass 7 — Developmental</span>Pass seven: the developmental edit. Structure. Arcs. Does the midpoint actually turn? Does the black moment land? This is the big-picture pass, and it comes late on purpose — no point checking structure while the timeline's still broken and the scenes are still moving around.
+
+<span class="cue">Pass 8 — Voice audit</span>Pass eight: the voice audit. After seven passes of edits, you check the cumulative drift: does this still sound like ME? The AI compares the edited manuscript against your style sheet and your voice samples and flags every place the edits pulled you toward generic. Anything flagged, you restore by hand.
+
+<span class="cue">Pass 9 — The human pass</span>Pass nine. You. Out loud, printed if you can, no AI in the room. You are the last editor, always. This pass is non-negotiable, and it's the reason this system produces books that sound like their authors — because the final judgment on every single line was human.
+
+<span class="cue">Recap · SCREEN: all 9 passes listed</span>The whole system on one screen: quality check, plot holes, timeline, line edit, dialogue, heat scenes, developmental, voice audit, human pass. Diagnose first, details in the middle, structure late, voice and human last.
+
+<span class="cue">CTA</span>Every pass you just saw has a worksheet with the exact prompts — those come with my class, Edit Like a Boss, linked below. It's self-paced, it covers building your AI editing team and using ChatGPT and Gemini alongside Claude, and it assumes zero technical background. If you're not ready for the class, start with the free editing videos coming on this channel — one deep-dive per pass. Subscribe so you don't miss those. One pass, one job. Go edit like a boss.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">"Edit my manuscript" is the worst prompt you can give an AI. Here's the 9-pass system I use instead — one job per pass, your voice intact at the end.
+
+⏱️ CHAPTERS
+0:00 Why one pass always fails
+1:20 Pass 1 — Quality Check (diagnose first)
+2:30 Pass 2 — Plot Holes
+3:30 Pass 3 — Timeline
+4:30 Pass 4 — Line Edit
+5:45 Pass 5 — Dialogue
+6:45 Pass 6 — Heat Scenes / High-Stakes Scenes
+7:45 Pass 7 — Developmental Edit
+8:45 Pass 8 — Voice Audit
+9:45 Pass 9 — The Human Pass
+10:30 The full system + what's next
+
+🎓 EDIT LIKE A BOSS — the full class with every pass's worksheets &amp; prompts:
+https://payhip.com/theinvisiblepen
+
+🆓 New to AI editing? Start with the free Plot Your Path quiz:
+https://cph-jessica.github.io/tip-marketing-worksheets/start-here.html</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">ai editing system, edit novel with ai, self editing fiction, ai developmental edit, edit like a boss, 9 pass editing, ai line edit, claude editing</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "9 PASSES. *1 CLEAN BOOK.*" (second line coral)
+Your face: right third, confident
+Left: vertical stack of 9 small gold checkmarks</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">Be honest: which pass do you currently skip? 😄 For most authors it's timeline (Pass 3) — and it's the one that generates the most embarrassing reader emails. Full class with every worksheet: https://payhip.com/theinvisiblepen</div>
+  </div>
+
+  <!-- ══════════ VIDEO 4 ══════════ -->
+  <div class="video-card">
+    <h2>Video 4 · Trope Stacks &amp; Reader Intent <span class="pill">8–9 min</span></h2>
+    <p class="meta-line">Funnel: free Trope Stack worksheet → Trope School (pre-launch: builds the waitlist audience).</p>
+
+    <div class="field-label">Title <span class="char-note">(67 chars)</span></div>
+    <div class="copy-block">Write the Book Readers Are Already Searching For (Trope Stacks)</div>
+
+    <details>
+      <summary>Full Script — ~1,000 words ≈ 8 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>There are two kinds of books: the book you wanted to write, and the book readers are searching for. The magic happens when they're the same book — and there's a tool for making that happen BEFORE you write a word. It's called a trope stack.
+
+<span class="cue">Intro</span>Jessica Waldron, The Invisible Pen. Today is marketing you do at the OUTLINE stage — the cheapest, most powerful marketing there is.
+
+<span class="cue">Author intent vs reader intent</span>First, the idea underneath everything: author intent versus reader intent. Author intent is "I want to write a story about grief and second chances set in a lighthouse." Beautiful. Reader intent is what the reader types into Amazon or hears on TikTok: "grumpy sunshine small town romance." Readers don't search for themes. They search for tropes.
+
+This is not about writing to trend or abandoning your story. It's about knowing which shelf your book lives on while you can still build the shelf INTO the book.
+
+<span class="cue">What a trope stack is</span>A trope stack is three to five tropes that define your book's promise. Not one — one trope is a category, not a book. "Enemies to lovers" describes ten thousand books. "Enemies to lovers, forced proximity, one bed, hockey romance" — now I can see the cover, the blurb, and the exact reader who one-clicks it.
+
+<span class="cue">Building the stack · SCREEN: worksheet</span>Here's how you build one. Layer one: your genre's power tropes — the ones with proven, searchable demand. In romance: grumpy-sunshine, fake dating, second chance, forced proximity. Layer two: your setting or world hook — hockey, small town, dragons, academy. Layer three: your twist — the element that's actually yours, the thing that makes it not-interchangeable.
+
+The test for a good stack: can a reader repeat it back after hearing it once? "Fake dating with the dragon king's bodyguard" passes. "A meditation on belonging" does not — that's your theme, and it stays, but it's not the stack.
+
+<span class="cue">Where the stack goes to work</span>Now — why bother? Because the stack becomes everything downstream. Your outline: every trope carries mandatory scenes readers expect, and now they're planned instead of accidental. Your cover brief. Your blurb's first line. Your keywords. Your ad targeting. Your TikTok hook. One decision at the outline stage, and half your marketing writes itself.
+
+And if you use AI to help outline — this is exactly what you feed Claude. "My trope stack is X, Y, Z: generate the obligatory scenes each trope promises and flag which ones my outline is missing." That prompt alone is worth the video.
+
+<span class="cue">CTA</span>The Trope Stack &amp; Reader Intent worksheet is free below — it walks you through all three layers and pressure-tests your stack. This is week one of something bigger I'm building called Trope School, and subscribers hear about it first. Next week's video takes your stack and turns it into keywords. Subscribe so it's waiting for you.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">Readers don't search for themes — they search for tropes. Here's how to build a "trope stack" at the outline stage so the book you want to write is also the book readers are already looking for.
+
+⏱️ CHAPTERS
+0:00 Two kinds of books
+0:50 Author intent vs. reader intent
+2:20 What a trope stack is (3–5 tropes, not 1)
+3:40 Building your stack — 3 layers
+5:40 The one-sentence test
+6:20 How the stack powers your outline, blurb, keywords &amp; ads
+7:30 Free worksheet + what's coming
+
+🆓 FREE WORKSHEET — Trope Stack &amp; Reader Intent:
+https://cph-jessica.github.io/tip-marketing-worksheets/trope-marketing/week-1-trope-stack-worksheet.html
+
+🎓 All classes &amp; toolkits: https://payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">book tropes, trope marketing, romance tropes, reader intent, book marketing tropes, write to market, trope stack</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "READERS SEARCH *TROPES*" (TROPES coral)
+Your face: right third
+Left: 3 stacked gold blocks labeled GRUMPY/SUNSHINE · ONE BED · HOCKEY</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">Drop your trope stack below in exactly this format: Trope + Trope + Setting + Twist. I'll tell you if it passes the "repeat it back" test 👇</div>
+  </div>
+
+  <!-- ══════════ VIDEO 5 ══════════ -->
+  <div class="video-card">
+    <h2>Video 5 · Are You Ready for Amazon Ads? <span class="pill">8–9 min</span></h2>
+    <p class="meta-line">Funnel: free Ads Readiness Checklist → Amazon Ads for Authors class.</p>
+
+    <div class="field-label">Title <span class="char-note">(63 chars)</span></div>
+    <div class="copy-block">Don't Run Amazon Ads Until You Can Pass This 5-Point Check</div>
+
+    <details>
+      <summary>Full Script — ~1,000 words ≈ 8 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>Amazon ads don't fix a book that isn't ready — they just charge you money to prove it isn't. Before you spend a dollar, you need to pass five checks. Fail even one, and your ad money is going straight into the furnace. Here they are.
+
+<span class="cue">Intro</span>Jessica Waldron, The Invisible Pen. I love Amazon ads — WHEN the foundation is there. This is the readiness check I make every student pass first.
+
+<span class="cue">Check 1 — Cover</span>Check one: your cover signals your genre at thumbnail size. Not "is it pretty" — is it OBVIOUSLY a dark romance, a cozy mystery, a space opera, at the size of a postage stamp, next to the top ten books in your category? Ads buy you the impression. The cover converts the click. Open your category's top twenty, shrink your cover next to them, and be honest: does it belong on that shelf?
+
+<span class="cue">Check 2 — Blurb</span>Check two: your blurb hooks in the first two lines. Because that's all Amazon shows before "Read more" — and ad traffic is COLD traffic. These readers have never heard of you; they will not click "Read more" out of loyalty. First line does the trope work, second line raises the stakes. If your blurb starts with a character's full name and their job title, it's not ready.
+
+<span class="cue">Check 3 — Reviews</span>Check three: social proof. You want roughly fifteen-plus reviews before scaling paid traffic. Cold traffic checks the star line before buying — that's just how humans shop. Under fifteen, spend your energy on review generation first: ARC teams, your newsletter, the launch runway. Ads amplify what's there; ten reviews amplified is still ten reviews.
+
+<span class="cue">Check 4 — Read-through</span>Check four — the one almost nobody runs: the math. If you're in a series, ads on book one are really buying read-through to books two, three, and four. You need to know your numbers: what a click costs in your genre, what you earn per full read-through, and therefore what you can afford per click BEFORE you bid. Standalone with no backlist? The math is brutal and you should know that going in. I have a free calculator for exactly this — the Series Read-Through Calculator, linked below.
+
+<span class="cue">Check 5 — Keywords</span>Check five: you have a real keyword list. Not seven words — a hundred to two hundred: author names your readers already buy, comp titles, trope phrases. If you did the trope stack video, you already have the seed list. This is a workbook afternoon, not a mystery — but it has to exist before campaign day, because "let Amazon figure it out" is the most expensive keyword strategy there is.
+
+<span class="cue">Recap</span>Scorecard: cover converts at thumbnail size. Blurb hooks in two lines. Fifteen-plus reviews. Read-through math done. Keyword list built. Five for five? You're ready, and ads will feel like fuel instead of a furnace.
+
+<span class="cue">CTA</span>The full Ads Readiness Checklist is free below — it scores you and gives you an action plan for every gap. When you pass it, my Amazon Ads for Authors class takes you from keyword research to your first three campaigns to reading the data without panicking. Link below. Subscribe — the keyword research deep-dive is coming next.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">Amazon ads amplify what's already working — and charge you to prove what isn't. Pass these 5 checks BEFORE you spend a dollar.
+
+⏱️ CHAPTERS
+0:00 Ads don't fix unready books
+0:55 Check 1 — Cover at thumbnail size
+2:15 Check 2 — Blurb hooks in 2 lines
+3:35 Check 3 — 15+ reviews
+4:50 Check 4 — Read-through math
+6:20 Check 5 — A real keyword list
+7:20 Scorecard + free checklist
+
+🆓 FREE — Ads Readiness Checklist (scored, with an action plan):
+https://cph-jessica.github.io/tip-marketing-worksheets/amazon-ads/01-ads-readiness-checklist.html
+
+🆓 FREE — Series Read-Through Calculator:
+https://cph-jessica.github.io/tip-marketing-worksheets/tools/series-read-through-calculator.html
+
+🎓 Amazon Ads for Authors — the full class:
+https://payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">amazon ads for books, amazon ads kdp, ams ads, book advertising, kdp ads tutorial, amazon ads authors, book ads readiness</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "ADS WON'T *SAVE YOU*" ("SAVE YOU" coral)  — alt: "READY FOR ADS? *PROVE IT.*"
+Your face: right third, arms crossed, unimpressed
+Small flame emoji next to a dollar sign, bottom left</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">Which check are you failing right now? (No shame — everyone fails at least one the first time.) The free scored checklist is in the description 👇</div>
+  </div>
+
+  <!-- ══════════ VIDEO 6 ══════════ -->
+  <div class="video-card">
+    <h2>Video 6 · Launch a Pen Name From Zero <span class="pill">9–10 min</span></h2>
+    <p class="meta-line">Funnel: Pen Name Identity Builder (free) → Pen Name Launcher class.</p>
+
+    <div class="field-label">Title <span class="char-note">(64 chars)</span></div>
+    <div class="copy-block">How I'd Launch a New Pen Name From Zero in 2026 (6 Steps)</div>
+
+    <details>
+      <summary>Full Script — ~1,100 words ≈ 9 min</summary>
+      <div class="script"><span class="cue">Cold open — to camera</span>New pen name. Zero readers, zero newsletter, zero backlist. If I had to start completely over today, here is exactly what I'd do, in order — six steps, and the order is the strategy. Because most people do these in the WRONG order and pay for it at launch.
+
+<span class="cue">Intro</span>Jessica Waldron, The Invisible Pen. This is the condensed version of my Pen Name Launcher class — the full map in one video.
+
+<span class="cue">Step 1 — Identity BEFORE the book</span>Step one: build the identity before you finish the book. A pen name isn't a fake name — it's a promise wrapped around a genre. Name, tropes you'll be known for, heat level, cover aesthetic, the one-line reader promise. Decide it now, because every later decision — covers, newsletter voice, even your trope stacks — inherits from it. My free Pen Name Identity Builder walks you through this from your genre backwards. Linked below.
+
+<span class="cue">Step 2 — Newsletter from day one</span>Step two — and this is the one everyone does too late: start the newsletter BEFORE you publish. Your list is the only audience you own. Amazon can change an algorithm; your list is yours forever. A simple landing page and a signup form. It will grow slowly at first. That's fine. It exists — that's what matters, because step three is about to feed it.
+
+<span class="cue">Step 3 — Reader magnet</span>Step three: write the reader magnet — a novella or short story in the SAME world or trope space as book one, free in exchange for a signup. This is the engine of the whole launch: it warms up readers on your voice before they've spent a cent, and it turns strangers into subscribers while you finish the book. Same trope stack as book one. It's a preview of the promise, not a side quest.
+
+<span class="cue">Step 4 — Covers on a budget</span>Step four: covers. At this stage you need genre-correct, not custom-illustrated. Premades from reputable designers get you on-shelf for a fraction of the price — and remember the thumbnail test from my ads video: does it belong next to the top twenty in your category? Genre-correct premade beats gorgeous-but-vague custom, every time, at every budget.
+
+<span class="cue">Step 5 — KDP + wide decision</span>Step five: publish. KDP setup — and this is where your trope stack cashes in again: the seven keyword boxes, the categories, the blurb, all flow from decisions you already made in step one. Then the exclusivity question: Kindle Unlimited or wide? Short version — KU is where high-appetite genre readers binge, wide is slower but nobody owns you. For book one of a brand-new name, KU is usually the sharper launch tool. You can go wide later; that's a strategy, not a betrayal.
+
+<span class="cue">Step 6 — Launch week</span>Step six: launch week. And because you did steps one through five in ORDER, launch week is simple: your magnet subscribers get the email — they already like you. Your ARC readers post their reviews — social proof from day one. Price promo, a couple of newsletter swaps with authors in your trope space, and THEN — once reviews are live — ads. Notice ads come last. They amplify a launch; they don't create one.
+
+<span class="cue">Recap</span>Identity, newsletter, magnet, covers, KDP, launch week. Six steps. The order IS the strategy — every step feeds the next one.
+
+<span class="cue">CTA</span>The Pen Name Identity Builder is free, linked below — start there today. The full class, Pen Name Launcher, walks every step with worksheets: newsletter setup, writing the magnet, cover briefs, KDP walkthrough, launch week day by day. Self-paced, linked below. Subscribe — and go pick that name.</div>
+    </details>
+
+    <div class="field-label">Description</div>
+    <div class="copy-block">Zero readers, zero list, zero backlist — here's the exact 6-step order I'd use to launch a brand-new pen name today. The order is the strategy.
+
+⏱️ CHAPTERS
+0:00 Starting from absolute zero
+0:50 Step 1 — Identity before the book
+2:20 Step 2 — Newsletter from day one
+3:30 Step 3 — The reader magnet
+5:00 Step 4 — Covers on a budget
+6:10 Step 5 — KDP + the KU vs. wide decision
+7:40 Step 6 — Launch week, in order
+8:50 Recap + free tools
+
+🆓 FREE — Pen Name Identity Builder (start from your genre):
+https://cph-jessica.github.io/tip-marketing-worksheets/tools/pen-name-identity-builder.html
+
+🎓 PEN NAME LAUNCHER — the full 6-lesson class:
+https://payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Extra Tags</div>
+    <div class="copy-block">pen name, launch a pen name, new author launch, reader magnet, author newsletter, kdp launch, kindle unlimited vs wide, self publishing 2026</div>
+
+    <div class="field-label">Thumbnail</div>
+    <div class="copy-block">Text: "PEN NAME: *FROM ZERO*" ("FROM ZERO" coral)
+Your face: right third, optimistic
+Left: "0 → 📚" in large cream characters</div>
+
+    <div class="field-label">Pinned Comment</div>
+    <div class="copy-block">Which step surprised you being so early in the order? (It's the newsletter for most people — day ONE, before the book is done!) Free identity builder in the description 👇</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  The Invisible Pen · Clark Publishing House LLC — internal marketing kit<br>
+  <a href="index.html">← Launch Kit home</a> · <a href="content-strategy.html">Next: Content Strategy →</a>
+</div>
+
+<script>
+document.querySelectorAll('.copy-block, .script').forEach(function(block) {
+  var text = block.textContent.trim();
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', function() {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+    });
+  });
+  block.appendChild(btn);
+});
+</script>
+</body>
+</html>

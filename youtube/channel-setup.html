@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Channel Setup — TIP YouTube Launch Kit</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+.header { background: var(--navy); color: white; padding: 3rem 2rem; text-align: center; }
+.header h1 { font-size: 2.1rem; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
+.header .subtitle { color: var(--coral); font-size: 1.05rem; font-style: italic; }
+.header .brand { color: var(--gold); font-size: 0.85rem; margin-top: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+.container { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.intro-box { background: white; border-left: 4px solid var(--coral); padding: 1.5rem; margin-bottom: 2.5rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section { background: white; border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section > h2 { color: var(--navy); font-size: 1.45rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
+.section .section-note { font-style: italic; color: #6b6b6b; font-size: 0.95rem; margin: 0.5rem 0 1.25rem; }
+.copy-block { position: relative; background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; margin: 0.75rem 0 1.5rem; white-space: pre-wrap; font-size: 0.95rem; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--navy); color: white; border: none; font-family: inherit; font-size: 0.78rem; padding: 0.3rem 0.8rem; border-radius: 99px; cursor: pointer; }
+.copy-btn:hover { background: var(--coral); }
+.field-label { color: var(--sage); font-size: 0.8rem; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.25rem 0 0.25rem; }
+.char-note { font-size: 0.8rem; color: #999; font-style: italic; }
+table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1rem; font-size: 0.93rem; }
+th { text-align: left; background: var(--navy); color: white; padding: 0.5rem 0.75rem; font-weight: normal; }
+td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--light-gray); vertical-align: top; }
+.swatch { display: inline-block; width: 0.95rem; height: 0.95rem; border-radius: 3px; border: 1px solid var(--border); vertical-align: middle; margin-right: 0.4rem; }
+.tip { background: #FDF3E7; border-left: 4px solid var(--gold); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.93rem; }
+.footer { text-align: center; color: #888; font-size: 0.85rem; padding: 2rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--coral); }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Channel Setup</h1>
+  <div class="subtitle">Identity, About page, art specs &amp; upload defaults</div>
+  <div class="brand">The Invisible Pen · YouTube Launch Kit</div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p>Every field below maps to a box in YouTube Studio. Hit <strong>Copy</strong>, paste it in, done. Character limits are noted where YouTube enforces one — everything here already fits.</p>
+  </div>
+
+  <div class="section">
+    <h2>1 · Channel Identity</h2>
+    <p class="section-note">Studio → Settings → Channel → Basic info, and Customization → Basic info.</p>
+
+    <div class="field-label">Channel Name</div>
+    <div class="copy-block">The Invisible Pen</div>
+
+    <div class="field-label">Handle <span class="char-note">— first choice, with fallbacks if taken</span></div>
+    <div class="copy-block">@theinvisiblepen</div>
+    <p class="char-note">Fallbacks: @invisiblepenauthors · @theinvisiblepenclass · @jessicawaldronTIP</p>
+
+    <div class="field-label">Channel Description (About) <span class="char-note">— limit 1,000 characters; this is ~860</span></div>
+    <div class="copy-block">Write more books. Sell more books. Let AI do the invisible work.
+
+I'm Jessica Waldron, and The Invisible Pen teaches indie authors how to use Claude and other AI tools the right way — so your books still sound like YOU, not like a robot.
+
+On this channel you'll learn how to:
+✒️ Set up Claude so it writes and edits in YOUR voice
+✒️ Run the 9-Pass AI Editing System (Edit Like a Boss)
+✒️ Launch a pen name from scratch — newsletter, reader magnet, covers, KDP
+✒️ Market with tropes, blurbs, keywords, and Amazon ads that actually convert
+
+New videos weekly. Everything is practical, step-by-step, and built for working fiction authors — especially romance and genre fiction.
+
+📚 Classes &amp; toolkits: https://payhip.com/theinvisiblepen
+🗺️ Free "Plot Your Path" quiz: https://cph-jessica.github.io/tip-marketing-worksheets/start-here.html
+
+The Invisible Pen · Clark Publishing House LLC</div>
+
+    <div class="field-label">Channel Keywords <span class="char-note">— Settings → Channel → Basic info (comma-separated, limit 500 chars)</span></div>
+    <div class="copy-block">AI for authors, Claude for writers, self publishing, indie author, book marketing, AI editing, write a novel with AI, pen name, KDP, Amazon ads for books, author newsletter, romance author, book launch, writing tools, ChatGPT for writers</div>
+
+    <div class="field-label">Contact Email (public)</div>
+    <div class="copy-block">clarkpublishinghouse@gmail.com</div>
+
+    <div class="field-label">Channel Links <span class="char-note">— Customization → Basic info → Links (title + URL)</span></div>
+    <table>
+      <tr><th>Link Title</th><th>URL</th></tr>
+      <tr><td>Classes &amp; Toolkits</td><td>https://payhip.com/theinvisiblepen</td></tr>
+      <tr><td>Free: Plot Your Path Quiz</td><td>https://cph-jessica.github.io/tip-marketing-worksheets/start-here.html</td></tr>
+      <tr><td>The Worksheet Library</td><td>https://cph-jessica.github.io/tip-marketing-worksheets/</td></tr>
+      <tr><td>The Writing Space (Co-Working)</td><td>https://cph-jessica.github.io/tip-marketing-worksheets/writing-space.html</td></tr>
+      <tr><td>The Invisible Pen</td><td>https://www.theinvisiblepen.com</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>2 · Channel Art Specs</h2>
+    <p class="section-note">Build these in Canva ("YouTube Banner" and "Logo" presets). Exact TIP brand colors below — paste the hex codes into Canva's color picker.</p>
+
+    <table>
+      <tr><th>Color</th><th>Hex</th><th>Use</th></tr>
+      <tr><td><span class="swatch" style="background:#1B2A4A"></span>Navy</td><td>#1B2A4A</td><td>Backgrounds, main text</td></tr>
+      <tr><td><span class="swatch" style="background:#E8735A"></span>Coral</td><td>#E8735A</td><td>Accents, highlight words, buttons</td></tr>
+      <tr><td><span class="swatch" style="background:#FFF8F0"></span>Cream</td><td>#FFF8F0</td><td>Light backgrounds, text on navy</td></tr>
+      <tr><td><span class="swatch" style="background:#D4A853"></span>Gold</td><td>#D4A853</td><td>Small flourishes, the pen nib motif</td></tr>
+    </table>
+
+    <div class="field-label">Banner — 2560 × 1440 px (keep essentials inside the central 1546 × 423 px "safe area")</div>
+    <div class="copy-block">Layout: navy background · gold pen-nib icon left · headline centered in safe area.
+
+Headline: Write more. Sell more. Let AI do the invisible work.
+Subline:  AI writing, editing & marketing systems for indie authors — new videos weekly
+
+Right edge (inside safe area): small cream text — payhip.com/theinvisiblepen</div>
+
+    <div class="field-label">Avatar / Profile Photo — 800 × 800 px</div>
+    <div class="copy-block">Option A (recommended): your headshot on a cream background with a thin coral ring — faces outperform logos for small channels.
+Option B: gold pen-nib mark on navy, "TIP" in cream serif beneath it.</div>
+
+    <div class="field-label">Video Watermark — 150 × 150 px (Customization → Branding)</div>
+    <div class="copy-block">Gold pen nib on transparent background, or a coral "SUBSCRIBE" pill in cream text. Display time: entire video.</div>
+
+    <div class="tip"><strong>Thumbnail system</strong> (so the channel page looks cohesive from day one): navy background · 3–5 word hook in big cream serif · one word highlighted coral · your face right third, cropped from the chest up · gold nib in a corner as the brand mark. Every launch video card on the Launch Videos page includes its exact thumbnail text.</div>
+  </div>
+
+  <div class="section">
+    <h2>3 · Upload Defaults</h2>
+    <p class="section-note">Studio → Settings → Upload defaults. Set these once and every upload starts 80% done.</p>
+
+    <div class="field-label">Default Description <span class="char-note">— the boilerplate that appears under every video; per-video copy gets pasted above it</span></div>
+    <div class="copy-block">— — — — —
+
+📚 CLASSES &amp; TOOLKITS
+Everything I teach lives here: https://payhip.com/theinvisiblepen
+
+🗺️ NEW HERE? Take the free 2-minute "Plot Your Path" quiz and get your personal roadmap:
+https://cph-jessica.github.io/tip-marketing-worksheets/start-here.html
+
+🖊️ FREE WORKSHEET LIBRARY
+https://cph-jessica.github.io/tip-marketing-worksheets/
+
+✍️ THE WRITING SPACE — co-write with us live:
+https://cph-jessica.github.io/tip-marketing-worksheets/writing-space.html
+
+— — — — —
+
+I'm Jessica Waldron and The Invisible Pen teaches indie authors to use Claude &amp; AI tools without losing their voice. Subscribe for weekly videos on AI writing, editing, and book marketing.
+
+#AIforAuthors #SelfPublishing #IndieAuthor</div>
+
+    <div class="field-label">Default Tags <span class="char-note">— limit 500 characters total; this is ~330, leaving room for per-video tags</span></div>
+    <div class="copy-block">ai for authors, claude for writers, claude ai writing, self publishing, indie author, book marketing, ai editing fiction, write a book with ai, kdp, amazon kdp, author tube, writing community, jessica waldron, the invisible pen</div>
+
+    <div class="field-label">Other Defaults</div>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td>Visibility</td><td><strong>Private</strong> — nothing goes live by accident; you flip each video manually</td></tr>
+      <tr><td>Category</td><td>Education</td></tr>
+      <tr><td>Language</td><td>English</td></tr>
+      <tr><td>License</td><td>Standard YouTube License</td></tr>
+      <tr><td>Altered content disclosure</td><td>If a video shows AI-generated text on screen as a demo, that does NOT require the "altered content" flag — it's for synthetic media that misleads. Your tutorials: No.</td></tr>
+      <tr><td>Comments</td><td>On, hold potentially inappropriate for review</td></tr>
+      <tr><td>"Made for kids"</td><td>No (set at channel level: Settings → Channel → Advanced)</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  The Invisible Pen · Clark Publishing House LLC — internal marketing kit<br>
+  <a href="index.html">← Launch Kit home</a> · <a href="launch-videos.html">Next: Launch Videos →</a>
+</div>
+
+<script>
+document.querySelectorAll('.copy-block').forEach(function(block) {
+  var text = block.textContent.trim();
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', function() {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+    });
+  });
+  block.appendChild(btn);
+});
+</script>
+</body>
+</html>

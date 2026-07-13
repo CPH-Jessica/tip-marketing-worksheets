@@ -83,6 +83,10 @@ Located in `/tools/`
 
 Open any `.html` file in a web browser. Fill in the inputs, click the generate buttons, print or save your results. Nothing is stored on a server — all calculations happen in your browser.
 
+## Internal: YouTube Launch Kit
+
+Located in `/youtube/` — **not linked from the student-facing library.** Complete channel launch package for The Invisible Pen YouTube channel: channel setup copy (About, keywords, links, art specs, upload defaults), fully scripted trailer + 6 launch videos with titles/descriptions/tags/thumbnails/pinned comments, playlist structure, 12-week calendar, SEO keyword bank, and Shorts strategy. Start at `youtube/index.html` for the launch checklist. Nothing is published to YouTube — everything is staged for Jessica's review and manual posting.
+
 ## Course Info
 
 These worksheets accompany The Invisible Pen (TIP) classes taught by Jessica Waldron. Classes are available individually or bundled. Worksheets are provided as companion materials for enrolled live and self-paced students.
