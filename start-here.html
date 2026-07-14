@@ -20,8 +20,10 @@
 
 const LINKS = {
   oneOnOne:   "https://payhip.com/b/Ry7Ve",   // Discovery Call: Diagnose My AI Tool ($149, unlisted Payhip product)
-  hub:        "https://payhip.com/theinvisiblepen",   // Where your classes are sold
-  liveCohort: "https://cph-jessica.github.io/tip-marketing-worksheets/writing-space.html"    // The Writing Space signup (Skool Premium co-working)
+  hub:        "https://payhip.com/theinvisiblepen",   // Payhip store (still used for the 1:1)
+  liveCohort: "https://cph-jessica.github.io/tip-marketing-worksheets/writing-space.html",    // The Writing Space signup (Skool Premium co-working)
+  skoolFree:    "https://www.skool.com/the-invisible-pen/classroom/69b78eb3?md=9b0b16dd8ce046b184e0561e7659ff22",   // Free Resources for everyone
+  skoolPremium: "https://www.skool.com/the-invisible-pen/classroom/4c98b77c?md=c14c1d155b2e44faaa2c3765eab2f835"    // Premium Resources and Library
 };
 
 /* 2) CLASSES — this is the ONLY thing you maintain over time.
@@ -34,15 +36,21 @@ const LINKS = {
 
 const CLASSES = {
   foundations: {
-    name: "Foundations of Claude",
+    name: "Foundations of Claude (Part 1)",
     status: "live",                 // <-- live or soon
-    link: LINKS.hub,                // <-- paste this class's link
+    link: "https://www.skool.com/the-invisible-pen/classroom/887357f5?md=8c6a66dee1db4bdca593e74bd6b0ffb1",                // <-- paste this class's link
     line: "Set Claude up so it writes like YOU — your voice, your project, your system. This is the bottleneck for almost everyone."
   },
+  penName: {
+    name: "Pen Name Launcher",
+    status: "live",
+    link: "https://www.skool.com/the-invisible-pen/classroom/4ba13f4d?md=751a8e5bf3b9454289d8f454c32fc260",
+    line: "Build your pen name from the ground up — identity, voice, and genre fit — so every book you publish is working for the same brand."
+  },
   tropeSchool: {
-    name: "Trope School",
-    status: "soon",
-    link: "#",
+    name: "Understanding Tropes",
+    status: "live",
+    link: "https://www.skool.com/the-invisible-pen/classroom/a5c57600?md=e0f745354c8c4845a7c15f470bfe60e4",
     line: "Write books readers are actually searching for — the difference between Author Intent and Reader Intent, from your very first outline."
   },
   bestseller: {
@@ -54,7 +62,7 @@ const CLASSES = {
   elab: {
     name: "Edit Like a Boss",
     status: "live",
-    link: LINKS.hub,
+    link: "https://www.skool.com/the-invisible-pen/classroom/f9b1493b?md=5e4aa6e5f41e4f31b67519635bc7c1c6",
     line: "Turn a messy draft into a polished, ready-to-publish manuscript using Claude as your editing partner."
   },
   blurbs: {
@@ -72,7 +80,7 @@ const CLASSES = {
   newsletter: {
     name: "Reader Magnets & Newsletters",
     status: "live",
-    link: LINKS.hub,
+    link: LINKS.skoolPremium,       // <-- no dedicated Skool classroom yet; sends members to Premium Resources & Library
     line: "Build the one audience asset you actually own — a reader list that pays forever, no ad spend required."
   },
   launch: {
@@ -331,7 +339,7 @@ const QUESTIONS = [
 const TRACKS = {
   A:{ label:"Foundation Builder",
       read:"You're at the best possible starting point: the beginning, before any bad habits set in. The authors who struggle most aren't the beginners — they're the ones who skipped setup and are now untangling it. You get to do it right the first time.",
-      path:["foundations","tropeSchool","bestseller","elab"] },
+      path:["foundations","penName","tropeSchool","bestseller","elab"] },
   B:{ label:"Launch Ready",
       read:"You've already done the hardest part — you have a book, or you're nearly there. Now it's about polish and getting it into readers' hands without burning out or burning cash. Don't let \u201cit's not perfect yet\u201d keep it parked on your hard drive.",
       path:["elab","foundations","blurbs","newsletter"] },
@@ -358,9 +366,9 @@ function render(){
 function intro(){
   app.innerHTML = `
     <div class="fade">
-      <p class="eyebrow">Plot Your Path</p>
-      <h1>Not sure where to start with Claude? Let's figure that out together.</h1>
-      <p class="lede">Answer 7 quick questions and I'll tell you exactly where you are, what's stopping you, and the order to tackle it in — so you can move forward on your own, today.</p>
+      <p class="eyebrow">Welcome to The Invisible Pen &mdash; Plot Your Path</p>
+      <h1>Not sure where to start? Let's figure that out together.</h1>
+      <p class="lede">Answer 7 quick questions and I'll tell you exactly where you are, what's stopping you, and which classroom to open first — so you can move forward today.</p>
       <div class="meta">
         <span><b>7</b> questions</span>
         <span><b>~2</b> minutes</span>
@@ -472,7 +480,8 @@ function results(){
       </div>
 
       <p class="footnote">
-        Everything you need lives in one place &mdash; <a href="${LINKS.hub}" target="_blank" rel="noopener">browse the full library</a>.<br>
+        Start exploring right now &mdash; the <a href="${LINKS.skoolFree}" target="_blank" rel="noopener">free resources</a> are open to everyone,
+        and members get the full <a href="${LINKS.skoolPremium}" target="_blank" rel="noopener">premium resources &amp; library</a>.<br>
         Prefer to learn live with a small group? I run an occasional <a href="${LINKS.liveCohort}" target="_blank" rel="noopener">live cohort</a>.
       </p>
 
