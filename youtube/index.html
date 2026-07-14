@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Launch Kit — The Invisible Pen</title>
+<style>
+:root {
+  --coral: #E8735A;
+  --navy: #1B2A4A;
+  --cream: #FFF8F0;
+  --gold: #D4A853;
+  --sage: #7A9E7E;
+  --text: #2D2D2D;
+  --light-gray: #F0EDE8;
+  --border: #D4CFC7;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+.header { background: var(--navy); color: white; padding: 3rem 2rem; text-align: center; }
+.header h1 { font-size: 2.1rem; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
+.header .subtitle { color: var(--coral); font-size: 1.05rem; font-style: italic; }
+.header .brand { color: var(--gold); font-size: 0.85rem; margin-top: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+.container { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.intro-box { background: white; border-left: 4px solid var(--coral); padding: 1.5rem; margin-bottom: 2.5rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section { background: white; border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section > h2 { color: var(--navy); font-size: 1.45rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
+.section .section-note { font-style: italic; color: #6b6b6b; font-size: 0.95rem; margin: 0.5rem 0 1.25rem; }
+ul.lessons { list-style: none; }
+.lessons li { border-bottom: 1px solid var(--light-gray); }
+.lessons li:last-child { border-bottom: none; }
+.lessons a { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.7rem 0.25rem; text-decoration: none; color: var(--text); transition: background 0.15s, padding-left 0.15s; }
+.lessons a:hover { background: var(--cream); padding-left: 0.75rem; color: var(--navy); }
+.lessons .num { color: var(--coral); font-weight: bold; min-width: 1.6rem; text-align: right; }
+.lessons .title { flex: 1; }
+.lessons .desc { display: block; font-size: 0.85rem; color: #6b6b6b; font-style: italic; }
+.checklist { list-style: none; }
+.checklist li { padding: 0.55rem 0.25rem; border-bottom: 1px solid var(--light-gray); display: flex; gap: 0.6rem; align-items: baseline; cursor: pointer; }
+.checklist li:last-child { border-bottom: none; }
+.checklist input[type=checkbox] { accent-color: var(--coral); width: 1.05rem; height: 1.05rem; flex-shrink: 0; position: relative; top: 2px; }
+.checklist .step-note { display: block; font-size: 0.85rem; color: #6b6b6b; font-style: italic; }
+.phase-label { color: var(--sage); font-size: 0.8rem; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.5rem 0 0.5rem; }
+.footer { text-align: center; color: #888; font-size: 0.85rem; padding: 2rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--coral); }
+.pill { display: inline-block; background: var(--gold); color: var(--navy); font-size: 0.7rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 0.1rem 0.55rem; border-radius: 99px; margin-left: 0.4rem; position: relative; top: -1px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>YouTube Launch Kit</h1>
+  <div class="subtitle">Everything staged and ready — review, tweak, paste, publish</div>
+  <div class="brand">The Invisible Pen · Internal</div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <p><strong>Jessica —</strong> this kit contains every piece of the YouTube channel, written and ready to go. <strong>Nothing has been posted.</strong> Each page below has copy-to-clipboard buttons so once you've reviewed and finalized, setup is pure paste-work in YouTube Studio. Work through the launch checklist at the bottom of this page when you're ready.</p>
+  </div>
+
+  <div class="section">
+    <h2>The Kit</h2>
+    <ul class="lessons">
+      <li><a href="channel-setup.html"><span class="num">1</span><span class="title">Channel Setup — Identity, About, Art Specs &amp; Upload Defaults
+        <span class="desc">Handle, channel description, links, banner &amp; avatar specs in TIP brand colors, channel keywords, default upload settings</span></span></a></li>
+      <li><a href="launch-videos.html"><span class="num">2</span><span class="title">Launch Videos — Trailer + 6 Videos, Fully Scripted
+        <span class="desc">Word-for-word scripts, titles, full descriptions, tags, thumbnail text &amp; pinned comments for each</span></span></a></li>
+      <li><a href="content-strategy.html"><span class="num">3</span><span class="title">Content Strategy — Playlists, 12-Week Calendar &amp; SEO Bank
+        <span class="desc">Playlist structure mapped to your course funnels, a 12-week posting plan, keyword bank, and Shorts strategy</span></span></a></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Launch Checklist</h2>
+    <p class="section-note">Your progress saves in this browser. Do these in order — each phase builds on the last.</p>
+
+    <div class="phase-label">Phase 1 — Review &amp; Finalize (you)</div>
+    <ul class="checklist" id="phase1">
+      <li><label><input type="checkbox"> Read the Channel Setup page — approve or edit the handle, description &amp; links</label></li>
+      <li><label><input type="checkbox"> Read all 7 scripts — mark anything that doesn't sound like you</label></li>
+      <li><label><input type="checkbox"> Approve the playlist structure &amp; 12-week calendar</label></li>
+      <li><label><input type="checkbox"> Decide your filming setup (talking head + screen share is all these scripts need)</label></li>
+    </ul>
+
+    <div class="phase-label">Phase 2 — Channel Shell (30–45 min in YouTube Studio)</div>
+    <ul class="checklist" id="phase2">
+      <li><label><input type="checkbox"> Create / claim the channel &amp; handle <span class="step-note">studio.youtube.com → Settings → Channel</span></label></li>
+      <li><label><input type="checkbox"> Paste the About description &amp; add the 5 links</label></li>
+      <li><label><input type="checkbox"> Upload banner &amp; avatar (specs on the Channel Setup page — build in Canva)</label></li>
+      <li><label><input type="checkbox"> Paste channel keywords <span class="step-note">Settings → Channel → Basic info</span></label></li>
+      <li><label><input type="checkbox"> Set upload defaults <span class="step-note">Settings → Upload defaults — paste the default description &amp; tags</span></label></li>
+      <li><label><input type="checkbox"> Create the 6 playlists (empty is fine — titles &amp; descriptions are on the Content Strategy page)</label></li>
+    </ul>
+
+    <div class="phase-label">Phase 3 — Record &amp; Stage (don't publish yet)</div>
+    <ul class="checklist" id="phase3">
+      <li><label><input type="checkbox"> Record the channel trailer (90 seconds)</label></li>
+      <li><label><input type="checkbox"> Record Videos 1–3 <span class="step-note">batch them in one sitting — same outfit, same lighting, less friction</span></label></li>
+      <li><label><input type="checkbox"> Make thumbnails in Canva from the specs on each video's card</label></li>
+      <li><label><input type="checkbox"> Upload everything as <strong>Private</strong> — paste title, description, tags, pinned comment</label></li>
+      <li><label><input type="checkbox"> Final review pass on every Private video</label></li>
+    </ul>
+
+    <div class="phase-label">Phase 4 — Go Live</div>
+    <ul class="checklist" id="phase4">
+      <li><label><input type="checkbox"> Set the trailer live &amp; assign it as Channel Trailer <span class="step-note">Customization → Layout</span></label></li>
+      <li><label><input type="checkbox"> Publish Video 1 · then follow the 12-week calendar</label></li>
+      <li><label><input type="checkbox"> Announce to your newsletter &amp; the Writing Space</label></li>
+      <li><label><input type="checkbox"> Add the channel link to your Payhip store, email signature &amp; worksheet footers</label></li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">
+  The Invisible Pen · Clark Publishing House LLC — internal marketing kit, not for student distribution<br>
+  <a href="../index.html">← Back to the Library</a>
+</div>
+
+<script>
+document.querySelectorAll('.checklist input[type=checkbox]').forEach(function(cb, i) {
+  var key = 'tip-yt-launch-' + i;
+  cb.checked = localStorage.getItem(key) === '1';
+  cb.addEventListener('change', function() { localStorage.setItem(key, cb.checked ? '1' : '0'); });
+});
+</script>
+</body>
+</html>
