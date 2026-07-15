@@ -701,6 +701,102 @@ function renderChapList(){
       </div></div></details>`).join('');
 }
 let lastRepl=null;
+/* ============================================================
+   TRACKED CHANGES — offline word-level diff of each paste-back.
+   Runs entirely in the browser; nothing uploads, no AI needed.
+   ============================================================ */
+const PREV_TEXTS={};
+function tcLcsOps(a,b){
+  const N=a.length,M=b.length;
+  if(N*M>1000000)return null;
+  const W=M+1,dp=new Uint16Array((N+1)*W);
+  for(let i=N-1;i>=0;i--)for(let j=M-1;j>=0;j--)
+    dp[i*W+j]=a[i]===b[j]?dp[(i+1)*W+j+1]+1:Math.max(dp[(i+1)*W+j],dp[i*W+j+1]);
+  const ops=[];let i=0,j=0;
+  while(i<N&&j<M){
+    if(a[i]===b[j]){ops.push(['=',a[i]]);i++;j++;}
+    else if(dp[(i+1)*W+j]>=dp[i*W+j+1]){ops.push(['-',a[i]]);i++;}
+    else{ops.push(['+',b[j]]);j++;}
+  }
+  while(i<N)ops.push(['-',a[i++]]);
+  while(j<M)ops.push(['+',b[j++]]);
+  return ops;
+}
+function tcRuns(ops){
+  const out=[];
+  for(const [t,s] of ops){
+    if(out.length&&out[out.length-1][0]===t)out[out.length-1][1]+=s;
+    else out.push([t,s]);
+  }
+  return out;
+}
+function tcWordHtml(a,b,stats){
+  const A=a.split(/(\s+)/).filter(x=>x!==''),B=b.split(/(\s+)/).filter(x=>x!=='');
+  let ops=tcLcsOps(A,B);
+  if(!ops)ops=[...(a?[['-',a]]:[]),...(b?[['+',b]]:[])].map(x=>[x[0],x[1]]);
+  let h='';
+  for(const [t,s] of tcRuns(ops)){
+    const w=(s.match(/\S+/g)||[]).length;
+    if(t==='=')h+=esc(s);
+    else if(t==='-'){stats.del+=w;h+='<del class="tcd">'+esc(s)+'</del>';if(w)stats.edits++;}
+    else{stats.ins+=w;h+='<ins class="tci">'+esc(s)+'</ins>';if(w)stats.edits++;}
+  }
+  return h;
+}
+function tcBuildHtml(before,after,stats){
+  const A=before.split('\n'),B=after.split('\n');
+  const ops=tcLcsOps(A,B);
+  if(!ops)return tcWordHtml(before,after,stats);
+  const out=[];let minus=[],plus=[];
+  const flush=()=>{
+    const n=Math.max(minus.length,plus.length);
+    for(let k=0;k<n;k++){
+      const m=minus[k],p=plus[k];
+      if(m!=null&&p!=null)out.push(tcWordHtml(m,p,stats));
+      else if(m!=null){const w=(m.match(/\S+/g)||[]).length;stats.del+=w;if(w)stats.edits++;out.push('<del class="tcd">'+esc(m)+'</del>');}
+      else{const w=(p.match(/\S+/g)||[]).length;stats.ins+=w;if(w)stats.edits++;out.push('<ins class="tci">'+esc(p)+'</ins>');}
+    }
+    minus=[];plus=[];
+  };
+  for(const [t,s] of ops){
+    if(t==='='){flush();out.push(esc(s));}
+    else if(t==='-')minus.push(s);
+    else plus.push(s);
+  }
+  flush();
+  return out.join('\n');
+}
+function tcEnsureModal(){
+  if(document.getElementById('tcModal'))return;
+  const st=document.createElement('style');
+  st.textContent='#tcModal{position:fixed;inset:0;background:rgba(30,20,25,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}'+
+   '#tcModal .tcbox{background:#fff;border-radius:14px;max-width:860px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.35)}'+
+   '#tcModal .tchead{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid #E8DFE0}'+
+   '#tcModal .tchead b{font-size:16px}#tcModal .tcstats{font-size:12.5px;color:#6B5C5E;margin-left:auto;white-space:nowrap}'+
+   '#tcModal .tcx{border:none;background:transparent;font-size:20px;cursor:pointer;color:#6B5C5E;padding:2px 8px}'+
+   '#tcModal .tcbody{overflow:auto;padding:18px 22px;white-space:pre-wrap;font-size:14.5px;line-height:1.75}'+
+   '#tcModal .tcfoot{padding:10px 20px;border-top:1px solid #E8DFE0;font-size:12px;color:#8A7B7D;display:flex;gap:14px;flex-wrap:wrap}'+
+   '.tcd{background:#FBE7E5;color:#9B2C22;text-decoration:line-through;border-radius:3px}'+
+   '.tci{background:#E2F2E6;color:#1F6B33;text-decoration:underline;border-radius:3px}';
+  document.head.appendChild(st);
+  const d=document.createElement('div');d.id='tcModal';d.style.display='none';
+  d.innerHTML='<div class="tcbox"><div class="tchead"><b id="tcTitle"></b><span class="tcstats" id="tcStats"></span><button class="tcx" onclick="tcClose()" title="Close">✕</button></div><div class="tcbody" id="tcBody"></div><div class="tcfoot"><span><del class="tcd">removed</del></span><span><ins class="tci">added</ins></span><span>Computed on your computer — nothing was uploaded.</span></div></div>';
+  d.addEventListener('click',e=>{if(e.target===d)tcClose();});
+  document.body.appendChild(d);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')tcClose();});
+}
+function tcClose(){const d=document.getElementById('tcModal');if(d)d.style.display='none';}
+function showTrackedChanges(i){
+  const ch=state.chapters[i];
+  if(!ch||PREV_TEXTS[i]==null){alert('No earlier version saved for this chapter yet — the tracked-changes view appears after you paste a revision.');return;}
+  tcEnsureModal();
+  const stats={del:0,ins:0,edits:0};
+  const html=tcBuildHtml(PREV_TEXTS[i],ch.text,stats);
+  document.getElementById('tcTitle').textContent='Tracked changes — '+ch.title;
+  document.getElementById('tcStats').textContent='+'+stats.ins+' / −'+stats.del+' words · '+stats.edits+' edits';
+  document.getElementById('tcBody').innerHTML=html;
+  document.getElementById('tcModal').style.display='flex';
+}
 function toggleRepl(i){const el=document.getElementById('repl-'+i);if(el)el.classList.toggle('hidden');}
 function flagCount(text){const f=scanChapter(text);return f.crit.length+f.rec.length+f.opt.length;}
 function stripLeadHeading(t){
@@ -712,9 +808,10 @@ function stripLeadHeading(t){
 }
 function replaceChapterText(i,t){
   const before=flagCount(state.chapters[i].text);
+  PREV_TEXTS[i]=state.chapters[i].text;
   state.chapters[i].text=t;
   const after=flagCount(t);
-  lastRepl={title:state.chapters[i].title,before,after};
+  lastRepl={title:state.chapters[i].title,before,after,idx:i};
   save();renderSetupStats();renderChapList();refreshScanBadge();
   return {before,after};
 }
@@ -740,7 +837,7 @@ function applyPassRepl(passId){
   const det=document.getElementById('pbd-'+passId);if(det)det.open=true;
   const box=document.getElementById('pbd-'+passId);if(box)box.open=true;
   const msg=document.getElementById('pbmsg-'+passId);
-  if(msg)msg.textContent='✅ '+state.chapters[i].title+' updated — flags '+r.before+' → '+r.after+'. Every pass now uses this revision.';
+  if(msg)msg.innerHTML='✅ '+esc(state.chapters[i].title)+' updated — flags '+r.before+' → '+r.after+'. Every pass now uses this revision. <button class="btn" style="margin-left:8px" onclick="showTrackedChanges('+i+')">👀 View tracked changes</button>';
 }
 function renameChap(i,v){state.chapters[i].title=v;save();}
 function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';}
@@ -843,7 +940,7 @@ function renderScan(){
   let replBanner='';
   if(lastRepl){
     const drop=lastRepl.after<lastRepl.before;
-    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — automated flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan, report, and prompt now uses the revised text — copy any pass again for an updated AI read. (Notes you pasted earlier still describe the old version.)</div></div></div>`;
+    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — automated flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan, report, and prompt now uses the revised text — copy any pass again for an updated AI read. (Notes you pasted earlier still describe the old version.)</div><div style="margin-top:8px"><button class="btn" onclick="showTrackedChanges(${lastRepl.idx})">👀 View tracked changes</button></div></div></div>`;
     lastRepl=null;
   }
   sum.innerHTML=replBanner+langWarn+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
