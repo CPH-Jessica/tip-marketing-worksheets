@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cowork Projects — Author Workbook | The Invisible Pen</title>
+<style>
+  :root{
+    --navy:#0F5E66;      /* deep teal */
+    --teal:#17909A;      /* bright teal */
+    --berry:#9C5460;     /* deep rose gold */
+    --rose:#B76E79;      /* rose gold */
+    --rose-light:#E8C4C9;/* pale rose gold */
+    --cream:#FDF6F4;     /* rosy cream */
+    --ice:#E2F1F2;       /* pale teal wash */
+    --gold:#D4A0A8;
+    --ink:#2D2D2D; --mute:#6B6B6B; --line:#E0CBCE; --ok:#2C7A4B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;line-height:1.55;font-size:18px}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+  header{background:linear-gradient(135deg,#0B4A52 0%,#0F5E66 55%,#17707A 100%);
+    color:#fff;padding:34px 0 30px;margin-bottom:0;border-bottom:5px solid var(--gold)}
+  header .wrap{padding-top:0;padding-bottom:0}
+  .eyebrow{color:var(--rose-light);letter-spacing:3px;font-size:13px;font-weight:bold;
+    font-family:Arial,Helvetica,sans-serif;margin:0 0 6px}
+  h1{margin:0;font-size:38px;line-height:1.1}
+  .sub{color:var(--rose-light);font-style:italic;margin:10px 0 0;font-size:18px}
+  .tabs{position:sticky;top:0;z-index:5;background:var(--cream);
+    display:flex;flex-wrap:wrap;gap:8px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .tab{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;
+    border:1px solid var(--line);background:#fff;color:var(--berry);
+    padding:9px 14px;border-radius:999px;cursor:pointer}
+  .tab.active{background:var(--berry);color:#fff;border-color:var(--berry)}
+  section.panel{display:none;padding-top:24px}
+  section.panel.active{display:block}
+  h2{color:var(--navy);font-size:27px;margin:6px 0 4px}
+  .lead{color:var(--mute);font-style:italic;margin:0 0 18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin:16px 0}
+  .card h3{margin:0 0 8px;color:var(--berry);font-size:20px}
+  .recap{background:var(--ice);border-color:#BFE0E3}
+  label{display:block;font-weight:bold;color:var(--navy);
+    font-size:15px;font-family:Arial,Helvetica,sans-serif;margin:14px 0 6px}
+  input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:8px;
+    padding:11px 12px;font-family:Georgia,serif;font-size:17px;background:#FCFAFB;color:var(--ink)}
+  textarea{min-height:70px;resize:vertical}
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--berry);background:#fff}
+  .check{display:flex;align-items:flex-start;gap:11px;margin:11px 0;cursor:pointer}
+  .check input{margin-top:5px;width:20px;height:20px;accent-color:var(--berry);flex:0 0 auto}
+  .check span{font-size:17px}
+  .hint{font-size:14px;color:var(--mute);font-family:Arial,Helvetica,sans-serif;margin:4px 0 0}
+  .pill{display:inline-block;background:var(--berry);color:#fff;border-radius:999px;
+    font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;
+    padding:3px 11px;margin-bottom:10px}
+  .rec{background:#FBF8FA;border:1px dashed var(--rose);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:16px}
+  .rec b{color:var(--berry)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th,td{border:1px solid var(--line);padding:8px;text-align:left;font-size:16px}
+  th{background:var(--ice);font-family:Arial,Helvetica,sans-serif;font-size:14px;color:var(--navy)}
+  td input{border:none;background:transparent;padding:4px;font-size:16px}
+  .bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
+    padding:10px 16px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;z-index:20}
+  button.act{font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px;
+    border:none;border-radius:8px;padding:11px 16px;cursor:pointer}
+  .b-print{background:var(--navy);color:#fff}
+  .b-export{background:var(--berry);color:#fff}
+  .b-reset{background:#fff;color:var(--mute);border:1px solid var(--line)}
+  .saved{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:var(--ok)}
+  .note{font-size:14px;color:var(--mute);font-family:Arial,Helvetica,sans-serif}
+  .bfly{text-align:center;font-size:26px;margin:26px 0 8px}
+  @media (max-width:620px){.grid2{grid-template-columns:1fr}h1{font-size:30px}}
+  @media print{
+    .tabs,.bar{display:none!important}
+    section.panel{display:block!important;page-break-inside:avoid}
+    body{background:#fff;font-size:13px}
+    header{background:#fff;color:#000;border-bottom:2px solid var(--navy)}
+    .eyebrow,.sub{color:var(--berry)}
+    .card{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="eyebrow">FOUNDATIONS OF CLAUDE · THE INVISIBLE PEN</p>
+    <h1>Cowork Projects — Author Workbook</h1>
+    <p class="sub">Fill this in as you watch. It saves to your browser automatically. Print or export when you're done.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-t="1">1 · Understand It</button>
+    <button class="tab" data-t="2">2 · Build It</button>
+    <button class="tab" data-t="3">3 · Move It (Cowork ⇄ Chat)</button>
+    <button class="tab" data-t="4">4 · Run It</button>
+  </div>
+
+  <!-- ================= LESSON 1 ================= -->
+  <section class="panel active" data-p="1">
+    <span class="pill">LESSON 1</span>
+    <h2>What a Cowork Project Actually Is</h2>
+    <p class="lead">Goal: you can explain, in one sentence, what a Project is and why it beats a cold chat.</p>
+
+    <div class="card recap">
+      <h3>The one-sentence version</h3>
+      A Cowork Project is a dedicated workspace on your own computer that remembers your files, your instructions, and your context — so you never start cold again. A regular chat is a brilliant freelancer with amnesia. A Project is one trained assistant who remembers.
+    </div>
+
+    <div class="card">
+      <h3>Put it in your own words</h3>
+      <label>In ONE sentence, what is a Cowork Project? (Say it like you'd tell a writer friend.)</label>
+      <textarea data-k="l1_def" placeholder="A Cowork Project is..."></textarea>
+      <label>Honestly — how many minutes a day do you lose re-explaining yourself to AI right now?</label>
+      <input type="text" data-k="l1_minutes" placeholder="e.g. 10 minutes every session">
+    </div>
+
+    <div class="card">
+      <h3>The three differences (check what you understand)</h3>
+      <label class="check"><input type="checkbox" data-k="l1_c1"><span>It works in my <b>real files</b> — the actual folder my book lives in, not copy-paste.</span></label>
+      <label class="check"><input type="checkbox" data-k="l1_c2"><span>It holds my <b>standing rules</b> — pen name, heat level, my no-fabrication line.</span></label>
+      <label class="check"><input type="checkbox" data-k="l1_c3"><span>It has <b>memory</b> — it remembers my past work in the Project and builds on it.</span></label>
+    </div>
+
+    <div class="card">
+      <h3>Before you build — readiness check</h3>
+      <label class="check"><input type="checkbox" data-k="l1_r1"><span>I have the <b>latest Claude Desktop app</b> (Mac or Windows).</span></label>
+      <label class="check"><input type="checkbox" data-k="l1_r2"><span>I'm on a <b>paid plan</b> (Pro, Max, Team, or Enterprise).</span></label>
+      <label class="check"><input type="checkbox" data-k="l1_r3"><span>I've picked the <b>book or pen name</b> I'll build my first Project around.</span></label>
+      <label>The book / series / pen name I'm building around:</label>
+      <input type="text" data-k="l1_pen" placeholder="e.g. Kelsey Croft — Book 1">
+    </div>
+  </section>
+
+  <!-- ================= LESSON 2 ================= -->
+  <section class="panel" data-p="2">
+    <span class="pill">LESSON 2</span>
+    <h2>Build Your First Project</h2>
+    <p class="lead">Goal: finish with a real Project set up for one of your books.</p>
+
+    <div class="card recap">
+      <h3>Four ingredients · three ways in</h3>
+      <b>Four ingredients:</b> a folder, your instructions, your knowledge, and a chat.<br>
+      <b>Three ways to start:</b> Start from scratch · Use an existing folder (← most authors) · Import from a Chat project.
+    </div>
+
+    <div class="card">
+      <h3>Build checklist</h3>
+      <label class="check"><input type="checkbox" data-k="l2_b1"><span>Opened the <b>Cowork</b> tab and clicked <b>Projects → +</b>.</span></label>
+      <label class="check"><input type="checkbox" data-k="l2_b2"><span>Chose <b>Use an existing folder</b> and pointed it at the folder my book lives in.</span></label>
+      <label class="check"><input type="checkbox" data-k="l2_b3"><span>Named it <b>specifically</b> and chose where to save it.</span></label>
+      <label class="check"><input type="checkbox" data-k="l2_b4"><span>Added <b>instructions</b> and dragged in my <b>knowledge files</b>.</span></label>
+      <label>My Project name (specific — "Kelsey — Book 1," not "writing"):</label>
+      <input type="text" data-k="l2_name" placeholder="Pen name — Book #">
+    </div>
+
+    <div class="card">
+      <h3>Your standing-instructions starter (4 parts)</h3>
+      <p class="note">This is the short doc your Project reads every time. Keep it tight. You'll add to it as you learn what your AI gets wrong.</p>
+      <label>Part 1 — Who you are, in one line (genre + the feeling readers chase):</label>
+      <input type="text" data-k="l2_p1" placeholder="I write ___ under ___. My readers come to me for ___.">
+      <label>Part 2 — Pen name(s), genre(s), heat level(s):</label>
+      <textarea data-k="l2_p2" placeholder="Pen name — genre — heat 1–5"></textarea>
+      <label>Part 3 — Non-negotiable rules (banned names/words + the line below):</label>
+      <textarea data-k="l2_p3">If you don't have it, say so and ask. Never invent a plot point, a blurb, a character, a name, or a number.</textarea>
+      <label>Part 4 — How you like to work:</label>
+      <textarea data-k="l2_p4" placeholder="I think out loud. Push back on weak ideas. Ask before drafting fiction. Don't guess."></textarea>
+    </div>
+
+    <div class="card">
+      <h3>Prove it remembers</h3>
+      <label class="check"><input type="checkbox" data-k="l2_t1"><span>Asked: <b>"What do you know about this project?"</b> and the answer reflected my setup.</span></label>
+      <label class="check"><input type="checkbox" data-k="l2_t2"><span><b>Closed it, reopened it,</b> asked again — it still knew. ✅ That's the whole point.</span></label>
+    </div>
+  </section>
+
+  <!-- ================= LESSON 3 ================= -->
+  <section class="panel" data-p="3">
+    <span class="pill">LESSON 3</span>
+    <h2>Move Between Cowork &amp; Chat</h2>
+    <p class="lead">Goal: move your work between the two homes without losing anything.</p>
+
+    <div class="card recap">
+      <h3>Two homes · one folder · two doors</h3>
+      A <b>Chat project</b> lives in the cloud (browser, desktop, phone). A <b>Cowork project</b> lives locally on your desktop. They do <b>not</b> auto-sync. You can <b>import</b> a Chat project into Cowork (one at a time), or <b>link</b> one as context. Going back the other way, there's no magic button — the <b>folder is the bridge</b>.
+    </div>
+
+    <div class="card">
+      <h3>Which door is yours? (pick what fits)</h3>
+      <label class="check"><input type="radio" name="style" data-k="l3_style" value="desk"><span>I do my heavy lifting <b>at my desk</b> → Cowork is home base; upload a file to Chat only when I'm on the go.</span></label>
+      <label class="check"><input type="radio" name="style" data-k="l3_style" value="phone"><span>I review a lot <b>on my phone</b> → keep a Chat project too; pull files from the folder to upload.</span></label>
+      <label class="check"><input type="radio" name="style" data-k="l3_style" value="both"><span><b>Both</b>, depending on the day → the folder is my anchor; I always save back to it.</span></label>
+      <div class="rec" id="l3rec"><b>Tip:</b> Pick one above and your reminder shows here.</div>
+    </div>
+
+    <div class="card">
+      <h3>Migration checklist</h3>
+      <label class="check"><input type="checkbox" data-k="l3_c1"><span>I know the difference: <b>Chat = cloud</b>, <b>Cowork = local desktop</b>.</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_c2"><span>I tried <b>Import from a Claude project</b> (or know where it is).</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_c3"><span>I understand there's <b>no one-click Cowork → Chat</b> — the folder bridges it.</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_c4"><span>I know my Cowork projects are <b>local, desktop-only, not cloud-backed</b> (so I back up my folder).</span></label>
+      <label>My single source of truth — the folder I always save back to:</label>
+      <input type="text" data-k="l3_folder" placeholder="e.g. Documents / Clark Publishing / Kelsey — Book 1">
+    </div>
+  </section>
+
+  <!-- ================= LESSON 4 ================= -->
+  <section class="panel" data-p="4">
+    <span class="pill">LESSON 4</span>
+    <h2>Run It As a System</h2>
+    <p class="lead">Goal: a repeatable weekly rhythm across all your pen names.</p>
+
+    <div class="card recap">
+      <h3>The four pieces</h3>
+      <b>Memory</b> (scoped per Project) · <b>Scheduled tasks</b> (run while your computer's awake &amp; the app is open) · <b>One Project per pen name</b> · <b>Archive when done</b> (clears your view, never your files).
+    </div>
+
+    <div class="card">
+      <h3>One Project per pen name</h3>
+      <p class="note">List your active pen names and the Project name each one will get.</p>
+      <table>
+        <tr><th>Pen name</th><th>Project name</th></tr>
+        <tr><td><input type="text" data-k="l4_pn1"></td><td><input type="text" data-k="l4_pr1"></td></tr>
+        <tr><td><input type="text" data-k="l4_pn2"></td><td><input type="text" data-k="l4_pr2"></td></tr>
+        <tr><td><input type="text" data-k="l4_pn3"></td><td><input type="text" data-k="l4_pr3"></td></tr>
+        <tr><td><input type="text" data-k="l4_pn4"></td><td><input type="text" data-k="l4_pr4"></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>My one scheduled task</h3>
+      <label>This week I'll set ONE small task to run (e.g. "list my unfinished chapters in this folder"):</label>
+      <input type="text" data-k="l4_task" placeholder="My weekly task will...">
+      <label class="check"><input type="checkbox" data-k="l4_task_ack"><span>I understand it only runs while my <b>computer is awake and the app is open</b> — it's my machine working for me, not a cloud robot.</span></label>
+    </div>
+
+    <div class="card">
+      <h3>My weekly rhythm</h3>
+      <div class="grid2">
+        <div><label>Monday — where did I leave off?</label><input type="text" data-k="l4_mon" placeholder="Open which Project & ask what?"></div>
+        <div><label>Midweek — draft &amp; edit in-Project</label><input type="text" data-k="l4_mid" placeholder="What gets done in the Project?"></div>
+        <div><label>Switching pen names = switching Projects</label><input type="text" data-k="l4_switch" placeholder="My switch rule"></div>
+        <div><label>Ship = archive</label><input type="text" data-k="l4_ship" placeholder="What I archive when a book's done"></div>
+      </div>
+    </div>
+
+    <div class="bfly">🦋</div>
+    <p class="note" style="text-align:center">Want the deep, book-by-book build — drafting, editing, beta reads inside a Project? That's the <b>Meet Your Co-Writer</b> course in the classroom.</p>
+  </section>
+</div>
+
+<div class="bar">
+  <span class="saved" id="saved">Saved automatically</span>
+  <button class="act b-print" onclick="window.print()">Print / Save as PDF</button>
+  <button class="act b-export" id="exportBtn">Export my answers (.txt)</button>
+  <button class="act b-reset" id="resetBtn">Reset</button>
+</div>
+
+<script>
+(function(){
+  var KEY='tip_cowork_workbook_v1';
+  var data={};
+  try{ data=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ data={}; }
+
+  // tabs
+  var tabs=document.querySelectorAll('.tab');
+  var panels=document.querySelectorAll('.panel');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.remove('active');});
+      panels.forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      document.querySelector('.panel[data-p="'+t.dataset.t+'"]').classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  function flashSaved(){
+    var s=document.getElementById('saved');
+    s.textContent='Saved ✓'; s.style.opacity='1';
+    clearTimeout(window._st);
+    window._st=setTimeout(function(){ s.textContent='Saved automatically'; },1200);
+  }
+  function persist(){ localStorage.setItem(KEY,JSON.stringify(data)); flashSaved(); }
+
+  // restore + wire fields
+  var fields=document.querySelectorAll('[data-k]');
+  fields.forEach(function(el){
+    var k=el.dataset.k;
+    if(el.type==='checkbox'){
+      if(data[k]) el.checked=true;
+      el.addEventListener('change',function(){ data[k]=el.checked; persist(); });
+    } else if(el.type==='radio'){
+      if(data[k]===el.value) el.checked=true;
+      el.addEventListener('change',function(){ if(el.checked){ data[k]=el.value; persist(); updateRec(); }});
+    } else {
+      if(data[k]!=null) el.value=data[k];
+      el.addEventListener('input',function(){ data[k]=el.value; persist(); });
+    }
+  });
+
+  function updateRec(){
+    var v=data['l3_style']; var box=document.getElementById('l3rec');
+    if(!box) return;
+    var msg='<b>Tip:</b> Pick one above and your reminder shows here.';
+    if(v==='desk') msg='<b>Your move:</b> Build in Cowork. When you need it on your phone, upload the file from your folder into Chat. Always save edits back to the folder.';
+    if(v==='phone') msg='<b>Your move:</b> Keep a Chat project for mobile review, but treat the desktop folder as the truth. Re-upload after edits so nothing drifts.';
+    if(v==='both') msg='<b>Your move:</b> One book, one folder, two doors. Whichever door you use, end the day by saving back to the folder.';
+    box.innerHTML=msg;
+  }
+  updateRec();
+
+  // export
+  document.getElementById('exportBtn').addEventListener('click',function(){
+    var labels={};
+    document.querySelectorAll('label').forEach(function(l){
+      var inp=l.querySelector('[data-k]');
+      if(inp){ labels[inp.dataset.k]=l.textContent.trim(); }
+    });
+    var lines=['COWORK PROJECTS — AUTHOR WORKBOOK','The Invisible Pen · Foundations of Claude','Exported '+new Date().toLocaleString(),''];
+    var titles={'1':'LESSON 1 — UNDERSTAND IT','2':'LESSON 2 — BUILD IT','3':'LESSON 3 — MOVE IT','4':'LESSON 4 — RUN IT'};
+    panels.forEach(function(p){
+      lines.push(''); lines.push(titles[p.dataset.p]||''); lines.push('------------------------------');
+      p.querySelectorAll('[data-k]').forEach(function(el){
+        var k=el.dataset.k, lab=labels[k]||k;
+        if(el.type==='checkbox'){ lines.push('['+(data[k]?'x':' ')+'] '+ (el.parentNode.innerText||lab).trim()); }
+        else if(el.type==='radio'){ if(el.checked) lines.push('CHOICE: '+(el.parentNode.innerText||el.value).trim()); }
+        else { lines.push(lab+'\n   > '+((data[k]||'').trim()||'(blank)')); }
+      });
+    });
+    var blob=new Blob([lines.join('\n')],{type:'text/plain'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='My_Cowork_Projects_Workbook.txt';
+    a.click();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click',function(){
+    if(confirm('Clear all your answers in this workbook? This cannot be undone.')){
+      localStorage.removeItem(KEY); location.reload();
+    }
+  });
+})();
+</script>
+</body>
+</html>
