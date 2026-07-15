@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Editorial Feedback — Chapter 1: The Wounded Traveler</title>
+<style>
+  :root{
+    --ink:#241a12; --ink-soft:#5a4a3a; --paper:#fbf6ee; --card:#ffffff;
+    --ember:#c0392b; --ember-soft:#f4d9d4; --gold:#b8860b; --gold-soft:#f6ecd2;
+    --green:#3f7d54; --green-soft:#e0efe4; --line:#e7dcc9; --shadow:0 1px 3px rgba(60,40,20,.08),0 8px 24px rgba(60,40,20,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px 80px}
+  header.masthead{padding:56px 22px 40px;text-align:center;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#fff8ee 0%,var(--paper) 100%)}
+  header.masthead .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.72rem;color:var(--gold);font-weight:700}
+  header.masthead h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.15rem;margin:.5rem 0 .2rem;line-height:1.15}
+  header.masthead .sub{color:var(--ink-soft);font-size:1rem;max-width:560px;margin:.4rem auto 0}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.8rem;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .chip strong{color:var(--ink)}
+  .intro{background:var(--gold-soft);border:1px solid #ecdcb4;border-radius:14px;padding:18px 22px;margin:34px 0;font-size:.95rem;color:#5c4a1f}
+  .intro b{color:#3f3211}
+  h2.section{font-family:Georgia,serif;font-size:1.55rem;margin:46px 0 6px;display:flex;align-items:center;gap:12px}
+  h2.section .num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;font-size:.95rem;font-weight:700;color:#fff;flex:0 0 auto}
+  .n1 .num{background:var(--ember)} .n2 .num{background:var(--gold)} .n3 .num{background:var(--green)}
+  .section-note{color:var(--ink-soft);font-size:.88rem;margin:0 0 18px 46px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin:16px 0;box-shadow:var(--shadow)}
+  .pullquote{font-family:Georgia,serif;font-style:italic;font-size:1.15rem;line-height:1.5;color:#3a2c1e;
+    border-left:4px solid var(--ember);padding:6px 0 6px 20px;margin:4px 0 22px}
+  .leah p{margin:0 0 15px}
+  .leah h4{margin:26px 0 6px;font-size:1rem;letter-spacing:.02em;color:var(--ember);text-transform:uppercase;font-size:.8rem;font-weight:700}
+  .verdict{margin-top:24px;background:#2a1c14;color:#f7ead8;border-radius:12px;padding:18px 22px;font-family:Georgia,serif}
+  .verdict .lbl{letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;color:var(--gold);font-weight:700;font-family:-apple-system,sans-serif}
+  .verdict p{margin:.4rem 0 0;font-size:1.12rem;font-style:italic}
+  .pass{border:1px solid var(--line);border-radius:14px;margin:14px 0;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+  .pass summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;font-weight:600}
+  .pass summary::-webkit-details-marker{display:none}
+  .pass summary .caret{margin-left:auto;color:var(--ink-soft);transition:transform .2s}
+  .pass[open] summary .caret{transform:rotate(90deg)}
+  .pass .body{padding:2px 20px 20px;border-top:1px solid var(--line)}
+  .pass .body p{margin:12px 0}
+  .badge{font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:6px;text-transform:uppercase}
+  .b-pass{background:var(--green-soft);color:var(--green)}
+  .b-watch{background:var(--gold-soft);color:#9a6c07}
+  .b-flag{background:var(--ember-soft);color:var(--ember)}
+  .b-na{background:#eee;color:#888}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th{background:#faf4e8;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  td code,p code,li code{background:#f3ecdd;border-radius:5px;padding:1px 6px;font-size:.85em;color:#7a3021}
+  .quote-line{background:#fbf3ea;border-left:3px solid var(--gold);padding:8px 14px;margin:10px 0;font-family:Georgia,serif;font-style:italic;color:#4a3922;border-radius:0 8px 8px 0}
+  .fixgrid{margin:8px 0}
+  .fix{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .fix:last-child{border-bottom:none}
+  .fix .tag{flex:0 0 92px}
+  .fix .tag span{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 8px;border-radius:6px;display:inline-block}
+  .t-crit{background:var(--ember-soft);color:var(--ember)}
+  .t-rec{background:var(--gold-soft);color:#9a6c07}
+  .t-opt{background:var(--green-soft);color:var(--green)}
+  .fix .txt{flex:1}
+  .fix .txt b{color:var(--ink)}
+  .strengths{background:var(--green-soft);border:1px solid #cfe6d6;border-radius:14px;padding:20px 24px;margin:16px 0}
+  .strengths h3{margin:0 0 8px;color:var(--green);font-size:1.05rem}
+  .strengths ul{margin:6px 0 0;padding-left:20px}
+  .strengths li{margin:6px 0}
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.82rem;text-align:center}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:.75rem;color:var(--ink-soft)}
+  @media(max-width:560px){header.masthead h1{font-size:1.7rem}.fix{flex-direction:column;gap:4px}.fix .tag{flex:none}}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="kicker">Clark Publishing House &middot; Editorial Review</div>
+  <h1>Chapter 1 — <em>The Wounded Traveler</em></h1>
+  <p class="sub">A two-pass editorial workup: an adversarial critical read, followed by a structured line-and-craft edit. Written to be worked <em>from</em>, not just read.</p>
+  <div class="meta-row">
+    <span class="chip"><strong>Genre:</strong> Cozy fantasy / romantasy</span>
+    <span class="chip"><strong>Length:</strong> ~2,050 words</span>
+    <span class="chip"><strong>Passes:</strong> Leah Voss + Fiction Editing Workflow</span>
+    <span class="chip"><strong>POV:</strong> Third-limited (Elswyth)</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <b>How to read this.</b> Two very different editors looked at your chapter. <b>Leah Voss</b> is a deliberately merciless literary critic — a stress-test persona whose whole job is to be the harshest reader your book will ever meet, so the real ones are easier. Read her for the honest gut-level verdict, and don't take the sting personally; she's rough on <em>everyone</em>. The <b>Fiction Editing Workflow</b> is the opposite register: calm, specific, line-by-line, with exact fixes. When they agree on something, that's your highest-priority signal. The <b>Priority Fix List</b> at the bottom merges both into a short, ranked to-do.
+  </div>
+
+  <!-- STRENGTHS FIRST -->
+  <div class="strengths">
+    <h3>What's already working (both passes agree)</h3>
+    <ul>
+      <li><b>The bones of the opening and the ending.</b> You open on a chore, not a prophecy, and you close on a genuine hook (the crimson ember). Those are the two hardest sentences in any first chapter and you nailed both.</li>
+      <li><b>Garrick is a real person.</b> His philosophy leaks into how he flips bacon. That's characterization doing two jobs at once — the thing beginners usually can't manage.</li>
+      <li><b>Restraint in the romance.</b> Konrad is drawn through what he <em>doesn't</em> do. The stable beat ("hay on his sleeve and Hearth Valley light in his hair / That was dangerous thinking") is exactly the right amount of yearning for a chapter one.</li>
+      <li><b>Mysteries planted by implication.</b> Orien's absence is seeded through Aldric's unease, not announced. That's disciplined hooking.</li>
+      <li><b>Idiosyncratic, human specifics.</b> "A mule with a mean temper." Gloves on even in summer. "Both of them are ambitious." These are the details that prove a person wrote this.</li>
+    </ul>
+  </div>
+
+  <!-- ============ SECTION 1: LEAH ============ -->
+  <h2 class="section n1"><span class="num">1</span> The Leah Voss Review</h2>
+  <p class="section-note">Adversarial critical read &middot; full-length verdict &middot; graded on the promise cozy fantasy makes its reader (warmth, world, a hook worth turning the page for).</p>
+
+  <div class="card leah">
+    <div class="pullquote">The chapter opens: “Elswyth Ashwood carried the last armload of firewood into the kitchen just as the first travelers began thumping down the stairs.” That's a real first line — a body doing a thing, a place with people in it, and a small implied clock. Then the author spends two thousand words proving they can be trusted with an inn and can't quite yet be trusted with a <em>scene</em>.</div>
+
+    <h4>The Prose</h4>
+    <p>Clean. Occasionally better than clean. “The smell of bacon, pancakes, and fresh bread settled into the beams like an old memory” earns its simile — barely, but it earns it. “A mule with a mean temper” is the single best line in the chapter, and it's a throwaway, which is how I know the author has an ear. When the writing relaxes into specificity, it stops reading like a fantasy and starts reading like a <em>place</em>.</p>
+    <p>The other register is the sentence fragment deployed as a drumbeat. “Too many bowls. Always too many bowls.” “One bowl slid.” “Then his knees buckled.” Used once, this is punctuation. Used fourteen times, it's a tic — a writer reaching for tension by hitting the return key instead of building it into the clause. The Rennard collapse, which should be the chapter's adrenaline spike, is chopped so fine it loses its own pulse. When everything is staccato, nothing is.</p>
+
+    <h4>Character</h4>
+    <p>Here the author is quietly ahead of schedule. Garrick has a philosophy and it leaks into how he flips bacon. Elswyth is competent, warm, observant — and the author knows to <em>show</em> the noticing rather than only assert it. Konrad is drawn almost entirely through restraint: “He helped as though help was all that was needed” is a genuinely good line about a man.</p>
+    <p>Seraphina is the problem. She's a device — the outsider who asks “why did you thank her?” so the found-family can perform its warmth — and she never rises above the function. “She really is sheltered,” Beryl whispers, which is the author telling me what to think about a character instead of making her unsettling enough that I arrive there myself. Her stillness is <em>described</em> as unnerving and never once made to unnerve me.</p>
+
+    <h4>Structure</h4>
+    <p>A string of well-lit beads with a thread pulled through at the end. Two beads are load-bearing: Orien's absence (seeded with discipline) and the final image — embers flaring “crimson, deep and warm as a living thing,” Elswyth's scraped forearm tingling. <em>That</em> is a chapter ending. It reframes the firewood parable retroactively and it makes me turn the page. But the middle sags the way beginner chapters sag: it's <em>pleasant</em>. A wounded man bleeds on the floor and the emotional temperature of the room is cozy again by the next page. That's a choice you may make — but you have to make it on purpose, and I'm not convinced the author did.</p>
+
+    <h4>AI-Detection Pass — Verdict: Suspect, leaning human</h4>
+    <p>In the author's favor: the idiosyncratic specifics, the voice-bleed in Garrick, mysteries seeded by implication — machines don't withhold like that. Against: the metronomic one-line paragraphing is exactly the rhythm AI-assisted prose defaults to when it wants “tension,” and three phrases are off-the-rack — “calm as sunrise,” the melody that moves “like warm light slipping beneath a door,” Seraphina's “unnerving stillness.” A room that “warmed” <em>three separate times</em> is a synonym-cycle waving from across the bar. If a machine touched this, it touched the connective tissue, not the bones. If a human wrote all of it, the human is imitating the cadence of the machine, and should stop.</p>
+
+    <div class="verdict">
+      <div class="lbl">The Verdict</div>
+      <p>“There's a book in here, and unusually, the author has already written its two hardest sentences — the first line and the last. Keep it. Then cut it in half and write the better version underneath.”</p>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2: WORKFLOW ============ -->
+  <h2 class="section n2"><span class="num">2</span> The Fiction Editing Workflow</h2>
+  <p class="section-note">Structured passes, run in order. Each is collapsible — click to open. Badges: <span class="badge b-pass">Pass</span> <span class="badge b-watch">Watch</span> <span class="badge b-flag">Fix</span> <span class="badge b-na">N/A</span></p>
+
+  <details class="pass" open>
+    <summary>Pass 1 — Quality Check <span class="badge b-watch">Watch</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>POV stays single and clean on Elswyth throughout — no head-hopping. Opens in action; ends on a live hook. Two flags:</p>
+      <div class="quote-line">“Not the ceiling. Me.” A shadow knelt beside her. Konrad.</div>
+      <p>Elswyth's dialogue and Konrad's entrance are jammed into one paragraph. Give the new action beat its own line so the reader isn't briefly unsure who's moving.</p>
+      <p><b>Tonal flag →</b> the bandit threat is defused into coziness too quickly (carried into Pass 7).</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 2 — Plot Holes <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Clean for a chapter one. Setups logged and well-planted: Orien missing, the west road being "too close," the crimson ember + tingling scar. No logic breaks. One small <code>[WATCH]</code>:</p>
+      <div class="quote-line">“Three of us. Dain got away. I don't know about Feylin. I think. They came out near the west road.”</div>
+      <p>The “I think” floats loose — tighten so it's clear what Rennard is uncertain of (whether Feylin escaped, presumably).</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 3 — Timeline Consistency <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Consistent. One story-day, tracked cleanly: dawn → “midmorning” → “late afternoon” → supper → night. Rennard's wound slows, then he's resting under a blanket with broth — plausible for a graze. No contradictions, no impossible arrivals.</p>
+    </div>
+  </details>
+
+  <details class="pass" open>
+    <summary>Pass 4 — Line Edit (the big one) <span class="badge b-flag">Fix</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p><b>Echoes.</b> Repeated word-families are the headline issue — the prose leans on the same handful of words:</p>
+      <table>
+        <tr><th>Word family</th><th>Count</th><th>Read</th></tr>
+        <tr><td><code>hand / hands</code></td><td>15×</td><td>Too many. Vary the physical business.</td></tr>
+        <tr><td><code>fire / firewood</code></td><td>10×</td><td>Motif — mostly earned, but thin it slightly.</td></tr>
+        <tr><td><code>warm / warmed / warmth</code></td><td>9×</td><td>The "room warmed again" tic. Cut at least 3.</td></tr>
+        <tr><td><code>road</code></td><td>9×</td><td>Meaningful location, but recurring — watch it.</td></tr>
+        <tr><td><code>soft / softly / softened</code></td><td>6×</td><td>Overused; see banned tags below.</td></tr>
+      </table>
+      <p><b>Banned-list hits</b> (CPH de-AI word list):</p>
+      <table>
+        <tr><th>Flagged</th><th>Count</th><th>Do instead</th></tr>
+        <tr><td><code>crossed her arms</code></td><td>1×</td><td>Banned action — pick different defensive body language.</td></tr>
+        <tr><td><code>expression</code> + <code>unreadable</code></td><td>4× + 1×</td><td>Name what the face is doing; don't label it.</td></tr>
+        <tr><td><code>something</code></td><td>4×</td><td>Name the thing that changed/softened.</td></tr>
+        <tr><td><code>softly / slowly / quietly</code></td><td>3× / 2× / 2×</td><td>Cut the -ly; strengthen the verb.</td></tr>
+        <tr><td><code>murmured</code> / <code>whispered</code> (×2)</td><td>3×</td><td>Trim to <em>said</em> or an action beat.</td></tr>
+        <tr><td><code>tilted her head</code></td><td>1×</td><td>Banned phrase — find a fresher gesture.</td></tr>
+      </table>
+      <p><b>Grammar:</b> <code>“how Elswyth knew she sung it well”</code> → <b>sang</b> (or “she'd sung”).</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 11 — Present-Moment / Prolepsis Sweep <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p><b>Candidates 1 · Offenders 0 · Protected 1 · Confirm 0.</b> Impressively clean. No “she would later realize,” no “little did she know,” no future-knowledge leaks. The single <code>would</code> —</p>
+      <div class="quote-line">“She hated that answer because it sounded like one Orien would have liked.”</div>
+      <p>— is conditional/hypothetical and <b>protected</b> (left exactly as written). This is a genuine strength; a lot of drafts fail this pass badly.</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 12 — Structural De-AI Sweep <span class="badge b-watch">Watch</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p><b>Cluster verdict: CLEAN</b> (a WATCH or two, no cluster). The triads are <em>asymmetric</em> — the human tell, not the machine one:</p>
+      <div class="quote-line">“A purse. Two packs. A mule with a mean temper.”</div>
+      <p>The weight lands on the lopsided third item; that's craft, not a checklist. Logged as defensible, not flagged.</p>
+      <p><b>One real WATCH — theme stated aloud:</b></p>
+      <div class="quote-line">“Trust,” he said. “A fire shared is not always a fire lost.”</div>
+      <p>Aldric spells out the parable's meaning instead of trusting the reader to feel it. It's softened by being <em>debated</em> by three characters, so it's borderline — but consider withholding the moral and letting the crimson ember carry it.</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 5 — Dialogue Polish <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Strong. Cover the tags and you can still tell who's speaking — Garrick's aphorisms, Elswyth's dry deflection, Konrad's clipped “Cloth.” Best exchange in the chapter:</p>
+      <div class="quote-line">“That an order?” / “Yes.” / “Then I'd better obey.”</div>
+      <p>Subtext is doing real work there. Only note: Seraphina's lines are a touch on-the-nose as the "sheltered outsider" device (Leah's point, from the craft side).</p>
+    </div>
+  </details>
+
+  <details class="pass" open>
+    <summary>Pass 7 — Developmental Edit <span class="badge b-flag">Fix</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Every scene has a job <em>except</em> that the danger doesn't cost anything. A bleeding man arrives, and within a page the stakes are joked into a blanket by the hearth (“We don't have anything they really want”). The chapter is <b>pleasant where it should occasionally be frightening.</b></p>
+      <p><b>The fix isn't more plot — it's one beat of real cost.</b> Let the blood, the fear, or the "west road is close" land on Elswyth's body before the coziness reclaims the room. Coziness is more powerful when it's <em>reclaimed</em> from fear, not when fear never really arrived.</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 8 — Voice Audit (cozy fantasy / romantasy) <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Delivers the genre promise: hearth warmth, found-family texture, a restrained slow-burn, a magic hook. On the CPH curve this sits closest to a Ruthie Clark calibration — <em>does the world have weight?</em> The warmth lands; the thing to push is the <b>weight</b> (see Pass 7). Atmosphere is present and lived-in, not costume.</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 9 — Engagement / Hook Audit <span class="badge b-pass">Pass</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p>Two specific live questions by mid-chapter — <em>Where is Orien?</em> and <em>What's wrong with the west road?</em> — plus the end-of-chapter magic reveal. The seam re-hooks on an open loop rather than a clean stop:</p>
+      <div class="quote-line">Then, very softly, she whispered, “What was that?”</div>
+      <p>Good forward pull. (Tiny craft note: that final line uses two of the words Pass 4 wants trimmed — <code>softly</code> and <code>whispered</code>. Worth landing your best sentence without them.)</p>
+    </div>
+  </details>
+
+  <details class="pass">
+    <summary>Pass 6 — Heat Scene Edit &nbsp; / &nbsp; Pass 10 — Arc Pacing <span class="badge b-na">N/A</span><span class="caret">▸</span></summary>
+    <div class="body">
+      <p><b>Pass 6 (Heat):</b> No intimate content in this chapter — nothing to calibrate.</p>
+      <p><b>Pass 10 (Arc Pacing):</b> Runs <em>across</em> chapters. With only Chapter 1 in hand, there's no trajectory to assess yet — the romance is correctly at "awareness, not action." Re-run this once Chapters 2–3 exist to check the slow-burn is neither rushing nor stalling.</p>
+    </div>
+  </details>
+
+  <!-- ============ SECTION 3: PRIORITY FIX LIST ============ -->
+  <h2 class="section n3"><span class="num">3</span> Priority Fix List</h2>
+  <p class="section-note">Both passes merged into one ranked to-do. Do the red ones first.</p>
+
+  <div class="card">
+    <div class="fixgrid">
+      <div class="fix">
+        <div class="tag"><span class="t-crit">Critical</span></div>
+        <div class="txt"><b>Break the staccato habit.</b> The one-line-paragraph drumbeat is both editors' top note. Keep 3–4 of the sharpest fragments (the Rennard collapse deserves <em>one</em>); fold the rest back into full sentences so tension is built into the clause, not the line breaks.</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-crit">Critical</span></div>
+        <div class="txt"><b>Give the danger one beat of real cost.</b> Let the bandit attack frighten someone before the room goes cozy again. This is the difference between "pleasant" and "a scene." (Pass 7 + Leah's structure note.)</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-crit">Critical</span></div>
+        <div class="txt"><b>Make Seraphina strange instead of labeled-strange.</b> Delete "She really is sheltered" and the word "unnerving." Show one specific off behavior and let the reader feel it. Right now she's a function, not a character.</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-rec">Recommended</span></div>
+        <div class="txt"><b>Run an echo pass.</b> Thin <code>hand</code> (15×), <code>warm</code> (9×), and <code>soft</code> (6×). Replace the banned-list words: <code>expression</code>, <code>unreadable</code>, <code>something</code>, <code>crossed her arms</code>, <code>tilted her head</code>, and the <code>murmured/whispered/softly</code> tags.</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-rec">Recommended</span></div>
+        <div class="txt"><b>Retire the three off-the-rack phrases</b> Leah clocked: "calm as sunrise," "like warm light slipping beneath a door," "unnerving stillness." Replace each with one concrete, character-specific image.</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-opt">Optional</span></div>
+        <div class="txt"><b>Consider withholding the theme.</b> Aldric's "A fire shared is not always a fire lost" states the lesson. The crimson ember already carries it — trust the image.</div>
+      </div>
+      <div class="fix">
+        <div class="tag"><span class="t-opt">Optional</span></div>
+        <div class="txt"><b>Fix the small stuff:</b> "she sung it well" → <b>sang</b>; split the Konrad-entrance paragraph; tighten Rennard's "I think"; and land the final "What was that?" without the two flagged words.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>Editorial feedback prepared by Clark Publishing House &middot; Two-pass review (Leah Voss + Fiction Editing Workflow)</div>
+    <div class="legend">
+      <span>🔴 Critical — do first</span>
+      <span>🟡 Recommended — next</span>
+      <span>🟢 Optional — polish</span>
+    </div>
+    <div style="margin-top:12px;opacity:.7">Leah Voss is an adversarial critique persona used as a stress test. The harshness is by design; the craft underneath is genuinely promising.</div>
+  </footer>
+
+</div>
+</body>
+</html>
