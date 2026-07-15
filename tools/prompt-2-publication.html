@@ -670,7 +670,7 @@ function renderRail(){
     if(p.group&&p.group!==lastGroup){ const g=document.createElement('div'); g.className='railgroup'; g.textContent=p.group; list.appendChild(g); lastGroup=p.group; }
     const b=document.createElement('button'); b.className='phase-btn'+(p.n===activePhase?' active':'')+(current.phases[p.key].done?' done':'');
     b.innerHTML='<span class="pnum">'+(current.phases[p.key].done?'✓':p.n)+'</span><span class="ptitle">'+p.icon+' '+p.name+'</span>';
-    b.onclick=()=>{ activePhase=p.n; renderRail(); renderPanel(); window.scrollTo({top:0,behavior:'smooth'}); };
+    b.onclick=()=>{ activePhase=p.n; renderRail(); renderPanel(); };
     list.appendChild(b);
   });
   const dc=doneCount();
@@ -721,7 +721,7 @@ function renderPanel(){
   lbl.append(cb,document.createTextNode(p.finalize?'I approve this book — it\'s ready':'Mark this phase complete'));
   foot.appendChild(lbl);
   if(p.n<PHASES.length){ const nx=document.createElement('button'); nx.className='btn-primary'; nx.textContent='Next phase →';
-    nx.onclick=()=>{ if(!current.phases[p.key].done){ current.phases[p.key].done=true; } activePhase=p.n+1; save(); renderRail(); renderPanel(); window.scrollTo({top:0,behavior:'smooth'}); };
+    nx.onclick=()=>{ if(!current.phases[p.key].done){ current.phases[p.key].done=true; } activePhase=p.n+1; save(); renderRail(); renderPanel(); panel.scrollIntoView({block:'nearest'}); };
     foot.appendChild(nx); }
   panel.appendChild(foot);
 
