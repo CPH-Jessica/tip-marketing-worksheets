@@ -185,13 +185,24 @@
 
     <div class="card recap">
       <h3>Two homes · one folder · two doors</h3>
-      A <b>Chat project</b> lives in the cloud (browser, desktop, phone). A <b>Cowork project</b> lives locally on your desktop. They do <b>not</b> auto-sync. You can <b>import</b> a Chat project into Cowork (one at a time), or <b>link</b> one as context. Going back the other way, there's no magic button — the <b>folder is the bridge</b>.
+      A <b>Chat project</b> lives in the cloud (browser, desktop, phone). A <b>Cowork project</b> does its deep work on your desktop — that's where it reaches your real files and your browser. <b>New (July 2026):</b> Cowork now rides along in the Claude app on your <b>phone and the web</b> too, so you can check on it, approve steps, and start tasks from anywhere. Your files still live locally, so the <b>folder is the bridge</b> and your single source of truth — back it up.
+    </div>
+
+    <div class="card">
+      <h3>📱 New: Cowork on your phone</h3>
+      <p class="note">As of July 2026, Cowork lives in the sidebar of the Claude app on iOS and Android (Max plan first, other plans rolling out). The deep work still happens at your desk — but from your phone you can now:</p>
+      <label class="check"><input type="checkbox" data-k="l3_m1"><span><b>Kick off a task</b> from the school pickup line — "draft the newsletter blurb for Book 3."</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_m2"><span><b>Approve a step</b> when Claude pings you for permission, so nothing stalls while you're away.</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_m3"><span><b>Check progress &amp; get notified</b> when a task finishes — even with your laptop closed.</span></label>
+      <div class="rec"><b>Why it matters for an author on the go:</b> you start the work at your desk, then go live your life. Claude keeps running remotely; you nudge it from your phone between errands and pick up the finished draft later. Your writing time stops being chained to the chair.</div>
+      <label>One thing I'd love to start or check from my phone this week:</label>
+      <input type="text" data-k="l3_mobile_use" placeholder="e.g. approve chapter edits while I'm out; start a blurb draft from the car">
     </div>
 
     <div class="card">
       <h3>Which door is yours? (pick what fits)</h3>
       <label class="check"><input type="radio" name="style" data-k="l3_style" value="desk"><span>I do my heavy lifting <b>at my desk</b> → Cowork is home base; upload a file to Chat only when I'm on the go.</span></label>
-      <label class="check"><input type="radio" name="style" data-k="l3_style" value="phone"><span>I review a lot <b>on my phone</b> → keep a Chat project too; pull files from the folder to upload.</span></label>
+      <label class="check"><input type="radio" name="style" data-k="l3_style" value="phone"><span>I'm often <b>away from my desk</b> → I'll use Cowork in the Claude app on my phone to start tasks, approve steps, and check progress on the go.</span></label>
       <label class="check"><input type="radio" name="style" data-k="l3_style" value="both"><span><b>Both</b>, depending on the day → the folder is my anchor; I always save back to it.</span></label>
       <div class="rec" id="l3rec"><b>Tip:</b> Pick one above and your reminder shows here.</div>
     </div>
@@ -201,7 +212,7 @@
       <label class="check"><input type="checkbox" data-k="l3_c1"><span>I know the difference: <b>Chat = cloud</b>, <b>Cowork = local desktop</b>.</span></label>
       <label class="check"><input type="checkbox" data-k="l3_c2"><span>I tried <b>Import from a Claude project</b> (or know where it is).</span></label>
       <label class="check"><input type="checkbox" data-k="l3_c3"><span>I understand there's <b>no one-click Cowork → Chat</b> — the folder bridges it.</span></label>
-      <label class="check"><input type="checkbox" data-k="l3_c4"><span>I know my Cowork projects are <b>local, desktop-only, not cloud-backed</b> (so I back up my folder).</span></label>
+      <label class="check"><input type="checkbox" data-k="l3_c4"><span>I know my Cowork <b>files live locally</b> on my desktop (not cloud-backed) — even though I can now reach Cowork from my phone — so I back up my folder.</span></label>
       <label>My single source of truth — the folder I always save back to:</label>
       <input type="text" data-k="l3_folder" placeholder="e.g. Documents / Clark Publishing / Kelsey — Book 1">
     </div>
@@ -215,7 +226,7 @@
 
     <div class="card recap">
       <h3>The four pieces</h3>
-      <b>Memory</b> (scoped per Project) · <b>Scheduled tasks</b> (run while your computer's awake &amp; the app is open) · <b>One Project per pen name</b> · <b>Archive when done</b> (clears your view, never your files).
+      <b>Memory</b> (scoped per Project) · <b>Scheduled tasks</b> (now run remotely — even with your laptop closed) · <b>One Project per pen name</b> · <b>Archive when done</b> (clears your view, never your files).
     </div>
 
     <div class="card">
@@ -234,7 +245,7 @@
       <h3>My one scheduled task</h3>
       <label>This week I'll set ONE small task to run (e.g. "list my unfinished chapters in this folder"):</label>
       <input type="text" data-k="l4_task" placeholder="My weekly task will...">
-      <label class="check"><input type="checkbox" data-k="l4_task_ack"><span>I understand it only runs while my <b>computer is awake and the app is open</b> — it's my machine working for me, not a cloud robot.</span></label>
+      <label class="check"><input type="checkbox" data-k="l4_task_ack"><span>I understand my scheduled task <b>now runs remotely — even with my laptop closed</b> — and it pings my phone when it needs a decision or has the result ready.</span></label>
     </div>
 
     <div class="card">
@@ -306,9 +317,9 @@
     var v=data['l3_style']; var box=document.getElementById('l3rec');
     if(!box) return;
     var msg='<b>Tip:</b> Pick one above and your reminder shows here.';
-    if(v==='desk') msg='<b>Your move:</b> Build in Cowork. When you need it on your phone, upload the file from your folder into Chat. Always save edits back to the folder.';
-    if(v==='phone') msg='<b>Your move:</b> Keep a Chat project for mobile review, but treat the desktop folder as the truth. Re-upload after edits so nothing drifts.';
-    if(v==='both') msg='<b>Your move:</b> One book, one folder, two doors. Whichever door you use, end the day by saving back to the folder.';
+    if(v==='desk') msg='<b>Your move:</b> Do the deep work in Cowork at your desk. When you step away, open Cowork in the Claude app on your phone to check progress or approve a step — the task keeps running with your laptop closed. Save the heavy file edits for the desk.';
+    if(v==='phone') msg='<b>Your move:</b> Cowork is in the Claude app on your phone now — start tasks, approve steps, and get notified on the go. The full experience (real files, browser) still lives on the desktop, so plan your deep sessions there.';
+    if(v==='both') msg='<b>Your move:</b> One book, one folder, two doors. Start and monitor from your phone, do the heavy lifting at your desk, and end every day by saving back to the folder.';
     box.innerHTML=msg;
   }
   updateRec();
