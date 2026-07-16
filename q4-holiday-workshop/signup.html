@@ -156,25 +156,25 @@
     <h2>Save My Seat</h2>
     <p class="helptext">Sign up below and you'll get the date announcement, the workshop link, and prep notes by email.</p>
 
-    <form id="signupForm" action="https://assets.mailerlite.com/jsonp/1362400/forms/191857508304815204/subscribe" method="post" target="_blank">
+    <form id="signupForm">
       <div class="form-row">
         <div>
           <label for="fName">First name</label>
-          <input type="text" id="fName" name="fields[name]" autocomplete="given-name" required>
+          <input type="text" id="fName" autocomplete="given-name" required>
         </div>
         <div>
           <label for="fEmail">Email</label>
-          <input type="email" id="fEmail" name="fields[email]" autocomplete="email" required>
+          <input type="email" id="fEmail" autocomplete="email" required>
         </div>
       </div>
       <div class="form-row">
         <div>
           <label for="fSkool">Skool username <span class="opt">(optional)</span></label>
-          <input type="text" id="fSkool" name="fields[skool_username]" placeholder="So we can find you in the community">
+          <input type="text" id="fSkool" placeholder="So we can find you in the community">
         </div>
         <div>
           <label for="fTier">Membership</label>
-          <select id="fTier" name="fields[membership_tier]">
+          <select id="fTier">
             <option value="Free member">Free member</option>
             <option value="Premium member">Premium member</option>
             <option value="Not in the community yet">Not in the community yet</option>
@@ -190,11 +190,9 @@
         <label class="focus-opt"><input type="checkbox" value="All three - full Q4 run"><span class="fname">&#128293; All three &mdash; full Q4 run</span></label>
         <label class="focus-opt"><input type="checkbox" value="Not sure yet"><span class="fname">&#129300; Not sure yet &mdash; help me pick</span></label>
       </div>
-      <input type="hidden" id="fFocus" name="fields[q4_focus]" value="">
-      <input type="hidden" name="ml-submit" value="1">
-      <input type="hidden" name="anticsrf" value="true">
+      <input type="hidden" id="fFocus" value="">
 
-      <div class="formerr" id="formErr">Hmm, that didn't go through. Please try again &mdash; or just comment &ldquo;Q4&rdquo; on the workshop post in the community and we'll add you.</div>
+      <div class="formerr" id="formErr">Hmm, your email app didn't open? No problem &mdash; send a note with your name to <a href="mailto:coach@theinvisiblepen.com">coach@theinvisiblepen.com</a>, or just comment &ldquo;Q4&rdquo; on the workshop post in the community and we'll add you.</div>
 
       <div class="center" style="margin-top:22px;">
         <button type="submit" class="btn" id="submitBtn">Save My Seat &rarr;</button>
@@ -203,8 +201,9 @@
 
     <div class="thanks" id="thanksBox">
       <div class="big">&#127881;</div>
-      <h3>You're on the list!</h3>
-      <p class="confirm">One more step: check your inbox and click the confirmation link so the workshop details can reach you.</p>
+      <h3>One click to go!</h3>
+      <p class="confirm">Your email app just opened with your signup note &mdash; <b>press Send</b> and your seat is saved. The date announcement, workshop link, and prep notes will land in that same inbox.</p>
+      <p>If no email window appeared, just send your name to <b>coach@theinvisiblepen.com</b> and we'll add you by hand.</p>
       <p>See you in The Invisible Pen community at the end of July. Bring a book idea &mdash; even a fuzzy one.</p>
     </div>
   </div>
@@ -228,27 +227,29 @@
   var form = document.getElementById('signupForm');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = 'Saving your seat…';
     document.getElementById('formErr').style.display = 'none';
-    fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if (d && d.success !== false) {
-        form.style.display = 'none';
-        document.getElementById('thanksBox').style.display = 'block';
-      } else { throw new Error('rejected'); }
-    })
-    .catch(function(){
-      // Fall back to a native post to MailerLite's hosted response page
-      try { form.removeEventListener('submit', arguments.callee); } catch(err) {}
+    var name = document.getElementById('fName').value.trim();
+    var email = document.getElementById('fEmail').value.trim();
+    var skool = document.getElementById('fSkool').value.trim();
+    var tier = document.getElementById('fTier').value;
+    var focus = document.getElementById('fFocus').value;
+    var subject = '[Q4 WORKSHOP] Signup — ' + name;
+    var body = 'Hi Jessica! Please save my seat for the Q4 Holiday Release Workshop.\r\n\r\n' +
+      'Name: ' + name + '\r\n' +
+      'Email: ' + email + '\r\n' +
+      'Skool username: ' + (skool || '(not given)') + '\r\n' +
+      'Membership: ' + tier + '\r\n' +
+      'Holiday wave: ' + (focus || '(not picked)') + '\r\n\r\n' +
+      'Just press Send — this note goes straight to Jessica.';
+    try {
+      window.location.href = 'mailto:coach@theinvisiblepen.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+      form.style.display = 'none';
+      document.getElementById('thanksBox').style.display = 'block';
+    } catch(err) {
       document.getElementById('formErr').style.display = 'block';
-      btn.disabled = false; btn.textContent = 'Save My Seat →';
-    });
+    }
   });
 </script>
 </body>
