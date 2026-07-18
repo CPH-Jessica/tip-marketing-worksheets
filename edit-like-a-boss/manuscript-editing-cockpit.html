@@ -340,8 +340,16 @@
           <div class="note" style="margin-top:8px">Built a voice skill in class? Don't rewrite it by hand — <button class="btn" style="padding:5px 11px;font-size:12.5px" onclick="copyVoiceNotesPrompt(this)">Copy the "ask your Claude for my voice notes" prompt</button> — paste it into the Claude that has your voice skill, then paste what it returns into the box above.</div>
         </div>
 
-        <label class="fld" style="margin-top:18px">Manuscript text</label>
-        <textarea id="manuscript" rows="14" placeholder="Paste your manuscript here. Use “Chapter One”, “Chapter 1”, “# Chapter”, or *** between chapters and the cockpit will split it for you." oninput="onManuscriptInput()"></textarea>
+        <label class="fld" style="margin-top:18px">Manuscript text <span style="font-weight:400;color:var(--muted)">— start each chapter on its own line: <b>Chapter 1</b>, <b>Chapter One</b>, or <b># Chapter 1</b> (all work). Scene breaks like *** stay inside the chapter.</span></label>
+        <textarea id="manuscript" rows="14" placeholder="Paste your whole manuscript (or one chapter) here.
+
+Start each chapter on its own line — any of these work:
+  Chapter 1
+  Chapter One
+  # Chapter 1
+  Prologue  /  Epilogue
+
+Then press Go. *** or --- scene breaks stay inside the chapter." oninput="onManuscriptInput()"></textarea>
 
         <div class="toolbar">
           <button class="btn primary" id="goBtn" onclick="goSmart()">▶ Go — scan my manuscript</button>
@@ -409,14 +417,15 @@
         </details>
 
         <h2>Reader Satisfaction Tracker</h2>
-        <p class="sub">Map the beats of the book and watch the curve. Rate by hand, or let your LLM do it — copy the prompt below, paste the JSON it returns, and the curve plots itself.</p>
+        <p class="sub">Map the beats of your book and watch the satisfaction curve. Two ways to fill it in — the fast way (let your AI rate the beats) or by hand.</p>
+        <div class="note" style="background:#EFF4EE;border-left-color:var(--ok)"><b>Fastest way, 3 steps:</b> &nbsp;<b>1.</b> Click <b>Copy "rate my beats" prompt</b> → paste it into your AI. &nbsp;<b>2.</b> Copy the JSON it returns. &nbsp;<b>3.</b> Click <b>Paste beat JSON</b>, drop it in, and hit Plot — the curve draws itself. &nbsp;<span style="color:var(--muted)">(Or skip all that and click <b>+ Add beat</b> to build it by hand. New here? <b>Load sample arc</b> shows a finished example.)</span></div>
 
         <div class="toolbar" style="margin-bottom:8px">
-          <button class="btn gold" onclick="copyBeatPrompt(this)">Copy “rate my beats” prompt</button>
-          <button class="btn" onclick="document.getElementById('beatJsonWrap').classList.toggle('hidden')">Paste beat JSON</button>
+          <button class="btn gold" onclick="copyBeatPrompt(this)">1 · Copy “rate my beats” prompt</button>
+          <button class="btn" onclick="document.getElementById('beatJsonWrap').classList.toggle('hidden')">2 · Paste beat JSON</button>
           <button class="btn" onclick="loadSampleBeats()">Load sample arc</button>
           <div class="gap"></div>
-          <button class="btn primary" onclick="addBeat()">+ Add beat</button>
+          <button class="btn primary" onclick="addBeat()">+ Add beat by hand</button>
         </div>
         <div id="beatJsonWrap" class="hidden" style="margin-bottom:12px">
           <textarea id="beatJson" rows="4" placeholder='Paste the JSON your LLM returned, e.g. [{"name":"They meet","T":3,"B":1,"S":2,"payoff":false}, ...]'></textarea>
@@ -612,24 +621,41 @@ document.getElementById('tabs').addEventListener('click',e=>{
    MANUSCRIPT SPLITTING
    ============================================================ */
 function onManuscriptInput(){ save(); }
+/* Strip markdown heading/bold/italic marks so "# Chapter 1", "**Chapter 1**",
+   "## Chapter 1" all reduce to the readable title "Chapter 1". */
+function stripMd(t){return t.replace(/^#{1,6}\s*/,'').replace(/^[*_]{1,3}\s*/,'').replace(/\s*[*_]{1,3}$/,'').trim();}
+/* A NUMBERED chapter/part/section heading — requires a number, roman numeral,
+   or spelled-out number so prose like "Part of me knew…" is never mistaken. */
+const CH_NUM=/^(chapter|chapitre|kapitel|capitolo|cap[ií]tulo|part|ch|section|book)\.?\s+(\d{1,4}|[ivxlcdm]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b/i;
+/* Standalone section words that need no number. */
+const CH_STANDALONE=/^(prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo|preface|foreword|interlude|introduction)\s*$/i;
+function isChapterHead(l){
+  const t=l.trim();
+  if(/^#{1,3}\s*\S/.test(t))return true;          // markdown heading (space optional: "#Chapter" too)
+  const c=stripMd(t);
+  return CH_NUM.test(c)||CH_STANDALONE.test(c);   // Chapter 1 / Ch. IV / Part One / Prologue (incl. **bold**)
+}
+function isSceneBreak(l){
+  const t=l.trim();
+  return /^\*\s*\*\s*\*$/.test(t)||/^(—|–|-|\*|·|•|~|=|#){3,}$/.test(t)||/^\.\s\.\s\.$/.test(t);
+}
 function splitManuscript(text){
   if(!text||!text.trim())return [];
   const lines=text.split(/\r?\n/);
-  const isHead=l=>{
-    const t=l.trim();
-    return /^#{1,3}\s+\S/.test(t) || /^(chapter|chapitre|kapitel|capitolo|cap[ií]tulo|prologue|pr[oó]logo|epilogue|épilogue|epilog|ep[ií]logo)\b/i.test(t) ||
-           /^\*\s*\*\s*\*$/.test(t) || /^—{2,}$/.test(t) || /^chapter\s+(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)/i.test(t);
-  };
+  const hasChapters=lines.some(isChapterHead);
+  // Real chapter headings win: when they exist, *** and --- are scene breaks
+  // INSIDE chapters, not new chapters. Only when there are NO chapter headings
+  // do scene breaks act as dividers (fallback for scene-only pastes).
+  const isHead=l=> isChapterHead(l) || (!hasChapters && isSceneBreak(l));
   const chaps=[]; let cur={title:'',lines:[]}; let started=false;
   for(const l of lines){
     if(isHead(l)){
       if(started && (cur.lines.join('').trim()||cur.title)) chaps.push(cur);
-      const title=l.replace(/^#{1,3}\s+/,'').replace(/^\*\s*\*\s*\*$/,'Scene break').trim();
+      const title=isChapterHead(l)?stripMd(l):'Scene';
       cur={title:title||('Chapter '+(chaps.length+1)),lines:[]}; started=true;
     } else { cur.lines.push(l); started=true; }
   }
   if(cur.lines.join('').trim()||cur.title)chaps.push(cur);
-  // if nothing split, treat whole thing as one chapter
   let out=chaps.map((c,i)=>({title:c.title||('Chapter '+(i+1)),text:c.lines.join('\n').trim()})).filter(c=>c.text.length>0||c.title);
   if(out.length===0)out=[{title:'Chapter 1',text:text.trim()}];
   return out;
@@ -675,10 +701,19 @@ function wc(s){return (s.trim().match(/\S+/g)||[]).length;}
 function totalWords(){return (state.chapters||[]).reduce((a,c)=>a+wc(c.text),0)||wc(state.manuscript||'');}
 function renderSetupStats(){
   const tw=totalWords();
-  document.getElementById('setupStats').innerHTML = state.chapters.length?
-    `<span class="stat"><span class="n">${state.chapters.length}</span><span class="l">chapters</span></span>
+  const n=state.chapters.length;
+  let banner='';
+  if(n){
+    const names=state.chapters.map(c=>esc(c.title)).slice(0,8).join(' · ')+(n>8?' …':'');
+    const oneBig = n===1 && tw>6000;
+    banner = oneBig
+      ? `<div class="note" style="border-left-color:var(--warn);background:#FBF1DD"><b>⚠ Loaded as 1 chapter (${tw.toLocaleString()} words).</b> If your book has multiple chapters, the tool didn't spot the breaks. Make sure each chapter starts on its own line — <b>Chapter 1</b>, <b>Chapter One</b>, or <b># Chapter 1</b> all work — then hit <b>Start over</b> and paste again. (Scans &amp; review prompts still work as-is.)</div>`
+      : `<div class="note" style="border-left-color:var(--ok);background:#EFF4EE">✓ <b>Split into ${n} chapter${n===1?'':'s'}:</b> ${names}</div>`;
+  }
+  document.getElementById('setupStats').innerHTML = banner + (n?
+    `<span class="stat"><span class="n">${n}</span><span class="l">chapters</span></span>
      <span class="stat"><span class="n">${tw.toLocaleString()}</span><span class="l">words</span></span>
-     <span class="stat"><span class="n">${Math.round(tw/Math.max(1,state.chapters.length)).toLocaleString()}</span><span class="l">avg / chapter</span></span>`:'';
+     <span class="stat"><span class="n">${Math.round(tw/Math.max(1,n)).toLocaleString()}</span><span class="l">avg / chapter</span></span>`:'');
   updateGoBtn();
 }
 function renderChapList(){
