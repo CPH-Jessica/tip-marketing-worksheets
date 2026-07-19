@@ -95,7 +95,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--leaf)}
 </div>
 <div class="wrap" id="view"></div>
 <div id="toast"></div>
-<div class="foot">The Invisible Pen · Clark Publishing House LLC — everything stays in your browser. Nothing is uploaded.</div>
+<div class="foot" id="foot"></div>
 
 <script>
 /* ============================================================
@@ -104,6 +104,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--leaf)}
    a time, one pass at a time, strengths first, never more than three
    things to fix. The prompts do the teaching.
    ============================================================ */
+/* Flip tipMode to false to produce the white-label build for sale. */
+const CONFIG={
+  tipMode:true,
+  brand:"The Invisible Pen",
+  owner:"Clark Publishing House LLC"
+};
 const LSKEY='tip-editing-coach-v1';
 
 const LANES=[
@@ -180,7 +186,11 @@ const STEPS=[
 ];
 
 /* ---------- state ---------- */
-function fresh(){return{title:"",lane:"",chapters:[],cur:null,seenWelcome:false};}
+function fresh(){return{author:{name:"",pen:""},voice:{notes:""},title:"",lane:"",chapters:[],cur:null,seenWelcome:false};}
+/* what to call the author — pen name wins, then real name, then a warm default */
+function who(){const a=S.author||{};return (a.pen||a.name||"").trim();}
+function hi(){const n=who();return n?n:"";}
+function byline(){const a=S.author||{};if(a.pen&&a.name&&a.pen!==a.name)return `${a.pen} (${a.name})`;return a.pen||a.name||"";}
 let S=load();
 function load(){try{const r=localStorage.getItem(LSKEY);if(r){const p=JSON.parse(r);p.chapters=p.chapters||[];return p;}}catch(e){}return fresh();}
 function save(){try{localStorage.setItem(LSKEY,JSON.stringify(S));}catch(e){}}
@@ -204,7 +214,7 @@ function viewWelcome(){
   return `
   <div class="card">
     <div class="big"><div class="em">🌱</div></div>
-    <h2 style="text-align:center">Let's edit your first chapter — together</h2>
+    <h2 style="text-align:center" id="helloLine">Let's edit your first chapter — together</h2>
     <p class="sub" style="text-align:center">You've written a book. That's the hard part, and most people never do it. Now we'll make it stronger, one small step at a time.</p>
     <div class="teach"><div class="lab">What this is</div>Editing isn't one big scary thing you either know how to do or you don't. It's a handful of small passes, each looking at one thing. We'll walk through <b>seven</b> of them, in the order a real editor would, and I'll explain each one before you do it.</div>
     <div class="teach"><div class="lab">How it works</div>You'll work on <b>one chapter at a time</b>. Each step gives you a prompt to paste into your AI (Claude, ChatGPT — whichever you use). The AI comes back with what's working, plus <b>at most three things to try</b>. Never a wall of notes. Then you move to the next step.</div>
@@ -230,8 +240,8 @@ function viewBook(){
   }).join('');
   return `
   <div class="card">
-    <h2>Your book</h2>
-    <p class="sub">Add one chapter at a time. Finish it, then come back for the next — you'll see the whole book fill up with checkmarks.</p>
+    <h2>${hi()?esc(hi())+"'s book":'Your book'}</h2>
+    <p class="sub">${hi()?'Welcome back, '+esc(hi())+'. ':''}Add one chapter at a time. Finish it, then come back for the next — you'll see the whole book fill up with checkmarks.</p>
     <div class="row">
       <div><label class="f">Book title</label><input type="text" id="bkTitle" value="${esc(S.title)}" placeholder="Working title is fine" oninput="S.title=this.value;save()"></div>
       <div><label class="f">What do you write?</label><select id="bkLane" onchange="S.lane=this.value;save()">
@@ -239,9 +249,24 @@ function viewBook(){
         ${LANES.map(l=>`<option value="${l.v}" ${S.lane===l.v?'selected':''}>${l.t}</option>`).join('')}
       </select></div>
     </div>
+    <div class="row">
+      <div><label class="f">Your name</label><input type="text" id="auName" value="${esc((S.author||{}).name)}" placeholder="What should I call you?" oninput="S.author.name=this.value;save();refreshHello()"></div>
+      <div><label class="f">Pen name <span style="font-weight:400;text-transform:none;color:var(--muted)">(if you use one)</span></label><input type="text" id="auPen" value="${esc((S.author||{}).pen)}" placeholder="The name on the cover" oninput="S.author.pen=this.value;save();refreshHello()"></div>
+    </div>
     ${n?`<label class="f" style="margin-top:20px">Progress — ${done} of ${n} chapter${n===1?'':'s'} finished</label>
       <div class="bar"><i style="width:${pct}%"></i></div>`:''}
     <div style="margin-top:16px">${rows||'<p class="sub">No chapters yet — add your first one below. Start with chapter one.</p>'}</div>
+  </div>
+  <div class="card" style="border-top:4px solid var(--gold)">
+    <h2>🎙 Your voice</h2>
+    <p class="sub">The thing authors fear most about AI editing is losing the way <i>they</i> sound. So this tool protects your voice automatically — every prompt tells the AI to keep your word choices, your rhythm, your quirks, and never to "improve" you into someone else.</p>
+    <div class="note">✓ <b>Already on, nothing to do.</b> The rest of this card is optional — it just makes the protection sharper.</div>
+    <label class="f">How would you describe your writing? <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional — totally fine to leave blank if you're not sure yet)</span></label>
+    <textarea id="vcNotes" rows="3" placeholder="e.g. Warm and a bit sarcastic. Short punchy sentences when things get tense. I like dry humor in dialogue." oninput="S.voice.notes=this.value;save()">${esc((S.voice||{}).notes)}</textarea>
+    <div class="note warm" style="margin-top:14px"><b>Not sure how to describe it?</b> Most authors aren't — especially early on. Let the AI tell <i>you</i>. Add a chapter first, then click below and it'll read your writing and describe your voice back to you. Paste that answer into the box above and it protects you from then on.</div>
+    <div class="toolbar">
+      <button class="btn gold" onclick="copyVoicePrompt(this)" ${S.chapters.length?'':'disabled title="Add a chapter first"'}>🎙 Discover my voice</button>
+    </div>
   </div>
   <div class="card">
     <h2>Add a chapter</h2>
@@ -258,6 +283,12 @@ function viewBook(){
   </div>`:''}`;
 }
 
+/* live-update the greeting as they type their name, without re-rendering
+   the whole view (which would steal focus from the input) */
+function refreshHello(){
+  const h=document.getElementById('helloLine');
+  if(h)h.textContent = hi()? `Let's edit your first chapter, ${hi()}` : "Let's edit your first chapter — together";
+}
 function openChapter(id){S.cur=id;save();render();window.scrollTo(0,0);}
 function backToBook(){S.cur=null;save();render();window.scrollTo(0,0);}
 function addChapter(){
@@ -372,11 +403,52 @@ function quickWins(c){
     ${out.slice(0,3).map(w=>`<div class="win"><div>${w[0]}</div><div>${w[1]}</div></div>`).join('')}</div>`;
 }
 
-function buildPrompt(s,c){
-  return `You are a warm, experienced fiction editor mentoring an author through their FIRST real edit. They have never worked with a professional editor before. Your job is to TEACH, not to judge.
+/* Voice protection rides along on EVERY prompt, filled in or not. */
+function voiceBlock(){
+  const n=who(), notes=((S.voice||{}).notes||'').trim();
+  let b=`PROTECT THIS AUTHOR'S VOICE — this matters more than any fix you suggest.
+${n?n+' is':'This author is'} still discovering their style. Preserve their word choices, sentence rhythm, humor, and quirks. When you show a rewrite, write it in THEIR voice — never a more "literary", more formal, or more generic polished voice. Flattening their voice is a WORSE outcome than leaving a flaw on the page. If a fix would cost them their voice, say so and leave it alone.`;
+  if(notes)b+=`\n\nTHEIR VOICE, IN THEIR OWN WORDS:\n${notes}`;
+  return b;
+}
+function buildVoicePrompt(){
+  const c=S.chapters[0]||{title:'',text:''};
+  const n=who();
+  return `You are a perceptive fiction editor. ${n?n:'An author'} has never had anyone describe their writing voice back to them, and would love to hear it.
 
+Read the chapter below and describe THIS AUTHOR'S VOICE — warmly, specifically, and honestly. Do not edit it. Do not suggest improvements. This is a mirror, not a critique.
+
+Cover:
+1. The overall feel of their prose in 2–3 sentences (how does it sound in a reader's head?)
+2. Their sentence rhythm — long and flowing, short and punchy, a mix, and when they switch
+3. How they handle humor, emotion, and tension — with quoted examples of them doing it well
+4. Their signature moves — habits, images, or turns of phrase that show up and feel like THEM
+5. Three words you'd use to describe their voice
+
+Finish with one short paragraph, written in second person ("Your voice is…"), that they could paste into an editing tool to protect their voice. Keep that paragraph under 80 words.
+
+Be generous but truthful — point at what is genuinely distinctive, not flattery.
+
+----- CHAPTER BEGINS -----
+${c.text||'(paste a chapter first)'}
+----- CHAPTER ENDS -----`;
+}
+function copyVoicePrompt(btn){
+  if(!S.chapters.length){toast('Add a chapter first, then I can read your voice');return;}
+  navigator.clipboard.writeText(buildVoicePrompt()).then(()=>{
+    const o=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=o,1800);
+    toast('Paste it into your AI — then put its answer in the box above 🎙');
+  }).catch(()=>toast('Copy blocked — try again'));
+}
+function buildPrompt(s,c){
+  const n=who();
+  return `You are a warm, experienced fiction editor mentoring ${n?n:'an author'} through their FIRST real edit. They have never worked with a professional editor before. Your job is to TEACH, not to judge.
+
+AUTHOR: ${byline()||'(not given)'}
 BOOK: ${S.title||'(untitled)'}${S.lane?'\nGENRE: '+laneLabel():''}
 CHAPTER: ${c.title}
+
+${voiceBlock()}
 
 Look at ONE thing only in this pass: ${s.focus}
 
@@ -399,6 +471,7 @@ RULES:
 - Explain any craft term the first time you use it.
 - Be warm and direct. Never harsh, never sugary.
 - Do NOT rewrite the whole chapter. Show small before/after examples only.
+- Every rewrite you show must sound like THEM, not like you. Re-read the voice note above before you write a single "after".
 - Judge the writing, never the writer.
 
 ----- CHAPTER BEGINS -----
@@ -416,7 +489,7 @@ function copyStep(id,btn){
 function finishCard(c){
   return `<div class="card" style="border-top:4px solid var(--leaf)">
     <div class="big"><div class="em">🎉</div></div>
-    <h2 style="text-align:center">You just edited a chapter like a pro</h2>
+    <h2 style="text-align:center">${hi()?esc(hi())+', you':'You'} just edited a chapter like a pro</h2>
     <p class="sub" style="text-align:center">Seven passes. That's genuinely what a developmental editor walks through — you just did it yourself.</p>
     <div class="teach"><div class="lab">What you learned this round</div>
       Start big and work small · characters need to WANT something · show it, don't announce it · real people speak in subtext · pacing is where readers quietly leave · polish last, never first · and how to spot the phrases that sound machine-made.</div>
@@ -428,9 +501,11 @@ function finishCard(c){
 }
 function downloadChapter(){
   const c=ch(); if(!c)return;
-  const blob=new Blob([c.text],{type:'text/plain'});
+  const head=[byline()?byline():null,S.title||null,c.title].filter(Boolean).join(' — ');
+  const blob=new Blob([head+'\n\n'+c.text],{type:'text/plain'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=(c.title||'chapter').replace(/[^\w-]+/g,'_')+'_edited.txt';a.click();
+  const stub=[(who()||'').replace(/[^\w-]+/g,'_'),(c.title||'chapter').replace(/[^\w-]+/g,'_')].filter(Boolean).join('_');
+  a.download=stub+'_edited.txt';a.click();
   toast('Downloaded ✓');
 }
 
@@ -453,6 +528,13 @@ function startOver(){
   S=fresh();save();render();toast('Fresh start');
 }
 
+/* branding — one flag swaps the TIP build for the white-label sale build */
+(function brand(){
+  const f=document.getElementById('foot');
+  if(f)f.textContent = (CONFIG.tipMode?`${CONFIG.brand} · ${CONFIG.owner} — `:'')+'Everything stays in your browser. Nothing is uploaded, ever.';
+  const pill=document.querySelector('.topbar .pill');
+  if(pill&&!CONFIG.tipMode)pill.textContent='FOR YOUR FIRST EDIT';
+})();
 render();
 </script>
 </body>
