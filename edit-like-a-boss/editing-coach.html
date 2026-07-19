@@ -263,9 +263,21 @@ function viewBook(){
     <div class="note">✓ <b>Already on, nothing to do.</b> The rest of this card is optional — it just makes the protection sharper.</div>
     <label class="f">How would you describe your writing? <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional — totally fine to leave blank if you're not sure yet)</span></label>
     <textarea id="vcNotes" rows="3" placeholder="e.g. Warm and a bit sarcastic. Short punchy sentences when things get tense. I like dry humor in dialogue." oninput="S.voice.notes=this.value;save()">${esc((S.voice||{}).notes)}</textarea>
-    <div class="note warm" style="margin-top:14px"><b>Not sure how to describe it?</b> Most authors aren't — especially early on. Let the AI tell <i>you</i>. Add a chapter first, then click below and it'll read your writing and describe your voice back to you. Paste that answer into the box above and it protects you from then on.</div>
-    <div class="toolbar">
-      <button class="btn gold" onclick="copyVoicePrompt(this)" ${S.chapters.length?'':'disabled title="Add a chapter first"'}>🎙 Discover my voice</button>
+
+    <div class="note warm" style="margin-top:16px"><b>Not sure how to describe your voice?</b> Almost nobody is at first. Here are two ways to fill that box — pick whichever sounds easier today.</div>
+
+    <div class="teach"><div class="lab">The thorough way — Your Style Sheet</div>
+      A free companion tool that walks you through your voice in your own words: two paragraphs that sound most like you, the words you always use, the ones you never would. Fill it in once, hit <b>Copy my Style Sheet</b>, and paste it into the box above. You'll reuse it for the rest of your writing life.
+      <div class="toolbar" style="margin-top:10px">
+        <a class="btn gold" href="https://cph-jessica.github.io/tip-marketing-worksheets/tools/your-style-sheet.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">✍️ Open Your Style Sheet ↗</a>
+      </div>
+    </div>
+
+    <div class="teach"><div class="lab">The two-minute way — let the AI mirror it back</div>
+      Don't feel like filling anything in? Add a chapter, click below, and paste the prompt into your AI. It reads your writing and describes your voice <i>to you</i> — then hands you a short paragraph to drop in the box above. Most authors have never had anyone do this for them.
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn" onclick="copyVoicePrompt(this)" ${S.chapters.length?'':'disabled title="Add a chapter first"'}>🎙 Discover my voice</button>
+      </div>
     </div>
   </div>
   <div class="card">
