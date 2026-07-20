@@ -665,7 +665,7 @@ function warnGiantChapters(chaps){
   if(!giants.length)return;
   alert('Heads up: '+(giants.length===1?'"'+giants[0].title+'" loaded as one BIG chapter ('+wc(giants[0].text).toLocaleString()+' words).':giants.length+' chapters came in over 12,000 words each.')+'\n\nChapters this big overload AI edit replies — the AI hits its reply limit mid-chapter and the edit fails.\n\nIf your book has real chapters, make sure each one starts on its own line (like "Chapter 1"), hit Start over, and paste again. Scans and review prompts still work fine either way.');
 }
-function splitNow(){
+function splitNow(){try{RV_UNDO=null;RVMSG=null;}catch(e){}
   save();
   state.chapters=splitManuscript(state.manuscript);
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
@@ -674,7 +674,7 @@ function splitNow(){
   // jump to scan
   document.querySelector('.tab[data-v="scan"]').click();
 }
-function addChapters(){
+function addChapters(){try{RV_UNDO=null;RVMSG=null;}catch(e){}
   save();
   const added=splitManuscript(state.manuscript);
   if(!added.length){alert('Paste a chapter into the box first, then hit “Add next chapter.”');return;}
@@ -723,8 +723,8 @@ function renderChapList(){
     state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span>${wc(c.text)>6000?'<span class="cw" style="color:#B0483F" title="Long chapters can overrun your AI’s reply limit in EDIT mode — the prompt now delivers in parts, but splitting the chapter is safer.">⚠ long</span>':''}<button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}
       <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised text</button></div>
       <div id="repl-${i}" class="hidden">
-        <textarea id="replTa-${i}" rows="7" placeholder="Paste the REVISED chapter your AI returned — it replaces this chapter, and every scan and report updates instantly."></textarea>
-        <div class="toolbar" style="margin-top:6px"><button class="btn primary" onclick="applyRepl(${i})">Replace &amp; re-scan</button><button class="btn" onclick="toggleRepl(${i})">Cancel</button></div>
+        <textarea id="replTa-${i}" rows="7" placeholder="Paste the REVISED chapter your AI returned — or your own revision. You'll review every change and keep the ones you want; nothing is replaced until you hit Apply."></textarea>
+        <div class="toolbar" style="margin-top:6px"><button class="btn primary" onclick="applyRepl(${i})">Show me what changed →</button><button class="btn" onclick="toggleRepl(${i})">Cancel</button></div>
       </div></div></details>`).join('');
 }
 let lastRepl=null;
@@ -733,6 +733,325 @@ let lastRepl=null;
    Runs entirely in the browser; nothing uploads, no AI needed.
    ============================================================ */
 const PREV_TEXTS={};
+/* ============================================================
+   REVIEW BEFORE APPLYING — tracked changes you can accept or ignore
+   The old flow overwrote the chapter the moment you hit Apply; you could
+   only look at what happened afterwards. Now every paragraph the AI
+   touched is a decision: keep theirs or keep yours. Nothing changes
+   until you commit, and Undo is always there.
+   Paragraphs are kept RAW (indents survive) and matched on a trimmed key,
+   and each remembers the separator that followed it, so an untouched
+   paragraph comes back byte-for-byte with the author's own spacing.
+   ============================================================ */
+const RV_SPLIT=/\r?\n(?:[ \t]*\r?\n)*/;
+function rvSplit(t){
+  const s=String(t||''),list=[],seps=[],re=new RegExp(RV_SPLIT.source,'g');
+  let last=0,m;
+  while((m=re.exec(s))){
+    const seg=s.slice(last,m.index);
+    if(seg.trim()){list.push(seg);seps.push(m[0]);}
+    last=m.index+m[0].length;
+  }
+  const tail=s.slice(last);
+  if(tail.trim())list.push(tail);
+  return {list:list,seps:seps};
+}
+function rvDomSep(seps){
+  const n={};let best='\n\n',bc=0;
+  seps.forEach(s=>{n[s]=(n[s]||0)+1;if(n[s]>bc){bc=n[s];best=s;}});
+  return bc?best:'\n\n';
+}
+function rvLead(s){const m=String(s).match(/^[ \t]+/);return m?m[0]:'';}
+function rvToks(s){return String(s).match(/\s+|\S+/g)||[];}
+function rvLcs(a,b){
+  const n=a.length,m=b.length;
+  if(!n||!m||n*m>4000000)return null;
+  const dp=[];for(let i=0;i<=n;i++)dp.push(new Int32Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:(dp[i+1][j]>=dp[i][j+1]?dp[i+1][j]:dp[i][j+1]);
+  const out=[];let i=0,j=0;
+  while(i<n&&j<m){
+    if(a[i]===b[j]){out.push([i,j]);i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1])i++;else j++;
+  }
+  return out;
+}
+function rvRawOps(a,b){
+  const pairs=rvLcs(a.map(x=>x.trim()),b.map(x=>x.trim()));
+  if(!pairs)return [{type:'chg',o:a.join('\n\n'),n:b.join('\n\n'),oi:0}];
+  const ops=[];let i=0,j=0;
+  pairs.forEach(p=>{
+    while(i<p[0]){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+    while(j<p[1]){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
+    ops.push({type:'eq',o:a[i],n:b[j],oi:i});i++;j++;
+  });
+  while(i<a.length){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+  while(j<b.length){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
+  return ops;
+}
+/* a removed paragraph immediately followed by an added one is a REWRITE, not both */
+/* how much of a's prose reappears inside b (0..1, on lowercased words) */
+function rvSim(a,b){
+  const A=String(a).toLowerCase().match(/\S+/g)||[];
+  if(!A.length)return 0;
+  const B=new Set(String(b).toLowerCase().match(/\S+/g)||[]);
+  let n=0;A.forEach(w=>{if(B.has(w))n++;});
+  return n/A.length;
+}
+function rvMerge(ops){
+  const out=[];let GRP=0;
+  for(let k=0;k<ops.length;k++){
+    if(ops[k].type!=='del'){out.push(ops[k]);continue;}
+    let e=k;while(e<ops.length&&ops[e].type==='del')e++;
+    let f=e;while(f<ops.length&&ops[f].type==='ins')f++;
+    const dels=ops.slice(k,e),inss=ops.slice(e,f),p=Math.min(dels.length,inss.length);
+    /* A block that mixes rewrites with leftover cuts/adds is the AI merging or
+       splitting paragraphs — ONE edit, so it must be ONE accept/keep decision,
+       or a mixed choice would put the same prose in the chapter twice.
+       A COUNT-BALANCED block can hide the same thing (a merge paid for by an
+       added paragraph pairs old/new positionally and mis-aligns), so balanced
+       blocks are content-checked too: if any new paragraph absorbs an old one
+       that is not its positional partner — or vice versa — the pairing is
+       wrong and the whole block becomes one decision. */
+    let g=(p>0&&(dels.length>p||inss.length>p))?++GRP:null;
+    if(g==null&&p>1){
+      const absorb=(host,part)=>{
+        const H=String(host).trim(),P=String(part).trim();
+        /* the ENTIRE other paragraph reappearing verbatim inside this one is
+           decisive at any length; the fuzzy-overlap fallback stays gated */
+        if(P.length>=8&&H.length>P.length&&H.indexOf(P)>=0)return true;
+        return rvSim(P,H)>=0.85&&P.split(/\s+/).length>=4;
+      };
+      outer:
+      for(let q=0;q<p;q++)for(let j=0;j<p;j++){
+        if(j===q)continue;
+        if(absorb(inss[q].n,dels[j].o)||absorb(dels[q].o,inss[j].n)){g=++GRP;break outer;}
+      }
+    }
+    for(let q=0;q<p;q++)out.push({type:'chg',o:dels[q].o,n:inss[q].n,oi:dels[q].oi,g:g});
+    for(let q=p;q<dels.length;q++)out.push({type:'del',o:dels[q].o,n:null,oi:dels[q].oi,g:g});
+    for(let q=p;q<inss.length;q++)out.push({type:'ins',o:null,n:inss[q].n,oi:null,g:g});
+    k=f-1;
+  }
+  return out;
+}
+function rvWordHtml(o,n){
+  const a=rvToks(o),b=rvToks(n),pairs=rvLcs(a,b);
+  if(!pairs)return '<del class="tcd">'+esc(o)+'</del> <ins class="tci">'+esc(n)+'</ins>';
+  const ops=[];let i=0,j=0;
+  pairs.forEach(p=>{
+    while(i<p[0])ops.push({t:'del',s:a[i++]});
+    while(j<p[1])ops.push({t:'ins',s:b[j++]});
+    ops.push({t:'eq',s:a[i]});i++;j++;
+  });
+  while(i<a.length)ops.push({t:'del',s:a[i++]});
+  while(j<b.length)ops.push({t:'ins',s:b[j++]});
+  /* glue neighbouring edits so a reworked sentence reads as one clean swap
+     instead of a checkerboard of single words */
+  let h='',k=0;
+  while(k<ops.length){
+    if(ops[k].t==='eq'){h+=esc(ops[k].s);k++;continue;}
+    let d='',s='',mm=k;
+    while(mm<ops.length){
+      const op=ops[mm];
+      if(op.t==='del'){d+=op.s;mm++;continue;}
+      if(op.t==='ins'){s+=op.s;mm++;continue;}
+      if(!op.s.trim()){
+        let q=mm,ws='';
+        while(q<ops.length&&ops[q].t==='eq'&&!ops[q].s.trim()){ws+=ops[q].s;q++;}
+        if(q<ops.length&&ops[q].t!=='eq'){d+=ws;s+=ws;mm=q;continue;}
+      }
+      break;
+    }
+    if(!d.trim()&&!s.trim())h+=esc(d||s);
+    else{
+      if(d.trim())h+='<del class="tcd">'+esc(d)+'</del>';
+      if(s.trim())h+='<ins class="tci">'+esc(s)+'</ins>';
+    }
+    k=mm;
+  }
+  return h;
+}
+function rvDiff(oldT,newT){
+  const A=rvSplit(oldT),B=rvSplit(newT);
+  const ops=rvMerge(rvRawOps(A.list,B.list)),hunks=[];
+  let pn=0;
+  ops.forEach(op=>{
+    if(op.type==='eq'){pn++;op.h=-1;return;}
+    if(op.type!=='ins')pn++;
+    const html=op.type==='chg'?rvWordHtml(op.o,op.n):op.type==='del'?'<del class="tcd">'+esc(op.o)+'</del>':'<ins class="tci">'+esc(op.n)+'</ins>';
+    const last=hunks[hunks.length-1];
+    if(op.g!=null&&last&&last.g===op.g){
+      last.html+='\n'+html;
+      if(op.type!=='ins')last.end=pn;
+      last.label=last.end>last.start?('Paragraphs '+last.start+'–'+last.end+' — reworked together'):('Paragraph '+last.start+' — reworked');
+      op.h=hunks.length-1;return;
+    }
+    op.h=hunks.length;
+    if(op.type==='chg')hunks.push({label:'Paragraph '+pn+' — reworked',html:html,g:op.g,start:pn,end:pn});
+    else if(op.type==='del')hunks.push({label:'Paragraph '+pn+' — cut',html:html,g:op.g,start:pn,end:pn});
+    else hunks.push({label:pn?'New paragraph after '+pn:'New opening paragraph',html:html,g:op.g,start:pn,end:pn});
+  });
+  return {ops:ops,hunks:hunks,sep:rvDomSep(A.seps),oseps:A.seps};
+}
+function rvRebuild(ops,dec,sep,oseps){
+  const out=[];
+  const put=(txt,op)=>out.push({t:txt,
+    s:(op&&op.oi!=null&&oseps&&oseps[op.oi]!=null)?oseps[op.oi]:(sep||'\n\n')});
+  ops.forEach(op=>{
+    if(op.type==='eq')return put(op.o,op);
+    const yes=dec[op.h];
+    if(op.type==='chg'){
+      let txt=yes?op.n:op.o;
+      /* the AI almost always replies flush-left — give the indent back */
+      if(yes){const w=rvLead(op.o);if(w&&!rvLead(op.n))txt=w+op.n;}
+      return put(txt,op);
+    }
+    if(op.type==='del'){if(!yes)put(op.o,op);return;}
+    if(yes)put(op.n,null);
+  });
+  return out.map((x,i)=>i<out.length-1?x.t+x.s:x.t).join('');
+}
+
+/* ---------- the review session ---------- */
+let RV=null, RV_UNDO=null, RVMSG=null;
+function rvEnsureModal(){
+  if(document.getElementById('rvModal'))return;
+  const st=document.createElement('style');
+  st.textContent='#rvModal{position:fixed;inset:0;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;background:rgba(30,20,25,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}'+
+   '#rvModal .rvbox{background:var(--card,#fff);border-radius:14px;max-width:900px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.35)}'+
+   '#rvModal .rvhead{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line,#E8DFE0);flex-wrap:wrap}'+
+   '#rvModal .rvhead b{font-size:16px;color:var(--ink,#2D2D2D)}'+
+   '#rvModal .rvx{border:none;background:transparent;font-size:20px;cursor:pointer;color:var(--muted,#6B5C5E);padding:2px 8px;margin-left:auto}'+
+   '#rvModal .rvbody{overflow:auto;padding:16px 20px}'+
+   '#rvModal .rvfoot{padding:12px 20px;border-top:1px solid var(--line,#E8DFE0);display:flex;gap:10px;flex-wrap:wrap;align-items:center}'+
+   '#rvModal .rvlead{background:var(--cream,#F8F1E9);border:1px solid var(--line,#E8DFE0);border-radius:10px;padding:11px 14px;font-size:13.5px;margin-bottom:12px;color:var(--ink,#2D2D2D)}'+
+   '#rvModal .rvwarn{background:#FDF3E7;border-left:4px solid var(--warn,#C97A33);border-radius:8px;padding:11px 14px;font-size:13.5px;margin-bottom:12px}'+
+   '#rvModal .rvhunk{border:1.5px solid var(--line,#E8DFE0);border-radius:11px;margin-bottom:9px;overflow:hidden;background:var(--card,#fff)}'+
+   '#rvModal .rvhunk.no{opacity:.55}'+
+   '#rvModal .rvhh{display:flex;align-items:center;gap:8px;padding:8px 13px;background:var(--cream,#FBF7F0);border-bottom:1px solid var(--line,#E8DFE0);flex-wrap:wrap}'+
+   '#rvModal .rvhn{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted,#6B5C5E)}'+
+   '#rvModal .rvtg{border:1.5px solid var(--line,#E8DFE0);background:#fff;color:var(--muted,#6B5C5E);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}'+
+   '#rvModal .rvtg.on{background:var(--ok,#5C8A63);border-color:var(--ok,#5C8A63);color:#fff}'+
+   '#rvModal .rvhunk.no .rvtg.on{background:var(--muted,#6b6b6b);border-color:var(--muted,#6b6b6b)}'+
+   '#rvModal .rvhb{padding:12px 15px;font-size:14.5px;line-height:1.8;white-space:pre-wrap;color:var(--ink,#2D2D2D)}'+
+   '#rvModal .tcd{background:#FBE7E5;color:#9B2C22;text-decoration:line-through;border-radius:3px;padding:0 2px}'+
+   '#rvModal .tci{background:#E2F2E6;color:#1F6B33;text-decoration:none;border-radius:3px;padding:0 2px}';
+  document.head.appendChild(st);
+  const d=document.createElement('div');d.id='rvModal';d.style.display='none';
+  d.innerHTML='<div class="rvbox"><div class="rvhead"><b id="rvTitle"></b><button class="rvx" onclick="rvCancel()" title="Close">✕</button></div><div class="rvbody" id="rvBody"></div><div class="rvfoot" id="rvFoot"></div></div>';
+  document.body.appendChild(d);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&RV)rvCancel();});
+}
+function rvOpen(i,text,passId){
+  const chp=state.chapters[i];
+  if(!chp)return;
+  const cur=chp.text||'';
+  if(text.trim()===cur.trim()){alert('That is identical to the version already loaded — nothing to review.');return;}
+  const d=rvDiff(cur,text);
+  if(!d.hunks.length){alert('Nothing actually changed in that text.');return;}
+  /* A truncated paste (AI ran out of room, clipboard caught half) reads as
+     "delete most of the chapter". Never pre-tick those. */
+  const short=wc(text)<wc(cur)*0.75;
+  RV={idx:i,base:cur,title:chp.title,rev:text,passId:passId||null,dec:d.hunks.map(()=>!short),short:short};
+  rvEnsureModal();rvRender();
+  document.getElementById('rvModal').style.display='flex';
+}
+/* The chapter list can change under an open review (remove, re-split, undo).
+   Resolve by CONTENT, never by bare index — writing into the wrong chapter is
+   the one failure this modal must never have. */
+function rvNearest(txt,near){
+  let best=-1,bd=Infinity;
+  state.chapters.forEach((x,k)=>{
+    if(x&&x.text===txt){const d=Math.abs(k-near);if(d<bd){bd=d;best=k;}}
+  });
+  return best;
+}
+function rvChap(){
+  if(!RV)return null;
+  let c=state.chapters[RV.idx];
+  if(c&&c.text===RV.base)return c;
+  /* identical twin chapters exist in real drafts — take the nearest match */
+  const k=rvNearest(RV.base,RV.idx);
+  if(k>=0){RV.idx=k;return state.chapters[k];}
+  return null;
+}
+function rvRender(){
+  if(!RV)return;
+  const chp=rvChap();
+  if(!chp){rvCancel();alert('The chapter this review belonged to was removed or changed, so the review was closed. Nothing has been changed.');return;}
+  const d=rvDiff(chp.text||'',RV.rev);
+  if(d.hunks.length!==RV.dec.length)RV.dec=d.hunks.map(()=>!RV.short);
+  RV._d=d;
+  const acc=RV.dec.filter(Boolean).length;
+  document.getElementById('rvTitle').textContent='Review changes — '+chp.title;
+  document.getElementById('rvBody').innerHTML=
+    (RV.short?'<div class="rvwarn"><b>Heads up — what you pasted is noticeably shorter than the loaded chapter.</b> That usually means the AI ran out of room mid-answer, or only part of it reached your clipboard. Nothing is ticked below. If it was cut off, ask your AI to continue and paste the whole thing.</div>':'')+
+    '<div class="rvlead"><b>'+d.hunks.length+' change'+(d.hunks.length===1?'':'s')+'.</b> <del class="tcd">Red</del> is what your AI wants taken out, <ins class="tci">green</ins> is what it puts in. Keep or drop each one — your chapter does not change until you hit Apply.</div>'+
+    d.hunks.map((h,k)=>'<div class="rvhunk '+(RV.dec[k]?'yes':'no')+'">'+
+      '<div class="rvhh"><span class="rvhn">'+esc(h.label)+'</span><span style="flex:1"></span>'+
+      '<button class="rvtg '+(RV.dec[k]?'on':'')+'" onclick="rvDecide('+k+',true)">✓ Accept</button>'+
+      '<button class="rvtg '+(RV.dec[k]?'':'on')+'" onclick="rvDecide('+k+',false)">✕ Keep mine</button></div>'+
+      '<div class="rvhb">'+h.html+'</div></div>').join('');
+  document.getElementById('rvFoot').innerHTML=
+    '<button class="btn" onclick="rvAll(true)">Accept all</button>'+
+    '<button class="btn" onclick="rvAll(false)">Keep all mine</button>'+
+    '<span style="flex:1"></span>'+
+    '<button class="btn" onclick="rvCancel()">Cancel — change nothing</button>'+
+    '<button class="btn primary" onclick="rvApply()">Apply — accept '+acc+' of '+d.hunks.length+'</button>';
+}
+function rvDecide(k,yes){if(!RV)return;RV.dec[k]=!!yes;rvRender();}
+function rvAll(yes){if(!RV)return;RV.dec=RV.dec.map(()=>!!yes);rvRender();}
+function rvCancel(){RV=null;const m=document.getElementById('rvModal');if(m)m.style.display='none';}
+function rvApply(){
+  if(!RV)return;
+  const chp=rvChap();
+  if(!chp){rvCancel();alert('The chapter this review belonged to was removed or changed, so nothing was written.');return;}
+  const i=RV.idx;
+  const d=RV._d||rvDiff(chp.text||'',RV.rev);
+  const acc=RV.dec.filter(Boolean).length, tot=RV.dec.length;
+  const passId=RV.passId;
+  if(!acc){
+    /* they kept everything — writing identical text back would only wipe the
+       tracked-changes baseline and claim a replacement that never happened */
+    RV=null;const m0=document.getElementById('rvModal');if(m0)m0.style.display='none';
+    alert('You kept your own version on every change — '+chp.title+' was left exactly as it was.');
+    return;
+  }
+  const merged=rvRebuild(d.ops,RV.dec,d.sep,d.oseps);
+  RV=null;
+  const m=document.getElementById('rvModal');if(m)m.style.display='none';
+  RV_UNDO={idx:i,prev:chp.text,applied:merged,title:chp.title};
+  const r=replaceChapterText(i,merged);
+  /* the message must always describe THIS apply — set it (or clear it)
+     BEFORE anything re-renders, or a stale one gets resurrected and its
+     Undo button reverts a different chapter than it names */
+  RVMSG=passId?{passId:passId,html:'✅ '+esc(state.chapters[i].title)+' updated — kept '+acc+' of '+tot+' change'+(tot===1?'':'s')+', flags '+r.before+' → '+r.after+'. '+
+      '<button class="btn" style="margin-left:8px" onclick="showTrackedChanges('+i+')">👀 View tracked changes</button>'+
+      '<button class="btn" style="margin-left:6px" onclick="rvUndo()">↩ Undo</button>'}:null;
+  renderPassScope();renderPasses();
+  if(passId){
+    const card=document.getElementById('pc-'+passId);if(card)card.classList.add('open');
+    const box=document.getElementById('pbd-'+passId);if(box)box.open=true;
+    const m2=document.getElementById('pbmsg-'+passId);
+    if(m2)m2.innerHTML=RVMSG.html;
+  }else{
+    document.querySelector('.tab[data-v="scan"]').click();
+  }
+}
+function rvUndo(){
+  if(!RV_UNDO){alert('Nothing to undo.');return;}
+  let i=RV_UNDO.idx, c=state.chapters[i];
+  if(!c||c.text!==RV_UNDO.applied){
+    i=rvNearest(RV_UNDO.applied,RV_UNDO.idx);
+    if(i<0){alert('That chapter has changed again since the apply, so this undo is out of date — nothing was touched.');RV_UNDO=null;RVMSG=null;return;}
+  }
+  const prev=RV_UNDO.prev, title=state.chapters[i].title;
+  RV_UNDO=null;RVMSG=null;
+  replaceChapterText(i,prev);
+  renderPassScope();renderPasses();
+  alert('Put back the way it was — '+title+' is restored.');
+}
 function tcLcsOps(a,b){
   const N=a.length,M=b.length;
   if(N*M>1000000)return null;
@@ -846,28 +1165,19 @@ function applyRepl(i){
   const ta=document.getElementById('replTa-'+i);
   const t=(ta&&ta.value||'').trim();
   if(!t){alert('Paste the revised chapter text first.');return;}
-  replaceChapterText(i,stripLeadHeading(t));
-  renderPassScope();
-  document.querySelector('.tab[data-v="scan"]').click();
+  rvOpen(i,stripLeadHeading(t),null);
 }
 function applyPassRepl(passId){
   const sel=document.getElementById('passScope');
   const v=sel?sel.value:'ms';
-  if(v==='ms'){alert('Pick a specific chapter under “Apply to” first.');return;}
+  if(v==='ms'){alert('Pick a specific chapter under \u201cApply to\u201d first.');return;}
   const ta=document.getElementById('pb-'+passId);
   const t=(ta&&ta.value||'').trim();
   if(!t){alert('Paste the revised chapter text first.');return;}
-  const i=+v;
-  const r=replaceChapterText(i,stripLeadHeading(t));
-  renderPasses();
-  const card=document.getElementById('pc-'+passId);if(card)card.classList.add('open');
-  const det=document.getElementById('pbd-'+passId);if(det)det.open=true;
-  const box=document.getElementById('pbd-'+passId);if(box)box.open=true;
-  const msg=document.getElementById('pbmsg-'+passId);
-  if(msg)msg.innerHTML='✅ '+esc(state.chapters[i].title)+' updated — flags '+r.before+' → '+r.after+'. Every pass now uses this revision. <button class="btn" style="margin-left:8px" onclick="showTrackedChanges('+i+')">👀 View tracked changes</button>';
+  rvOpen(+v,stripLeadHeading(t),passId);
 }
 function renameChap(i,v){state.chapters[i].title=v;save();}
-function removeChap(i){state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';}
+function removeChap(i){try{RV_UNDO=null;RVMSG=null;}catch(e){}state.chapters.splice(i,1);save();renderSetupStats();renderChapList();refreshScanBadge();renderPassScope();const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';}
 
 /* ============================================================
    AUTO-SCAN (offline deterministic checks)
@@ -967,8 +1277,10 @@ function renderScan(){
   let replBanner='';
   if(lastRepl){
     const drop=lastRepl.after<lastRepl.before;
-    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — automated flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan, report, and prompt now uses the revised text — copy any pass again for an updated AI read. (Notes you pasted earlier still describe the old version.)</div><div style="margin-top:8px"><button class="btn" onclick="showTrackedChanges(${lastRepl.idx})">👀 View tracked changes</button></div></div></div>`;
+    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">${drop?'🎉':'✅'}</div><div><div class="ft">${esc(lastRepl.title)} replaced — automated flags: ${lastRepl.before} → ${lastRepl.after}</div><div class="fd">Every scan, report, and prompt now uses the revised text — copy any pass again for an updated AI read. (Notes you pasted earlier still describe the old version.)</div><div style="margin-top:8px"><button class="btn" onclick="showTrackedChanges(${lastRepl.idx})">👀 View tracked changes</button>${RV_UNDO?' <button class="btn" onclick="rvUndo()">↩ Undo — put it back</button>':''}</div></div></div>`;
     lastRepl=null;
+  }else if(RV_UNDO){
+    replBanner=`<div class="find good" style="margin-bottom:10px"><div class="ic">↩</div><div><div class="ft">Changed your mind about the last apply?</div><div class="fd">${esc(RV_UNDO.title||'The chapter')} can still be put back exactly as it was.</div><div style="margin-top:8px"><button class="btn" onclick="rvUndo()">↩ Undo — put it back</button></div></div></div>`;
   }
   sum.innerHTML=replBanner+langWarn+`<span class="stat"><span class="n" style="color:var(--bad)">${totC}</span><span class="l">critical</span></span>
     <span class="stat"><span class="n" style="color:var(--warn)">${totR}</span><span class="l">recommended</span></span>
@@ -1056,6 +1368,7 @@ function buildPrompt(pass,mode){
     p+=`- Never invent new plot events, facts, objects, or dialogue that changes what happens. If a real fix would need new story content, do NOT write it — list it under NEEDS AUTHOR instead.\n`;
     p+=`- Stay inside the pen-name voice the whole way. Enforce the banned list as you edit: no AI-isms, no dramatic triplets ("X. Y. Z." parallel fragments), no filter words (felt/noticed/realized/seemed/watched/saw/heard/wondered/thought).\n`;
     p+=`- Do not smooth the voice into generic prose — an edit that loses the voice is worse than the flaw it fixed.\n`;
+    p+=`- Leave every sentence this pass did NOT call for EXACTLY as written, character for character. The author reviews your changes one by one in a tracked-changes view, so silent rewording of untouched lines buries the edits that matter.\n`;
     p+=`\nREPLY-SIZE RULES (never skip these — oversized replies get cut off mid-sentence and waste the author's usage):\n`;
     p+=`- Deliver AT MOST ~3,500 words of revised text per reply. If the text is longer, deliver it in parts: send PART 1 only, end the reply with "[PART 1 of N — say NEXT for the next part]", and wait to be asked. The author will combine the parts before pasting them back.\n`;
     p+=`- Never reprint the original text in your reply.\n`;
@@ -1114,13 +1427,18 @@ function renderPasses(){
           <span class="copied hidden">copied ✓</span>
         </div>
         <div class="promptbox" id="prompt-${pass.id}">${esc(prompt)}</div>
-        ${(canEdit&&!sc.isMs)?`<details class="pasteback" id="pbd-${pass.id}"><summary>📥 Done with this pass? Paste the revised chapter here — it updates ${esc(sc.label)} so your NEXT pass runs on the new version</summary><div class="pbody2">
-          <textarea id="pb-${pass.id}" rows="6" placeholder="Paste the full REVISED chapter your AI returned. It replaces the loaded chapter in place — no tab-hopping — and every later pass prompt is built from this new version."></textarea>
-          <div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick="applyPassRepl('${pass.id}')">Update chapter &amp; re-scan</button><span class="pbmsg" id="pbmsg-${pass.id}"></span></div>
+        ${(canEdit&&!sc.isMs)?`<details class="pasteback" id="pbd-${pass.id}"><summary>📥 Done with this pass? Paste the revised chapter here — you’ll review every change and keep the ones you want, then ${esc(sc.label)} updates so your NEXT pass runs on it</summary><div class="pbody2">
+          <textarea id="pb-${pass.id}" rows="6" placeholder="Paste the full REVISED chapter your AI returned — or your own revision if you made the edits yourself. Nothing is replaced until you review the changes and hit Apply."></textarea>
+          <div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick="applyPassRepl('${pass.id}')">Show me what changed \u2192</button><span class="pbmsg" id="pbmsg-${pass.id}"></span></div>
         </div></details>`:''}
       </div>
     </div>`;
   }).join('');
+  /* a tab-switch rebuilds this list — put the last apply/undo message back */
+  if(RVMSG&&RV_UNDO){
+    const mm=document.getElementById('pbmsg-'+RVMSG.passId);
+    if(mm)mm.innerHTML=RVMSG.html;
+  }
 }
 function copyPrompt(id,btn,mode){
   const pass=PASSES.find(p=>p.id===id);
@@ -1952,10 +2270,18 @@ function copyMasterRevision(btn){
    IMPORT / EXPORT / DEMO
    ============================================================ */
 function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'editing-cockpit').replace(/[^\w-]+/g,'_')+'.json';a.click();}
-function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){state=Object.assign({chapters:[],beats:[],passNotes:{},analysisNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
+function importState(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(o&&typeof o==='object'){rvForget();state=Object.assign({chapters:[],beats:[],passNotes:{},analysisNotes:{}},o);load();renderAll();}}catch(err){alert('Could not read that file.');}};r.readAsText(f);ev.target.value='';}
+/* a different project is coming in — the old one's undo, banners, and
+   tracked-changes baselines would describe chapters that no longer exist */
+function rvForget(){
+  try{RV_UNDO=null;RVMSG=null;}catch(e){}
+  try{lastRepl=null;}catch(e){}
+  try{for(const k in PREV_TEXTS)delete PREV_TEXTS[k];}catch(e){}
+}
 function clearAll(){
   if(!confirm('Clear EVERYTHING — manuscript, chapters, pasted notes, and beats? This can\'t be undone. (Hit "Save file" first if you want a backup.)'))return;
   try{localStorage.removeItem(STORE);}catch(e){}
+  rvForget();
   state={title:'',genre:'',penName:'smalltown',heat:'4',customVoice:'',manuscript:'',chapters:[],beats:[],passNotes:{},analysisNotes:{}};
   load();renderAll();
   renderScan();renderPasses();renderAnalyses();renderReport();
