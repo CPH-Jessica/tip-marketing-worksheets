@@ -367,8 +367,9 @@ function refreshHello(){
   const h=document.getElementById('helloLine');
   if(h)h.textContent = hi()? `Let's edit your first chapter, ${hi()}` : "Let's edit your first chapter — together";
 }
-function openChapter(id){S.cur=id;save();render();window.scrollTo(0,0);}
-function backToBook(){S.cur=null;save();render();window.scrollTo(0,0);}
+/* harvest first — leaving a chapter must never eat what they just pasted */
+function openChapter(id){grabOpen();S.cur=id;save();render();window.scrollTo(0,0);}
+function backToBook(){grabOpen();S.cur=null;save();render();window.scrollTo(0,0);}
 function addChapter(){
   const t=document.getElementById('newTitle').value.trim()||('Chapter '+(S.chapters.length+1));
   const x=document.getElementById('newText').value.trim();
@@ -436,8 +437,9 @@ function toggleStep(id,unlocked){
   /* don't lose anything they've typed in whichever step is currently open */
   grabOpen();
   c.steps[id]=c.steps[id]||{};
-  /* judge open-ness by what's on screen, so the current step can be collapsed */
-  const wasOpen=!!document.getElementById('wy-'+id);
+  /* judge open-ness by the body itself — a step showing a tracked-changes
+     panel has no wy- box, and used to be impossible to collapse */
+  const wasOpen=!!document.querySelector('#st-'+id+' .body');
   /* shut everything else explicitly, or the "current step" default keeps it
      open alongside the one they just clicked */
   STEPS.forEach(s=>{if(c.steps[s.id]){c.steps[s.id]._open=false;c.steps[s.id]._shut=true;}});
@@ -490,7 +492,7 @@ function stepBack(s,st){
     </div>
   </div>
   ${st.applied?`<div class="note">✓ You reviewed ${st.applied.total} change${st.applied.total===1?'':'s'} and kept ${st.applied.accepted}. Every step from here uses your new version.
-    ${st.prevText!=null?`<button class="btn small" style="margin-left:8px" onclick="undoApply('${s.id}')">↩ Undo — put my chapter back</button>`:''}</div>`:''}
+    ${(ch()||{}).undo&&ch().undo.stepId===s.id?`<button class="btn small" style="margin-left:8px" onclick="undoApply('${s.id}')">↩ Undo — put my chapter back</button>`:''}</div>`:''}
   <div class="movebox">
     <div class="lab2">Before you move on</div>
     <p class="pd">${s.moveon||''}</p>
@@ -592,16 +594,30 @@ function applyTracked(id){
   const c=ch(),st=c.steps[id];
   if(!st||!st.pending)return;
   const d=diffChapters(c.text,st.pending.rev), dec=st.pending.dec;
-  st.prevText=c.text;                      /* the undo rope — never overwrite without one */
-  c.text=rebuildText(d.ops,dec,d.sep);
+  /* ONE undo slot for the whole chapter. Per-step snapshots overlapped, so
+     undoing an early step could silently throw away later steps' work. */
+  c.undo={text:c.text,stepId:id};
+  c.text=rebuildText(d.ops,dec,d.sep,d.oseps);
   st.applied={accepted:dec.filter(Boolean).length,total:dec.length};
-  st.pending=null; st.draftRev=''; save(); render();
+  st.pending=null; st.draftRev='';
+  clearStale(c,id);
+  save(); render();
   toast('Applied ✓ every step from here uses your new version');
 }
+/* the chapter text just moved, so any other step's open review and any older
+   "applied" banner are measured against text that no longer exists */
+function clearStale(c,keepId){
+  STEPS.forEach(x=>{
+    const s=c.steps[x.id]; if(!s)return;
+    if(x.id!==keepId){s.pending=null;s.applied=null;}
+  });
+}
 function undoApply(id){
-  const c=ch(),st=c.steps[id];
-  if(!st||st.prevText==null)return;
-  c.text=st.prevText; st.prevText=null; st.applied=null;
+  const c=ch();
+  if(!c.undo||c.undo.stepId!==id)return;
+  c.text=c.undo.text; c.undo=null;
+  const st=c.steps[id]; if(st)st.applied=null;
+  clearStale(c,null);
   save(); render();
   toast('Put back the way it was ✓');
 }
@@ -610,14 +626,34 @@ function undoApply(id){
 /* Plenty of authors paste with single line breaks instead of blank lines.
    Detect which they use so paragraphs come out right either way — and so we
    can hand their own formatting back when we rebuild the chapter. */
-function sepOf(t){return /\n\s*\n/.test(String(t||''))?'\n\n':'\n';}
-/* Paragraphs are kept RAW — first-line indents from Word/Scrivener survive.
-   Matching happens on a trimmed key, so a paragraph nobody touched comes
-   back byte-for-byte even if the AI stripped its indent. */
-function paras(t){
-  const s=String(t||'');
-  return (sepOf(s)==='\n\n'?s.split(/\n\s*\n/):s.split(/\n+/)).filter(x=>x.trim());
+/* ANY newline run ends a paragraph — we never guess a document-wide style.
+   Guessing broke on a very ordinary shape: a chapter heading followed by
+   single-newline paragraphs made the whole body collapse into one block,
+   and a partial accept could then delete most of the chapter.
+   Paragraphs stay RAW so Word/Scrivener indents survive, and each remembers
+   the exact separator that followed it, so rebuilding hands the author back
+   their own spacing — blank lines, single breaks, CRLF and all. */
+const PARA_SPLIT=/\r?\n(?:[ \t]*\r?\n)*/;
+function splitParas(t){
+  const s=String(t||''),list=[],seps=[],re=new RegExp(PARA_SPLIT.source,'g');
+  let last=0,m;
+  while((m=re.exec(s))){
+    const seg=s.slice(last,m.index);
+    if(seg.trim()){list.push(seg);seps.push(m[0]);}
+    last=m.index+m[0].length;
+  }
+  const tail=s.slice(last);
+  if(tail.trim())list.push(tail);
+  return {list:list,seps:seps};
 }
+function paras(t){return splitParas(t).list;}
+/* spacing for paragraphs we have no original of (newly inserted ones) */
+function domSep(seps){
+  const n={};let best='\n\n',bc=0;
+  seps.forEach(s=>{n[s]=(n[s]||0)+1;if(n[s]>bc){bc=n[s];best=s;}});
+  return bc?best:'\n\n';
+}
+function leadWs(s){const m=String(s).match(/^[ \t]+/);return m?m[0]:'';}
 function toks(s){return String(s).match(/\s+|\S+/g)||[];}
 /* longest common subsequence → matched index pairs. Bails on anything huge. */
 function lcsPairs(a,b){
@@ -635,15 +671,15 @@ function lcsPairs(a,b){
 }
 function rawOps(a,b){
   const pairs=lcsPairs(a.map(x=>x.trim()),b.map(x=>x.trim()));
-  if(!pairs)return [{type:'chg',o:a.join('\n\n'),n:b.join('\n\n')}];
+  if(!pairs)return [{type:'chg',o:a.join('\n\n'),n:b.join('\n\n'),oi:0}];
   const ops=[];let i=0,j=0;
   pairs.forEach(p=>{
-    while(i<p[0])ops.push({type:'del',o:a[i++],n:null});
-    while(j<p[1])ops.push({type:'ins',o:null,n:b[j++]});
-    ops.push({type:'eq',o:a[i],n:b[j]});i++;j++;
+    while(i<p[0]){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+    while(j<p[1]){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
+    ops.push({type:'eq',o:a[i],n:b[j],oi:i});i++;j++;
   });
-  while(i<a.length)ops.push({type:'del',o:a[i++],n:null});
-  while(j<b.length)ops.push({type:'ins',o:null,n:b[j++]});
+  while(i<a.length){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+  while(j<b.length){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
   return ops;
 }
 /* a removed paragraph immediately followed by an added one is a REWRITE, not both */
@@ -654,7 +690,7 @@ function mergeOps(ops){
     let e=k;while(e<ops.length&&ops[e].type==='del')e++;
     let f=e;while(f<ops.length&&ops[f].type==='ins')f++;
     const dels=ops.slice(k,e),inss=ops.slice(e,f),p=Math.min(dels.length,inss.length);
-    for(let q=0;q<p;q++)out.push({type:'chg',o:dels[q].o,n:inss[q].n});
+    for(let q=0;q<p;q++)out.push({type:'chg',o:dels[q].o,n:inss[q].n,oi:dels[q].oi});
     for(let q=p;q<dels.length;q++)out.push(dels[q]);
     for(let q=p;q<inss.length;q++)out.push(inss[q]);
     k=f-1;
@@ -701,7 +737,8 @@ function wordDiffHtml(o,n){
   return h;
 }
 function diffChapters(oldT,newT){
-  const ops=mergeOps(rawOps(paras(oldT),paras(newT))),hunks=[],sep=sepOf(oldT);
+  const A=splitParas(oldT),B=splitParas(newT);
+  const ops=mergeOps(rawOps(A.list,B.list)),hunks=[],sep=domSep(A.seps);
   let pn=0;
   ops.forEach(op=>{
     if(op.type==='eq'){pn++;op.h=-1;return;}
@@ -711,19 +748,27 @@ function diffChapters(oldT,newT){
     else if(op.type==='del')hunks.push({label:'Paragraph '+pn+' — cut',html:'<del>'+esc(op.o)+'</del>'});
     else hunks.push({label:pn?'New paragraph after '+pn:'New opening paragraph',html:'<ins>'+esc(op.n)+'</ins>'});
   });
-  return {ops:ops,hunks:hunks,sep:sep};
+  return {ops:ops,hunks:hunks,sep:sep,oseps:A.seps};
 }
-/* rejoin with the author's own paragraph spacing, not ours */
-function rebuildText(ops,dec,sep){
+/* Rejoin with the author's own paragraph spacing, not ours: every surviving
+   paragraph brings back the separator it originally had. */
+function rebuildText(ops,dec,sep,oseps){
   const out=[];
+  const put=(txt,op)=>out.push({t:txt,
+    s:(op&&op.oi!=null&&oseps&&oseps[op.oi]!=null)?oseps[op.oi]:(sep||'\n\n')});
   ops.forEach(op=>{
-    if(op.type==='eq'){out.push(op.o);return;}
+    if(op.type==='eq')return put(op.o,op);
     const yes=dec[op.h];
-    if(op.type==='chg')out.push(yes?op.n:op.o);
-    else if(op.type==='del'){if(!yes)out.push(op.o);}
-    else if(yes)out.push(op.n);
+    if(op.type==='chg'){
+      let txt=yes?op.n:op.o;
+      /* the AI almost always replies flush-left — give the indent back */
+      if(yes){const w=leadWs(op.o);if(w&&!leadWs(op.n))txt=w+op.n;}
+      return put(txt,op);
+    }
+    if(op.type==='del'){if(!yes)put(op.o,op);return;}
+    if(yes)put(op.n,null);
   });
-  return out.join(sep||'\n\n');
+  return out.map((x,i)=>i<out.length-1?x.t+x.s:x.t).join('');
 }
 
 /* light, encouraging line-level scan — only ever shows the top 3 */
@@ -981,9 +1026,14 @@ function loadFile(ev){
     let o;
     try{o=JSON.parse(e.target.result);}catch(err){toast('Could not read that file');return;}
     if(!o||typeof o!=='object'||!Array.isArray(o.chapters)){toast("That doesn't look like an Editing Coach backup");return;}
-    if(S.chapters.length&&!confirm('Replace your current '+S.chapters.length+' chapter'+(S.chapters.length===1?'':'s')+' with this file? Your current work here will be gone.'))return;
+    /* loading replaces ALL of S — name, pen name, voice notes and title too,
+       so ask whenever any of that exists, not just when chapters do */
+    const hasWork=S.chapters.length||(S.title||'').trim()||who()||((S.voice||{}).notes||'').trim();
+    if(hasWork&&!confirm('Replace everything currently in the Coach with this file? Your current work here will be gone.'))return;
     S=Object.assign(fresh(),o);
     if(!S.chapters.some(c=>c.id===S.cur))S.cur=null;
+    /* the linked .md belonged to the project we just replaced */
+    docHandle=null; docChapter=null;
     save();render();toast('Loaded ✓');
   };
   r.readAsText(f); ev.target.value='';
