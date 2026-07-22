@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The Editing Coach — The Invisible Pen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --leaf:#4E7C59; --leaf-dark:#3B5E43; --leaf-soft:#EAF2EC;
+  --cream:#FBF7F0; --gold:#C9A66B; --gold-soft:#F5EDDC; --blush:#D8A08F;
+  --ink:#2F2A26; --muted:#6E665E; --line:#E7DFD3; --card:#fff;
+  --ok:#4E7C59; --warn:#B7791F;
+  --shadow:0 10px 15px -3px rgba(78,124,89,.08),0 4px 6px -4px rgba(78,124,89,.08);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--ink);line-height:1.6;min-height:100vh;padding-bottom:80px;
+  background:linear-gradient(160deg,#FBF7F0 0%,#F4EFE6 100%)}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;letter-spacing:-.02em}
+a{color:var(--leaf)}
+.topbar{background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:40}
+.topbar .logo{font-family:'Playfair Display',Georgia,serif;font-size:20px}
+.topbar .logo b{color:var(--leaf)}
+.pill{background:var(--leaf-soft);color:var(--leaf-dark);font-size:10px;font-weight:700;letter-spacing:1.1px;padding:3px 11px;border-radius:999px;vertical-align:middle;margin-left:6px}
+.topbar .spacer{flex:1}
+.topbar button,.topbar a.tbtn{background:#fff;border:1px solid var(--line);color:var(--ink);padding:8px 15px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;text-decoration:none;transition:.15s}
+.topbar button:hover{background:var(--cream)}
+.wrap{max-width:820px;margin:0 auto;padding:26px 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px 26px;margin-bottom:18px}
+.card h2{color:var(--leaf-dark);font-size:23px;margin-bottom:6px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+label.f{display:block;font-weight:700;font-size:12px;color:var(--leaf-dark);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 5px}
+input[type=text],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:15px;font-family:inherit;background:#FFFDF9;color:var(--ink)}
+textarea{resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--leaf)}
+.btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:11px 20px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:.18s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.btn.primary:hover{background:var(--leaf-dark)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#3a2a08}
+.btn.small{padding:7px 14px;font-size:13px}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted);text-decoration:underline;padding:6px 4px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.row>div{flex:1;min-width:200px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+/* progress */
+.bar{height:10px;background:var(--leaf-soft);border-radius:999px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--leaf),#6FA37B);transition:width .4s}
+.bookrow{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:13px;margin-bottom:9px;background:#fff;transition:.18s}
+.bookrow:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.bookrow .nm{flex:1;font-weight:600}
+.chip{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:999px;white-space:nowrap}
+.chip.todo{background:#F0EBE3;color:var(--muted)}
+.chip.going{background:var(--gold-soft);color:#7a5c1e}
+.chip.done{background:var(--leaf-soft);color:var(--leaf-dark)}
+/* steps */
+.step{border:1.5px solid var(--line);border-radius:14px;margin-bottom:12px;background:#fff;overflow:hidden}
+.step.locked{opacity:.55}
+.step.active{border-color:var(--leaf);box-shadow:var(--shadow)}
+.step.done{border-color:#CDE1D3;background:#FCFEFC}
+.step>.head{display:flex;align-items:center;gap:13px;padding:15px 18px;cursor:pointer}
+.step .num{width:32px;height:32px;border-radius:50%;background:var(--leaf-soft);color:var(--leaf-dark);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.step.active .num{background:var(--leaf);color:#fff}
+.step.done .num{background:var(--leaf);color:#fff}
+.step .ttl{flex:1;font-weight:700;font-size:16px;color:var(--leaf-dark);font-family:'Playfair Display',Georgia,serif}
+.step .body{padding:0 18px 20px;border-top:1px solid var(--line)}
+.teach{background:var(--cream);border-radius:12px;padding:14px 16px;margin:14px 0;font-size:14px}
+.teach .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--leaf);margin-bottom:3px}
+.teach + .teach{margin-top:-4px}
+.promptbox{background:#2C3A30;color:#EFF3EE;border-radius:12px;padding:14px 16px;font-family:Consolas,Monaco,monospace;font-size:12.5px;max-height:260px;overflow:auto;white-space:pre-wrap;margin-top:12px}
+.win{display:flex;gap:10px;align-items:flex-start;background:var(--gold-soft);border-radius:11px;padding:11px 14px;margin-bottom:8px;font-size:13.5px}
+.note{background:var(--leaf-soft);border-left:4px solid var(--leaf);border-radius:10px;padding:12px 15px;font-size:13.5px;margin:12px 0}
+.note.warm{background:var(--gold-soft);border-left-color:var(--gold)}
+.big{text-align:center;padding:12px 0}
+.big .em{font-size:46px}
+.hidden{display:none}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+/* two ways to bring the AI's answer back */
+.paths{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.paths .path{flex:1;min-width:255px;border:1.5px solid var(--line);border-radius:13px;padding:14px 15px;background:#FFFDF9}
+.path .ph{font-weight:700;color:var(--leaf-dark);margin-bottom:4px}
+.pd{font-size:13px;color:var(--muted);margin-bottom:9px}
+.path textarea{margin-bottom:9px}
+.okline{font-size:12.5px;color:var(--leaf);font-weight:600;margin-top:7px}
+.movebox{border-top:1px dashed var(--line);margin-top:18px;padding-top:14px}
+.lab2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gold);margin-bottom:4px}
+/* tracked changes */
+.tracked{margin-top:14px}
+.thead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;margin-bottom:11px}
+.tbtns{display:flex;gap:8px}
+.hunk{border:1.5px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;background:#fff;transition:.18s}
+.hunk.yes{border-color:#CDE1D3}
+.hunk.no{opacity:.55}
+.hh{display:flex;align-items:center;gap:8px;padding:9px 13px;background:#FBF7F0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.hn{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.tg{border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s}
+.tg.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.hunk.no .tg.on{background:var(--muted);border-color:var(--muted)}
+.hb{padding:12px 15px;font-size:14.5px;line-height:1.8;white-space:pre-wrap}
+.hb del,.delx{color:#A3383A;background:#FBEBEA;text-decoration:line-through;border-radius:3px;padding:0 2px}
+.hb ins,.insx{color:#2E6B46;background:#E8F4EC;text-decoration:none;border-radius:3px;padding:0 2px}
+.delx,.insx{font-weight:600}
+/* the running document */
+.docbtn{position:fixed;right:0;top:36%;background:var(--gold);color:#3a2a08;border:none;border-radius:13px 0 0 13px;padding:16px 11px;font-size:11.5px;font-weight:700;font-family:inherit;letter-spacing:1px;cursor:pointer;writing-mode:vertical-rl;box-shadow:var(--shadow);z-index:45}
+.docwrap{position:fixed;inset:0;z-index:60}
+.docbg{position:absolute;inset:0;background:rgba(47,42,38,.34)}
+.docpanel{position:absolute;right:0;top:0;bottom:0;width:min(470px,93vw);background:var(--cream);display:flex;flex-direction:column;box-shadow:-14px 0 34px rgba(0,0,0,.14)}
+.dochead{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fff;font-family:'Playfair Display',Georgia,serif;font-size:17px}
+.docbody{flex:1;overflow:auto;padding:16px 19px;font-size:14px}
+.docbody h3{font-size:20px;color:var(--leaf-dark);margin-bottom:3px}
+.docbody h4{font-size:15px;color:var(--leaf-dark);margin:16px 0 3px}
+.docbody blockquote{border-left:3px solid var(--gold);padding:2px 0 2px 12px;margin:5px 0;color:var(--muted)}
+.docbody hr{border:none;border-top:1px solid var(--line);margin:15px 0}
+.docbody p{margin:4px 0}
+.docfoot{border-top:1px solid var(--line);padding:13px 16px;background:#fff;font-size:12.5px;color:var(--muted)}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--leaf-dark);color:#fff;padding:12px 22px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="logo">The Editing <b>Coach</b><span class="pill">FOR YOUR FIRST EDIT</span></span>
+  <span class="spacer"></span>
+  <button onclick="saveFile()">Save file</button>
+  <button onclick="document.getElementById('importFile').click()">Open file</button>
+  <button onclick="startOver()">↺ Start over</button>
+  <input type="file" id="importFile" accept="application/json" class="hidden" onchange="loadFile(event)">
+</div>
+<div class="wrap" id="view"></div>
+
+<button class="docbtn" id="docBtn" style="display:none" onclick="toggleDoc()">📄 MY NOTES</button>
+<div class="docwrap hidden" id="docWrap">
+  <div class="docbg" onclick="toggleDoc()"></div>
+  <aside class="docpanel">
+    <div class="dochead">
+      <b>My editing notes</b>
+      <span style="flex:1"></span>
+      <button class="btn small" onclick="downloadDoc()">⬇ .md</button>
+      <button class="btn small" onclick="toggleDoc()">✕</button>
+    </div>
+    <div class="docbody" id="docBody"></div>
+    <div class="docfoot" id="docFoot"></div>
+  </aside>
+</div>
+
+<div id="toast"></div>
+<div class="foot" id="foot"></div>
+
+<script>
+/* ============================================================
+   THE EDITING COACH — the gentle, guided sibling of the Story Clinic.
+   Built for authors who have never been edited before. One chapter at
+   a time, one pass at a time, strengths first, never more than three
+   things to fix. The prompts do the teaching.
+   ============================================================ */
+/* Flip tipMode to false to produce the white-label build for sale. */
+const CONFIG={
+  tipMode:true,
+  brand:"The Invisible Pen",
+  owner:"Clark Publishing House LLC"
+};
+const LSKEY='tip-editing-coach-v1';
+
+const LANES=[
+ {v:"romance",   t:"Romance"},
+ {v:"romantasy", t:"Romantasy / fantasy romance"},
+ {v:"fantasy",   t:"Fantasy"},
+ {v:"scifi",     t:"Science fiction"},
+ {v:"mystery",   t:"Mystery / cozy mystery"},
+ {v:"thriller",  t:"Thriller / suspense"},
+ {v:"horror",    t:"Horror"},
+ {v:"contemp",   t:"Contemporary / women's fiction"},
+ {v:"ya",        t:"YA"},
+ {v:"other",     t:"Something else"}
+];
+
+/* ---------- the seven steps ---------- */
+const STEPS=[
+{id:"works", t:"Does this chapter work?",
+ what:"A first look at the whole chapter — what it's <i>for</i>, whether it starts somewhere interesting, and whether it makes a reader want the next one.",
+ why:"Editors always start big. There's no point polishing sentences in a scene that might get cut or rewritten. Fix the shape first.",
+ focus:"SCENE PURPOSE, OPENING HOOK, AND ENDING PULL",
+ moveon:"Shape first, always. Every change you just made to what this chapter is <i>for</i> ripples through the six passes ahead — which is exactly why we did it before touching a single sentence.",
+ list:["What is this chapter FOR? What changes between the first page and the last? If nothing changes, say so kindly and suggest what could.",
+       "Does it open inside something happening, or does it warm up first? Point to the exact line where the chapter really begins.",
+       "Does the ending make a reader want to keep going? Quote the last line and say what it's doing.",
+       "Is there a clear want and a clear obstacle somewhere on the page?"]},
+{id:"people", t:"Do your characters feel real?",
+ what:"A look at whether the people on the page want something, act on it, and feel like distinct humans rather than names.",
+ why:"Readers forgive a lot, but not a character who just reacts. Wanting something — and doing something about it — is what makes a person feel alive.",
+ focus:"CHARACTER WANT, MOTIVATION, AND AGENCY",
+ moveon:"A reader will forgive a slow page. They won't forgive a character they don't care about. Everything from here — dialogue, pacing, polish — only lands if we're rooting for someone.",
+ list:["For the main character in this chapter: what do they WANT right now, and what's stopping them? Quote where you found it (or flag that you couldn't).",
+       "Do they DRIVE the scene, or does the scene happen to them? Flag any moment where they're purely passive.",
+       "Does each character sound and behave distinctly? Flag anyone who feels interchangeable.",
+       "Is there a moment where we see a flaw, fear, or contradiction? Those are what make characters feel human."]},
+{id:"show", t:"Show me, don't tell me",
+ what:"Finding the places where the writing <i>announces</i> an emotion instead of letting us feel it through action, body, or dialogue.",
+ why:"This is the single most common note new authors get. \"She was nervous\" tells us. \"She checked the lock twice\" lets us feel it — and trusts the reader.",
+ focus:"SHOW VS. TELL",
+ moveon:"Showing is the difference between a reader being <i>told</i> about a feeling and actually having one. Getting it right now makes the dialogue pass far easier — because half of showing happens in what people say.",
+ list:["Find the moments that TELL us an emotion (\"she was angry,\" \"he felt sad,\" \"it was tense\") and quote them exactly.",
+       "For each, show a rewrite that puts the feeling into action, body, or dialogue instead.",
+       "Flag any place emotion is explained right after it's already been shown — that's telling twice, and it deflates the moment.",
+       "Also note one place where the author ALREADY showed beautifully, so they can see what they do well."]},
+{id:"talk", t:"Does the dialogue sound like people?",
+ what:"A pass on how your characters talk — whether it sounds natural, whether people say what they actually mean, and whether the tags get out of the way.",
+ why:"Real people rarely say exactly what they feel. The gap between what's said and what's meant is where dialogue gets good.",
+ focus:"DIALOGUE",
+ moveon:"Dialogue is where most readers decide whether they trust a writer. With the talking fixed you can judge pace honestly — a lot of what feels slow is really dialogue that isn't doing anything.",
+ list:["Read the dialogue aloud in your head. Flag any line a real person wouldn't say.",
+       "Is anyone saying exactly what they mean? Suggest one place to add subtext — what they say vs. what they want.",
+       "Check dialogue tags: are they mostly \"said\" and \"asked\" with action beats, or is there a parade of murmured/growled/exclaimed?",
+       "Flag any dialogue that exists only to explain something to the reader."]},
+{id:"flow", t:"Does it flow?",
+ what:"Pacing — where the chapter drags, where it rushes past something important, and whether the scene changes are easy to follow.",
+ why:"Pacing is where readers quietly give up. A scene that drags loses them; a big moment rushed past robs them of the payoff they were promised.",
+ focus:"PACING AND FLOW",
+ moveon:"Pacing is where readers quietly close the book. Fixing it now means the sentences you polish next are sentences that have earned their place on the page.",
+ list:["Where does this chapter DRAG? Name the exact section and say what's slowing it.",
+       "Where does it RUSH? Find any big emotional or plot moment that goes by too fast and deserves more room.",
+       "Are the scene transitions clear — does the reader always know where and when they are?",
+       "Is there any long stretch with no tension, question, or conflict? Point to it."]},
+{id:"polish", t:"Polish the sentences",
+ what:"The line-level pass — weak verbs, filler words, repeated words, and sentences that could hit harder with fewer words.",
+ why:"We do this LAST on purpose. There's no sense perfecting a paragraph you might cut in an earlier pass. Now that the chapter's shape is right, we sharpen it.",
+ focus:"LINE EDIT",
+ moveon:"That's the last real craft pass. Only one thing left — making sure the whole thing still sounds like a person, and specifically like you.",
+ list:["Find filter words (felt, saw, heard, noticed, realized, seemed, watched, wondered) and show how to cut them so we're inside the character instead.",
+       "Find weak verb constructions (was/were + -ing, started to, began to) and give stronger replacements.",
+       "Find repeated words close together — especially eyes, heart, breath, gaze, chest, smile — and vary them.",
+       "Find any sentence that could say the same thing in fewer words, and show the tightened version."]},
+{id:"ai", t:"Does it sound like AI?",
+ what:"A sweep for the phrases and rhythms that make readers say \"a computer wrote this\" — even when a human didn't.",
+ why:"Certain phrases have been used into the ground by AI tools. Readers notice, and it costs you their trust. This pass finds them so your voice stays yours.",
+ focus:"AI-ISMS AND OVERUSED PHRASES",
+ moveon:"This is the pass that protects your voice. A reader who smells a machine stops trusting the book — and everything you fixed in the six passes before this goes with it.",
+ list:["Flag AI-flavored phrases like: couldn't help but, found myself, a beat of silence, the air between them, something shifted, let out a breath they didn't know they were holding, met their gaze, swallowed hard.",
+       "Flag the \"dramatic triplet\" — three short parallel sentences in a row (\"She was tired. She was angry. She was done.\"). Once is a choice; twice is a tell.",
+       "Flag any sentence that tells the reader the future (\"she would later realize,\" \"little did she know\").",
+       "For each, give a replacement in the author's own voice — specific and concrete, not another stock phrase."]}
+];
+
+/* ---------- state ---------- */
+function fresh(){return{author:{name:"",pen:""},voice:{notes:""},title:"",lane:"",chapters:[],cur:null,seenWelcome:false};}
+/* what to call the author — pen name wins, then real name, then a warm default */
+function who(){const a=S.author||{};return (a.pen||a.name||"").trim();}
+function hi(){const n=who();return n?n:"";}
+function byline(){const a=S.author||{};if(a.pen&&a.name&&a.pen!==a.name)return `${a.pen} (${a.name})`;return a.pen||a.name||"";}
+let S=load();
+function load(){try{const r=localStorage.getItem(LSKEY);if(r){const p=JSON.parse(r);p.chapters=p.chapters||[];return p;}}catch(e){}return fresh();}
+/* If the browser runs out of room, SAY SO — silently losing an author's
+   work is the one failure this tool must never have. */
+function save(){try{localStorage.setItem(LSKEY,JSON.stringify(S));}catch(e){toast('Your browser is out of storage — hit "Save file" now to back up your work');}}
+function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function wc(s){return (String(s||"").trim().match(/\S+/g)||[]).length;}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2400);}
+function laneLabel(){const l=LANES.find(x=>x.v===S.lane);return l?l.t:"fiction";}
+function ch(){return S.chapters.find(c=>c.id===S.cur)||null;}
+function stepsDone(c){return STEPS.filter(s=>c.steps&&c.steps[s.id]&&c.steps[s.id].done).length;}
+function chapDone(c){return stepsDone(c)===STEPS.length;}
+
+/* ---------- render ---------- */
+function render(){
+  const v=document.getElementById('view');
+  if(!S.seenWelcome){v.innerHTML=viewWelcome();renderDoc();return;}
+  v.innerHTML = S.cur ? viewCoach() : viewBook();
+  renderDoc();
+}
+
+function viewWelcome(){
+  return `
+  <div class="card">
+    <div class="big"><div class="em">🌱</div></div>
+    <h2 style="text-align:center" id="helloLine">Let's edit your first chapter — together</h2>
+    <p class="sub" style="text-align:center">You've written a book. That's the hard part, and most people never do it. Now we'll make it stronger, one small step at a time.</p>
+    <div class="teach"><div class="lab">What this is</div>Editing isn't one big scary thing you either know how to do or you don't. It's a handful of small passes, each looking at one thing. We'll walk through <b>seven</b> of them, in the order a real editor would, and I'll explain each one before you do it.</div>
+    <div class="teach"><div class="lab">How it works</div>You'll work on <b>one chapter at a time</b>. Each step gives you a prompt to paste into your AI (Claude, ChatGPT — whichever you use). The AI comes back with what's working, plus <b>at most three things to try</b>. Never a wall of notes. Then you move to the next step.</div>
+    <div class="note warm"><b>One promise, one rule.</b><br>The promise: you'll never get more than three fixes at a time. The rule: <b>don't run your chapter through three different tools at once.</b> You'll get three different opinions and freeze. Finish this walk first — then get a beta read if you want more eyes.</div>
+    <div class="toolbar" style="justify-content:center">
+      <button class="btn primary" onclick="S.seenWelcome=true;save();render()">I'm ready — let's start →</button>
+    </div>
+  </div>`;
+}
+
+function viewBook(){
+  const n=S.chapters.length, done=S.chapters.filter(chapDone).length;
+  const pct=n?Math.round(done/n*100):0;
+  const rows=S.chapters.map(c=>{
+    const d=stepsDone(c), fin=chapDone(c);
+    const chip=fin?'<span class="chip done">✓ Done</span>':(d?`<span class="chip going">Step ${d+1} of 7</span>`:'<span class="chip todo">Not started</span>');
+    return `<div class="bookrow">
+      <div class="nm">${esc(c.title)}<div style="font-weight:400;font-size:12.5px;color:var(--muted)">${wc(c.text).toLocaleString()} words</div></div>
+      ${chip}
+      <button class="btn small primary" onclick="openChapter('${c.id}')">${fin?'Review':(d?'Continue':'Start')}</button>
+      <button class="btn small ghost" onclick="delChapter('${c.id}')" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+  return `
+  <div class="card">
+    <h2>${hi()?esc(hi())+"'s book":'Your book'}</h2>
+    <p class="sub">${hi()?'Welcome back, '+esc(hi())+'. ':''}Add one chapter at a time. Finish it, then come back for the next — you'll see the whole book fill up with checkmarks.</p>
+    <div class="row">
+      <div><label class="f">Book title</label><input type="text" id="bkTitle" value="${esc(S.title)}" placeholder="Working title is fine" oninput="S.title=this.value;save()"></div>
+      <div><label class="f">What do you write?</label><select id="bkLane" onchange="S.lane=this.value;save()">
+        <option value="">— pick one —</option>
+        ${LANES.map(l=>`<option value="${l.v}" ${S.lane===l.v?'selected':''}>${l.t}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="row">
+      <div><label class="f">Your name</label><input type="text" id="auName" value="${esc((S.author||{}).name)}" placeholder="What should I call you?" oninput="S.author.name=this.value;save();refreshHello()"></div>
+      <div><label class="f">Pen name <span style="font-weight:400;text-transform:none;color:var(--muted)">(if you use one)</span></label><input type="text" id="auPen" value="${esc((S.author||{}).pen)}" placeholder="The name on the cover" oninput="S.author.pen=this.value;save();refreshHello()"></div>
+    </div>
+    ${n?`<label class="f" style="margin-top:20px">Progress — ${done} of ${n} chapter${n===1?'':'s'} finished</label>
+      <div class="bar"><i style="width:${pct}%"></i></div>`:''}
+    <div style="margin-top:16px">${rows||'<p class="sub">No chapters yet — add your first one below. Start with chapter one.</p>'}</div>
+  </div>
+  <div class="card" style="border-top:4px solid var(--gold)">
+    <h2>🎙 Your voice</h2>
+    <p class="sub">The thing authors fear most about AI editing is losing the way <i>they</i> sound. So this tool protects your voice automatically — every prompt tells the AI to keep your word choices, your rhythm, your quirks, and never to "improve" you into someone else.</p>
+    <div class="note">✓ <b>Already on, nothing to do.</b> The rest of this card is optional — it just makes the protection sharper.</div>
+    <label class="f">How would you describe your writing? <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional — totally fine to leave blank if you're not sure yet)</span></label>
+    <textarea id="vcNotes" rows="3" placeholder="e.g. Warm and a bit sarcastic. Short punchy sentences when things get tense. I like dry humor in dialogue." oninput="S.voice.notes=this.value;save()">${esc((S.voice||{}).notes)}</textarea>
+
+    <div class="note warm" style="margin-top:16px"><b>Not sure how to describe your voice?</b> Almost nobody is at first. Here are two ways to fill that box — pick whichever sounds easier today.</div>
+
+    <div class="teach"><div class="lab">The thorough way — Your Style Sheet</div>
+      A free companion tool that walks you through your voice in your own words: two paragraphs that sound most like you, the words you always use, the ones you never would. Fill it in once, hit <b>Copy my Style Sheet</b>, and paste it into the box above. You'll reuse it for the rest of your writing life.
+      <div class="toolbar" style="margin-top:10px">
+        <a class="btn gold" href="https://cph-jessica.github.io/tip-marketing-worksheets/tools/your-style-sheet.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">✍️ Open Your Style Sheet ↗</a>
+      </div>
+    </div>
+
+    <div class="teach"><div class="lab">The two-minute way — let the AI mirror it back</div>
+      Don't feel like filling anything in? Add a chapter, click below, and paste the prompt into your AI. It reads your writing and describes your voice <i>to you</i> — then hands you a short paragraph to drop in the box above. Most authors have never had anyone do this for them.
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn" onclick="copyVoicePrompt(this)" ${S.chapters.length?'':'disabled title="Add a chapter first"'}>🎙 Discover my voice</button>
+        ${S.chapters.length?`<button class="btn small" onclick="togglePrompt('voice')">See the prompt</button>`:''}
+      </div>
+      ${S.chapters.length?`<div class="promptbox hidden" id="pb-voice">${esc(buildVoicePrompt())}</div>`:''}
+    </div>
+  </div>
+  <div class="card">
+    <h2>Add a chapter</h2>
+    <p class="sub">Paste one chapter. Just the text — no need to format anything.</p>
+    <label class="f">Chapter name <span style="font-weight:400;text-transform:none;color:var(--muted)">(e.g. "Chapter One")</span></label>
+    <input type="text" id="newTitle" placeholder="Chapter One">
+    <label class="f">Paste the chapter here</label>
+    <textarea id="newText" rows="9" placeholder="Paste your chapter…"></textarea>
+    <div class="toolbar"><button class="btn primary" onclick="addChapter()">+ Add this chapter</button></div>
+  </div>
+  ${done>=2?`<div class="card" style="border-top:4px solid var(--gold)">
+    <h2>🎓 Ready for more?</h2>
+    <p class="sub">You've finished ${done} chapters the careful way. When you want the full diagnostic — every pass, whole-book graphs, a readiness verdict — that's what the <b>Story Clinic</b> is for. It's the advanced version of what you've been doing here.</p>
+  </div>`:''}`;
+}
+
+/* live-update the greeting as they type their name, without re-rendering
+   the whole view (which would steal focus from the input) */
+function refreshHello(){
+  const h=document.getElementById('helloLine');
+  if(h)h.textContent = hi()? `Let's edit your first chapter, ${hi()}` : "Let's edit your first chapter — together";
+}
+/* harvest first — leaving a chapter must never eat what they just pasted */
+function openChapter(id){grabOpen();S.cur=id;save();render();window.scrollTo(0,0);}
+function backToBook(){grabOpen();S.cur=null;save();render();window.scrollTo(0,0);}
+function addChapter(){
+  const t=document.getElementById('newTitle').value.trim()||('Chapter '+(S.chapters.length+1));
+  const x=document.getElementById('newText').value.trim();
+  if(!x){toast('Paste your chapter text first');return;}
+  const c={id:uid(),title:t,text:x,steps:{}};
+  S.chapters.push(c);save();
+  openChapter(c.id);
+  toast('Chapter added — let\'s go 🌱');
+}
+function delChapter(id){
+  const c=S.chapters.find(x=>x.id===id);
+  if(!confirm('Remove "'+(c?c.title:'this chapter')+'"? Your progress on it will be lost.'))return;
+  S.chapters=S.chapters.filter(x=>x.id!==id);if(S.cur===id)S.cur=null;save();render();
+}
+
+function viewCoach(){
+  /* never re-enter render() from inside it — that blanks the page */
+  const c=ch(); if(!c){S.cur=null;save();return viewBook();}
+  const d=stepsDone(c), pct=Math.round(d/STEPS.length*100), fin=chapDone(c);
+  const cards=STEPS.map((s,i)=>{
+    const st=(c.steps&&c.steps[s.id])||{};
+    const unlocked = i===0 || (c.steps&&c.steps[STEPS[i-1].id]&&c.steps[STEPS[i-1].id].done);
+    const isDone=!!st.done;
+    /* _shut is an explicit collapse and beats the "current step" default */
+    const open = st._shut ? false : (st._open || (!isDone && unlocked && i===d));
+    const cls = isDone?'done':(open?'active':(unlocked?'':'locked'));
+    return `<div class="step ${cls}" id="st-${s.id}">
+      <div class="head" onclick="toggleStep('${s.id}',${unlocked})">
+        <div class="num">${isDone?'✓':i+1}</div>
+        <div class="ttl">${s.t}</div>
+        ${isDone?'<span class="chip done">Done</span>':(unlocked?'':'<span class="chip todo">🔒 Locked</span>')}
+      </div>
+      ${open?`<div class="body">
+        <div class="teach"><div class="lab">What this step is</div>${s.what}</div>
+        <div class="teach"><div class="lab">Why editors do it</div>${s.why}</div>
+        ${s.id==='polish'?quickWins(c):''}
+        <div class="toolbar">
+          <button class="btn primary" onclick="copyStep('${s.id}',this)">📋 Copy this step's prompt</button>
+          <button class="btn small" onclick="togglePrompt('${s.id}')">See the prompt</button>
+        </div>
+        <div class="promptbox hidden" id="pb-${s.id}">${esc(buildPrompt(s,c))}</div>
+        ${stepBack(s,st)}
+      </div>`:''}
+    </div>`;
+  }).join('');
+  return `
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button class="btn small" onclick="backToBook()">← My book</button>
+      <div style="flex:1"></div>
+      <span class="chip ${fin?'done':'going'}">${fin?'✓ Chapter finished':`Step ${Math.min(d+1,7)} of 7`}</span>
+    </div>
+    <h2 style="margin-top:12px">${esc(c.title)}</h2>
+    <p class="sub">${wc(c.text).toLocaleString()} words · ${esc(S.title||'your book')}${S.lane?' · '+laneLabel():''}</p>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+  </div>
+  ${fin?finishCard(c):''}
+  ${cards}`;
+}
+
+function toggleStep(id,unlocked){
+  const c=ch(); if(!c)return;
+  if(!unlocked){toast('Finish the step above first — or hit "skip this one" there');return;}
+  c.steps=c.steps||{};
+  /* don't lose anything they've typed in whichever step is currently open */
+  grabOpen();
+  c.steps[id]=c.steps[id]||{};
+  /* judge open-ness by the body itself — a step showing a tracked-changes
+     panel has no wy- box, and used to be impossible to collapse */
+  const wasOpen=!!document.querySelector('#st-'+id+' .body');
+  /* shut everything else explicitly, or the "current step" default keeps it
+     open alongside the one they just clicked */
+  STEPS.forEach(s=>{if(c.steps[s.id]){c.steps[s.id]._open=false;c.steps[s.id]._shut=true;}});
+  c.steps[id]._open=!wasOpen; c.steps[id]._shut=wasOpen;
+  save();render();
+}
+function togglePrompt(id){const el=document.getElementById('pb-'+id);if(el)el.classList.toggle('hidden');}
+function finishStep(id,skipped){
+  const c=ch(); if(!c)return;
+  const st=grabStep(id);
+  /* one gentle nudge: writing down WHY is how the lesson sticks. Never a hard block. */
+  if(!skipped&&!st.why&&!st._nudged){
+    st._nudged=true;save();
+    toast('Jot one line about what you changed — that\'s how it sticks. Click again to move on anyway.');
+    return;
+  }
+  st.done=true; st.skipped=!!skipped; st._open=false;
+  const i=STEPS.findIndex(s=>s.id===id);
+  if(i+1<STEPS.length){const nx=c.steps[STEPS[i+1].id]=c.steps[STEPS[i+1].id]||{};nx._open=true;nx._shut=false;}
+  save();render();
+  /* after the seventh pass, send them to the celebration — not to the step they just closed */
+  const el=document.getElementById(STEPS[i+1]?('st-'+STEPS[i+1].id):'finishCard')||document.getElementById('st-'+id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:STEPS[i+1]?'center':'start'});
+  toast(skipped?'Skipped — you can always come back':(i+1<STEPS.length?'Nice work. On to the next one →':'That\'s all seven. Look at you. 🎉'));
+}
+/* ============================================================
+   THE BACK HALF OF A STEP
+   Two ways to bring the AI's answer home: the notes (I'll do it
+   myself) or the rewritten chapter (show me what changed). Then a
+   "before you move on" panel so nobody advances without knowing WHY.
+   ============================================================ */
+function stepBack(s,st){
+  if(st.pending)return trackedPanel(s,st);
+  const notes=st.notes||'', why=st.why||'';
+  return `
+  <div class="note">Paste that into your AI. At the end it will ask whether you'd like it to <b>rewrite the chapter for you</b> or leave the changes to you. Whichever you pick, bring the answer back here 👇</div>
+  <div class="paths">
+    <div class="path">
+      <div class="ph">📝 Keep the notes</div>
+      <p class="pd">Paste your editor's notes. They're kept in your running editing notes so you can work through them at your own speed — then bring the updated chapter back on the right.</p>
+      <textarea id="nt-${s.id}" rows="4" placeholder="Paste the three things to try…">${esc(notes)}</textarea>
+      <button class="btn small gold" onclick="saveNotes('${s.id}')">Save these notes</button>
+      ${notes?'<div class="okline">✓ In your editing notes</div>':''}
+    </div>
+    <div class="path">
+      <div class="ph">📄 Paste the updated chapter</div>
+      <p class="pd">Whether <b>the AI rewrote it</b> or <b>you revised it yourself</b> — paste it here and you'll see <span class="delx">what goes</span> <span class="insx">and what comes in</span>, and accept or ignore each change. Nothing is saved until you say so.</p>
+      <textarea id="rw-${s.id}" rows="4" placeholder="Paste the updated chapter here…">${esc(st.draftRev||'')}</textarea>
+      <button class="btn small primary" onclick="reviewRewrite('${s.id}')">Show me what changed →</button>
+    </div>
+  </div>
+  ${st.applied?`<div class="note">✓ You reviewed ${st.applied.total} change${st.applied.total===1?'':'s'} and kept ${st.applied.accepted}. Every step from here uses your new version.
+    ${(ch()||{}).undo&&ch().undo.stepId===s.id?`<button class="btn small" style="margin-left:8px" onclick="undoApply('${s.id}')">↩ Undo — put my chapter back</button>`:''}</div>`:''}
+  <div class="movebox">
+    <div class="lab2">Before you move on</div>
+    <p class="pd">${s.moveon||''}</p>
+    <label class="f">In your own words — what did you change here, and why?</label>
+    <textarea id="wy-${s.id}" rows="2" placeholder="e.g. I cut the first two paragraphs because the chapter really starts when she opens the letter.">${esc(why)}</textarea>
+    <div class="toolbar">
+      <button class="btn primary" onclick="finishStep('${s.id}')">${st.done?'Done ✓':'Mark this step done →'}</button>
+      <button class="btn ghost" onclick="finishStep('${s.id}',true)">skip this one</button>
+    </div>
+  </div>`;
+}
+
+/* Pull EVERY box they've typed in into state before we re-render over it.
+   Losing a pasted chapter to an innocent button click is unforgivable. */
+function grabStep(id){
+  const c=ch(); if(!c)return null;
+  c.steps=c.steps||{}; const st=c.steps[id]=c.steps[id]||{};
+  const nt=document.getElementById('nt-'+id); if(nt)st.notes=nt.value.trim();
+  const wy=document.getElementById('wy-'+id); if(wy)st.why=wy.value.trim();
+  const rw=document.getElementById('rw-'+id); if(rw)st.draftRev=rw.value;
+  return st;
+}
+/* harvest by what's actually on screen — a step can render open without _open set */
+function grabOpen(){STEPS.forEach(s=>{if(document.getElementById('wy-'+s.id))grabStep(s.id);});}
+function saveNotes(id){
+  const ta=document.getElementById('nt-'+id);
+  if(!ta||!ta.value.trim()){toast("Paste your editor's notes first");return;}
+  grabStep(id); save(); render();
+  toast('Saved to your editing notes 📄');
+}
+
+/* ---------- tracked changes ---------- */
+function reviewRewrite(id){
+  const c=ch(); const ta=document.getElementById('rw-'+id);
+  const t=(ta&&ta.value||'').trim();
+  if(!t){toast('Paste the rewritten chapter first');return;}
+  const st=grabStep(id);
+  if(t===(c.text||'').trim()){toast("That's identical to the version you already have");return;}
+  const d=diffChapters(c.text,t);
+  if(!d.hunks.length){toast('Nothing actually changed in there');return;}
+  /* only ever one review open — otherwise a second one would be measured
+     against a chapter the first one already changed */
+  STEPS.forEach(x=>{if(c.steps[x.id])c.steps[x.id].pending=null;});
+  /* A truncated paste (AI ran out of room, clipboard caught half) looks like
+     "delete most of the chapter". Never pre-tick those — make them opt in. */
+  const short=wc(t)<wc(c.text)*0.75;
+  st.pending={rev:t,dec:d.hunks.map(()=>!short),short:short};
+  save();render();
+  const el=document.getElementById('st-'+id); if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  toast(short?'That looks shorter than your chapter — have a careful look':
+    d.hunks.length+' change'+(d.hunks.length===1?'':'s')+' to look at');
+}
+function trackedPanel(s,st){
+  const c=ch();
+  const d=diffChapters(c.text,st.pending.rev), dec=st.pending.dec;
+  const acc=dec.filter(Boolean).length;
+  return `<div class="tracked">
+    ${st.pending.short?`<div class="note warm"><b>Heads up — what you pasted is noticeably shorter than your chapter.</b>
+      That usually means the AI ran out of room mid-answer, or only part of it made it onto your clipboard. Nothing is ticked below;
+      look through before accepting anything, and if it got cut off, just ask your AI to continue and paste the whole thing again.</div>`:''}
+    <div class="thead">
+      <div style="flex:1;min-width:200px"><b>${d.hunks.length} change${d.hunks.length===1?'':'s'}.</b>
+      <span class="delx">Red</span> is what your AI wants to take out, <span class="insx">green</span> is what it puts in. Your chapter doesn't change until you hit Apply.</div>
+      <div class="tbtns">
+        <button class="btn small" onclick="decideAll('${s.id}',true)">Accept all</button>
+        <button class="btn small" onclick="decideAll('${s.id}',false)">Keep all mine</button>
+      </div>
+    </div>
+    ${d.hunks.map((h,i)=>`<div class="hunk ${dec[i]?'yes':'no'}">
+      <div class="hh">
+        <span class="hn">${esc(h.label)}</span><span style="flex:1"></span>
+        <button class="tg ${dec[i]?'on':''}" onclick="decide('${s.id}',${i},true)">✓ Accept</button>
+        <button class="tg ${dec[i]?'':'on'}" onclick="decide('${s.id}',${i},false)">✕ Keep mine</button>
+      </div>
+      <div class="hb">${h.html}</div>
+    </div>`).join('')}
+    <div class="toolbar">
+      <button class="btn primary" onclick="applyTracked('${s.id}')">Apply — accept ${acc} of ${d.hunks.length}</button>
+      <button class="btn ghost" onclick="cancelTracked('${s.id}')">cancel — change nothing</button>
+    </div>
+  </div>`;
+}
+function decide(id,i,yes){
+  const c=ch(),st=c.steps[id];
+  if(!st||!st.pending)return;
+  st.pending.dec[i]=!!yes; save(); render();
+}
+function decideAll(id,yes){
+  const c=ch(),st=c.steps[id];
+  if(!st||!st.pending)return;
+  st.pending.dec=st.pending.dec.map(()=>!!yes); save(); render();
+}
+function cancelTracked(id){
+  const c=ch(),st=c.steps[id];
+  if(!st)return;
+  st.pending=null; save(); render(); toast('Left your chapter exactly as it was');
+}
+function applyTracked(id){
+  const c=ch(),st=c.steps[id];
+  if(!st||!st.pending)return;
+  const d=diffChapters(c.text,st.pending.rev), dec=st.pending.dec;
+  /* ONE undo slot for the whole chapter. Per-step snapshots overlapped, so
+     undoing an early step could silently throw away later steps' work. */
+  c.undo={text:c.text,stepId:id};
+  c.text=rebuildText(d.ops,dec,d.sep,d.oseps);
+  st.applied={accepted:dec.filter(Boolean).length,total:dec.length};
+  st.pending=null; st.draftRev='';
+  clearStale(c,id);
+  save(); render();
+  toast('Applied ✓ every step from here uses your new version');
+}
+/* the chapter text just moved, so any other step's open review and any older
+   "applied" banner are measured against text that no longer exists */
+function clearStale(c,keepId){
+  STEPS.forEach(x=>{
+    const s=c.steps[x.id]; if(!s)return;
+    if(x.id!==keepId){s.pending=null;s.applied=null;}
+  });
+}
+function undoApply(id){
+  const c=ch();
+  if(!c.undo||c.undo.stepId!==id)return;
+  c.text=c.undo.text; c.undo=null;
+  const st=c.steps[id]; if(st)st.applied=null;
+  clearStale(c,null);
+  save(); render();
+  toast('Put back the way it was ✓');
+}
+
+/* ---------- the diff engine (paragraph match, then word-level) ---------- */
+/* Plenty of authors paste with single line breaks instead of blank lines.
+   Detect which they use so paragraphs come out right either way — and so we
+   can hand their own formatting back when we rebuild the chapter. */
+/* ANY newline run ends a paragraph — we never guess a document-wide style.
+   Guessing broke on a very ordinary shape: a chapter heading followed by
+   single-newline paragraphs made the whole body collapse into one block,
+   and a partial accept could then delete most of the chapter.
+   Paragraphs stay RAW so Word/Scrivener indents survive, and each remembers
+   the exact separator that followed it, so rebuilding hands the author back
+   their own spacing — blank lines, single breaks, CRLF and all. */
+const PARA_SPLIT=/\r?\n(?:[ \t]*\r?\n)*/;
+function splitParas(t){
+  const s=String(t||''),list=[],seps=[],re=new RegExp(PARA_SPLIT.source,'g');
+  let last=0,m;
+  while((m=re.exec(s))){
+    const seg=s.slice(last,m.index);
+    if(seg.trim()){list.push(seg);seps.push(m[0]);}
+    last=m.index+m[0].length;
+  }
+  const tail=s.slice(last);
+  if(tail.trim())list.push(tail);
+  return {list:list,seps:seps};
+}
+function paras(t){return splitParas(t).list;}
+/* spacing for paragraphs we have no original of (newly inserted ones) */
+function domSep(seps){
+  const n={};let best='\n\n',bc=0;
+  seps.forEach(s=>{n[s]=(n[s]||0)+1;if(n[s]>bc){bc=n[s];best=s;}});
+  return bc?best:'\n\n';
+}
+function leadWs(s){const m=String(s).match(/^[ \t]+/);return m?m[0]:'';}
+function toks(s){return String(s).match(/\s+|\S+/g)||[];}
+/* longest common subsequence → matched index pairs. Bails on anything huge. */
+function lcsPairs(a,b){
+  const n=a.length,m=b.length;
+  if(!n||!m||n*m>4000000)return null;
+  const dp=[];for(let i=0;i<=n;i++)dp.push(new Int32Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:(dp[i+1][j]>=dp[i][j+1]?dp[i+1][j]:dp[i][j+1]);
+  const out=[];let i=0,j=0;
+  while(i<n&&j<m){
+    if(a[i]===b[j]){out.push([i,j]);i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1])i++;else j++;
+  }
+  return out;
+}
+function rawOps(a,b){
+  const pairs=lcsPairs(a.map(x=>x.trim()),b.map(x=>x.trim()));
+  if(!pairs)return [{type:'chg',o:a.join('\n\n'),n:b.join('\n\n'),oi:0}];
+  const ops=[];let i=0,j=0;
+  pairs.forEach(p=>{
+    while(i<p[0]){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+    while(j<p[1]){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
+    ops.push({type:'eq',o:a[i],n:b[j],oi:i});i++;j++;
+  });
+  while(i<a.length){ops.push({type:'del',o:a[i],n:null,oi:i});i++;}
+  while(j<b.length){ops.push({type:'ins',o:null,n:b[j],oi:null});j++;}
+  return ops;
+}
+/* a removed paragraph immediately followed by an added one is a REWRITE, not both */
+function mergeOps(ops){
+  const out=[];
+  for(let k=0;k<ops.length;k++){
+    if(ops[k].type!=='del'){out.push(ops[k]);continue;}
+    let e=k;while(e<ops.length&&ops[e].type==='del')e++;
+    let f=e;while(f<ops.length&&ops[f].type==='ins')f++;
+    const dels=ops.slice(k,e),inss=ops.slice(e,f),p=Math.min(dels.length,inss.length);
+    for(let q=0;q<p;q++)out.push({type:'chg',o:dels[q].o,n:inss[q].n,oi:dels[q].oi});
+    for(let q=p;q<dels.length;q++)out.push(dels[q]);
+    for(let q=p;q<inss.length;q++)out.push(inss[q]);
+    k=f-1;
+  }
+  return out;
+}
+function wordDiffHtml(o,n){
+  const a=toks(o),b=toks(n),pairs=lcsPairs(a,b);
+  if(!pairs)return '<del>'+esc(o)+'</del> <ins>'+esc(n)+'</ins>';
+  const ops=[];let i=0,j=0;
+  pairs.forEach(p=>{
+    while(i<p[0])ops.push({t:'del',s:a[i++]});
+    while(j<p[1])ops.push({t:'ins',s:b[j++]});
+    ops.push({t:'eq',s:a[i]});i++;j++;
+  });
+  while(i<a.length)ops.push({t:'del',s:a[i++]});
+  while(j<b.length)ops.push({t:'ins',s:b[j++]});
+  /* Glue neighbouring edits into one clean swap. Without this a reworked
+     sentence renders as a checkerboard of single words — technically the
+     smallest diff, but unreadable for an author trying to judge a change. */
+  let h='',k=0;
+  while(k<ops.length){
+    if(ops[k].t==='eq'){h+=esc(ops[k].s);k++;continue;}
+    let d='',s='',m=k;
+    while(m<ops.length){
+      const op=ops[m];
+      if(op.t==='del'){d+=op.s;m++;continue;}
+      if(op.t==='ins'){s+=op.s;m++;continue;}
+      /* swallow a run of unchanged whitespace only if more editing follows */
+      if(!op.s.trim()){
+        let q=m,ws='';
+        while(q<ops.length&&ops[q].t==='eq'&&!ops[q].s.trim()){ws+=ops[q].s;q++;}
+        if(q<ops.length&&ops[q].t!=='eq'){d+=ws;s+=ws;m=q;continue;}
+      }
+      break;
+    }
+    if(!d.trim()&&!s.trim())h+=esc(d||s);
+    else{
+      if(d.trim())h+='<del>'+esc(d)+'</del>';
+      if(s.trim())h+='<ins>'+esc(s)+'</ins>';
+    }
+    k=m;
+  }
+  return h;
+}
+function diffChapters(oldT,newT){
+  const A=splitParas(oldT),B=splitParas(newT);
+  const ops=mergeOps(rawOps(A.list,B.list)),hunks=[],sep=domSep(A.seps);
+  let pn=0;
+  ops.forEach(op=>{
+    if(op.type==='eq'){pn++;op.h=-1;return;}
+    if(op.type!=='ins')pn++;
+    op.h=hunks.length;
+    if(op.type==='chg')hunks.push({label:'Paragraph '+pn+' — reworked',html:wordDiffHtml(op.o,op.n)});
+    else if(op.type==='del')hunks.push({label:'Paragraph '+pn+' — cut',html:'<del>'+esc(op.o)+'</del>'});
+    else hunks.push({label:pn?'New paragraph after '+pn:'New opening paragraph',html:'<ins>'+esc(op.n)+'</ins>'});
+  });
+  return {ops:ops,hunks:hunks,sep:sep,oseps:A.seps};
+}
+/* Rejoin with the author's own paragraph spacing, not ours: every surviving
+   paragraph brings back the separator it originally had. */
+function rebuildText(ops,dec,sep,oseps){
+  const out=[];
+  const put=(txt,op)=>out.push({t:txt,
+    s:(op&&op.oi!=null&&oseps&&oseps[op.oi]!=null)?oseps[op.oi]:(sep||'\n\n')});
+  ops.forEach(op=>{
+    if(op.type==='eq')return put(op.o,op);
+    const yes=dec[op.h];
+    if(op.type==='chg'){
+      let txt=yes?op.n:op.o;
+      /* the AI almost always replies flush-left — give the indent back */
+      if(yes){const w=leadWs(op.o);if(w&&!leadWs(op.n))txt=w+op.n;}
+      return put(txt,op);
+    }
+    if(op.type==='del'){if(!yes)put(op.o,op);return;}
+    if(yes)put(op.n,null);
+  });
+  return out.map((x,i)=>i<out.length-1?x.t+x.s:x.t).join('');
+}
+
+/* light, encouraging line-level scan — only ever shows the top 3 */
+function quickWins(c){
+  const t=c.text||'', out=[];
+  const count=(rx)=>{const m=t.match(rx);return m?m.length:0;};
+  const filters=count(/\b(felt|saw|heard|noticed|realized|seemed|watched|wondered|thought)\b/gi);
+  const weak=count(/\b(was|were)\s+\w+ing\b/gi)+count(/\b(started|began)\s+to\b/gi);
+  /* plain nouns/verbs that merely END in -ly must not be called adverbs —
+     a wrong "37 adverbs" verdict is worse than no verdict */
+  const NOTADV=/^(family|families|reply|replies|apply|applies|supply|supplies|only|holy|ugly|july|rely|relies|imply|implies|comply|complies|ally|allies|jelly|belly|bully|early|likely|lonely|lovely|friendly|silly|daily|deadly|elderly|orderly|costly|ghastly|surly|burly|curly|smelly|chilly|hilly|jolly|folly|rally|really|assembly|butterfly|multiply|anomaly)$/i;
+  const adv=(t.match(/\b\w{4,}ly\b/gi)||[]).filter(w=>!NOTADV.test(w)).length;
+  const body=['eyes','heart','breath','gaze','chest','smile'].map(w=>[w,count(new RegExp('\\b'+w+'\\b','gi'))]).filter(x=>x[1]>=4).sort((a,b)=>b[1]-a[1])[0];
+  if(filters>=3)out.push(['🔍',`<b>${filters} filter words</b> (felt, saw, realized…) — cutting these puts us inside your character instead of watching from outside.`]);
+  if(weak>=3)out.push(['🪶',`<b>${weak} soft verb constructions</b> ("was running", "started to walk") — the stronger verb is usually hiding right there.`]);
+  if(body)out.push(['🔁',`<b>"${body[0]}" appears ${body[1]} times</b> — an easy one to vary once you notice it.`]);
+  if(adv>=Math.max(8,wc(t)/90))out.push(['🌀',`<b>${adv} -ly adverbs</b> — a few are fine; a lot usually means a stronger verb is waiting.`]);
+  if(!out.length)return `<div class="note">✓ <b>Quick check:</b> nothing jumped out at the sentence level. Your AI will still catch the subtler things.</div>`;
+  const shown=out.slice(0,3);   /* the header must count what's actually on screen */
+  return `<div style="margin:14px 0"><div class="lab" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--leaf);margin-bottom:7px">${shown.length} quick win${shown.length===1?'':'s'} spotted — free, no AI needed</div>
+    ${shown.map(w=>`<div class="win"><div>${w[0]}</div><div>${w[1]}</div></div>`).join('')}</div>`;
+}
+
+/* Voice protection rides along on EVERY prompt, filled in or not. */
+function voiceBlock(){
+  const n=who(), notes=((S.voice||{}).notes||'').trim();
+  let b=`PROTECT THIS AUTHOR'S VOICE — this matters more than any fix you suggest.
+${n?n+' is':'This author is'} still discovering their style. Preserve their word choices, sentence rhythm, humor, and quirks. When you show a rewrite, write it in THEIR voice — never a more "literary", more formal, or more generic polished voice. Flattening their voice is a WORSE outcome than leaving a flaw on the page. If a fix would cost them their voice, say so and leave it alone.`;
+  if(notes)b+=`\n\nTHEIR VOICE, IN THEIR OWN WORDS:\n${notes}`;
+  return b;
+}
+function buildVoicePrompt(){
+  const c=ch()||S.chapters[0]||{title:'',text:''};   /* whichever chapter they're actually in */
+  const n=who();
+  return `You are a perceptive fiction editor. ${n?n:'An author'} has never had anyone describe their writing voice back to them, and would love to hear it.
+
+Read the chapter below and describe THIS AUTHOR'S VOICE — warmly, specifically, and honestly. Do not edit it. Do not suggest improvements. This is a mirror, not a critique.
+
+Cover:
+1. The overall feel of their prose in 2–3 sentences (how does it sound in a reader's head?)
+2. Their sentence rhythm — long and flowing, short and punchy, a mix, and when they switch
+3. How they handle humor, emotion, and tension — with quoted examples of them doing it well
+4. Their signature moves — habits, images, or turns of phrase that show up and feel like THEM
+5. Three words you'd use to describe their voice
+
+Finish with one short paragraph, written in second person ("Your voice is…"), that they could paste into an editing tool to protect their voice. Keep that paragraph under 80 words.
+
+Be generous but truthful — point at what is genuinely distinctive, not flattery.
+
+----- CHAPTER BEGINS -----
+${c.text||'(paste a chapter first)'}
+----- CHAPTER ENDS -----`;
+}
+function copyVoicePrompt(btn){
+  if(!S.chapters.length){toast('Add a chapter first, then I can read your voice');return;}
+  navigator.clipboard.writeText(buildVoicePrompt()).then(()=>{
+    const o=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=o,1800);
+    toast('Paste it into your AI — then put its answer in the box above 🎙');
+  }).catch(()=>toast('Copy blocked — use "See the prompt" and copy by hand'));
+}
+function buildPrompt(s,c){
+  const n=who();
+  return `You are a warm, experienced fiction editor mentoring ${n?n:'an author'} through their FIRST real edit. They have never worked with a professional editor before. Your job is to TEACH, not to judge.
+
+AUTHOR: ${byline()||'(not given)'}
+BOOK: ${S.title||'(untitled)'}${S.lane?'\nGENRE: '+laneLabel():''}
+CHAPTER: ${c.title}
+
+${voiceBlock()}
+
+Look at ONE thing only in this pass: ${s.focus}
+
+Work through these:
+${s.list.map((x,i)=>`${i+1}. ${x}`).join('\n')}
+
+HOW TO REPLY — follow this shape exactly:
+
+1. WHAT'S WORKING — three specific things, quoting actual lines from the chapter. Be genuinely specific; no empty flattery.
+
+2. THREE THINGS TO TRY — no more than three, most important first. For each one:
+   • What you noticed (quote the exact line)
+   • Why it matters, in one plain sentence a beginner would understand
+   • A before → after example showing the fix
+
+3. ONE SENTENCE of encouragement naming the single biggest strength worth protecting as they revise.
+
+4. THEN ASK ME THIS — word for word — and STOP there:
+   "Would you like me to rewrite the chapter with these changes, or would you rather make them yourself? (Making them yourself is how you learn fastest — having me do it is quicker. Either is completely fine.)"
+
+If I answer that I want you to do it: reply with the FULL rewritten chapter and nothing else — no commentary, no headings, no notes — so I can paste it straight back into my editing tool. Change ONLY what your three fixes called for; leave every other sentence exactly as I wrote it.
+
+RULES:
+- NEVER give more than three fixes, even if you notice more. Choose the ones that matter most. Overwhelming this author is the worst thing you can do.
+- Explain any craft term the first time you use it.
+- Be warm and direct. Never harsh, never sugary.
+- Do NOT rewrite the whole chapter until I answer your question in step 4. Until then, show small before/after examples only.
+- Every rewrite you show must sound like THEM, not like you. Re-read the voice note above before you write a single "after".
+- Judge the writing, never the writer.
+
+----- CHAPTER BEGINS -----
+${c.text}
+----- CHAPTER ENDS -----`;
+}
+function copyStep(id,btn){
+  const s=STEPS.find(x=>x.id===id), c=ch();
+  navigator.clipboard.writeText(buildPrompt(s,c)).then(()=>{
+    const o=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=o,1600);
+    toast('Paste it into your AI 💬');
+  }).catch(()=>toast('Copy blocked — use "See the prompt" and copy by hand'));
+}
+
+function finishCard(c){
+  return `<div class="card" id="finishCard" style="border-top:4px solid var(--leaf)">
+    <div class="big"><div class="em">🎉</div></div>
+    <h2 style="text-align:center">${hi()?esc(hi())+', you':'You'} just edited a chapter like a pro</h2>
+    <p class="sub" style="text-align:center">Seven passes. That's genuinely what a developmental editor walks through — you just did it yourself.</p>
+    <div class="teach"><div class="lab">What you learned this round</div>
+      Start big and work small · characters need to WANT something · show it, don't announce it · real people speak in subtext · pacing is where readers quietly leave · polish last, never first · and how to spot the phrases that sound machine-made.</div>
+    <div class="toolbar" style="justify-content:center">
+      <button class="btn primary" onclick="downloadChapter()">⬇ Download my edited chapter</button>
+      <button class="btn gold" onclick="downloadDoc()">📄 Download my editing notes</button>
+      <button class="btn" onclick="backToBook()">Next chapter →</button>
+    </div>
+  </div>`;
+}
+function downloadChapter(){
+  const c=ch(); if(!c)return;
+  const head=[byline()?byline():null,S.title||null,c.title].filter(Boolean).join(' — ');
+  const blob=new Blob([head+'\n\n'+c.text],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const stub=[(who()||'').replace(/[^\w-]+/g,'_'),(c.title||'chapter').replace(/[^\w-]+/g,'_')].filter(Boolean).join('_');
+  a.download=stub+'_edited.txt';a.click();
+  toast('Downloaded ✓');
+}
+
+/* ============================================================
+   THE RUNNING DOCUMENT
+   A live markdown record of this chapter's edit — what the editor
+   said, what they changed, why. Builds itself from state, so it can
+   never drift out of sync. Downloadable as .md; on Chrome/Edge it can
+   also be linked to a real file that rewrites itself as they work.
+   ============================================================ */
+function stripTags(h){return String(h==null?'':h).replace(/<[^>]+>/g,'');}
+function runningDoc(c){
+  if(!c)return '';
+  const L=[];
+  L.push('# '+(c.title||'Chapter'));
+  const meta=[byline()?'**Author:** '+byline():null,S.title?'**Book:** '+S.title:null,S.lane?'**Genre:** '+laneLabel():null].filter(Boolean);
+  if(meta.length)L.push(meta.join(' · '));
+  L.push('*My editing notes — kept for me by The Editing Coach*');
+  L.push('');
+  let any=false;
+  STEPS.forEach((s,i)=>{
+    const st=(c.steps&&c.steps[s.id])||{};
+    if(!(st.done||st.notes||st.why||st.applied))return;
+    any=true;
+    L.push('## Step '+(i+1)+' — '+s.t);
+    L.push('*'+(st.skipped?'Skipped':(st.done?'Done':'In progress'))+'*');
+    L.push('');
+    L.push('**Why editors do this:** '+stripTags(s.why));
+    if(st.notes){L.push('');L.push('**What my editor said**');L.push('');st.notes.split('\n').forEach(x=>L.push('> '+x));}
+    if(st.why){L.push('');L.push('**What I changed, and why**');L.push('');L.push(st.why);}
+    if(st.applied)L.push('\n**Tracked changes:** kept '+st.applied.accepted+' of '+st.applied.total+'.');
+    L.push('');L.push('---');L.push('');
+  });
+  if(!any)L.push('*Nothing recorded yet. Save your editor\'s notes, or jot down what you changed, and it lands here.*');
+  else L.push('*'+stepsDone(c)+' of '+STEPS.length+' steps finished · '+wc(c.text).toLocaleString()+' words*');
+  return L.join('\n');
+}
+function mdToHtml(md){
+  const inline=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>');
+  return md.split('\n').map(l=>{
+    if(/^---\s*$/.test(l))return '<hr>';
+    if(/^## /.test(l))return '<h4>'+inline(l.slice(3))+'</h4>';
+    if(/^# /.test(l))return '<h3>'+inline(l.slice(2))+'</h3>';
+    if(/^> /.test(l))return '<blockquote>'+inline(l.slice(2))+'</blockquote>';
+    if(!l.trim())return '';
+    return '<p>'+inline(l)+'</p>';
+  }).join('');
+}
+function docName(){
+  const c=ch();
+  return [(who()||'').replace(/[^\w-]+/g,'_'),((c&&c.title)||'chapter').replace(/[^\w-]+/g,'_'),'editing-notes'].filter(Boolean).join('_')+'.md';
+}
+function toggleDoc(){
+  grabOpen(); save();          /* show what they've typed, not just what's committed */
+  const w=document.getElementById('docWrap');
+  if(w)w.classList.toggle('hidden');
+  renderDoc();
+}
+function renderDoc(){
+  const c=ch(), btn=document.getElementById('docBtn');
+  if(btn)btn.style.display=c?'':'none';
+  const w=document.getElementById('docWrap');
+  if(!c&&w)w.classList.add('hidden');
+  const b=document.getElementById('docBody');
+  if(b)b.innerHTML=mdToHtml(runningDoc(c));
+  const f=document.getElementById('docFoot');
+  const linkedHere = docHandle && c && docChapter===c.id;
+  if(f)f.innerHTML=linkedHere
+    ? '🔗 Linked to <b>'+esc(docHandle.name)+'</b> — it rewrites itself every time you save something here.'
+    : (window.showSaveFilePicker
+        ? '<button class="btn small" onclick="keepLiveFile()">🔗 Keep a live .md file on my computer</button>'
+          +(docHandle?' <span style="font-size:12px">(<b>'+esc(docHandle.name)+'</b> is linked to a different chapter)</span>':'')
+        : 'Hit <b>⬇ .md</b> any time — the file is rebuilt fresh from everything above.');
+  writeLive();
+}
+let docHandle=null, docChapter=null, writeQ=Promise.resolve();
+async function keepLiveFile(){
+  const c=ch(); if(!c){toast('Open a chapter first');return;}
+  try{
+    docHandle=await window.showSaveFilePicker({suggestedName:docName(),types:[{description:'Markdown',accept:{'text/markdown':['.md']}}]});
+    docChapter=c.id;
+  }catch(e){return;/* they cancelled the picker — nothing to do */}
+  await writeLive(); renderDoc();
+  if(docHandle)toast('Linked ✓ that file updates itself as you work');
+}
+/* Writes are queued, never concurrent, and NEVER write an empty document —
+   createWritable truncates, so an empty write would erase the author's file. */
+function writeLive(){
+  writeQ=writeQ.then(async()=>{
+    if(!docHandle)return;
+    const c=ch();
+    if(!c||c.id!==docChapter)return;          /* different chapter — leave that file alone */
+    const md=runningDoc(c);
+    if(!md.trim())return;
+    try{const w=await docHandle.createWritable();await w.write(md);await w.close();}
+    catch(e){
+      docHandle=null; docChapter=null;
+      toast('Lost the link to your notes file — use ⬇ .md to save a copy');
+      renderDoc();
+    }
+  });
+  return writeQ;
+}
+function downloadDoc(){
+  grabOpen(); save();
+  const c=ch(); if(!c){toast('Open a chapter first');return;}
+  const blob=new Blob([runningDoc(c)],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=docName();a.click();
+  toast('Notes downloaded ✓');
+}
+
+/* ---------- file save / load / reset ---------- */
+function saveFile(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(S.title||'editing-coach').replace(/[^\w-]+/g,'_')+'.json';a.click();
+  toast('Backup saved ✓');
+}
+function loadFile(ev){
+  const f=ev.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    let o;
+    try{o=JSON.parse(e.target.result);}catch(err){toast('Could not read that file');return;}
+    if(!o||typeof o!=='object'||!Array.isArray(o.chapters)){toast("That doesn't look like an Editing Coach backup");return;}
+    /* loading replaces ALL of S — name, pen name, voice notes and title too,
+       so ask whenever any of that exists, not just when chapters do */
+    const hasWork=S.chapters.length||(S.title||'').trim()||who()||((S.voice||{}).notes||'').trim();
+    if(hasWork&&!confirm('Replace everything currently in the Coach with this file? Your current work here will be gone.'))return;
+    S=Object.assign(fresh(),o);
+    if(!S.chapters.some(c=>c.id===S.cur))S.cur=null;
+    /* the linked .md belonged to the project we just replaced */
+    docHandle=null; docChapter=null;
+    save();render();toast('Loaded ✓');
+  };
+  r.readAsText(f); ev.target.value='';
+}
+function startOver(){
+  if(!confirm('Clear EVERYTHING — all chapters and progress? This can\'t be undone. (Use "Save file" first if you want a backup.)'))return;
+  try{localStorage.removeItem(LSKEY);}catch(e){}
+  S=fresh();save();render();toast('Fresh start');
+}
+
+/* branding — one flag swaps the TIP build for the white-label sale build */
+(function brand(){
+  const f=document.getElementById('foot');
+  if(f)f.textContent = (CONFIG.tipMode?`${CONFIG.brand} · ${CONFIG.owner} — `:'')+'Everything stays in your browser. Nothing is uploaded, ever.';
+  const pill=document.querySelector('.topbar .pill');
+  if(pill&&!CONFIG.tipMode)pill.textContent='FOR YOUR FIRST EDIT';
+})();
+render();
+</script>
+</body>
+</html>
