@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>The Pen Name Website Blueprint — The Invisible Pen</title>
+<style>
+:root{
+  --cream:#F8F1E9; --teal:#0F766E; --teal-dark:#0B5A54; --teal-soft:#E2EFED;
+  --gold:#C9A66B; --gold-soft:#F3EAD9; --blush:#D4A5A5; --blush-soft:#F6E7E7;
+  --ink:#2E2A25; --muted:#7A7168; --card:#fff; --line:#EADFD2;
+  --ok:#3E7D5C; --ok-soft:#E4F1E9; --warn:#B45309; --warn-soft:#FDF0DF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:var(--cream);line-height:1.65}
+header{background:linear-gradient(115deg,var(--teal),#12897F);color:#fff;padding:42px 22px 34px;text-align:center}
+header h1{font-size:2rem;letter-spacing:-.02em}
+header .sub{opacity:.92;max-width:640px;margin:10px auto 0;font-size:1.02rem}
+.pill{display:inline-block;background:var(--gold);color:#3a2a08;font-size:11px;font-weight:700;letter-spacing:1.5px;padding:4px 14px;border-radius:999px;margin-bottom:14px;font-family:system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:26px 16px 80px}
+h2{color:var(--teal-dark);font-size:1.35rem;margin:38px 0 10px}
+p{margin:0 0 1em}
+.progresswrap{position:sticky;top:0;z-index:50;background:rgba(248,241,233,.96);backdrop-filter:blur(6px);padding:10px 16px;border-bottom:1px solid var(--line)}
+.progressbar{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:12px;font-family:system-ui,sans-serif;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:12px;background:#EEE3D6;border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:999px;transition:width .4s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:16px 0;box-shadow:0 2px 10px rgba(47,42,38,.05)}
+.card.goldtop{border-top:4px solid var(--gold)}
+.card.tealtop{border-top:4px solid var(--teal)}
+.card.warn{background:var(--warn-soft);border-color:#EFD9B8}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:10px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--teal-dark);font-family:system-ui,sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+.free{color:var(--ok);font-weight:bold}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:14px 0;overflow:hidden;box-shadow:0 2px 10px rgba(47,42,38,.05)}
+.stage>button.head{all:unset;display:flex;width:100%;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;box-sizing:border-box}
+.stage>button.head:hover{background:#FCF8F2}
+.stagenum{flex:0 0 44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;font-weight:700;font-size:18px}
+.stage.done .stagenum{background:var(--ok)}
+.stagetitle{flex:1}
+.stagetitle b{font-size:1.08rem;color:var(--teal-dark)}
+.stagetitle .meta{font-size:.82rem;color:var(--muted);font-family:system-ui,sans-serif}
+.chev{font-family:system-ui,sans-serif;color:var(--muted);transition:transform .25s}
+.stage.open .chev{transform:rotate(90deg)}
+.stagebody{display:none;padding:2px 22px 20px;border-top:1px dashed var(--line)}
+.stage.open .stagebody{display:block}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:640px){.who{grid-template-columns:1fr}}
+.whobox{border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:.94rem}
+.whobox h4{font-family:system-ui,sans-serif;font-size:.78rem;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px}
+.whobox.you{background:var(--gold-soft)} .whobox.you h4{color:#7a5c1e}
+.whobox.claude{background:var(--teal-soft)} .whobox.claude h4{color:var(--teal-dark)}
+.check{display:flex;gap:9px;align-items:flex-start;margin:7px 0;cursor:pointer}
+.check input{margin-top:5px;accent-color:var(--teal);width:16px;height:16px;flex:0 0 16px}
+.check.donetxt{color:var(--muted);text-decoration:line-through}
+.whobox.claude li{margin:6px 0 6px 18px}
+.prompt{background:#2E2A25;color:#F4EDE4;border-radius:12px;padding:14px 16px;font-family:Consolas,Menlo,monospace;font-size:.85rem;line-height:1.55;white-space:pre-wrap;margin:12px 0 4px;position:relative}
+.copybtn{position:absolute;top:8px;right:8px;background:var(--gold);border:none;color:#3a2a08;font-family:system-ui,sans-serif;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;cursor:pointer}
+.copybtn:hover{filter:brightness(1.06)}
+.receipt{background:var(--blush-soft);border-left:4px solid var(--blush);border-radius:10px;padding:11px 15px;font-size:.92rem;margin:12px 0}
+.receipt b{color:#8a4a4a}
+.tip{background:var(--cream);border-left:4px solid var(--gold);border-radius:10px;padding:11px 15px;font-size:.92rem;margin:12px 0}
+.tag{display:inline-block;font-family:system-ui,sans-serif;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--teal-soft);color:var(--teal-dark);margin-left:8px;vertical-align:middle}
+.tag.opt{background:#EEE9E2;color:var(--muted)}
+details.trouble{border:1px solid var(--line);border-radius:12px;background:#fff;margin:10px 0;padding:0}
+details.trouble summary{cursor:pointer;padding:12px 16px;font-weight:bold;color:var(--teal-dark)}
+details.trouble div{padding:0 16px 14px;font-size:.94rem}
+.btn{display:inline-block;background:var(--teal);color:#fff;border:none;border-radius:999px;padding:11px 24px;font-family:inherit;font-size:1rem;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--teal-dark)}
+.celebrate{display:none;text-align:center;background:var(--ok-soft);border:1px solid #B7DCC4;border-radius:16px;padding:26px;margin:20px 0}
+.celebrate.show{display:block}
+.foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
+@media print{
+  .progresswrap,.copybtn,.btn,.noprint{display:none!important}
+  .stagebody{display:block!important}
+  .stage{break-inside:avoid}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="pill">THE INVISIBLE PEN · STUDENT BLUEPRINT</div>
+  <h1>The Pen Name Website Blueprint</h1>
+  <p class="sub">How to get a real website — your own domain, email, even a database — without writing a single line of code. You direct; your AI collaborator builds. I did this exact process for a reader community in three days, and this is the map.</p>
+</header>
+<div class="progresswrap"><div class="progressbar"><span id="pct">0%</span><div class="bar"><div class="fill" id="fill"></div></div><span id="ptext">Let's begin</span></div></div>
+<main>
+
+<div class="card goldtop">
+  <p><b>Who this is for:</b> you have a pen name (or a reader group, or a class, or an idea) that deserves its own home on the internet — and every "website builder" you've tried wants $20+ a month to hold your content hostage on their platform.</p>
+  <p><b>The honest promise:</b> by the end of this walkthrough you'll have a real website at your own address (like <i>yourpenname.com</i>), email at that address, and a setup where changes cost you a sentence — "add a page for my new series" — instead of an afternoon.</p>
+  <p style="margin-bottom:0"><b>What it costs:</b> about <span class="free">$11 a year</span> for the domain name. Everything else in this blueprint has a genuinely usable free tier as of July 2026. Monthly bill: <span class="free">$0</span>.</p>
+</div>
+
+<h2>The one rule that makes this work</h2>
+<div class="card tealtop">
+  <p>You and your AI collaborator (I use Claude — in Claude Code or Cowork, where it can actually do things, not just chat) split the work like this:</p>
+  <div class="who">
+    <div class="whobox you"><h4>🖋 Only YOU ever do</h4>
+      Create accounts · type passwords · click "Authorize" buttons · enter payment info · approve anything that publishes or spends money
+    </div>
+    <div class="whobox claude"><h4>🤖 Claude does everything else</h4>
+      <ul><li>Writes all the code</li><li>Connects all the services</li><li>Sets up the technical records</li><li>Tests everything before you touch it</li><li>Fixes what breaks</li></ul>
+    </div>
+  </div>
+  <p style="margin-bottom:0"><b>Never give your passwords to the AI. Ever.</b> A good collaborator will stop, hand you the keyboard for the password moment, and pick the work back up after. If it asks you to paste a password into chat — that's your cue to say no. (Claude is built to refuse this anyway. Let it.)</p>
+</div>
+
+<h2>The cast of characters</h2>
+<div class="card">
+  <p>Five accounts, all free to create. Use the <b>same login email</b> for all of them, and sign up with the Google or GitHub button where offered — fewer passwords to lose.</p>
+  <table>
+    <tr><th>Service</th><th>What it is in plain English</th><th>Cost</th></tr>
+    <tr><td><b>GitHub</b></td><td>Your code's forever home. Every version saved, nothing ever lost.</td><td class="free">Free</td></tr>
+    <tr><td><b>Vercel</b></td><td>The hosting — turns your code into a live website, automatically, every time it changes.</td><td class="free">Free</td></tr>
+    <tr><td><b>Porkbun</b></td><td>Where you buy your domain name. Includes free email forwarding and privacy.</td><td>~$11/yr</td></tr>
+    <tr><td><b>Supabase</b> <span class="tag opt">only if needed</span></td><td>A database — the filing cabinet, if your site needs to <i>remember</i> things (signups, submissions).</td><td class="free">Free</td></tr>
+    <tr><td><b>Resend</b> <span class="tag opt">only if needed</span></td><td>Lets your site <i>send</i> email (welcome messages, alerts) from your own domain.</td><td class="free">Free</td></tr>
+  </table>
+  <p style="margin-bottom:0" class="noprint"><i>A simple pen name site needs only the first three. The optional two join the party when your site does more than display — collect newsletter signups, run a form, notify you of things.</i></p>
+</div>
+
+<h2>The build, stage by stage</h2>
+<p>Click each stage to open it. Check things off as you go — this page remembers your progress. Every stage has a copy-paste prompt to hand your Claude.</p>
+
+<!-- STAGE 1 -->
+<div class="stage" data-stage="1">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">1</span><span class="stagetitle"><b>Dream it on paper first</b><br><span class="meta">30 minutes · the most important stage — and no computer skills required</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Before anyone builds anything, write down what you actually want — in plain English, like you're describing it to a friend. The quality of this description decides the quality of your website. Vague in, vague out.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="1a"><span>List the pages you want (Home, Books, About, Newsletter, Contact…)</span></label>
+        <label class="check"><input type="checkbox" data-ck="1b"><span>Decide the vibe: colors, mood, three words that describe the brand</span></label>
+        <label class="check"><input type="checkbox" data-ck="1c"><span>Decide what the site should DO (just display? collect emails? take submissions?)</span></label>
+        <label class="check"><input type="checkbox" data-ck="1d"><span>Pick your domain name — and say it out loud. Would a listener spell it right?</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Turns your wish list into a proper technical spec</li><li>Asks the questions you didn't know to answer</li><li>Suggests what you forgot (a 404 page, mobile layout, privacy basics)</li></ul>
+      </div>
+    </div>
+    <div class="prompt"><button class="copybtn" onclick="copyPrompt(this)">📋 Copy</button>I want to build a website for my pen name, [PEN NAME], who writes [GENRE]. I am not a coder — you'll do all the technical work end to end, and I'll create the accounts and type the passwords when needed.
+
+Pages I want: [Home with my books, About the author, Newsletter signup, Contact]
+The vibe: [three words — e.g. cozy, autumnal, bookish] with colors like [your colors]
+It should: [display my books with buy links / collect newsletter emails / etc.]
+My domain will be: [yourpenname.com] (not purchased yet)
+
+Please turn this into a build plan using free services (GitHub + Vercel, plus Supabase/Resend only if my features need them), tell me exactly which accounts I'll need to create myself, and then let's build it step by step — showing me the site working on my own screen before anything goes live.</div>
+    <div class="receipt"><b>Receipt from my build:</b> my spec for the Beta Besties reader community was one long message — pages, the 20 genres, who could see what, the privacy rules. Claude turned it into a working site the same day. The three days after that were all polish and extra wishes. The spec is the work.</div>
+  </div>
+</div>
+
+<!-- STAGE 2 -->
+<div class="stage" data-stage="2">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">2</span><span class="stagetitle"><b>GitHub — give the code a forever home</b><br><span class="meta">10 minutes · free · one-time</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>GitHub stores your website's code with every version saved forever. If anything ever goes wrong, any previous version can come back. You'll almost never look at it — but it has to exist, and it has to be YOURS.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="2a"><span>Go to <b>github.com</b> → Sign up (free)</span></label>
+        <label class="check"><input type="checkbox" data-ck="2b"><span>Pick a username that can represent your author business (mine is my publisher name — it shows on things)</span></label>
+        <label class="check"><input type="checkbox" data-ck="2c"><span>Verify the email it sends you</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Creates the repository (the project folder) in your account</li><li>Pushes every version of the code there, with notes</li><li>Keeps it private unless you want it public</li></ul>
+      </div>
+    </div>
+    <div class="tip"><b>Why you own the account:</b> platforms come and go, prices change, moods change. When the code lives in YOUR GitHub, you can walk to any host, any helper, any future AI — nothing is hostage.</div>
+  </div>
+</div>
+
+<!-- STAGE 3 -->
+<div class="stage" data-stage="3">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">3</span><span class="stagetitle"><b>The first build — see it before the world does</b><br><span class="meta">1–2 hours of Claude working · you watch and react</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Claude writes the whole site and runs it <b>on your own computer first</b> — a private preview only you can see. This is where you react like a reader: "bigger cover images," "warmer green," "move the newsletter box up."</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="3a"><span>Look at the preview like a picky reader — say everything you notice</span></label>
+        <label class="check"><input type="checkbox" data-ck="3b"><span>Check it on your phone-sized window too (most readers are on phones)</span></label>
+        <label class="check"><input type="checkbox" data-ck="3c"><span>Give real content early: your bio, book covers, blurbs (placeholder text hides problems)</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Writes every page, styles it to your vibe</li><li>Runs a local preview on your screen</li><li>Tests the forms and links itself before showing you</li><li>Fixes everything you point at, on the spot</li></ul>
+      </div>
+    </div>
+    <div class="prompt"><button class="copybtn" onclick="copyPrompt(this)">📋 Copy</button>Before we put anything online, run the site on my computer so I can see it and give feedback. Test the pages yourself first — then walk me through what you built in plain words, page by page. I'll tell you what to change like I'm a picky reader.</div>
+    <div class="tip"><b>Say the fuzzy thing.</b> "It feels crowded" and "it doesn't feel like her brand" are legitimate, useful feedback. You don't need the vocabulary — the reaction IS the direction. Claude translates feelings into pixels; that's the job.</div>
+  </div>
+</div>
+
+<!-- STAGE 4 -->
+<div class="stage" data-stage="4">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">4</span><span class="stagetitle"><b>Supabase — the filing cabinet</b> <span class="tag opt">skip if your site only displays</span><br><span class="meta">10 minutes of yours · free</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>If your site needs to <b>remember</b> anything — newsletter signups, reader submissions, form entries — it needs a database. Supabase's free tier is far more than an author site will ever use.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="4a"><span><b>supabase.com</b> → sign in with your GitHub button</span></label>
+        <label class="check"><input type="checkbox" data-ck="4b"><span>Create a project named after your site; save the database password it asks you to invent (you'll likely never need it, but save it)</span></label>
+        <label class="check"><input type="checkbox" data-ck="4c"><span>When Claude asks: copy the one "service key" from the dashboard and paste it into Vercel's settings yourself — Claude stages both screens and tells you exactly where to click</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Designs the tables (the drawers in the cabinet)</li><li>Sets the privacy rules so only the site can read them</li><li>Wires the site to the database and tests it</li></ul>
+      </div>
+    </div>
+    <div class="tip"><b>The key-paste move</b> comes up twice in this blueprint (here and at Resend). It's always the same dance: the service shows a secret key → YOU copy it → YOU paste it into a settings box Claude has staged → Claude never sees it. Two clicks and a Ctrl+V. That's the whole ceremony.</div>
+  </div>
+</div>
+
+<!-- STAGE 5 -->
+<div class="stage" data-stage="5">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">5</span><span class="stagetitle"><b>Vercel — put it on the internet (free)</b><br><span class="meta">15 minutes · the moment it becomes real</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Vercel connects to your GitHub, builds your site, and puts it live at a free address like <i>yourpenname.vercel.app</i>. From this moment on, <b>every change Claude pushes goes live automatically in about a minute.</b> No uploading, no "publishing" step, ever.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="5a"><span><b>vercel.com</b> → Sign up → "Continue with GitHub" → Hobby (free) plan</span></label>
+        <label class="check"><input type="checkbox" data-ck="5b"><span>When GitHub pops up asking to install/authorize Vercel — that green button is yours to click</span></label>
+        <label class="check"><input type="checkbox" data-ck="5c"><span>Watch Claude import the project and hit Deploy — then open your new live link and grin</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Imports the repository, sets every setting</li><li>Deploys and verifies the live site actually works</li><li>Sets up the settings boxes for any keys you'll paste</li></ul>
+      </div>
+    </div>
+    <div class="receipt"><b>Receipt from my build:</b> the moment Vercel finished, my community site was live on the internet with a working book shelf — before I'd spent a dollar. The free address isn't pretty, but it's REAL, and it never stops working even after you add the pretty one.</div>
+  </div>
+</div>
+
+<!-- STAGE 6 -->
+<div class="stage" data-stage="6">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">6</span><span class="stagetitle"><b>The domain — your name on the door (~$11/yr)</b><br><span class="meta">15 minutes · the only money in this whole blueprint</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Buy your domain at <b>porkbun.com</b> — roughly $11/year for a .com <i>with privacy included free</i> (some registrars charge $15/yr extra for that, which is how an $11 domain becomes $28). Purchases are always yours to make; Claude can't and shouldn't buy things.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do — the checkout checklist</h4>
+        <label class="check"><input type="checkbox" data-ck="6a"><span><b>Spell-check the domain in the cart. Out loud. Letter by letter.</b></span></label>
+        <label class="check"><input type="checkbox" data-ck="6b"><span>Singular or plural — is it EXACTLY your brand name?</span></label>
+        <label class="check"><input type="checkbox" data-ck="6c"><span>WHOIS Privacy showing as included ✓ (keeps your home address out of public records)</span></label>
+        <label class="check"><input type="checkbox" data-ck="6d"><span>Decline every upsell: hosting, email hosting, SSL, .net bundles — you need none of it</span></label>
+        <label class="check"><input type="checkbox" data-ck="6e"><span>Auto-renew ON (a lapsed domain is an author's nightmare)</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Checks the name is actually available before you shop</li><li>Adds the technical records that point the domain at your site</li><li>Connects it in Vercel and confirms yourpenname.com loads with the padlock</li></ul>
+      </div>
+    </div>
+    <div class="receipt"><b>Receipt from my build:</b> I had the SINGULAR of my community's plural name sitting in a checkout cart — one letter from buying the wrong domain, no refunds. My Claude caught it at the last review. Hence the checklist item in bold. Also: the first registrar's cart had quietly added a $15 privacy fee and a bonus .online domain I never asked for. Read the cart.</div>
+  </div>
+</div>
+
+<!-- STAGE 7 -->
+<div class="stage" data-stage="7">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">7</span><span class="stagetitle"><b>Email at your domain</b> <span class="tag opt">forwarding free · sending optional</span><br><span class="meta">10–30 minutes depending on how far you go</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Two levels — most pen name sites only need the first:</p>
+    <p><b>Level 1 — receiving (free, built into Porkbun):</b> <i>hello@yourpenname.com</i> forwards into the Gmail you already check. Looks professional on your back matter and newsletter; costs nothing; takes five minutes.</p>
+    <p><b>Level 2 — sending (free tier at resend.com):</b> only if your SITE needs to send mail — welcome emails when someone joins your newsletter, alerts to you when someone submits a form. This is the fanciest wiring in the blueprint, and it's still just: you create the account, Claude sets up the records, you paste one key.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 You do</h4>
+        <label class="check"><input type="checkbox" data-ck="7a"><span>In Porkbun: Email Forwarding → hello@ → your Gmail (Claude will drive; you watch)</span></label>
+        <label class="check"><input type="checkbox" data-ck="7b"><span>Send yourself a test from another account — did it arrive?</span></label>
+        <label class="check"><input type="checkbox" data-ck="7c"><span>Level 2 only: create the free resend.com account, then paste its one key when Claude stages the screen</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude does</h4>
+        <ul><li>Sets up the forwarding rules</li><li>Level 2: adds the DKIM/SPF records (the "yes this email is really from me" paperwork), verifies the domain, wires the site's emails, and sends live tests until one lands in your inbox</li></ul>
+      </div>
+    </div>
+    <div class="tip"><b>Patience moment:</b> internet address changes (DNS) can take minutes to a few hours to spread worldwide. If something doesn't work immediately after a records change, wait twenty minutes before worrying. Claude will keep checking for you — mine literally watches until it goes green.</div>
+  </div>
+</div>
+
+<!-- STAGE 8 -->
+<div class="stage" data-stage="8">
+  <button class="head" onclick="toggleStage(this)"><span class="stagenum">8</span><span class="stagetitle"><b>The living website — how it works forever after</b><br><span class="meta">the payoff · changes cost one sentence</span></span><span class="chev">▶</span></button>
+  <div class="stagebody">
+    <p>Here's the part no $20-a-month website builder gives you. From now on, changing your site sounds like this:</p>
+    <div class="prompt"><button class="copybtn" onclick="copyPrompt(this)">📋 Copy</button>Add my new release to the books page: [TITLE], out [DATE], cover attached, buy link [LINK]. Match the style of the others, put it first, and add a "New!" ribbon. Test it, then show me before and after.</div>
+    <p>Claude edits, tests, pushes — and about a minute later it's live at your domain. That's the whole maintenance story.</p>
+    <div class="who">
+      <div class="whobox you"><h4>🖋 Your standing habits</h4>
+        <label class="check"><input type="checkbox" data-ck="8a"><span>Describe changes in reader language; approve anything that sends email or spends money</span></label>
+        <label class="check"><input type="checkbox" data-ck="8b"><span>Keep your handful of logins in a password manager (you now own 4–5 accounts — they ARE your website)</span></label>
+        <label class="check"><input type="checkbox" data-ck="8c"><span>Once a year: pay the ~$11 renewal. That's the entire bill.</span></label>
+      </div>
+      <div class="whobox claude"><h4>🤖 Claude's standing duties</h4>
+        <ul><li>Every change: build → test → deploy → verify live</li><li>Diagnose anything weird ("my book vanished!") down to the real cause</li><li>Add whole features later — a blog, a reader magnet page, a second pen name site reusing everything you learned here</li></ul>
+      </div>
+    </div>
+    <div class="receipt"><b>Receipt from my build:</b> after launch, my community found real gaps — authors couldn't update their book links, readers needed welcome emails, I needed an inbox. Each fix was me describing the problem in one message and Claude shipping it the same hour, tested, while members were actively using the site. THAT is what you're actually setting up in this blueprint: not a website, a website you can steer.</div>
+  </div>
+</div>
+
+<h2>When things go sideways (they will, briefly)</h2>
+<div class="card">
+  <p>Every one of these happened in my real build. None of them mattered by dinnertime.</p>
+  <details class="trouble"><summary>"I made the account but Claude's browser shows me logged out"</summary><div>You're probably signed in on a different browser window or profile than the one Claude is driving. Sign in on the window Claude names — or tell Claude which window YOU'RE in and let it reconnect there. (I run three Chrome windows. This cost us twenty minutes and a small mystery involving my laptop being closed.)</div></details>
+  <details class="trouble"><summary>"We changed a setting and nothing happened"</summary><div>DNS propagation — address changes take minutes to hours to spread. Wait 20 minutes. Also: some registrar dashboards have TWO settings screens where one silently fails — if a record "won't save," ask Claude to verify from the outside (it can check what the world actually sees) rather than trusting the screen.</div></details>
+  <details class="trouble"><summary>"The site shows old information after a change"</summary><div>Two suspects: your browser cached the page (hard-refresh: Ctrl+Shift+R), or the site itself is caching data it should refetch — that one's a real bug; tell Claude "the page shows stale data but the underlying info is right" and it'll know exactly where to look. Mine did this with new book submissions on day three; fixed in one line.</div></details>
+  <details class="trouble"><summary>"A scary warning popped up mid-setup"</summary><div>Read it to Claude verbatim before clicking anything. Half the time it's expected (ours warned that switching mail routing would disconnect the old forwarding — which was the entire plan). The other half, Claude will tell you to stop. Either way: the warning is information, not an emergency.</div></details>
+  <details class="trouble"><summary>"I lost track of which account does what"</summary><div>GitHub = the code's home. Vercel = makes it a live website. Porkbun = your name + email forwarding. Supabase = remembers things. Resend = sends email. Ask Claude to write YOUR version of this map with your actual links after the build — mine keeps one updated for me and it has saved me a dozen times.</div></details>
+</div>
+
+<h2>The money, honestly</h2>
+<div class="card goldtop">
+  <table>
+    <tr><th>Thing</th><th>This blueprint</th><th>Typical website builder</th></tr>
+    <tr><td>Monthly fee</td><td class="free">$0</td><td>$16–$40/mo</td></tr>
+    <tr><td>Domain</td><td>~$11/yr</td><td>~$20/yr (often marked up)</td></tr>
+    <tr><td>Email at your domain</td><td class="free">free forwarding</td><td>often $6+/mo extra</td></tr>
+    <tr><td>Who owns the code</td><td class="free">YOU</td><td>the platform</td></tr>
+    <tr><td>Cost of a change</td><td class="free">one sentence to Claude</td><td>your Saturday</td></tr>
+  </table>
+  <p style="margin-bottom:0"><i>Free tiers are real but not infinite — as of July 2026 they're far beyond what an author site uses. If your community someday outgrows one, that's a champagne problem, and upgrading is a settings change, not a rebuild.</i></p>
+</div>
+
+<div class="celebrate" id="celebrate">
+  <h2 style="margin-top:0">🎉 Blueprint complete!</h2>
+  <p>You own a real website, a real address, and — quietly, without ceremony — the technical confidence most authors never let themselves have. Go put your books on it.</p>
+</div>
+
+<div class="card noprint" style="text-align:center">
+  <button class="btn" onclick="window.print()">🖨 Print my checklist</button>
+  <p style="margin:10px 0 0;font-size:.85rem;color:var(--muted)">Printing expands every stage into a paper checklist.</p>
+</div>
+
+<p class="foot">The Invisible Pen · Clark Publishing House — from the Beta Besties build, July 2026. Your progress saves in this browser automatically.</p>
+</main>
+<script>
+const LS="tip-pen-name-blueprint-v1";
+let st={};
+try{ st=JSON.parse(localStorage.getItem(LS))||{} }catch(e){ st={} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify(st)) }catch(e){} }
+const boxes=[...document.querySelectorAll('input[data-ck]')];
+boxes.forEach(b=>{
+  b.checked=!!st[b.dataset.ck];
+  sync(b);
+  b.addEventListener('change',()=>{ st[b.dataset.ck]=b.checked; save(); sync(b); progress(); });
+});
+function sync(b){ b.closest('.check').classList.toggle('donetxt',b.checked); }
+function toggleStage(head){ head.parentElement.classList.toggle('open'); }
+function progress(){
+  const done=boxes.filter(b=>b.checked).length, total=boxes.length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('ptext').textContent= pct===0?"Let's begin": pct<100? done+" of "+total+" steps done":"All done — you built a website! 🦋";
+  document.getElementById('celebrate').classList.toggle('show',pct===100);
+  document.querySelectorAll('.stage').forEach(s=>{
+    const sb=[...s.querySelectorAll('input[data-ck]')];
+    s.classList.toggle('done', sb.length>0 && sb.every(x=>x.checked));
+  });
+}
+function copyPrompt(btn){
+  const text=btn.parentElement.innerText.replace(/^📋 Copy\s*/,'').trim();
+  navigator.clipboard.writeText(text).then(()=>{ btn.textContent="Copied ✓"; setTimeout(()=>btn.textContent="📋 Copy",1800); })
+    .catch(()=>{ btn.textContent="Select & copy"; });
+}
+progress();
+document.querySelector('.stage').classList.add('open');
+</script>
+</body>
+</html>
