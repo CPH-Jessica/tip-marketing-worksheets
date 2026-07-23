@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Like a Boss — A Class by Jessica Waldron</title>
+<style>
+  :root{--ink:#2a2320;--paper:#fbf7f1;--card:#ffffff;--plum:#1B2A4A;--plum-soft:#5b6d8f;--gold:#c08a2d;--sage:#5f7a5a;--coral:#E8735A;--rule:#e7ddd0;--shadow:0 6px 24px rgba(70,45,40,.09)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:"Trebuchet MS","Segoe UI",sans-serif;line-height:1.2}
+  header.hero{background:linear-gradient(135deg,#1B2A4A,#3d5378 70%);color:#fff;padding:70px 0 58px;text-align:center}
+  .hero .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.78rem;opacity:.9;font-family:"Trebuchet MS",sans-serif}
+  .hero h1{font-size:2.7rem;margin:.3em 0 .2em}
+  .hero p.sub{font-size:1.15rem;max-width:680px;margin:.5em auto 0;opacity:.96}
+  .butterfly{font-size:1.4rem}
+  .buy{display:inline-block;background:var(--coral);color:#fff;font-family:"Trebuchet MS","Segoe UI",sans-serif;font-weight:bold;text-decoration:none;padding:15px 36px;border-radius:32px;font-size:1.08rem;box-shadow:0 6px 18px rgba(70,45,40,.18);transition:transform .15s,background .2s;border:none;cursor:pointer}
+  .buy:hover{background:#d4634a;transform:translateY(-2px)}
+  .buy.light{background:#fff;color:var(--plum)}
+  .buy.light:hover{background:#e8edf5}
+  .cta-row{margin-top:26px}
+  .price-note{font-family:"Trebuchet MS",sans-serif;font-size:.86rem;opacity:.85;margin-top:12px}
+  section{padding:46px 0;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:"Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--gold);font-weight:bold}
+  h2{font-size:1.8rem;color:var(--plum);margin:.25em 0 .55em}
+  p{margin:.7em 0}.lead{font-size:1.14rem}
+  .outcome{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 26px;border-left:6px solid var(--sage)}
+  .outcome ul{margin:.5em 0 0;padding-left:20px}.outcome li{margin:.5em 0}
+  .proof{background:#f6efe6;border-radius:10px;padding:16px 20px;margin-top:14px;font-size:.98rem}
+  .proof b{color:var(--plum)}
+  .pass{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:18px 22px;margin:14px 0;border-left:6px solid var(--plum);display:flex;gap:18px;align-items:flex-start}
+  .pass .n{font-family:"Trebuchet MS",sans-serif;font-weight:bold;font-size:1.5rem;color:var(--coral);min-width:2.2rem;line-height:1.1}
+  .pass h3{font-size:1.2rem;color:var(--plum);margin:.05em 0 .25em}
+  .pass p{margin:.25em 0 0;font-size:.99rem}
+  .pass.human{border-left-color:var(--coral);background:#fff8f5}
+  .pass.human .n{color:var(--plum)}
+  .mod{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px;margin:16px 0;border-left:6px solid var(--sage)}
+  .mod .num{font-family:"Trebuchet MS",sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:bold}
+  .mod h3{font-size:1.32rem;color:var(--plum);margin:.15em 0 .15em}
+  .mod .tease{font-style:italic;color:var(--plum-soft);margin:0 0 .6em}
+  .mod .row{margin:.55em 0}
+  .mod .k{font-family:"Trebuchet MS",sans-serif;font-weight:bold;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;color:var(--sage)}
+  .mod .do{background:#f6efe6;border-radius:8px;padding:10px 14px;margin-top:8px}
+  .kit{background:linear-gradient(135deg,#5f7a5a,#7c9a76);color:#fff;border-radius:12px;padding:24px 28px;box-shadow:var(--shadow)}
+  .kit h2{color:#fff;margin-top:0}
+  .kit ol{margin:.4em 0 0;padding-left:22px}.kit li{margin:.45em 0}
+  .test{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:20px 24px}
+  .test .big{font-size:1.15rem;color:var(--plum);font-weight:bold;font-family:"Trebuchet MS",sans-serif}
+  .enroll{text-align:center;background:#f6efe6;border-radius:12px;padding:34px 24px}
+  .enroll h2{margin-top:0}
+  .closing{background:#16223b;color:#e8edf5;text-align:center;padding:52px 0}
+  .closing h2{color:#fff}.closing p{max-width:640px;margin:.6em auto 0}
+  .closing .sign{font-style:italic;font-size:1.18rem;margin-top:16px}
+  footer{font-family:"Trebuchet MS",sans-serif;font-size:.76rem;color:var(--plum-soft);text-align:center;padding:22px}
+  @media(max-width:680px){.hero h1{font-size:2rem}.pass{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">The Invisible Pen &nbsp;•&nbsp; A Self-Paced Class</div>
+    <h1>Edit Like a Boss</h1>
+    <p class="sub">One editing pass will never be enough. This is the complete 8-pass AI editing system for fiction — plus the ninth pass that cannot be outsourced to anything but you. <span class="butterfly">🦋</span></p>
+    <div class="cta-row"><a class="buy" href="#enroll">Get the class →</a></div>
+    <div class="price-note">Self-paced · Lifetime access · Every pass has a worksheet and a copy-paste prompt</div>
+  </div>
+</header>
+
+<!-- OUTCOME FIRST -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">What you walk out with</div>
+    <h2>A repeatable editing system — not a vibe check.</h2>
+    <div class="outcome">
+      <p style="margin-top:0"><strong>By the end of this class you will be able to:</strong></p>
+      <ul>
+        <li>Run eight separate editing passes, in order, each one looking for one thing instead of everything at once.</li>
+        <li>Catch the AI-isms, the doubled Tuesdays, the head-hopping, and the chapter that quietly resolves the plot too early.</li>
+        <li>Keep chapter 20 sounding like chapter 1 — on purpose, and provably.</li>
+        <li>Build your own beta reader and editor so you stop paying for the passes you can run yourself.</li>
+        <li>Know exactly which work is yours alone — and do that pass properly.</li>
+      </ul>
+      <p><strong>And you'll leave with the tracker</strong> — all eight passes across every chapter, so you always know what's been edited and what hasn't.</p>
+    </div>
+    <div class="proof">
+      <b>Why eight passes and not one:</b> Ask AI to "edit this chapter" and it does a little of everything and none of it well. Ask it to do <em>one job</em> — just the timeline, just the dialogue, just the heat — and it gets sharp. The system is the sequence. Each pass has its own prompt, its own checklist, and its own definition of done.
+    </div>
+  </div>
+</section>
+
+<!-- THE PASSES -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Part 1 — The editing system</div>
+    <h2>The eight passes</h2>
+
+    <div class="pass"><div class="n">1</div><div><h3>Quality Check</h3><p>The eleven-point sweep: natural prose, tone match, outline adherence, arc consistency, emotional progression, pacing, show-vs-tell, chapter ending, POV, heat level, and the banned list. Fix, don't just flag.</p></div></div>
+
+    <div class="pass"><div class="n">2</div><div><h3>Plot Holes</h3><p>Find the cracks before you paint the walls. What was set up and never paid off, what contradicts chapter 4, what the reader will notice and you won't.</p></div></div>
+
+    <div class="pass"><div class="n">3</div><div><h3>Timeline</h3><p>Because nothing pulls a reader out faster than a Tuesday that happens twice. Days, seasons, travel time, how long that pregnancy has been going on.</p></div></div>
+
+    <div class="pass"><div class="n">4</div><div><h3>Line Edit</h3><p>Sentence by sentence. Rhythm, repetition, filter words, the adverbs doing work a verb should do.</p></div></div>
+
+    <div class="pass"><div class="n">5</div><div><h3>Dialogue Polish</h3><p>Does each character sound like themselves with the tags stripped off? Subtext, interruption, and the speeches nobody would actually say out loud.</p></div></div>
+
+    <div class="pass"><div class="n">6</div><div><h3>Heat Scene Edit</h3><p>Intimacy edited on its own terms — calibration to your pen name's heat level, emotional beats under the physical ones, and the clichés that kill a scene dead.</p></div></div>
+
+    <div class="pass"><div class="n">7</div><div><h3>Developmental Edit — the Slash Editor</h3><p>The structural pass. What's not earning its place, what's out of order, what the book is actually about versus what you meant it to be about.</p></div></div>
+
+    <div class="pass"><div class="n">8</div><div><h3>Voice Audit</h3><p>The final polish. Does chapter 20 sound like chapter 1? Drift is invisible while you're writing and obvious to a reader.</p></div></div>
+
+    <div class="pass human"><div class="n">9</div><div><h3>The Human Pass — the one that cannot be outsourced</h3><p>Everything above gets you a clean book. This is the pass that makes it <em>yours</em>. What only the author can judge, why no tool will ever do it for you, and how to do it properly instead of skipping it because you're tired.</p></div></div>
+
+    <p style="margin-top:22px"><strong>Plus the Progress Tracker</strong> — all eight passes across every chapter in one place, so you never lose track of what's done.</p>
+  </div>
+</section>
+
+<!-- PART 2 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Part 2 — Building your team</div>
+    <h2>Stop paying for passes you can run yourself</h2>
+
+    <div class="mod">
+      <div class="num">Lesson 1</div>
+      <h3>Your Beta Bestie</h3>
+      <p class="tease">A beta reader who's available at 2am and never gets tired of your book.</p>
+      <div class="row"><span class="k">You'll build:</span> A beta reader that reads like a reader — reactions, confusion, boredom, where they'd put the book down — instead of a grammar checker.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Lesson 2</div>
+      <h3>How to create your own Skills</h3>
+      <p class="tease">The difference between asking every time and having it built in.</p>
+      <div class="row"><span class="k">You'll build:</span> Your own reusable Skills, so the editing standards you set once get applied every time without re-explaining them.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Lesson 3</div>
+      <h3>Pen Name Style Guide Builder</h3>
+      <p class="tease">Every pen name edits by different rules. Write them down.</p>
+      <div class="row"><span class="k">You'll build:</span> A style guide per pen name — heat level, banned words, voice rules, the things that are right for one name and wrong for another.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Lesson 4</div>
+      <h3>Start how you mean to write</h3>
+      <p class="tease">The cheapest edit is the one you never have to make.</p>
+      <div class="row"><span class="k">You'll build:</span> The front-end system that stops the problems before drafting, so editing gets shorter every book.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PART 3 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Part 3 — Expanding your reach</div>
+    <h2>The right tool for each pass</h2>
+
+    <div class="mod">
+      <div class="num">Lesson 1</div>
+      <h3>What each AI does best for editing</h3>
+      <div class="row"><span class="k">You'll learn:</span> Where each model is genuinely stronger, and which passes to send where instead of forcing one tool to do all nine.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Lessons 2 &amp; 3</div>
+      <h3>Setting up ChatGPT Custom GPTs, Gemini Gems &amp; Grok Agents</h3>
+      <div class="row"><span class="k">You'll build:</span> Your editing setup in each one, configured the same way, so your standards travel with you.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Lesson 4</div>
+      <h3>The multi-tool editing workflow</h3>
+      <div class="row"><span class="k">You'll build:</span> The full routing — which pass runs where, in what order, and how the handoffs work without losing the thread.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE STANDARD -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The standard we hold the whole class</div>
+    <h2>The rule that runs through all nine passes</h2>
+    <div class="test">
+      <p class="big">"One pass, one job — and if it fails, fix it, don't just flag it."</p>
+      <p>A pass that hands you a list of problems has done half the work. Every prompt in this class ends the same way: if a check fails, revise it, then tell me what you changed and why. You stay the editor. The tool does the labor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section id="enroll">
+  <div class="wrap">
+    <div class="enroll">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Edit the next book like a boss.</h2>
+      <p>Self-paced. Lifetime access. All three parts, every pass worksheet with its copy-paste prompt, and the progress tracker — yours to keep and run on every book from here.</p>
+      <div class="cta-row"><a class="buy" href="#">Get the class →</a></div>
+      <div class="price-note" style="color:var(--plum-soft)">Secure checkout through Payhip · Instant access</div>
+    </div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="wrap">
+    <h2>You already wrote the book. Now finish it properly.</h2>
+    <p>Editing is where most indie books quietly lose their readers — not because the story was bad, but because one tired pass had to catch everything and couldn't. Nine focused passes will catch it. Eight of them you can hand off.</p>
+    <p>The ninth one is yours. That's the point.</p>
+    <div class="cta-row"><a class="buy light" href="#enroll">Get the class →</a></div>
+    <p class="sign">Keep the Dream Alive. I'm pulling for you — we're all in this together. <span class="butterfly">🦋</span></p>
+  </div>
+</div>
+
+<footer>
+  The Invisible Pen · Clark Publishing House LLC · "Edit Like a Boss" — a self-paced class by Jessica Waldron.
+</footer>
+
+<!-- ============================================================= -->
+<!--  PAYHIP LINK: currently wired to the complete edition —         -->
+<!--  "Edit Like a Boss: The Complete 8-Pass AI Editing System       -->
+<!--  (Plus the Ninth Pass That Cannot Be Outsourced)".              -->
+<!--                                                                 -->
+<!--  NOTE: there is a second, older-looking ELAB product on Payhip   -->
+<!--  at https://payhip.com/b/I3Fnx ("The 8-Pass AI Editing System"). -->
+<!--  If that one is the class and ZAWue is the eBook, swap the URL   -->
+<!--  below. Everything else on the page stays the same.             -->
+<!-- ============================================================= -->
+<script>
+  var PAYHIP_URL = "https://payhip.com/b/ZAWue";
+  var FALLBACK_URL = "https://payhip.com/theinvisiblepen/collection/self-paced-ai-tools-courses-for-authors";
+  (function(){
+    var target = PAYHIP_URL || FALLBACK_URL;
+    document.querySelectorAll('a.buy').forEach(function(a){
+      if (a.getAttribute('href') === '#') a.href = target;
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foundations of Claude — A Class by Jessica Waldron</title>
+<style>
+  :root{--ink:#2a2320;--paper:#fbf7f1;--card:#ffffff;--plum:#2f6f6a;--plum-soft:#5f9a94;--gold:#c08a2d;--sage:#5f7a5a;--rule:#e7ddd0;--shadow:0 6px 24px rgba(70,45,40,.09)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:"Trebuchet MS","Segoe UI",sans-serif;line-height:1.2}
+  header.hero{background:linear-gradient(135deg,#2f6f6a,#5f9a94 70%);color:#fff;padding:70px 0 58px;text-align:center}
+  .hero .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.78rem;opacity:.9;font-family:"Trebuchet MS",sans-serif}
+  .hero h1{font-size:2.7rem;margin:.3em 0 .2em}
+  .hero p.sub{font-size:1.15rem;max-width:680px;margin:.5em auto 0;opacity:.96}
+  .butterfly{font-size:1.4rem}
+  .badge{display:inline-block;margin-top:24px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.42);padding:8px 18px;border-radius:30px;font-family:"Trebuchet MS",sans-serif;font-size:.82rem}
+  .buy{display:inline-block;background:var(--gold);color:#fff;font-family:"Trebuchet MS","Segoe UI",sans-serif;font-weight:bold;text-decoration:none;padding:15px 36px;border-radius:32px;font-size:1.08rem;box-shadow:0 6px 18px rgba(70,45,40,.18);transition:transform .15s,background .2s;border:none;cursor:pointer}
+  .buy:hover{background:#a9761f;transform:translateY(-2px)}
+  .buy.light{background:#fff;color:var(--plum)}
+  .buy.light:hover{background:#e7f2f0}
+  .cta-row{margin-top:26px}
+  .price-note{font-family:"Trebuchet MS",sans-serif;font-size:.86rem;opacity:.85;margin-top:12px}
+  section{padding:46px 0;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:"Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--gold);font-weight:bold}
+  h2{font-size:1.8rem;color:var(--plum);margin:.25em 0 .55em}
+  p{margin:.7em 0}.lead{font-size:1.14rem}
+  .outcome{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 26px;border-left:6px solid var(--sage)}
+  .outcome ul{margin:.5em 0 0;padding-left:20px}.outcome li{margin:.5em 0}
+  .proof{background:#f6efe6;border-radius:10px;padding:16px 20px;margin-top:14px;font-size:.98rem}
+  .proof b{color:var(--plum)}
+  .mod{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px;margin:16px 0;border-left:6px solid var(--plum)}
+  .mod .num{font-family:"Trebuchet MS",sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:bold}
+  .mod h3{font-size:1.32rem;color:var(--plum);margin:.15em 0 .15em}
+  .mod .tease{font-style:italic;color:var(--plum-soft);margin:0 0 .6em}
+  .mod .row{margin:.55em 0}
+  .mod .k{font-family:"Trebuchet MS",sans-serif;font-weight:bold;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;color:var(--sage)}
+  .mod .do{background:#f6efe6;border-radius:8px;padding:10px 14px;margin-top:8px}
+  .kit{background:linear-gradient(135deg,#5f7a5a,#7c9a76);color:#fff;border-radius:12px;padding:24px 28px;box-shadow:var(--shadow)}
+  .kit h2{color:#fff;margin-top:0}
+  .kit ol{margin:.4em 0 0;padding-left:22px}.kit li{margin:.45em 0}
+  .test{background:var(--card);border-radius:10px;box-shadow:var(--shadow);padding:20px 24px}
+  .test .big{font-size:1.15rem;color:var(--plum);font-weight:bold;font-family:"Trebuchet MS",sans-serif}
+  .enroll{text-align:center;background:#f6efe6;border-radius:12px;padding:34px 24px}
+  .enroll h2{margin-top:0}
+  .closing{background:#22403d;color:#e7f2f0;text-align:center;padding:52px 0}
+  .closing h2{color:#fff}.closing p{max-width:640px;margin:.6em auto 0}
+  .closing .sign{font-style:italic;font-size:1.18rem;margin-top:16px}
+  footer{font-family:"Trebuchet MS",sans-serif;font-size:.76rem;color:var(--plum-soft);text-align:center;padding:22px}
+  @media(max-width:680px){.hero h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">The Invisible Pen &nbsp;•&nbsp; A Self-Paced Class</div>
+    <h1>Foundations of Claude</h1>
+    <p class="sub">Most authors are using Claude like a search box and wondering why it writes like a stranger. This is the class where you set it up properly — so it knows who you are, how you write, and what book you're building. <span class="butterfly">🦋</span></p>
+    <div class="cta-row"><a class="buy" href="#enroll">Get the class →</a></div>
+    <div class="price-note">Self-paced · Lifetime access · Interactive worksheets you fill in and keep</div>
+  </div>
+</header>
+
+<!-- OUTCOME FIRST -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">What you walk out with</div>
+    <h2>A Claude that already knows you — before you type a word.</h2>
+    <div class="outcome">
+      <p style="margin-top:0"><strong>By the end of this class you will be able to:</strong></p>
+      <ul>
+        <li>Set Claude up the right way from the start — and fix it when it stops behaving.</li>
+        <li>Teach Claude who you are, so you stop re-explaining yourself every session.</li>
+        <li>Read a Skill, build your own, and test it until it actually does what you asked.</li>
+        <li>Build a Project per book — or per series — that holds your world without drifting.</li>
+        <li>Take a book from premise to codex to outline to chapter prompts, in order, without the middle falling out.</li>
+      </ul>
+      <p><strong>And you'll leave with the filled-in worksheets</strong> — your author profile, your skills, your project instructions, your outline. Not notes about the work. The work.</p>
+    </div>
+    <div class="proof">
+      <b>Why this class exists:</b> Every author I coach hits the same wall — they've watched the videos, they know Claude is powerful, and it still hands back something bland. It's almost never the prompt. It's the setup. Claude was never told who you are, what you write, or what the rules of your book are. Fix the foundation and everything downstream gets easier. That's the entire point of this class.
+    </div>
+  </div>
+</section>
+
+<!-- THE MODULES -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The path — each lesson has a worksheet you actually fill in</div>
+    <h2>How the class runs</h2>
+
+    <div class="mod">
+      <div class="num">Part 1</div>
+      <h3>Set it up right</h3>
+      <p class="tease">Ten minutes here saves you months of fighting it later.</p>
+      <div class="row"><span class="k">You'll cover:</span> The account setup checklist — what to turn on, what to ignore, and how the pieces fit together. Then the setup test, so you can prove it's working instead of hoping.</div>
+      <div class="do"><b>You'll have:</b> a Claude that's configured on purpose, plus a troubleshooting page for the day it starts acting strange.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Part 2</div>
+      <h3>Teach Claude who you are</h3>
+      <p class="tease">This is the step everybody skips, and it's the one that changes everything.</p>
+      <div class="row"><span class="k">You'll cover:</span> Building your author profile — your genres, your pen names, your habits, your standards, how you like to be talked to. Plus the MBTI-to-Claude translator, for turning "how I actually think" into instructions Claude can follow.</div>
+      <div class="do"><b>You'll have:</b> a written author profile you paste in once and reuse forever.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Part 3</div>
+      <h3>Skills — read one, build one, test it</h3>
+      <p class="tease">A Skill is how you stop re-teaching Claude the same job every time.</p>
+      <div class="row"><span class="k">You'll cover:</span> The Skill Anatomy Explorer — what the parts of a Skill are and why they're there. Then you build: a Voice Skill that writes like you, a Beta Reader, and an Editor. Then the Skill Testing Lab, where you find out whether yours actually works before you trust it on a manuscript.</div>
+      <div class="do"><b>You'll have:</b> your own working Skills — voice, beta reader, editor — tested, not theoretical.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Part 4</div>
+      <h3>Projects — give the work a home</h3>
+      <p class="tease">A Project is the room your book lives in. Build the room before you move in.</p>
+      <div class="row"><span class="k">You'll cover:</span> The Project Architecture Explorer — how to decide what goes where. The Project Instructions Builder — writing the standing orders Claude follows every time you open it. Plus the Cowork Projects workbook: understand it, build it, move into it, run it.</div>
+      <div class="do"><b>You'll have:</b> project instructions written and loaded, so Claude opens already knowing the rules.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Part 5</div>
+      <h3>Set up a book — or a whole series</h3>
+      <p class="tease">One book and a nine-book series are not the same build.</p>
+      <div class="row"><span class="k">You'll cover:</span> Single Book Project Setup for a standalone, and the Series Project Planner for everything that has to stay consistent across a shelf — continuity, cast, timeline, and what carries forward.</div>
+      <div class="do"><b>You'll have:</b> a project structure that fits what you're actually writing.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Part 6</div>
+      <h3>Plan the book, in the right order</h3>
+      <p class="tease">Premise, then codex, then outline, then chapter prompts. Skip a step and the middle collapses.</p>
+      <div class="row"><span class="k">You'll cover:</span> The 5 Core Elements and your Story Promise — what you're promising the reader and whether you're keeping it. The Premise &amp; Codex Builder. The Outline Builder. Then the Plot Hole Check and chapter prompts, so you go into drafting with the cracks already found.</div>
+      <div class="do"><b>You'll have:</b> a premise, a codex, an outline, and chapter prompts — for a real book, not a sample one.</div>
+    </div>
+
+    <div class="mod">
+      <div class="num">Companion tools</div>
+      <h3>The two you'll keep reaching for</h3>
+      <p class="tease">Included with the class.</p>
+      <div class="row"><span class="k">You'll get:</span> The <b>Character Tracker</b>, for keeping a cast straight across a book or a series. And the <b>Pen Name Skill Builder</b>, for spinning up a fresh Skill the next time you start a new name.</div>
+      <div class="do"><b>You'll have:</b> tools that outlast the class — they work on the next book too.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE STANDARD -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The standard we hold the whole class</div>
+    <h2>The question every lesson answers</h2>
+    <div class="test">
+      <p class="big">"Does Claude already know this, or am I about to explain it again?"</p>
+      <p>Every time you find yourself re-typing who you are, how your pen name sounds, or what the rules of your world are — that's a foundation you haven't built yet. This class is the list of those foundations, in the order that makes each one easier than the last. Build them once, and the re-explaining stops.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Who this is for</div>
+    <h2>Written for authors, not engineers</h2>
+    <div class="outcome">
+      <ul style="margin-top:0">
+        <li><strong>You're an indie fiction author</strong> — and especially if you're over 40 and tired of being talked to like you should already know this.</li>
+        <li><strong>You've tried Claude and been underwhelmed.</strong> Good. That's usually a setup problem, and setup is fixable.</li>
+        <li><strong>You don't want to become technical.</strong> Nothing here is code. Every lesson is a worksheet with blanks and a prompt to copy.</li>
+        <li><strong>You want it to stick.</strong> You're building files you keep, not watching someone else do it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section id="enroll">
+  <div class="wrap">
+    <div class="enroll">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Build the foundation once.</h2>
+      <p>Self-paced. Lifetime access. Every lesson worksheet, the Cowork Projects workbook, and the companion tools — yours to keep and reuse on every book you write from here.</p>
+      <div class="cta-row"><a class="buy" href="#">Get the class →</a></div>
+      <div class="price-note" style="color:var(--plum-soft)">Secure checkout through Payhip · Instant access</div>
+    </div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="wrap">
+    <h2>You're not bad at this. You were never shown the setup.</h2>
+    <p>Nobody hands you a manual when you open Claude. So most authors start typing, get something flat, and quietly decide the tool isn't for them. It is. It just needed to be told who you are first.</p>
+    <p>Let's build that, in order, and stop starting over.</p>
+    <div class="cta-row"><a class="buy light" href="#enroll">Get the class →</a></div>
+    <p class="sign">Keep the Dream Alive. I'm pulling for you — we're all in this together. <span class="butterfly">🦋</span></p>
+  </div>
+</div>
+
+<footer>
+  The Invisible Pen · Clark Publishing House LLC · "Foundations of Claude" — a self-paced class by Jessica Waldron.
+</footer>
+
+<!-- ============================================================= -->
+<!--  PAYHIP LINK: paste the Foundations of Claude product/checkout -->
+<!--  URL between the quotes below and every "Get the class" button  -->
+<!--  updates automatically.                                         -->
+<!--                                                                 -->
+<!--  As of 23 Jul 2026 there is no Foundations product on Payhip     -->
+<!--  yet, so the buttons fall back to the Self-Paced Classes         -->
+<!--  collection. Create the product, paste its URL here, done.       -->
+<!-- ============================================================= -->
+<script>
+  var PAYHIP_URL = "";
+  var FALLBACK_URL = "https://payhip.com/theinvisiblepen/collection/self-paced-ai-tools-courses-for-authors";
+  (function(){
+    var target = PAYHIP_URL || FALLBACK_URL;
+    document.querySelectorAll('a.buy').forEach(function(a){
+      if (a.getAttribute('href') === '#') a.href = target;
+    });
+  })();
+</script>
+</body>
+</html>
