@@ -16,6 +16,7 @@
   --border: #D4CFC7;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Georgia', serif;
   background: var(--cream);
@@ -58,12 +59,45 @@ body {
   border-radius: 0 8px 8px 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
+.toc-label {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 0.65rem;
+}
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+.toc a {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: var(--navy);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.95rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.toc a:hover, .toc a:focus {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
 .section {
   background: white;
   border-radius: 8px;
   padding: 1.75rem 2rem;
   margin-bottom: 1.75rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  scroll-margin-top: 1.25rem;
 }
 .section > h2 {
   color: var(--navy);
@@ -141,9 +175,23 @@ ol.lessons, ul.lessons { list-style: none; }
 
   <div class="intro-box">
     <p><strong>Welcome!</strong> Everything below is a clickable link. This page is your permanent home base — bookmark it, and share <em>this</em> page with anyone who needs the materials. The individual links are always kept current here.</p>
+    <p style="margin-top:0.75rem;">Looking for something specific? Tap a topic below to jump straight to it.</p>
   </div>
 
-  <div class="section">
+  <div class="toc-label">Jump to a topic</div>
+  <div class="toc">
+    <a href="#start">Start Here</a>
+    <a href="#foundations">Foundations of Claude</a>
+    <a href="#pen-launcher">Pen Name Launcher</a>
+    <a href="#edit">Edit Like a Boss</a>
+    <a href="#ads">Amazon Ads</a>
+    <a href="#trope-marketing">Trope-Powered Marketing</a>
+    <a href="#marketing">Book Marketing</a>
+    <a href="#beta">Beta Reads</a>
+    <a href="#tools">Tools</a>
+  </div>
+
+  <div class="section" id="start">
     <h2>Start Here</h2>
     <p class="section-note">New here? Take the 2-minute quiz and get your personal roadmap.</p>
     <ul class="lessons">
@@ -151,7 +199,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section" id="foundations">
     <h2>Foundations of Claude</h2>
     <p class="section-note">Learn to run Claude like a pro — the interactive class worksheets, all open and ready to use. Want the whole class in order? <a href="foundations/class.html" style="color:var(--coral);font-weight:bold">See what's in it →</a></p>
 
@@ -239,7 +287,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section" id="pen-launcher">
     <h2>Pen Name Launcher</h2>
     <p class="section-note">The self-paced class for launching a new pen name, start to finish. Free and open — work through all six in order.</p>
     <ol class="lessons">
@@ -252,7 +300,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ol>
   </div>
 
-  <div class="section">
+  <div class="section" id="edit">
     <h2>Edit Like a Boss</h2>
     <p class="section-note">The complete self-paced editing course. <a href="edit-like-a-boss/class.html" style="color:var(--coral);font-weight:bold">See the full class →</a></p>
 
@@ -293,7 +341,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ol>
   </div>
 
-  <div class="section">
+  <div class="section" id="ads">
     <h2>Amazon Ads for Authors</h2>
     <ol class="lessons">
       <li><a href="amazon-ads/01-ads-readiness-checklist.html"><span class="num">1</span><span class="title">Ads Readiness Checklist</span></a></li>
@@ -303,7 +351,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ol>
   </div>
 
-  <div class="section">
+  <div class="section" id="trope-marketing">
     <h2>Trope-Powered Marketing</h2>
     <p class="section-note">Line your book up with the readers already searching for it &mdash; one week at a time.</p>
     <div class="part-label">Week 1 — Trope Stacks &amp; Reader Intent</div>
@@ -312,7 +360,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section" id="marketing">
     <h2>Book Marketing</h2>
     <ol class="lessons">
       <li><a href="book-marketing/01-marketing-channel-audit.html"><span class="num">1</span><span class="title">Marketing Channel Audit</span></a></li>
@@ -323,7 +371,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ol>
   </div>
 
-  <div class="section">
+  <div class="section" id="beta">
     <h2>Beta Reads</h2>
     <p class="section-note">Reader reports from the beta-reader personas.</p>
     <ul class="lessons">
@@ -331,7 +379,7 @@ ol.lessons, ul.lessons { list-style: none; }
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section" id="tools">
     <h2>Tools</h2>
     <ul class="lessons">
       <li><a href="tools/pen-name-identity-builder.html"><span class="num">★</span><span class="title">Pen Name Identity Builder — Start From Your Genre</span></a></li>
