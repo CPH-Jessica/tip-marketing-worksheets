@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Character Deep Dive — Motivation &amp; Journey Engine for Fantasy &amp; Sci-Fi</title>
+<style>
+/* ============================================================
+   CHARACTER DEEP DIVE
+   Single-file, offline, localStorage.
+   Who they are · why they're here NOW · the journey the story
+   puts them through. Built for speculative fiction.
+   ============================================================ */
+:root{
+  --bg:#0a0e1a; --bg2:#111828; --panel:#151c30; --panel2:#1c2540;
+  --ink:#e9edff; --ink-dim:#98a2c4; --line:#2b3557;
+  --accent:#5ee0d0; --accent2:#7b6cff; --accent3:#ff8fb1; --accent4:#ffc861;
+  --good:#54d6a0; --warn:#ffc861; --bad:#ff7a8a;
+  --chip:#232c4b; --radius:14px; --shadow:0 10px 34px rgba(0,0,0,.42);
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 620px at 78% -12%, rgba(123,108,255,.20), transparent 62%),
+    radial-gradient(900px 520px at 8% 4%, rgba(94,224,208,.11), transparent 60%),
+    linear-gradient(170deg,var(--bg),#070a14 65%);
+  background-attachment:fixed;
+  color:var(--ink); line-height:1.5; min-height:100vh;
+}
+a{color:var(--accent)}
+button{font-family:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px 110px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:#28304f;border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:60;background:rgba(10,14,26,.93);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:var(--maxw);margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{font-size:25px;filter:drop-shadow(0 2px 8px rgba(94,224,208,.55))}
+.brand h1{font-size:18px;margin:0;letter-spacing:.3px;white-space:nowrap}
+.brand .sub{font-size:11.5px;color:var(--ink-dim);margin-top:-2px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.who{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px 6px 4px 11px}
+.who .lbl{font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.6px}
+.who select{background:transparent;border:none;color:var(--ink);font-size:13px;font-weight:700;max-width:190px;padding:4px 2px}
+.who select:focus{outline:none}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:var(--panel)}
+.btn.primary{background:linear-gradient(120deg,var(--accent2),var(--accent));border:none;color:#0a0e1a}
+.btn.primary:hover{filter:brightness(1.09)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+
+/* ---------- tabs ---------- */
+nav.tabs{max-width:var(--maxw);margin:0 auto;padding:6px 12px 0;display:flex;gap:3px;flex-wrap:wrap}
+.tab{border:1px solid transparent;background:transparent;color:var(--ink-dim);padding:9px 12px;border-radius:10px 10px 0 0;cursor:pointer;font-size:12.5px;font-weight:600;white-space:nowrap}
+.tab:hover{color:var(--ink);background:var(--panel)}
+.tab.active{color:#fff;background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel)}
+.tab .num{display:inline-block;min-width:16px;text-align:center;opacity:.55;margin-right:3px;font-size:11px}
+.tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line);margin-left:6px;vertical-align:middle}
+.tab .dot.on{background:var(--good);box-shadow:0 0 8px rgba(84,214,160,.7)}
+.tab .dot.part{background:var(--warn)}
+
+/* ---------- spine ---------- */
+.spine{max-width:var(--maxw);margin:0 auto;padding:12px 18px 4px}
+.spine-inner{display:flex;align-items:stretch;gap:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.snode{flex:1;min-width:0;padding:9px 11px;border-right:1px solid var(--line);cursor:pointer;transition:.15s;position:relative}
+.snode:last-child{border-right:none}
+.snode:hover{background:var(--panel2)}
+.snode .sk{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-dim);display:flex;align-items:center;gap:5px}
+.snode .sk i{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block;font-style:normal}
+.snode.on .sk i{background:var(--accent);box-shadow:0 0 8px rgba(94,224,208,.8)}
+.snode .sv{font-size:12px;margin-top:3px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snode.on .sv{color:var(--ink)}
+@media(max-width:820px){.spine-inner{flex-wrap:wrap}.snode{flex:1 1 33%;border-bottom:1px solid var(--line)}}
+
+/* ---------- panels ---------- */
+.view{display:none;animation:fade .22s}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:20px;letter-spacing:.2px}
+.card h3{margin:24px 0 6px;font-size:14px;color:var(--accent);letter-spacing:.4px;text-transform:uppercase}
+.card h3:first-of-type{margin-top:14px}
+.lead{color:var(--ink-dim);font-size:13.5px;margin:0 0 8px}
+.section-intro{font-size:13px;color:var(--ink-dim);background:var(--bg2);border-left:3px solid var(--accent2);padding:11px 14px;border-radius:0 10px 10px 0;margin:8px 0 16px}
+.section-intro b{color:var(--ink)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:800px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ---------- fields ---------- */
+label.f{display:block;margin:12px 0}
+label.f .lab{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--ink);flex-wrap:wrap}
+label.f .hint{display:block;font-weight:400;color:var(--ink-dim);font-size:11.5px;margin-bottom:5px;line-height:1.4}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit}
+textarea{resize:vertical;min-height:62px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,224,208,.11)}
+select{cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.tools{display:inline-flex;gap:5px;margin-left:auto}
+.mini{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:7px;padding:2px 8px;font-size:11px;cursor:pointer;font-weight:600}
+.mini:hover{color:var(--ink);border-color:var(--accent)}
+.mini.seed:hover{border-color:var(--accent4);color:var(--accent4)}
+.probe{background:rgba(123,108,255,.10);border:1px solid rgba(123,108,255,.42);border-radius:10px;padding:10px 12px;margin:7px 0 0;font-size:12.5px;display:none}
+.probe.open{display:block;animation:fade .18s}
+.probe .pq{color:var(--ink);margin:0 0 6px}
+.probe .pq:before{content:"↳ ";color:var(--accent2);font-weight:700}
+.probe .pnav{display:flex;gap:6px;align-items:center;margin-top:6px}
+.probe .pnum{font-size:11px;color:var(--ink-dim);margin-left:auto}
+.seedbox{background:var(--bg2);border:1px dashed var(--line);border-radius:10px;padding:9px 11px;margin:7px 0 0;font-size:12.5px;display:none}
+.seedbox.open{display:block}
+.seedbox .sd{padding:6px 9px;border-radius:8px;cursor:pointer;color:var(--ink-dim);border:1px solid transparent}
+.seedbox .sd:hover{background:var(--panel2);color:var(--ink);border-color:var(--line)}
+.seedbox .sdh{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent4);margin-bottom:4px}
+
+/* ---------- chips ---------- */
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--chip);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;transition:.12s;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:linear-gradient(120deg,var(--accent2),var(--accent));border-color:transparent;color:#0a0e1a;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+
+/* ---------- callouts ---------- */
+.advisor{border-radius:12px;padding:11px 14px;font-size:13px;margin:10px 0;border:1px solid var(--line);line-height:1.5}
+.advisor.good{background:rgba(84,214,160,.10);border-color:rgba(84,214,160,.42)}
+.advisor.warn{background:rgba(255,200,97,.10);border-color:rgba(255,200,97,.42)}
+.advisor.bad{background:rgba(255,122,138,.10);border-color:rgba(255,122,138,.42)}
+.advisor.info{background:rgba(123,108,255,.10);border-color:rgba(123,108,255,.42)}
+.advisor b{color:var(--ink)}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;margin-left:6px}
+.pill.good{background:rgba(84,214,160,.2);color:var(--good)}
+.pill.warn{background:rgba(255,200,97,.2);color:var(--warn)}
+.pill.bad{background:rgba(255,122,138,.2);color:var(--bad)}
+.pill.dim{background:var(--chip);color:var(--ink-dim)}
+
+/* ---------- roster ---------- */
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px;margin:12px 0}
+.rc{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;transition:.15s;position:relative}
+.rc:hover{border-color:var(--accent);transform:translateY(-2px)}
+.rc.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(94,224,208,.22)}
+.rc .rn{font-size:15px;font-weight:700;margin-bottom:2px;padding-right:22px}
+.rc .rr{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2);font-weight:700}
+.rc .rw{font-size:12px;color:var(--ink-dim);margin-top:7px;line-height:1.45;min-height:34px}
+.rc .rbar{height:5px;border-radius:4px;background:var(--panel2);margin-top:9px;overflow:hidden}
+.rc .rbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.rc .rdel{position:absolute;top:9px;right:9px;background:transparent;border:none;color:var(--ink-dim);cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;border-radius:6px}
+.rc .rdel:hover{color:var(--bad);background:rgba(255,122,138,.12)}
+.rc.add{display:flex;align-items:center;justify-content:center;border-style:dashed;color:var(--ink-dim);font-weight:700;min-height:118px}
+.rc.add:hover{color:var(--accent)}
+
+/* ---------- ladder ---------- */
+.ladder{margin:10px 0}
+.rung{display:flex;gap:11px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:8px 0}
+.rung .rl{min-width:112px}
+.rung .rl b{display:block;font-size:12.5px}
+.rung .rl span{font-size:11px;color:var(--ink-dim)}
+.rung textarea{min-height:44px}
+.rung .rnum{width:26px;height:26px;border-radius:8px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex:none;margin-top:2px}
+@media(max-width:700px){.rung{flex-wrap:wrap}.rung .rl{min-width:0;flex:1}}
+
+/* ---------- beats ---------- */
+.beat{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:10px 0}
+.beat.pivot{border-color:rgba(123,108,255,.55);background:linear-gradient(180deg,rgba(123,108,255,.07),var(--bg2))}
+.beat .bh{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.beat .bn{width:27px;height:27px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--accent);flex:none}
+.beat.pivot .bn{background:linear-gradient(120deg,var(--accent2),var(--accent));color:#0a0e1a}
+.beat .bt{font-size:14px;font-weight:700}
+.beat .bask{font-size:12px;color:var(--ink-dim);margin:6px 0 8px;line-height:1.45}
+.beat .bmode{display:flex;gap:5px;margin-left:auto}
+.beat .bmode button{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:700}
+.beat .bmode button.on{background:var(--accent2);border-color:transparent;color:#fff}
+.beat .bmode button.on.act{background:var(--good);color:#0a0e1a}
+.gripwrap{display:flex;align-items:center;gap:10px;margin-top:9px}
+.gripwrap .gl{font-size:11px;color:var(--ink-dim);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:4px;background:var(--panel2);flex:1;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);cursor:pointer}
+.gripval{font-size:11.5px;font-weight:700;color:var(--accent);min-width:34px;text-align:right}
+
+/* ---------- chart ---------- */
+.chartbox{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.chartbox svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-dim);margin-top:8px}
+.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+/* ---------- diagnostics ---------- */
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.score .big{font-size:44px;font-weight:800;line-height:1;letter-spacing:-1px}
+.score .lbl{font-size:12px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.9px}
+.meter{flex:1;min-width:180px}
+.meter .bar{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.meter .bar i{display:block;height:100%;transition:width .4s}
+.check{display:flex;gap:11px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:8px 0}
+.check .ci{font-size:16px;line-height:1.2;flex:none;width:22px;text-align:center}
+.check.pass{border-color:rgba(84,214,160,.35)}
+.check.fail{border-color:rgba(255,122,138,.35)}
+.check.soft{border-color:rgba(255,200,97,.35)}
+.check .ct{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.check .cd{font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+.check .cgo{margin-left:auto;flex:none}
+
+/* ---------- ensemble ---------- */
+.matrix{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+.matrix th,.matrix td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.matrix th{background:var(--panel2);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-dim)}
+.matrix td b{color:var(--ink)}
+.tblwrap{overflow-x:auto}
+
+/* ---------- export ---------- */
+.outbox{background:#080b14;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:12px;white-space:pre-wrap;max-height:520px;overflow:auto;line-height:1.55;color:#d7ddf5}
+.exptabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.exptab{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:9px;padding:7px 12px;font-size:12.5px;cursor:pointer;font-weight:600}
+.exptab.on{background:var(--panel2);color:var(--ink);border-color:var(--accent)}
+
+/* ---------- misc ---------- */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--accent);color:var(--ink);padding:11px 20px;border-radius:11px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:.28s;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{color:var(--ink-dim);font-style:italic;font-size:13px;padding:18px;text-align:center}
+footer.foot{max-width:var(--maxw);margin:0 auto;padding:14px 18px 40px;color:var(--ink-dim);font-size:11.5px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.kbd{background:var(--chip);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11px}
+.chk{display:flex;gap:9px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--accent);flex:none}
+.chk .ck{font-size:13px;font-weight:600}
+.chk .cs{font-size:11.5px;color:var(--ink-dim);line-height:1.45;margin-top:2px}
+@media print{header.top,nav.tabs,.spine,.top-actions,footer.foot{display:none}body{background:#fff;color:#111}.card{box-shadow:none;border-color:#ccc;background:#fff}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="glyph">🜂</span>
+      <div>
+        <h1>Character Deep Dive</h1>
+        <div class="sub">Motivation &amp; journey engine — fantasy · sci-fi · speculative</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="who">
+        <span class="lbl">Working on</span>
+        <select id="charSelect" onchange="Roster.select(this.value)"></select>
+      </div>
+      <button class="btn sm" onclick="Roster.add()">+ Character</button>
+      <button class="btn sm ghost" onclick="Store.exportJSON()">Save file</button>
+      <button class="btn sm ghost" onclick="Store.importFile()">Load</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="spine" id="spine"></div>
+
+<div class="wrap">
+  <div class="view" data-view="book"></div>
+  <div class="view" data-view="identity"></div>
+  <div class="view" data-view="world"></div>
+  <div class="view" data-view="wound"></div>
+  <div class="view" data-view="engine"></div>
+  <div class="view" data-view="fear"></div>
+  <div class="view" data-view="opposition"></div>
+  <div class="view" data-view="journey"></div>
+  <div class="view" data-view="behavior"></div>
+  <div class="view" data-view="ensemble"></div>
+  <div class="view" data-view="diagnostics"></div>
+  <div class="view" data-view="export"></div>
+</div>
+
+<footer class="foot">
+  <span>Everything saves in this browser automatically.</span>
+  <span>Use <b>Save file</b> for a backup you can move between computers.</span>
+  <span style="margin-left:auto"><button class="btn sm danger ghost" onclick="Store.reset()">Start over</button></span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = { storageKey:"tip-character-deep-dive-v1", version:1 };
+
+/* ============================================================
+   GENRE PLAYBOOKS
+   Each genre knows: what usually drives motivation, what the
+   world can do to a person, and the trap writers fall into.
+   ============================================================ */
+const GENRES = {
+epic:{label:"Epic Fantasy", flavor:"magic",
+  driver:"A private life crushed under a public fate",
+  pressures:[
+    "The prophecy names them and they never agreed to it",
+    "Their bloodline owes a debt they didn't take on",
+    "The realm's survival requires the one thing that would unmake them",
+    "Power here is inherited, and theirs skipped a generation"],
+  wounds:[
+    "They watched their village burn on the orders of the side they were raised to serve",
+    "They were trained for a role their whole life, then passed over for someone younger",
+    "They survived the rite that killed everyone else in the circle, and no one will say why"],
+  lies:[
+    "If I am useful enough, they can't cast me out",
+    "Wanting things for myself is what got people killed",
+    "Only power keeps the people I love alive"],
+  wants:[
+    "Take back the seat, name, or land that was stolen",
+    "Get their sibling out of the capital before the war arrives",
+    "Finish what their mentor started, and prove the choice was right"],
+  warn:"Epic fantasy hides passive protagonists behind enormous stakes. <b>Saving the world is a setting, not a motivation.</b> What does THIS person gain or lose that nobody else in the army would?",
+  arcs:["positive","flat","disillusion"]},
+
+grimdark:{label:"Dark Fantasy / Grimdark", flavor:"empire",
+  driver:"Survival, debt, and the cost of staying human",
+  pressures:[
+    "Mercy is priced here, and they can't afford it",
+    "The institution that ruined them is also the only thing feeding them",
+    "Everyone above them is protected; everyone below them is disposable",
+    "The magic/faith that could save them requires a body that isn't theirs"],
+  wounds:[
+    "They did the terrible thing themselves, and were praised for it",
+    "They were sold, conscripted, or indentured by someone who loved them",
+    "They begged for help from a power that answered, and sent the bill"],
+  lies:[
+    "Nobody is coming. Wanting them to come is how you die",
+    "I am already damned, so the next sin is free",
+    "Kindness is a debt somebody eventually collects"],
+  wants:[
+    "Pay off the debt and get out clean",
+    "Kill the person who gave the order — not the one who carried it out",
+    "Keep one person alive who still doesn't know what they've done"],
+  warn:"Grimdark trap: <b>bleakness in place of motivation.</b> A character with nothing to lose is not interesting — give them exactly one thing they can't afford to lose, and then make the plot ask for it.",
+  arcs:["corruption","redemption","tragic","flat"]},
+
+romantasy:{label:"Romantasy", flavor:"magic",
+  driver:"Two people whose wants can't both survive the world's rules",
+  pressures:[
+    "The bond is not consensual — magic decided before they did",
+    "Their court, clan, or crown forbids exactly this person",
+    "Loving them costs power, rank, or lifespan, and the price is public",
+    "One of them is a weapon the other side is owed"],
+  wounds:[
+    "They were chosen once before, and then set aside when they stopped being useful",
+    "Their power woke the night someone they loved died — and it was their fault",
+    "They were traded to a house/court as a term in someone else's treaty"],
+  lies:[
+    "Being wanted and being safe are opposites",
+    "If they see all of it, they'll leave — so they see the version that stays",
+    "Choosing love means choosing to be weak"],
+  wants:[
+    "Break the bond, contract, or betrothal before it finishes taking them",
+    "Earn a seat at the table so no one can trade them again",
+    "Get the answer about what really happened to their family that night"],
+  warn:"Romantasy trap: <b>the bond replaces the motivation.</b> Fated mates explains why they're drawn together — it doesn't explain why either of them gets out of bed. Give each of them a goal that would still exist if the other vanished.",
+  arcs:["positive","redemption","flat"]},
+
+urban:{label:"Urban Fantasy", flavor:"magic",
+  driver:"Double life — the cost of keeping two worlds apart",
+  pressures:[
+    "The hidden world has rules, and breaking them costs their normal life",
+    "They owe a favor to something that does not forget",
+    "Their power is illegal, unregistered, or tithed to somebody",
+    "The people they love are leverage the moment anyone finds out"],
+  wounds:[
+    "They called for help from the other side once, and someone paid for it",
+    "They were recruited as a child and told it was a gift",
+    "Their mentor was killed for exactly the thing they're about to do"],
+  lies:[
+    "If I keep the two halves apart, nobody I love gets hurt",
+    "I'm the only one who can be trusted with this",
+    "Attachment is a liability I can't insure"],
+  wants:[
+    "Get out of the contract before the term comes due",
+    "Find who's been feeding on their neighborhood and stop it quietly",
+    "Keep the job, the apartment, and the daughter — all three"],
+  warn:"Urban fantasy trap: <b>the case replaces the character.</b> The monster of the week must press on the private wound, or the book becomes a procedural with fangs.",
+  arcs:["positive","flat","corruption"]},
+
+portal:{label:"Portal / Isekai Fantasy", flavor:"magic",
+  driver:"Someone from one set of rules, forced to live by another",
+  pressures:[
+    "Their old-world skills are worthless here, or worse — heretical",
+    "Going home requires something they'd have to become to get",
+    "This world has decided what they are, and it isn't what they were",
+    "Every day here, the life they left gets harder to return to"],
+  wounds:[
+    "They were nobody at home, and being needed here is the first good thing",
+    "They left someone mid-sentence and it's the last thing they'll ever say to them",
+    "They were pulled through as a substitute for someone who was supposed to come"],
+  lies:[
+    "This isn't real, so nothing I do here counts",
+    "I'm only visiting — I don't have to choose a side",
+    "If I go home, I go back to being nothing"],
+  wants:[
+    "Find the way back before the door closes for good",
+    "Earn the standing here that they never had at home",
+    "Get the one person they've come to love out of the war"],
+  warn:"Portal trap: <b>the tourist protagonist.</b> If they can leave whenever they like, nothing they do costs anything. Close the exit — or make going home the thing that costs most.",
+  arcs:["positive","disillusion","flat"]},
+
+sword:{label:"Sword &amp; Sorcery / Adventure", flavor:"magic",
+  driver:"Appetite, debt, and the job in front of them",
+  pressures:[
+    "They're outside the law and the law is closing",
+    "The only work available is the work that damns them",
+    "The magic they carry is borrowed, and the lender is patient",
+    "Their reputation walks into rooms before they do"],
+  wounds:[
+    "They lost the crew, and the story that survived them is wrong",
+    "The one honest job they took got someone killed",
+    "They were somebody once, in a city that no longer exists"],
+  lies:[
+    "Loyalty is a story people tell you right before they use you",
+    "I work alone because alone is the only thing I can protect",
+    "Take the money and the meaning takes care of itself"],
+  wants:[
+    "Land the score that buys them out of the life",
+    "Get the blade, relic, or name back from the one who took it",
+    "Deliver the client alive, because this time it's personal"],
+  warn:"Adventure trap: <b>competence without cost.</b> If the hero is good at everything and needs nothing, the fights are choreography. Make the sword arm cost them something the sword can't fix.",
+  arcs:["flat","redemption","positive"]},
+
+cozy:{label:"Cozy Fantasy", flavor:"magic",
+  driver:"Building a life instead of a legend",
+  pressures:[
+    "The world already used them up once, and it wants them back",
+    "Their gift is small, and this world only rewards the large kind",
+    "The village needs something they promised themselves they'd never do again",
+    "Peace here is real, but it is not free and someone is paying"],
+  wounds:[
+    "They were the hero, and the cost was everyone standing near them",
+    "They were told their kind of magic doesn't matter",
+    "They left before the ending, and the town remembers"],
+  lies:[
+    "If I stay small, nothing can be taken from me again",
+    "I am only welcome where I'm useful",
+    "Rest is something you earn, and I haven't"],
+  wants:[
+    "Open the shop, keep it open, and be left alone",
+    "Belong somewhere without earning it every single day",
+    "Repair the one relationship they walked out on"],
+  warn:"Cozy trap: <b>no stakes at all.</b> Low stakes are not no stakes. The threat should be to belonging, not to the world — and it has to be able to actually take it away.",
+  arcs:["positive","flat"]},
+
+space:{label:"Space Opera", flavor:"empire",
+  driver:"Loyalty tested at a scale bigger than any one life",
+  pressures:[
+    "Their oath is to a body that no longer deserves it",
+    "Distance means help is weeks away — the choice is theirs alone",
+    "Their species, augment, or origin marks them everywhere they dock",
+    "Someone owns the ship, the air, or the jump drive — and it isn't them"],
+  wounds:[
+    "They followed an order that killed a world, and the record says they weren't there",
+    "Their homeworld was traded away in a treaty they helped negotiate",
+    "They were the only one pulled off the station before it went dark"],
+  lies:[
+    "The chain of command exists so I don't have to be the one who decides",
+    "I'm a small part of a big machine, so the blood isn't mine",
+    "Home is a place I can go back to when this is over"],
+  wants:[
+    "Get the crew paid, fed, and out of this system alive",
+    "Reach the ones who gave the order before the record is scrubbed",
+    "Buy the ship outright so nobody can call them back"],
+  warn:"Space opera trap: <b>galactic stakes, hollow center.</b> A fleet is not a character. Anchor every empire-sized decision to a room-sized relationship the reader has met.",
+  arcs:["positive","disillusion","flat","corruption"]},
+
+milsf:{label:"Military SF", flavor:"empire",
+  driver:"Duty, unit, and the order they can't unhear",
+  pressures:[
+    "Refusing the order costs more than obeying it",
+    "The war needs bodies and they are, on paper, a body",
+    "Their augment/implant is issued equipment — it can be taken back",
+    "The enemy is close enough to be a person now"],
+  wounds:[
+    "They lived because someone swapped rotations with them",
+    "They reported what happened and it was buried, along with the witnesses",
+    "They were made into a weapon at an age when they could still be asked"],
+  lies:[
+    "The unit is the only thing that ever kept faith with me",
+    "Feeling it is what gets people killed — so I don't",
+    "If I follow it all the way through, it will have meant something"],
+  wants:[
+    "Get the squad home, then get out",
+    "Make the inquiry hear the truth before the file closes",
+    "Earn the discharge that lets them look their family in the eye"],
+  warn:"Military SF trap: <b>competence porn without conscience.</b> Hardware is not motivation. The strongest engine here is the gap between the order and the person — write the gap.",
+  arcs:["disillusion","flat","corruption","redemption"]},
+
+cyber:{label:"Cyberpunk / Near-Future", flavor:"tech",
+  driver:"Debt, data, and who owns the body",
+  pressures:[
+    "Their body is financed, and the payments are due",
+    "The corp holds their medical, their memory, or their kid's schooling",
+    "What they know is worth more than what they are",
+    "Everything they do is logged and someone is reading it"],
+  wounds:[
+    "They sold something of themselves — memory, organ, name — and it worked",
+    "Their crew was burned by a leak, and they've never been sure it wasn't them",
+    "They were upgraded without consent as a minor and can't afford to reverse it"],
+  lies:[
+    "Everyone is buyable, so trusting is just bad math",
+    "If I own enough, nobody can own me",
+    "The version of me they can't reach is the real one"],
+  wants:[
+    "Clear the debt and get the body back into their own name",
+    "Get the file out to somebody who'll actually print it",
+    "Buy the treatment for the person who can't earn it themselves"],
+  warn:"Cyberpunk trap: <b>aesthetic instead of appetite.</b> Neon is not need. Make the debt a number the reader can hold, with a date attached.",
+  arcs:["corruption","disillusion","redemption","positive"]},
+
+dyst:{label:"Dystopian / Post-Apocalyptic", flavor:"apoc",
+  driver:"Scarcity, rationed hope, and who gets to eat",
+  pressures:[
+    "The system decides who is worth feeding, and they're on the wrong list",
+    "Obedience is survival and everyone they love is a hostage to it",
+    "The resource is running out on a timetable they can count",
+    "Remembering the world before is itself a crime or a wound"],
+  wounds:[
+    "They took a ration, a seat, or a place that belonged to someone who then died",
+    "They informed on someone to keep their family in housing",
+    "They were the reason the gate stayed closed that night"],
+  lies:[
+    "Hope is a way of getting people killed slowly",
+    "I only do what everyone here does — that's why it isn't evil",
+    "The people who survive are the ones who don't look back"],
+  wants:[
+    "Get the family over the wall, off the list, or onto the transport",
+    "Prove what's actually in the ration, the water, or the report",
+    "Get back to the place they left someone waiting"],
+  warn:"Dystopian trap: <b>the system is the villain, so the character just endures.</b> Endurance is not an arc. Give them a lever they can actually pull — and a reason pulling it costs someone they love.",
+  arcs:["positive","disillusion","tragic","redemption"]},
+
+hard:{label:"Hard SF / First Contact", flavor:"tech",
+  driver:"Truth versus the comfort of not knowing",
+  pressures:[
+    "Physics does not negotiate, and the window is closing",
+    "The discovery is worth more to their institution as a secret",
+    "Contact changes what 'human' is allowed to mean, publicly",
+    "They are the only one qualified, and they are not qualified enough"],
+  wounds:[
+    "They were right and nobody listened, and the count of the dead proved it",
+    "They shut a project down and someone brilliant never recovered",
+    "They gave up the science for a family that then left anyway"],
+  lies:[
+    "Being right is the same as being good",
+    "If I understand it, I can control it",
+    "Feelings are noise in the data"],
+  wants:[
+    "Get the signal, sample, or proof back to Earth intact",
+    "Be the one whose name is on it",
+    "Keep the crew/team alive long enough to finish the observation"],
+  warn:"Hard SF trap: <b>the idea is the protagonist.</b> Brilliant premise, hollow person. The science should force a personal choice with a price — otherwise it's a lecture with a plot.",
+  arcs:["positive","disillusion","flat"]},
+
+time:{label:"Time Travel / Loops", flavor:"tech",
+  driver:"The impossible urge to fix what already happened",
+  pressures:[
+    "Every fix costs something they didn't know they were spending",
+    "They are the only one who remembers, so grief has no witness",
+    "The rules of the mechanism punish exactly what they want most",
+    "There is a version of them out there doing it better or worse"],
+  wounds:[
+    "They were there when it happened and did the reasonable thing",
+    "They've already tried to save this person, many times",
+    "The version of themselves they can't forgive is the one that succeeded"],
+  lies:[
+    "If I get it perfect, the grief doesn't count",
+    "Nothing I do matters, because it can be undone",
+    "I'm the only one who understands what's really at stake"],
+  wants:[
+    "Get back to the exact hour before it happened",
+    "Break the loop without losing the person inside it",
+    "Make the timeline hold long enough to say the thing they didn't say"],
+  warn:"Time travel trap: <b>consequence-free repetition.</b> If a reset undoes the cost, tension dies. Something must carry over — memory, damage, or the count of the dead.",
+  arcs:["positive","tragic","disillusion","redemption"]},
+
+prog:{label:"LitRPG / Progression", flavor:"tech",
+  driver:"Power gained, and what each level actually costs",
+  pressures:[
+    "The system rewards exactly the behavior that isolates them",
+    "Their class, build, or brand was assigned, not chosen",
+    "Falling behind here is not embarrassing, it is fatal",
+    "Someone is farming them, and the numbers prove it"],
+  wounds:[
+    "They were ranked low in public, once, and it decided everything after",
+    "They leveled by leaving someone behind on a floor they could have cleared",
+    "Their family spent everything on their first tier and it didn't take"],
+  lies:[
+    "If I'm strong enough, no one can leave me behind again",
+    "The number on me is what I'm worth",
+    "Sentiment is a stat penalty"],
+  wants:[
+    "Clear the floor/tier that killed someone they loved",
+    "Get the rank that buys their family out of the lower city",
+    "Beat the person who ranked them, in public"],
+  warn:"Progression trap: <b>numbers going up is not an arc.</b> Every level should cost something unquantified — a friend, a scruple, a memory. Otherwise the ending is just a bigger number.",
+  arcs:["positive","corruption","flat"]},
+
+gaslamp:{label:"Steampunk / Gaslamp", flavor:"empire",
+  driver:"Position, propriety, and the machine underneath both",
+  pressures:[
+    "Their standing is inherited and one scandal from gone",
+    "The invention that could free them is owned by someone else",
+    "Their sex, class, or blood bars them from the room where it's decided",
+    "The empire's comfort runs on something they've seen up close"],
+  wounds:[
+    "They were ruined publicly for something that was true",
+    "Their work was published under another name",
+    "They were sent away to keep the family's account clean"],
+  lies:[
+    "Respectability is a kind of safety worth any price",
+    "If I'm exceptional enough, the rules will make an exception",
+    "What happens below stairs isn't mine to look at"],
+  wants:[
+    "Get the patent, the credit, or the name restored",
+    "Buy independence outright before the marriage/contract closes",
+    "Expose what the machine actually runs on"],
+  warn:"Gaslamp trap: <b>corsets and clockwork with modern interiors.</b> The pressure of the period is the engine — what they cannot say, cannot own, cannot be seen doing.",
+  arcs:["positive","disillusion","redemption"]},
+
+horrorf:{label:"Horror / Weird Fantasy", flavor:"magic",
+  driver:"What they'll trade to not be afraid anymore",
+  pressures:[
+    "The thing wants something specific from them, and it is patient",
+    "Believing it costs them their standing; not believing it costs their life",
+    "The place has rules and the rules are not fair",
+    "Everyone who has helped them so far is now marked"],
+  wounds:[
+    "They opened the door, said the name, or read the page",
+    "They were the child nobody believed, and they were right",
+    "They survived by pointing at somebody else"],
+  lies:[
+    "If I don't look at it, it isn't happening to me",
+    "I deserved this, so I don't get to run",
+    "I can bargain with it — I'm smarter than the last ones"],
+  wants:[
+    "Get everyone out of the house, town, or ship by morning",
+    "Learn its true name so it can be refused",
+    "Undo the bargain they already made"],
+  warn:"Horror trap: <b>victims instead of characters.</b> Terror is not motivation. The monster should want the exact thing the character is already ashamed of — then every scare lands twice.",
+  arcs:["tragic","corruption","positive","redemption"]}
+};
+
+/* ============================================================
+   ROLES
+   ============================================================ */
+const ROLES = ["Protagonist","Co-protagonist / POV","Antagonist","Love interest","Mentor","Ally / crew","Rival","Foil","Ensemble member"];
+
+/* ============================================================
+   WOUND ARCHETYPES → speculative expressions
+   The generic wound is the skeleton; the flavor is the flesh.
+   ============================================================ */
+const WOUNDS = [
+ {k:"abandon", n:"Abandonment", d:"Someone who was supposed to stay, didn't.",
+  magic:"Their house/coven/clan let the bond lapse rather than pay the tithe for them",
+  tech:"Their guardian took the buyout and left them uninsured, unaugmented, unlisted",
+  empire:"They were left off the evacuation manifest by a name they trusted",
+  apoc:"The convoy went without them, and they heard it leave"},
+ {k:"betray", n:"Betrayal", d:"Trust used as a weapon.",
+  magic:"The one who taught them the words used their voice to open something",
+  tech:"Their own crew sold their profile to the thing hunting them",
+  empire:"They were named in testimony by the person they'd protected",
+  apoc:"They were traded to the settlement for water rights"},
+ {k:"power", n:"Powerlessness", d:"They could not stop it and had to watch.",
+  magic:"Their gift refused to answer on the one night it mattered",
+  tech:"They watched it happen through a feed they couldn't switch off",
+  empire:"They had no rank to speak with, so they said nothing",
+  apoc:"They were on the wrong side of a door that locked from the inside"},
+ {k:"save", n:"Failure to Save", d:"They were there, and it wasn't enough.",
+  magic:"The ritual took the wrong one, and they chose the wording",
+  tech:"They triaged, and the algorithm agreed with them",
+  empire:"They followed the order instead of the instinct",
+  apoc:"They had one dose and made a choice they can still justify"},
+ {k:"shame", n:"Shame / Exposure", d:"They were seen at their worst, publicly.",
+  magic:"Their power surfaced in front of everyone, and it was the wrong kind",
+  tech:"Their private log was published in full",
+  empire:"They were stripped of rank on a parade ground",
+  apoc:"The whole camp learned what they did to eat that winter"},
+ {k:"displace", n:"Displacement", d:"The world they belonged to no longer exists.",
+  magic:"The gate closed behind them, or the old country was unmade",
+  tech:"Their district was rezoned, cleared, and archived",
+  empire:"Their homeworld was ceded in a treaty they can recite",
+  apoc:"Home is a place on a map that nothing answers from"},
+ {k:"inherit", n:"Inheritance", d:"They were born already owing something.",
+  magic:"A blood-debt, curse, or bargain made before they existed",
+  tech:"A contract, an indenture, or an implant they were born wearing",
+  empire:"A name that closes doors, or opens ones they hate",
+  apoc:"Their parent's reputation follows them from camp to camp"},
+ {k:"complicit", n:"Complicity", d:"They did it. Not to them — by them.",
+  magic:"They paid the price with somebody else's life and it worked",
+  tech:"They wrote the system that sorts people now",
+  empire:"They gave the order, and it was the correct order",
+  apoc:"They closed the gate, and the people inside are alive because of it"}
+];
+
+/* ============================================================
+   ARC TYPES + BEAT MAP
+   ============================================================ */
+const BEATS_BASE = [
+ {t:"Life Under the Lie", ask:"What does an ordinary hard day look like before the story shoves them? Show the lie doing its job — what does it let them avoid?"},
+ {t:"The Shove", ask:"What happens that makes the old coping strategy stop working? Why can't they go back to yesterday?"},
+ {t:"First Move (from the lie)", ask:"What do they DO first? It should be the wrong move, chosen for reasons the reader agrees with."},
+ {t:"The World Pushes Back", ask:"What does this world specifically charge them for that move? Make it material — blood, rank, air, a name."},
+ {t:"The Mirror", ask:"Who or what shows them the truth for the first time? Do they refuse it, flinch from it, or half-take it?"},
+ {t:"Doubling Down", ask:"They choose the lie again, at a higher price. What do they burn to keep believing it?"},
+ {t:"The Collapse", ask:"The lie fails completely. What's destroyed that can't be rebuilt?"},
+ {t:"The Choice", ask:"Want or need — they can't have both. What do they lay down, on the page, in front of a witness?"},
+ {t:"Who They Are Now", ask:"Prove it with an action. What do they do in the last chapter that they could not have done in chapter one?"}
+];
+
+const ARCS = {
+positive:{n:"Positive Change", d:"Believes a lie, is broken open by the story, chooses the truth and pays for it.",
+  curve:[86,82,88,72,56,74,34,12,6],
+  o:{4:{t:"The Mirror", ask:"They see the truth in someone else first — someone doing it right, or someone destroyed by the same lie. What do they see, and what do they tell themselves about it?"},
+     6:{t:"The Collapse", ask:"The lie is proven false at maximum cost. What did the lie promise to protect, and how does the story take it anyway?"},
+     7:{t:"The Choice", ask:"They act on the truth before they feel ready. What does it cost them that the old self would never have paid?"},
+     8:{t:"Who They Are Now", ask:"Same pressure as chapter one, different answer. Write the mirrored moment."}}},
+
+flat:{n:"Flat / Testing Arc", d:"Already holds the truth. The world tries to take it, and fails — and the world changes instead.",
+  curve:[16,18,22,30,26,34,44,14,10],
+  o:{0:{t:"Life By the Truth", ask:"They already believe the true thing. What has it already cost them, before page one?"},
+     4:{t:"The Test", ask:"The world offers a very good reason to abandon the truth. What makes the offer genuinely tempting?"},
+     6:{t:"The Collapse", ask:"Holding the truth appears to have destroyed everything. Who pays for their conviction?"},
+     7:{t:"The Choice", ask:"They hold. What do they lose by holding, and who is watching when they do?"},
+     8:{t:"What They Changed", ask:"The character stayed the same; something else moved. Who or what is different because they didn't bend?"}}},
+
+corruption:{n:"Corruption / Fall", d:"Starts with the truth, is offered the lie, takes it — one reasonable step at a time.",
+  curve:[26,34,46,54,62,76,86,94,100],
+  o:{0:{t:"Life By the Truth", ask:"What good thing do they believe at the start? Make the reader like them for it."},
+     2:{t:"First Compromise", ask:"The first small step over the line — and the excellent reason for it. It must be one the reader would also take."},
+     4:{t:"The Mirror", ask:"Someone shows them what they're becoming. Why is that person easy to dismiss?"},
+     6:{t:"The Point of No Return", ask:"The act that can't be walked back. Who do they lose in order to keep going?"},
+     7:{t:"The Choice", ask:"They're offered a way back and refuse it. What does the lie promise that the truth can't?"},
+     8:{t:"Who They Are Now", ask:"Show the finished version doing something the opening character would have been sick to watch."}}},
+
+disillusion:{n:"Disillusionment", d:"Believes a comforting lie about the world, learns a bitter truth, survives it changed.",
+  curve:[84,78,72,62,46,52,28,14,12],
+  o:{0:{t:"Life Under the Comfortable Lie", ask:"What do they believe about the institution, the cause, or the person? Why is it a decent thing to believe?"},
+     4:{t:"The First Crack", ask:"The evidence they can't unsee. What do they do to explain it away?"},
+     6:{t:"The Truth Lands", ask:"The illusion breaks completely. What was it protecting them from knowing about themselves?"},
+     7:{t:"The Choice", ask:"Knowing the bitter truth, what do they do with it — burn it down, walk away, or tell somebody?"},
+     8:{t:"Who They Are Now", ask:"Sadder, clearer, still standing. What can they do now that the naive version couldn't?"}}},
+
+redemption:{n:"Redemption", d:"Has already done the damage. Spends the book earning the right to be trusted with the choice.",
+  curve:[90,86,80,74,58,66,38,14,6],
+  o:{0:{t:"Living With It", ask:"How do they carry the thing they did? Penance, denial, distance, or usefulness?"},
+     2:{t:"The Old Pattern", ask:"They handle the new problem the old way. Show why that instinct made sense once."},
+     4:{t:"Offered Grace", ask:"Someone offers trust they haven't earned. Why can't they take it yet?"},
+     6:{t:"The Reckoning", ask:"The past arrives in person. Who is owed, and what do they want?"},
+     7:{t:"The Choice", ask:"Atonement that costs more than the crime. What do they give up with no guarantee of forgiveness?"},
+     8:{t:"Who They Are Now", ask:"Not absolved — changed. What do they do that proves it without saying it?"}}},
+
+tragic:{n:"Tragic Arc", d:"Is shown the truth, refuses it, and is destroyed by the thing they wouldn't put down.",
+  curve:[70,76,80,86,72,88,92,96,100],
+  o:{4:{t:"The Offered Truth", ask:"The clearest chance to change. Who offers it, and what would they have to admit to accept?"},
+     5:{t:"The Refusal", ask:"They choose the lie in full view of the alternative. Make the refusal sympathetic, not stupid."},
+     6:{t:"The Collapse", ask:"The lie takes everything it was supposed to protect. Who dies, leaves, or stops loving them?"},
+     7:{t:"The Choice", ask:"Last chance, refused again. What do they say to justify it?"},
+     8:{t:"What's Left", ask:"Show the wreckage from the outside — through someone who loved them."}}}
+};
+
+/* ============================================================
+   PROBES — the "dig deeper" follow-ups
+   ============================================================ */
+const PROBES = {
+"identity.competence":["Who taught them, and what did that person want from them in return?","What do they do well that they're ashamed of being good at?","What's the thing they're mediocre at that they desperately wish they were good at?"],
+"identity.selfImage":["Who would snort if they heard that sentence?","When did they start saying it — what happened right before?","What does that sentence conveniently leave out?"],
+"identity.contradiction":["Do they know they do it?","Who has seen it and said nothing?","What would it cost them to stop?"],
+"world.rule":["Who benefits from this rule, and do they know they benefit?","When did your character learn the rule — was it explained, or did it hit them?","What's the loophole everyone knows about, and why can't your character use it?"],
+"world.cost":["Name a specific date, hour, or season it was taken. Vague costs read as backstory; dated ones read as wounds.","Is there a physical trace — a scar, a debt slip, an empty chair?","Who else paid and didn't notice?"],
+"world.privilege":["What do they call it instead of privilege?","Who has pointed it out to them, and how did they take it?","What would they have to give up to be honest about it?"],
+"wound.ghost":["Write it as a scene: what's the weather, who's in the room, what's the last ordinary thing said before it turns?","What did they do in the first ten minutes after — not felt, DID?","Who else remembers it differently, and would swear to their version?"],
+"wound.lost":["Is the loss reversible? If yes, the story has to make sure it isn't.","What do they still keep, wear, or carry from before?","What's the smallest thing they lost that hurts most?"],
+"wound.lie":["Say it in their voice, first person, seven words or fewer.","Who first said it to them — or did they build it themselves from evidence?","What good thing has the lie actually done for them? It has to have worked, or they'd have dropped it."],
+"wound.evidence":["What does the world keep doing that proves them right?","Who in the cast is living proof of the lie?","What would have to happen for the evidence to stop stacking?"],
+"wound.truth":["Say it plainly. If it sounds like a fortune cookie, it isn't specific enough yet.","Why can't they simply be told it? Who has already tried?","What does accepting it require them to admit they got wrong?"],
+"engine.want":["Could a camera film them getting it? If not, it's a need, not a want.","How would the reader know they'd achieved it — what's the image?","Who else wants the same thing, and what happens when they collide?"],
+"engine.wantWhy":["Why must THEY be the one? Why not delegate, hire, or ask?","What does getting it fix inside them that they'd never say out loud?","If someone handed it to them tomorrow, would it still count? Why not?"],
+"engine.need":["Finish the sentence: 'They will not be free until they accept that...'","Who in the cast already knows this about them?","Why is this the last thing they'd choose voluntarily?"],
+"engine.whyNow":["Why is today the first day the old strategy fails?","What deadline, season, or arrival makes waiting impossible?","Who or what forces the first move — and can they refuse it?"],
+"engine.doNothing":["Be specific: who suffers, by when, and how would your character learn about it?","Is walking away actually available to them? If yes, why don't they?","What would they lose in their own eyes if they let it go?"],
+"fear.deep":["What sentence about themselves would end them if it turned out to be true?","When did they most recently feel it, in a small ordinary moment?","Who has come closest to saying it out loud to them?"],
+"fear.avoid":["What place, person, or date do they route around?","What do they say instead of 'no' when it comes up?","What have they given up to keep avoiding it, and was it worth it?"],
+"opposition.mirror":["What sentence could both of them sign?","Where is the antagonist objectively right?","What did the antagonist survive that your character hasn't had to yet?"],
+"opposition.temptation":["Who offers it, and why do they seem trustworthy?","What's genuinely good about taking the deal?","What exactly would it cost — name the person who pays."],
+"behavior.tell":["Make it physical and repeatable, so the reader learns it before they do.","Who in the cast has noticed and uses it?","What do they do to hide the tell?"],
+"behavior.neverSay":["Write the exact sentence they'd never say.","Who is the one person they might say it to, and in what circumstances?","Where in the book does the reader nearly hear it?"]
+};
+
+/* ============================================================
+   FIELD SCHEMA — most tabs render from this
+   ============================================================ */
+const SECTIONS = {
+identity:{
+  title:"Who They Are",
+  lead:"Before motivation there's a person. Build the surface the world sees — and the crack in it.",
+  intro:"A character sheet lists traits. This asks for the <b>gap</b>: the sentence they'd use about themselves, and the thing they do that contradicts it. Every deep motivation lives in that gap.",
+  blocks:[
+   {h:"Basics", fields:[
+    {p:"name", l:"Name", t:"txt", hint:"What they're called, and by whom if it differs."},
+    {p:"role", l:"Role in this story", t:"sel", opts:ROLES},
+    {p:"identity.kind", l:"Species / origin / people", t:"txt", hint:"Human, fae, ex-corporate, third-generation station-born, unregistered mage."},
+    {p:"identity.station", l:"Place in the world's order", t:"txt", hint:"Where do they sit in the hierarchy this world actually runs on? Who's above them, who's below?"},
+    {p:"identity.age", l:"Age / stage of life", t:"txt", hint:"And how much of their life this world expects them to have left."}
+   ]},
+   {h:"The surface", fields:[
+    {p:"identity.competence", l:"What they're genuinely good at", t:"ta", hint:"And how they got good at it — competence is always paid for.", probe:1},
+    {p:"identity.reputation", l:"What people say when they leave the room", t:"ta", hint:"The public story about them. It should be partly wrong."},
+    {p:"identity.selfImage", l:"The sentence they'd use about themselves", t:"ta", hint:"First person, flattering, and mostly sincere. \"I'm the one who handles things.\"", probe:1}
+   ]},
+   {h:"The crack", fields:[
+    {p:"identity.contradiction", l:"One thing they do that contradicts that sentence", t:"ta", hint:"Not a flaw list — one repeatable behaviour. This is where the reader starts to lean in.", probe:1},
+    {p:"identity.wantsToBeSeen", l:"How they need to be seen", t:"ta", hint:"Capable? Harmless? Dangerous? Good? Everything they perform is aimed at this."},
+    {p:"identity.blindSpot", l:"What everyone can see except them", t:"ta", hint:"Name the character who could say it in one line."}
+   ]}
+  ]},
+
+world:{
+  title:"World Pressure",
+  lead:"In speculative fiction the world isn't scenery — it's the thing pressing on the character's chest.",
+  intro:"Run the <b>swap test</b> at the bottom. If this character could be lifted into a contemporary novel unchanged, the fantasy or sci-fi is wallpaper. The world should be doing something to them that our world can't.",
+  blocks:[
+   {h:"The rule that costs them", fields:[
+    {p:"world.rule", l:"The rule of this world that costs your character something", t:"ta", hint:"Magic has a price · tech is owned · blood decides rank · the resource is running out · the bond is not optional.", probe:1, seed:"pressures"},
+    {p:"world.cost", l:"What it has already taken from them", t:"ta", hint:"Past tense, specific, dated. This is the difference between a setting and a scar.", probe:1},
+    {p:"world.privilege", l:"What the world hands them that they didn't earn", t:"ta", hint:"Every character has some. It's how you make them complicated instead of noble.", probe:1}
+   ]},
+   {h:"The pressure that's still building", fields:[
+    {p:"world.threat", l:"The clock — what gets worse while the story runs", t:"ta", hint:"Winter, the fleet, the debt date, the bond taking hold, the reactor, the trial."},
+    {p:"world.forbidden", l:"What they want that this world forbids", t:"ta", hint:"Forbidden by law, custom, magic, biology, or price. Name who enforces it."},
+    {p:"world.leverage", l:"What can be used against them", t:"ta", hint:"Who or what would make them do something they've sworn not to do?"}
+   ]},
+   {h:"The swap test", fields:[
+    {p:"world.swapFail", l:"Could this exact character exist unchanged in a contemporary novel?", t:"chk", hint:"Tick this if the honest answer is yes — the diagnostics will flag it and help you fix it."},
+    {p:"world.swapFix", l:"If yes: what would you change to make the world essential?", t:"ta", hint:"Usually the answer is to make the wound itself speculative — something only this world could have done to them."}
+   ]}
+  ]},
+
+wound:{
+  title:"Wound &amp; Lie",
+  lead:"The event that happened before page one, and the sentence they've lived by ever since.",
+  intro:"Order matters: <b>wound → lie → evidence → truth.</b> A lie with no evidence is a bad habit. A lie the world keeps proving right is a character engine.",
+  blocks:[
+   {h:"The wound", fields:[
+    {p:"wound.archetype", l:"Wound shape", t:"woundpick", hint:"Pick the skeleton, then make it specific to your world below."},
+    {p:"wound.ghost", l:"What actually happened", t:"ta", hint:"Write it as a scene, not a summary. Weather, room, who was there, the last ordinary sentence before it turned.", probe:1, seed:"wounds", big:1},
+    {p:"wound.before", l:"Who they were the hour before", t:"ta", hint:"This is what the story is quietly trying to give back to them."},
+    {p:"wound.lost", l:"What was taken", t:"ta", hint:"A person, a name, a capability, a certainty, a home, a future.", probe:1},
+    {p:"wound.blame", l:"Who they blame — and who was actually responsible", t:"ta", hint:"When those two are different names, you've got a book."}
+   ]},
+   {h:"The lie", fields:[
+    {p:"wound.lie", l:"The lie they now live by", t:"ta", hint:"First person, short, and it has to sound reasonable. \"Needing people is how you get left.\"", probe:1, seed:"lies"},
+    {p:"wound.evidence", l:"The proof the world keeps giving them", t:"ta", hint:"The lie must keep working. What in this world reinforces it every week?", probe:1},
+    {p:"wound.serves", l:"What the lie protects them from", t:"ta", hint:"They're not stupid — the lie is load-bearing. What collapses if they drop it?"}
+   ]},
+   {h:"The truth", fields:[
+    {p:"wound.truth", l:"The truth that dismantles the lie", t:"ta", hint:"Specific to them, not a general moral. Not \"love is good\" — \"she was going to leave anyway, and it wasn't about you.\"", probe:1},
+    {p:"wound.truthCarrier", l:"Who or what carries that truth into the story", t:"ta", hint:"A person, a place, a document, a corpse. They can't reason their way to it alone."},
+    {p:"wound.truthCost", l:"What accepting it will cost them", t:"ta", hint:"If it's free, they'd have taken it already."}
+   ]}
+  ]},
+
+engine:{
+  title:"Want · Need · Why Now",
+  lead:"The three questions that decide whether there's a story here at all.",
+  intro:"<b>Want</b> is external and filmable. <b>Need</b> is internal and resisted. <b>Why now</b> is the one most drafts skip — and it's the reason a reader believes chapter one.",
+  blocks:[
+   {h:"The want (external, visible, filmable)", fields:[
+    {p:"engine.want", l:"What they are trying to get", t:"ta", hint:"A camera could film them achieving it. \"Peace\" is not a want. \"The deed back in her name by midwinter\" is.", probe:1, seed:"wants"},
+    {p:"engine.wantWhy", l:"Why this goal, and why it has to be them", t:"ta", hint:"The link between the wound and the want. This is the whole tool in one field.", probe:1},
+    {p:"engine.wantVisible", l:"How the reader sees it in chapter one", t:"ta", hint:"What do they DO in the first scene that shows the want, without telling us?"},
+    {p:"engine.wantWrong", l:"Why the want won't actually fix them", t:"ta", hint:"The want is aimed at the wound, but it's aimed slightly off. Where does it miss?"}
+   ]},
+   {h:"The need (internal, resisted)", fields:[
+    {p:"engine.need", l:"What they'd have to accept to be whole", t:"ta", hint:"\"They will not be free until they accept that ___.\"", probe:1},
+    {p:"engine.collide", l:"The moment want and need can't both be served", t:"ta", hint:"Name the scene. If you can't, the climax will feel arbitrary."},
+    {p:"engine.ch5", l:"If they got the want in chapter five, what would still be wrong?", t:"ta", hint:"If the honest answer is \"nothing\", the want is the whole book and the book is thin."}
+   ]},
+   {h:"Why now", fields:[
+    {p:"engine.whyNow", l:"What changed to start the story today", t:"ta", hint:"An arrival, a death, a deadline, a bond waking, a letter, a jump signal.", probe:1},
+    {p:"engine.whyNotBefore", l:"Why not a year ago", t:"ta", hint:"What was holding? Fear, ignorance, a person who's now gone, a rule that just changed."},
+    {p:"engine.whyNotLater", l:"Why waiting is not an option", t:"ta", hint:"The cost of a month's delay, stated in something they love."},
+    {p:"engine.doNothing", l:"What happens if they walk away", t:"ta", hint:"This has to be unbearable, or the reader will keep wondering why they don't just leave.", probe:1}
+   ]}
+  ]},
+
+fear:{
+  title:"Fear &amp; the Cost Ladder",
+  lead:"What they're afraid of decides what the story is allowed to take from them.",
+  intro:"The ladder is your escalation map. Fill the rungs and you'll know exactly what to threaten in act one, act two, and the climax — <b>and in what order.</b>",
+  blocks:[
+   {h:"Fear", fields:[
+    {p:"fear.surface", l:"What they'd admit to being afraid of", t:"ta", hint:"The socially acceptable version. Failure, heights, the enemy."},
+    {p:"fear.deep", l:"What they'd never say out loud", t:"ta", hint:"Usually a sentence about themselves being true. \"That I'm exactly what he said I was.\"", probe:1},
+    {p:"fear.avoid", l:"What they arrange their life to avoid", t:"ta", hint:"A place, a person, a date, a conversation, a kind of quiet.", probe:1}
+   ]},
+   {h:"The line", fields:[
+    {p:"fear.line", l:"The line they say they'll never cross", t:"ta", hint:"Say it in their words."},
+    {p:"fear.lineCross", l:"What would make them cross it anyway", t:"ta", hint:"Write this now — it's your third-act lever."},
+    {p:"fear.after", l:"Who they'd be on the other side of crossing it", t:"ta", hint:"Even if the book never goes there, you should know."}
+   ]}
+  ]},
+
+opposition:{
+  title:"Opposition &amp; Mirrors",
+  lead:"A motivation is only as strong as the thing standing on it.",
+  intro:"The best speculative antagonists want <b>the same thing for opposite reasons</b> — and the world's rules make sure only one of them can have it.",
+  blocks:[
+   {h:"The antagonist", fields:[
+    {p:"opposition.antagonist", l:"Who or what opposes them, and what THAT one wants", t:"ta", hint:"Write the opponent's want in their own terms — sympathetically."},
+    {p:"opposition.mirror", l:"How they want the same thing for opposite reasons", t:"ta", hint:"Both want the throne / the cure / the child safe — and their reasons are incompatible.", probe:1},
+    {p:"opposition.antagRight", l:"Where the antagonist is right", t:"ta", hint:"If nowhere, the book will feel like a lecture."},
+    {p:"opposition.worldOpp", l:"How the world itself blocks them", t:"ta", hint:"Law, magic price, distance, physics, caste, the machine. Not a person — a condition."}
+   ]},
+   {h:"The people who make it harder by loving them", fields:[
+    {p:"opposition.ally", l:"The ally whose care pulls them the wrong way", t:"ta", hint:"The one who wants them safe when they need to be brave, or vice versa."},
+    {p:"opposition.temptation", l:"The easy version of the want — and who offers it", t:"ta", hint:"The deal that solves the external problem and forfeits the internal one.", probe:1},
+    {p:"opposition.witness", l:"Who's watching them become this", t:"ta", hint:"Change needs a witness, or the reader won't feel it land."}
+   ]},
+   {h:"The conversation test", fields:[
+    {p:"opposition.convoFail", l:"Could one honest conversation end this conflict?", t:"chk", hint:"Tick if yes. It's not fatal — but you must answer the next field."},
+    {p:"opposition.convoWhy", l:"If yes: what makes that conversation impossible?", t:"ta", hint:"Not stubbornness. A rule, a risk, a vow, a distance, a thing they can't say without dying."}
+   ]}
+  ]},
+
+behavior:{
+  title:"How It Shows On the Page",
+  lead:"Motivation the reader can't see isn't motivation. This is the translation layer.",
+  intro:"Everything above is theory until it becomes behaviour. These fields are what you actually paste into a drafting prompt.",
+  blocks:[
+   {h:"Under pressure", fields:[
+    {p:"behavior.pressure", l:"What they do under pressure", t:"ta", hint:"Fight, fix, flee, freeze, charm, joke, take charge, go quiet — plus one specific example."},
+    {p:"behavior.tell", l:"Their physical tell when the lie is threatened", t:"ta", hint:"Repeatable, small, and visible. Teach it to the reader before the character notices it.", probe:1},
+    {p:"behavior.lieAbout", l:"What they lie about, and to whom", t:"ta", hint:"Include the lies they think are kindnesses."}
+   ]},
+   {h:"Voice", fields:[
+    {p:"behavior.speech", l:"What they use words for", t:"ta", hint:"Deflect, control, connect, wound, count, comfort. Plus rhythm — clipped, formal, meandering."},
+    {p:"behavior.neverSay", l:"The sentence they'd never say aloud", t:"ta", hint:"Write it exactly. Then decide which chapter almost gets it out of them.", probe:1},
+    {p:"behavior.swear", l:"How they curse, pray, or invoke", t:"ta", hint:"In speculative fiction this is free worldbuilding and free character. Who or what do they call on?"}
+   ]},
+   {h:"Tells of the deeper thing", fields:[
+    {p:"behavior.object", l:"An object they carry, and what it means", t:"ta", hint:"Bonus: the moment they lose it, or give it away, is a free emotional beat."},
+    {p:"behavior.kindness", l:"The kindness they do that costs them", t:"ta", hint:"How the reader stays on their side while they're being difficult."},
+    {p:"behavior.dieFor", l:"What they'd die for / what they'd kill for", t:"ta", hint:"If those are the same answer, say why. If different, the gap is the character."},
+    {p:"behavior.joy", l:"What they're like when they're happy", t:"ta", hint:"Most drafts never show this. Show it once early and the ending hurts more."}
+   ]}
+  ]}
+};
+/* ============================================================
+   STATE
+   ============================================================ */
+const LADDER_RUNGS = [
+  {n:"Comfort",  s:"Money, sleep, the quiet life"},
+  {n:"Standing", s:"Reputation, rank, how they're seen"},
+  {n:"Safety",   s:"Their body, their freedom, their life"},
+  {n:"Love",     s:"The person they'd protect first"},
+  {n:"Self",     s:"The story they tell about who they are"}
+];
+
+const uid = () => "c"+Math.random().toString(36).slice(2,9);
+
+const NEWCHAR = (name,role) => ({
+  id:uid(), name:name||"", role:role||"Protagonist",
+  identity:{}, world:{}, wound:{}, engine:{}, opposition:{}, behavior:{},
+  fear:{ ladder:LADDER_RUNGS.map(()=>({give:""})) },
+  arc:{ type:"positive", beats:Array.from({length:9},()=>({believe:"",act:"",mode:"",grip:null})) }
+});
+
+const DEFAULT = () => ({
+  book:{ title:"", series:"", penName:"", genre:"epic", premise:"", worldRules:"", threat:"", promise:"" },
+  chars:[ NEWCHAR("","Protagonist") ],
+  activeId:null,
+  meta:{ v:CONFIG.version }
+});
+
+let S = DEFAULT();
+S.activeId = S.chars[0].id;
+
+function C(){ return S.chars.find(c=>c.id===S.activeId) || S.chars[0]; }
+function G(){ return GENRES[S.book.genre] || GENRES.epic; }
+
+/* ---------- persistence ---------- */
+const Store = {
+  save(){ try{ localStorage.setItem(CONFIG.storageKey, JSON.stringify(S)); }catch(e){} },
+  load(){
+    try{
+      const r = localStorage.getItem(CONFIG.storageKey);
+      if(!r) return;
+      const p = JSON.parse(r);
+      S = Object.assign(DEFAULT(), p);
+      if(!Array.isArray(S.chars) || !S.chars.length) S.chars=[NEWCHAR("","Protagonist")];
+      S.chars = S.chars.map(c=>{
+        const base = NEWCHAR(c.name, c.role);
+        const m = Object.assign(base, c);
+        if(!Array.isArray(m.fear.ladder) || m.fear.ladder.length!==5) m.fear.ladder = LADDER_RUNGS.map(()=>({give:""}));
+        if(!m.arc || !Array.isArray(m.arc.beats) || m.arc.beats.length!==9)
+          m.arc = {type:(m.arc&&m.arc.type)||"positive", beats:Array.from({length:9},()=>({believe:"",act:"",mode:"",grip:null}))};
+        return m;
+      });
+      if(!S.chars.some(c=>c.id===S.activeId)) S.activeId = S.chars[0].id;
+    }catch(e){}
+  },
+  reset(){
+    if(!confirm("Clear everything and start a brand-new story? Save a file first if you want to keep this.")) return;
+    S = DEFAULT(); S.activeId = S.chars[0].id; Store.save(); boot(); toast("Cleared — fresh start");
+  },
+  exportJSON(){
+    const blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = (S.book.title||"character-deep-dive").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-deep-dive.json";
+    a.click(); toast("Saved a backup file");
+  },
+  importFile(){ document.getElementById("fileInput").click(); }
+};
+
+document.getElementById("fileInput").addEventListener("change",function(e){
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const p = JSON.parse(r.result);
+      localStorage.setItem(CONFIG.storageKey, JSON.stringify(p));
+      Store.load(); Store.save(); boot(); toast("Loaded");
+    }catch(err){ toast("Couldn't read that file"); }
+  };
+  r.readAsText(f); e.target.value="";
+});
+
+/* ---------- path helpers ---------- */
+function getPath(o,p){ return p.split(".").reduce((a,k)=> (a&&a[k]!==undefined&&a[k]!==null)?a[k]:undefined, o); }
+function setPath(o,p,v){
+  const k=p.split("."); let c=o;
+  for(let i=0;i<k.length-1;i++){ if(typeof c[k[i]]!=="object"||c[k[i]]===null) c[k[i]]={}; c=c[k[i]]; }
+  c[k[k.length-1]]=v;
+}
+function val(p){ const v=getPath(C(),p); return v===undefined?"":v; }
+function has(p){ const v=getPath(C(),p); return typeof v==="string" ? v.trim().length>2 : !!v; }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastT;
+function toast(m){
+  const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2100);
+}
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+const TABS = [
+  ["book","Story"],["identity","Who They Are"],["world","World Pressure"],["wound","Wound &amp; Lie"],
+  ["engine","Want · Need · Now"],["fear","Fear &amp; Cost"],["opposition","Opposition"],
+  ["journey","The Journey"],["behavior","On the Page"],["ensemble","Cast"],
+  ["diagnostics","Pressure Test"],["export","Export"]
+];
+let CURRENT = "book";
+
+function buildTabs(){
+  document.getElementById("tabs").innerHTML = TABS.map((t,i)=>
+    `<button class="tab" data-tab="${t[0]}" onclick="go('${t[0]}')"><span class="num">${i+1}</span>${t[1]}<span class="dot" data-dot="${t[0]}"></span></button>`
+  ).join("");
+}
+
+function go(v){
+  CURRENT = v;
+  renderView(v);
+  document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active", x.dataset.view===v));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active", x.dataset.tab===v));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderView(v){
+  if(SECTIONS[v]) return Section.render(v);
+  if(v==="book") return Book.render();
+  if(v==="journey") return Journey.render();
+  if(v==="ensemble") return Ensemble.render();
+  if(v==="diagnostics") return Diag.render();
+  if(v==="export") return Exporter.render();
+}
+
+/* ============================================================
+   COMPLETION
+   ============================================================ */
+function sectionFields(key){
+  const s = SECTIONS[key]; if(!s) return [];
+  return s.blocks.flatMap(b=>b.fields).filter(f=>f.t!=="chk");
+}
+function sectionPct(key){
+  const f = sectionFields(key); if(!f.length) return 0;
+  const n = f.filter(x=>has(x.p)).length;
+  return Math.round(n/f.length*100);
+}
+function journeyPct(){
+  const b=C().arc.beats, n=b.filter(x=>(x.believe||"").trim()||(x.act||"").trim()).length;
+  return Math.round(n/9*100);
+}
+function bookPct(){
+  const ks=["title","genre","premise","worldRules","threat"];
+  return Math.round(ks.filter(k=>(S.book[k]||"").trim().length>2).length/ks.length*100);
+}
+function charPct(c){
+  const prev=S.activeId; S.activeId=c.id;
+  const keys=Object.keys(SECTIONS);
+  const p = Math.round((keys.reduce((a,k)=>a+sectionPct(k),0)+journeyPct())/(keys.length+1));
+  S.activeId=prev; return p;
+}
+function tabPct(k){
+  if(k==="book") return bookPct();
+  if(k==="journey") return journeyPct();
+  if(SECTIONS[k]) return sectionPct(k);
+  if(k==="diagnostics") return Diag.score();
+  return -1;
+}
+function paintDots(){
+  document.querySelectorAll("[data-dot]").forEach(d=>{
+    const p = tabPct(d.dataset.dot);
+    d.className = "dot" + (p>=85?" on":(p>=25?" part":""));
+  });
+}
+
+/* ============================================================
+   SPINE — the live motivation chain
+   ============================================================ */
+const SPINE = [
+  {k:"Wound", p:"wound.ghost", tab:"wound"},
+  {k:"Lie", p:"wound.lie", tab:"wound"},
+  {k:"Fear", p:"fear.deep", tab:"fear"},
+  {k:"Want", p:"engine.want", tab:"engine"},
+  {k:"Need", p:"engine.need", tab:"engine"},
+  {k:"Choice", p:"__choice", tab:"journey"}
+];
+function spineVal(p){
+  if(p==="__choice"){ const b=C().arc.beats[7]; return (b.act||b.believe||""); }
+  return val(p);
+}
+function renderSpine(){
+  document.getElementById("spine").innerHTML =
+   `<div class="spine-inner">`+SPINE.map(s=>{
+      const v = String(spineVal(s.p)||"").trim();
+      const on = v.length>2;
+      return `<div class="snode ${on?"on":""}" onclick="go('${s.tab}')" title="${esc(v)}">
+        <div class="sk"><i></i>${s.k}</div>
+        <div class="sv">${on?esc(v.length>62?v.slice(0,60)+"…":v):"—"}</div></div>`;
+   }).join("")+`</div>`;
+}
+
+/* ============================================================
+   FIELD RENDERER
+   ============================================================ */
+function fid(p){ return "f_"+p.replace(/[^a-z0-9]/gi,"_"); }
+
+function fieldHTML(f){
+  const id = fid(f.p), v = val(f.p);
+  const tools = [];
+  if(f.probe && PROBES[f.p]) tools.push(`<button type="button" class="mini" onclick="Probe.toggle('${f.p}')">dig deeper</button>`);
+  if(f.seed) tools.push(`<button type="button" class="mini seed" onclick="Seeds.toggle('${f.p}','${f.seed}')">seeds</button>`);
+  const toolbar = tools.length?`<span class="tools">${tools.join("")}</span>`:"";
+
+  let input="";
+  if(f.t==="txt")  input = `<input type="text" id="${id}" data-cpath="${f.p}" value="${esc(v)}">`;
+  else if(f.t==="sel") input = `<select id="${id}" data-cpath="${f.p}">${(f.opts||[]).map(o=>`<option ${o===v?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  else if(f.t==="chk") return `<label class="chk"><input type="checkbox" data-cpath="${f.p}" ${v?"checked":""}>
+      <span><span class="ck">${f.l}</span><span class="cs">${f.hint||""}</span></span></label>`;
+  else if(f.t==="woundpick") return woundPickHTML(f);
+  else input = `<textarea id="${id}" data-cpath="${f.p}" style="min-height:${f.big?110:62}px">${esc(v)}</textarea>`;
+
+  return `<label class="f">
+    <span class="lab">${f.l}${toolbar}</span>
+    ${f.hint?`<span class="hint">${f.hint}</span>`:""}
+    ${input}
+    <div class="probe" id="pb_${fid(f.p)}"></div>
+    <div class="seedbox" id="sb_${fid(f.p)}"></div>
+  </label>`;
+}
+
+function woundPickHTML(f){
+  const cur = val("wound.archetype");
+  return `<div style="margin:12px 0">
+    <div class="lab" style="font-size:12.5px;font-weight:700;margin-bottom:5px">${f.l}</div>
+    <div class="hint" style="color:var(--ink-dim);font-size:11.5px;margin-bottom:7px">${f.hint||""}</div>
+    <div class="chips">${WOUNDS.map(w=>
+      `<span class="chip ${cur===w.k?"on":""}" onclick="pickWound('${w.k}')" title="${esc(w.d)}">${w.n}</span>`).join("")}</div>
+    ${cur?`<div class="advisor info" style="margin-top:8px"><b>${WOUNDS.find(w=>w.k===cur).n}</b> — ${WOUNDS.find(w=>w.k===cur).d}<br>
+      <span style="color:var(--ink-dim)">In a ${G().label.replace(/&amp;/g,"&")} world this often looks like:</span> ${esc(WOUNDS.find(w=>w.k===cur)[G().flavor])}.</div>`:""}
+  </div>`;
+}
+function pickWound(k){ setPath(C(),"wound.archetype", val("wound.archetype")===k?"":k); Store.save(); Section.render("wound"); }
+
+/* ---------- probes ---------- */
+const Probe = {
+  idx:{},
+  toggle(p){
+    const box = document.getElementById("pb_"+fid(p));
+    if(box.classList.contains("open")){ box.classList.remove("open"); return; }
+    this.idx[p] = this.idx[p]||0; this.paint(p); box.classList.add("open");
+  },
+  next(p){ const list=PROBES[p]; this.idx[p]=((this.idx[p]||0)+1)%list.length; this.paint(p); },
+  paint(p){
+    const list = PROBES[p], i = this.idx[p]||0;
+    document.getElementById("pb_"+fid(p)).innerHTML =
+      `<div class="pq">${list[i]}</div>
+       <div class="pnav">
+         <button type="button" class="mini" onclick="Probe.next('${p}')">another question</button>
+         <button type="button" class="mini" onclick="document.getElementById('pb_${fid(p)}').classList.remove('open')">close</button>
+         <span class="pnum">${i+1} / ${list.length}</span>
+       </div>`;
+  }
+};
+
+/* ---------- seeds ---------- */
+const Seeds = {
+  toggle(p,kind){
+    const box = document.getElementById("sb_"+fid(p));
+    if(box.classList.contains("open")){ box.classList.remove("open"); return; }
+    let items = (G()[kind]||[]).slice();
+    if(kind==="wounds"){
+      const a = val("wound.archetype");
+      if(a){ const w=WOUNDS.find(x=>x.k===a); if(w) items = [w[G().flavor]].concat(items); }
+    }
+    box.innerHTML = `<div class="sdh">${G().label.replace(/&amp;/g,"&")} — click to drop in, then make it yours</div>` +
+      items.map((s,i)=>`<div class="sd" onclick="Seeds.use('${p}',${i},'${kind}')">${esc(s)}</div>`).join("") +
+      `<div style="margin-top:7px"><button type="button" class="mini" onclick="document.getElementById('sb_${fid(p)}').classList.remove('open')">close</button></div>`;
+    box._items = items; box.classList.add("open");
+  },
+  use(p,i){
+    const box = document.getElementById("sb_"+fid(p));
+    const text = box._items[i];
+    const el = document.getElementById(fid(p));
+    const cur = (el.value||"").trim();
+    el.value = cur ? cur+"\n"+text : text;
+    setPath(C(), p, el.value); Store.save(); afterChange();
+    box.classList.remove("open"); toast("Dropped in — now make it specific");
+  }
+};
+
+/* ============================================================
+   SECTION RENDERER
+   ============================================================ */
+const Section = {
+  render(key){
+    const s = SECTIONS[key];
+    const view = document.querySelector(`.view[data-view="${key}"]`);
+    const pct = sectionPct(key);
+    view.innerHTML = `
+      <div class="card">
+        <h2>${s.title} <span class="pill ${pct>=85?"good":(pct>=25?"warn":"dim")}">${pct}% filled</span></h2>
+        <p class="lead">${s.lead}</p>
+        <div class="section-intro">${s.intro}</div>
+        ${key==="world"?`<div class="advisor warn"><b>${G().label.replace(/&amp;/g,"&")} watch-out:</b> ${G().warn}</div>`:""}
+        ${s.blocks.map(b=>`<h3>${b.h}</h3>${b.fields.map(fieldHTML).join("")}`).join("")}
+      </div>`;
+  }
+};
+
+/* ============================================================
+   BOOK TAB
+   ============================================================ */
+const Book = {
+  render(){
+    const g = G();
+    document.querySelector('.view[data-view="book"]').innerHTML = `
+      <div class="card" style="border-color:rgba(94,224,208,.32)">
+        <h2>Start here</h2>
+        <p class="lead">This builds one character all the way down: who they are, why the story starts <i>today</i>, and what the book does to them.</p>
+        <div class="grid g3" style="margin-top:12px">
+          <div class="advisor info" style="margin:0"><b>1 · Excavate</b><br>Work left to right through the tabs. Every field has a <b>dig deeper</b> button when you get stuck, and <b>seeds</b> written for your genre.</div>
+          <div class="advisor info" style="margin:0"><b>2 · Map the journey</b><br>Nine beats, an arc shape, and a curve that shows whether your book actually bends the way that arc should.</div>
+          <div class="advisor info" style="margin:0"><b>3 · Pressure-test &amp; export</b><br>Sixteen structural checks, then a dossier, a keyboard card, and ready-made prompts for drafting and auditing chapters.</div>
+        </div>
+        <p class="lead" style="margin-top:12px">Nothing here needs finishing in one sitting — it saves as you type. The chain across the top fills in as the character comes together.</p>
+      </div>
+
+      <div class="card">
+        <h2>The Story This Character Lives In</h2>
+        <p class="lead">Two minutes here makes every other tab smarter — the seeds, the watch-outs and the prompts all key off your genre.</p>
+        <div class="grid g2">
+          <label class="f"><span class="lab">Book title / working title</span><input type="text" data-bpath="title" value="${esc(S.book.title)}"></label>
+          <label class="f"><span class="lab">Series</span><input type="text" data-bpath="series" value="${esc(S.book.series)}"></label>
+          <label class="f"><span class="lab">Pen name</span><input type="text" data-bpath="penName" value="${esc(S.book.penName)}"></label>
+          <label class="f"><span class="lab">Genre</span>
+            <select data-bpath="genre">${Object.keys(GENRES).map(k=>`<option value="${k}" ${S.book.genre===k?"selected":""}>${GENRES[k].label}</option>`).join("")}</select>
+          </label>
+        </div>
+
+        <div class="advisor info"><b>${g.label.replace(/&amp;/g,"&")}</b> — motivation here usually runs on: ${g.driver}.</div>
+        <div class="advisor warn"><b>The trap in this genre:</b> ${g.warn}</div>
+
+        <h3>The world in four lines</h3>
+        <label class="f"><span class="lab">Premise</span><span class="hint">One or two sentences. What's the situation the book opens on?</span>
+          <textarea data-bpath="premise" style="min-height:74px">${esc(S.book.premise)}</textarea></label>
+        <label class="f"><span class="lab">The rules that make this world <i>this</i> world</span>
+          <span class="hint">Magic system and its price · tech and who owns it · who rules and how · what's scarce · what's forbidden.</span>
+          <textarea data-bpath="worldRules" style="min-height:88px">${esc(S.book.worldRules)}</textarea></label>
+        <div class="grid g2">
+          <label class="f"><span class="lab">The pressure on the clock</span><span class="hint">What is getting worse while the book runs?</span>
+            <textarea data-bpath="threat">${esc(S.book.threat)}</textarea></label>
+          <label class="f"><span class="lab">What you're promising the reader</span><span class="hint">The emotional experience they picked this book up for.</span>
+            <textarea data-bpath="promise">${esc(S.book.promise)}</textarea></label>
+        </div>
+
+        <h3>Suggested arc types for ${g.label.replace(/&amp;/g,"&")}</h3>
+        <div class="chips">${g.arcs.map(a=>`<span class="chip" style="cursor:default">${ARCS[a].n}</span>`).join("")}</div>
+        <p class="lead" style="margin-top:6px">You can use any arc you like — these are just the ones this genre's readers meet most often. Set it per character on <b>The Journey</b>.</p>
+      </div>
+
+      <div class="card">
+        <h2>Cast</h2>
+        <p class="lead">Build as many as you need. The <b>Cast</b> tab checks whether their motivations actually collide.</p>
+        <div class="roster">
+          ${S.chars.map(c=>{
+            const p = charPct(c);
+            const prev=S.activeId; S.activeId=c.id; const w = val("engine.want"); S.activeId=prev;
+            return `<div class="rc ${c.id===S.activeId?"active":""}" onclick="Roster.select('${c.id}')">
+              ${S.chars.length>1?`<button class="rdel" onclick="event.stopPropagation();Roster.remove('${c.id}')" title="Delete">×</button>`:""}
+              <div class="rn">${esc(c.name||"Unnamed")}</div>
+              <div class="rr">${esc(c.role)}</div>
+              <div class="rw">${w?esc(w.length>90?w.slice(0,88)+"…":w):"<i style='opacity:.6'>no want written yet</i>"}</div>
+              <div class="rbar"><i style="width:${p}%"></i></div>
+            </div>`;
+          }).join("")}
+          <div class="rc add" onclick="Roster.add()">+ Add a character</div>
+        </div>
+      </div>`;
+  }
+};
+
+/* ============================================================
+   ROSTER
+   ============================================================ */
+const Roster = {
+  add(){
+    const c = NEWCHAR("", S.chars.length===0?"Protagonist":"Antagonist");
+    S.chars.push(c); S.activeId=c.id; Store.save(); boot(); go("identity"); toast("New character — start with their name");
+  },
+  select(id){ S.activeId=id; Store.save(); refreshChrome(); renderView(CURRENT); },
+  remove(id){
+    const c = S.chars.find(x=>x.id===id);
+    if(!confirm(`Delete ${c.name||"this character"}? This can't be undone.`)) return;
+    S.chars = S.chars.filter(x=>x.id!==id);
+    if(!S.chars.length) S.chars=[NEWCHAR("","Protagonist")];
+    if(!S.chars.some(x=>x.id===S.activeId)) S.activeId=S.chars[0].id;
+    Store.save(); boot(); toast("Deleted");
+  },
+  fillSelect(){
+    document.getElementById("charSelect").innerHTML =
+      S.chars.map(c=>`<option value="${c.id}" ${c.id===S.activeId?"selected":""}>${esc(c.name||"Unnamed")} — ${esc(c.role)}</option>`).join("");
+  }
+};
+
+/* ============================================================
+   THE JOURNEY
+   ============================================================ */
+const Journey = {
+  beats(){
+    const a = ARCS[C().arc.type] || ARCS.positive;
+    return BEATS_BASE.map((b,i)=> a.o && a.o[i] ? a.o[i] : b);
+  },
+  render(){
+    const c = C(), a = ARCS[c.arc.type]||ARCS.positive, beats = this.beats();
+    const reacts = c.arc.beats.filter(b=>b.mode==="react").length;
+    const acts = c.arc.beats.filter(b=>b.mode==="act").length;
+    document.querySelector('.view[data-view="journey"]').innerHTML = `
+      <div class="card">
+        <h2>The Journey <span class="pill ${journeyPct()>=85?"good":(journeyPct()>=25?"warn":"dim")}">${journeyPct()}% mapped</span></h2>
+        <p class="lead">Nine beats from who they are on page one to who they are at the end — and what it costs to get there.</p>
+        <div class="section-intro">Pick the arc shape first: the beat questions rewrite themselves to match. Then set the <b>grip of the lie</b> on each beat — the chart shows whether your book actually bends the way this arc should.</div>
+        <h3>Arc shape</h3>
+        <div class="chips">${Object.keys(ARCS).map(k=>
+          `<span class="chip ${c.arc.type===k?"on":""}" onclick="Journey.setArc('${k}')">${ARCS[k].n}</span>`).join("")}</div>
+        <div class="advisor info"><b>${a.n}</b> — ${a.d}
+          ${G().arcs.includes(c.arc.type)?`<span class="pill good">common in ${G().label.replace(/&amp;/g,"&")}</span>`:`<span class="pill warn">less usual in ${G().label.replace(/&amp;/g,"&")} — deliberate is fine, just know you're doing it</span>`}
+        </div>
+        ${this.chart()}
+        <div class="advisor ${(acts+reacts===0)?"info":(acts>=4?"good":(acts>=2?"warn":"bad"))}">
+          ${(acts+reacts===0)
+            ? `<b>Drive check:</b> as you fill each beat, mark whether they <b>act</b> or <b>react</b>. It's the fastest way to catch a passive protagonist — the most common problem in speculative fiction, where the world is big enough to push a character around for 400 pages.`
+            : `<b>Drive check:</b> ${acts} beat${acts===1?"":"s"} where they act, ${reacts} where they react${(9-acts-reacts)?`, ${9-acts-reacts} unmarked`:""}.
+               ${acts>=4?"Good — this character is driving their own story."
+                 :"A protagonist who mostly reacts feels passive no matter how big the world is. Aim for at least four beats where they choose first and the world answers."}`}
+        </div>
+      </div>
+      ${beats.map((b,i)=>this.beatHTML(b,i)).join("")}
+      <div class="card">
+        <h3>The last question</h3>
+        <label class="f"><span class="lab">In one sentence: what does this story do to this person?</span>
+          <span class="hint">If you can't write it, the arc isn't decided yet. This is the line you'll use in blurbs, pitches and every prompt.</span>
+          <textarea data-cpath="arc.oneLine" style="min-height:70px">${esc(val("arc.oneLine"))}</textarea></label>
+      </div>`;
+  },
+  setArc(k){ C().arc.type=k; Store.save(); this.render(); },
+  beatHTML(b,i){
+    const bt = C().arc.beats[i], pivot=[4,6,7].includes(i);
+    return `<div class="card beat ${pivot?"pivot":""}" style="padding:15px 17px">
+      <div class="bh">
+        <span class="bn">${i+1}</span><span class="bt">${b.t}</span>
+        <span class="bmode">
+          <button class="${bt.mode==="act"?"on act":""}" onclick="Journey.mode(${i},'act')">they act</button>
+          <button class="${bt.mode==="react"?"on":""}" onclick="Journey.mode(${i},'react')">they react</button>
+        </span>
+      </div>
+      <div class="bask">${b.ask}</div>
+      <div class="grid g2">
+        <label class="f" style="margin:4px 0"><span class="lab" style="font-size:11.5px">What they believe here</span>
+          <textarea data-cpath="arc.beats.${i}.believe" style="min-height:58px">${esc(bt.believe||"")}</textarea></label>
+        <label class="f" style="margin:4px 0"><span class="lab" style="font-size:11.5px">What they do about it</span>
+          <textarea data-cpath="arc.beats.${i}.act" style="min-height:58px">${esc(bt.act||"")}</textarea></label>
+      </div>
+      <div class="gripwrap">
+        <span class="gl">Grip of the lie</span>
+        <input type="range" min="0" max="100" step="5" value="${bt.grip==null?(ARCS[C().arc.type]||ARCS.positive).curve[i]:bt.grip}"
+          oninput="Journey.grip(${i},this.value)">
+        <span class="gripval" id="gv${i}">${bt.grip==null?(ARCS[C().arc.type]||ARCS.positive).curve[i]:bt.grip}%</span>
+      </div>
+    </div>`;
+  },
+  mode(i,m){ const b=C().arc.beats[i]; b.mode = b.mode===m?"":m; Store.save(); this.render(); },
+  grip(i,v){
+    C().arc.beats[i].grip = +v; document.getElementById("gv"+i).textContent = v+"%";
+    Store.save(); this.repaintChart();
+  },
+  points(){ return C().arc.beats.map((b,i)=> b.grip==null ? (ARCS[C().arc.type]||ARCS.positive).curve[i] : b.grip); },
+  path(vals,w,h,pad){
+    return vals.map((v,i)=>{
+      const x = pad + i*((w-pad*2)/8);
+      const y = pad + (100-v)/100*(h-pad*2);
+      return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1);
+    }).join(" ");
+  },
+  chart(){
+    return `<div class="chartbox" id="chartbox">${this.svg()}
+      <div class="legend">
+        <span><i style="background:#5ee0d0"></i>your book</span>
+        <span><i style="background:#7b6cff;opacity:.55;height:6px"></i>the shape this arc usually makes</span>
+        <span style="margin-left:auto">high = the lie is running them · low = the truth has hold</span>
+      </div></div>`;
+  },
+  svg(){
+    const w=680,h=210,pad=22, ideal=(ARCS[C().arc.type]||ARCS.positive).curve, mine=this.points();
+    const beats=this.beats();
+    const grid = [0,25,50,75,100].map(v=>{
+      const y = pad + (100-v)/100*(h-pad*2);
+      return `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#2b3557" stroke-width="1" stroke-dasharray="${v===0||v===100?"0":"3 5"}"/>`;
+    }).join("");
+    const marks = mine.map((v,i)=>{
+      const x = pad + i*((w-pad*2)/8), y = pad + (100-v)/100*(h-pad*2);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#5ee0d0" stroke="#0a0e1a" stroke-width="2"><title>${i+1}. ${esc(beats[i].t)} — ${v}%</title></circle>`;
+    }).join("");
+    const nums = mine.map((v,i)=>{
+      const x = pad + i*((w-pad*2)/8);
+      return `<text x="${x.toFixed(1)}" y="${h-5}" fill="#98a2c4" font-size="10" text-anchor="middle">${i+1}</text>`;
+    }).join("");
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Grip of the lie across nine beats">
+      ${grid}
+      <path d="${this.path(ideal,w,h,pad)}" fill="none" stroke="#7b6cff" stroke-width="7" stroke-linejoin="round" opacity=".30"/>
+      <path d="${this.path(mine,w,h,pad)}" fill="none" stroke="#5ee0d0" stroke-width="3" stroke-linejoin="round"/>
+      ${marks}${nums}
+    </svg>`;
+  },
+  repaintChart(){ const b=document.getElementById("chartbox"); if(b) b.querySelector("svg").outerHTML = this.svg(); }
+};
+
+/* ============================================================
+   ENSEMBLE / CAST
+   ============================================================ */
+const Ensemble = {
+  read(c,p){ const prev=S.activeId; S.activeId=c.id; const v=val(p); S.activeId=prev; return v; },
+  render(){
+    const rows = S.chars.map(c=>({
+      c, name:c.name||"Unnamed", role:c.role,
+      want:this.read(c,"engine.want"), lie:this.read(c,"wound.lie"),
+      need:this.read(c,"engine.need"), fear:this.read(c,"fear.deep"),
+      wound:this.read(c,"wound.ghost"), arc:(ARCS[c.arc.type]||ARCS.positive).n
+    }));
+    document.querySelector('.view[data-view="ensemble"]').innerHTML = `
+      <div class="card">
+        <h2>Cast — Do These Motivations Actually Collide?</h2>
+        <p class="lead">A cast where everyone wants something different but nobody wants the same thing produces a lot of walking around.</p>
+        <div class="section-intro">Read down the <b>Want</b> column. If two characters could both get what they want without ever inconveniencing each other, you have parallel stories, not a plot.</div>
+        <div class="tblwrap">
+        <table class="matrix">
+          <tr><th>Character</th><th>Wants (external)</th><th>Lie they live by</th><th>Needs (internal)</th><th>Arc</th></tr>
+          ${rows.map(r=>`<tr>
+            <td><b>${esc(r.name)}</b><br><span style="color:var(--ink-dim);font-size:11px">${esc(r.role)}</span></td>
+            <td>${r.want?esc(r.want):'<span style="color:var(--bad)">— not written —</span>'}</td>
+            <td>${r.lie?esc(r.lie):'<span style="color:var(--warn)">—</span>'}</td>
+            <td>${r.need?esc(r.need):'<span style="color:var(--warn)">—</span>'}</td>
+            <td>${esc(r.arc)}</td></tr>`).join("")}
+        </table></div>
+        ${this.checks(rows)}
+      </div>
+      <div class="card">
+        <h3>Collision notes</h3>
+        <p class="lead">For each pair that matters, write the sentence where their wants can't both be satisfied.</p>
+        <label class="f"><span class="lab">Where the wants crash</span>
+          <span class="hint">e.g. "He needs the bond broken to keep his crown; she needs it intact to keep breathing."</span>
+          <textarea data-bpath="collisions" style="min-height:100px">${esc(S.book.collisions||"")}</textarea></label>
+      </div>`;
+  },
+  checks(rows){
+    const out=[];
+    const norm = s => String(s||"").toLowerCase().replace(/[^a-z ]/g,"").split(/\s+/).filter(w=>w.length>3);
+    const overlap=(a,b)=>{ const A=new Set(norm(a)), B=norm(b); if(!A.size||!B.length) return 0; return B.filter(w=>A.has(w)).length/Math.max(A.size,B.length); };
+
+    if(rows.length<2) out.push(["soft","Only one character built","Motivation gets sharper by contrast. Build the antagonist — or whoever wants the same thing — and this page starts doing real work."]);
+
+    const noWant = rows.filter(r=>!r.want);
+    if(noWant.length) out.push(["fail","Characters with no external want", noWant.map(r=>r.name).join(", ")+" — a character without a filmable goal will drift in every scene they're in."]);
+
+    for(let i=0;i<rows.length;i++) for(let j=i+1;j<rows.length;j++){
+      if(rows[i].lie && rows[j].lie && overlap(rows[i].lie,rows[j].lie)>0.5)
+        out.push(["soft",`${rows[i].name} and ${rows[j].name} live by nearly the same lie`,"That can be deliberate (mirrors, siblings, a shared culture) — but if it isn't, one of them should believe something the other finds naive or monstrous."]);
+    }
+    const hasAntag = rows.some(r=>/antagonist|rival/i.test(r.role));
+    if(rows.length>1 && !hasAntag) out.push(["soft","No antagonist or rival in the cast","Even in cozy and literary-leaning speculative fiction, someone needs to want something incompatible."]);
+
+    const arcs = new Set(rows.map(r=>r.arc));
+    if(rows.length>2 && arcs.size===1) out.push(["soft","Everyone is on the same arc shape",`All ${rows.length} characters are running a ${rows[0].arc}. Varying one — a flat arc beside a change arc, a fall beside a redemption — is where thematic argument comes from.`]);
+
+    if(!out.length) out.push(["pass","Cast reads as a set of colliding wants","Nothing structural is flagging. Keep the collision notes below current as the draft changes."]);
+    return out.map(o=>`<div class="check ${o[0]==="fail"?"fail":(o[0]==="pass"?"pass":"soft")}">
+      <div class="ci">${o[0]==="fail"?"✕":(o[0]==="pass"?"✓":"!")}</div>
+      <div><div class="ct">${o[1]}</div><div class="cd">${o[2]}</div></div></div>`).join("");
+  }
+};
+
+/* ============================================================
+   DIAGNOSTICS
+   ============================================================ */
+const Diag = {
+  run(){
+    const c=C(), b=c.arc.beats, checks=[];
+    const t = p => String(val(p)||"").trim();
+    const filled = p => t(p).length>2;
+    const add=(state,title,desc,tab)=>checks.push({state,title,desc,tab});
+
+    // 1 want exists and is concrete-ish
+    if(!filled("engine.want")) add("fail","No external want","Everything else is theory until this exists. A camera has to be able to film them getting it.","engine");
+    else if(t("engine.want").split(/\s+/).length<4) add("soft","The want may be too abstract","Short, vague wants (\"freedom\", \"revenge\") behave like themes, not goals. Add the object, the person, and the deadline.","engine");
+    else add("pass","External want is on the page","Good — this is what your scenes will be about.","engine");
+
+    // 2 want tied to wound
+    if(filled("engine.wantWhy") && filled("wound.ghost")) add("pass","The want is rooted in the wound","This is the join that makes a character feel inevitable rather than assigned.","engine");
+    else add("fail","The want isn't connected to the wound yet","Fill in the wound, then 'why this goal, and why them'. Without this link, the goal is a plot assignment.","wound");
+
+    // 3 need distinct from want
+    if(!filled("engine.need")) add("fail","No internal need","Without a need, the ending can only be a win or a loss — never a change.","engine");
+    else if(t("engine.need").toLowerCase()===t("engine.want").toLowerCase()) add("fail","Want and need are the same thing","If getting the goal also heals them, there's no cost to the climax. Push the need inward.","engine");
+    else add("pass","Want and need are pulling different directions","","engine");
+
+    // 4 collision named
+    if(filled("engine.collide")) add("pass","You know the scene where want and need collide","That scene is your climax whether you've written it yet or not.","engine");
+    else add("soft","The want/need collision isn't named","Name the moment they can't have both. Most saggy third acts are this field left blank.","engine");
+
+    // 5 why now
+    if(filled("engine.whyNow") && filled("engine.whyNotBefore")) add("pass","'Why now' is answered","Chapter one will hold — the reader knows why the story starts today.","engine");
+    else if(filled("engine.whyNow")) add("soft","Half of 'why now' is answered","You've said what changed. Now say why it couldn't have happened a year ago — that's the half readers feel when it's missing.","engine");
+    else add("fail","'Why now' is unanswered","This is the single most common reason a strong premise opens slowly.","engine");
+
+    // 6 cost of walking away
+    if(filled("engine.doNothing")) add("pass","Walking away has a real cost","","engine");
+    else add("soft","Nothing stops them walking away","If the reader can think of an easier option, the character has to have thought of it too — and it has to be closed.","engine");
+
+    // 7 lie has evidence
+    if(filled("wound.lie") && filled("wound.evidence")) add("pass","The lie is earned, not assigned","The world keeps proving them right, which is why they can't simply be told.","wound");
+    else if(filled("wound.lie")) add("soft","The lie has no supporting evidence","A lie the world never confirms is a bad habit. Give it a weekly proof.","wound");
+    else add("fail","No lie written","Wound → lie → behaviour is the spine. Without the lie there's nothing for the story to break.","wound");
+
+    // 8 truth + carrier
+    if(filled("wound.truth") && filled("wound.truthCarrier")) add("pass","The truth has a carrier","Good — they can't reason their way there alone, and now they don't have to.","wound");
+    else add("soft","The truth has no way into the story","Decide who or what carries it in: a person, a document, a place, a body.","wound");
+
+    // 9 speculative wound / swap test
+    if(getPath(c,"world.swapFail")) add("fail","Swap test failed — the world is wallpaper","You've marked that this character could exist unchanged in a contemporary novel. Fix it at the wound: make the thing that broke them something only this world could do.","world");
+    else if(filled("world.rule") && filled("world.cost")) add("pass","The world is doing something to this person","The rule has a name and it has already taken something. That's what makes it fantasy or sci-fi rather than costume.","world");
+    else add("soft","The world's pressure isn't specific yet","Name the rule that costs them, and what it has already taken.","world");
+
+    // 10 fear ladder
+    const rungs = (c.fear.ladder||[]).filter(r=>(r.give||"").trim().length>2).length;
+    if(rungs>=4) add("pass","Escalation ladder is built",`${rungs} of 5 rungs filled — you know what to threaten and in what order.`,"fear");
+    else if(rungs>=2) add("soft","Escalation ladder is half-built",`${rungs} of 5 rungs. The top rungs (love, self) are where your third act lives.`,"fear");
+    else add("fail","No cost ladder","Without it, act two escalates by adding more events instead of raising the price.","fear");
+
+    // 11 antagonist mirror
+    if(filled("opposition.mirror")) add("pass","The opposition mirrors the want","Same object, opposite reasons — the strongest structure there is.","opposition");
+    else if(filled("opposition.antagonist")) add("soft","Opposition exists but doesn't mirror","Find the sentence both of them could sign. That's where theme comes from.","opposition");
+    else add("fail","Nothing is standing on this motivation","A want with no opposition is a to-do list.","opposition");
+
+    // 12 conversation test
+    if(getPath(c,"opposition.convoFail") && !filled("opposition.convoWhy"))
+      add("fail","One honest conversation would end this","You've marked it yourself and not closed the door. Give a hard reason — a vow, a risk, a distance, something they physically cannot say.","opposition");
+    else if(getPath(c,"opposition.convoFail")) add("pass","Conversation test answered","You've named what makes it impossible. Keep that reason alive in every scene where they nearly talk.","opposition");
+    else add("pass","Conflict doesn't collapse under a conversation","","opposition");
+
+    // 13 arc mapped
+    const bf = b.filter(x=>(x.believe||"").trim()||(x.act||"").trim()).length;
+    const pivots = [4,6,7,8].filter(i=>(b[i].believe||"").trim()||(b[i].act||"").trim()).length;
+    if(bf>=7 && pivots>=3) add("pass","The journey is mapped",`${bf} of 9 beats, including ${pivots} of the 4 pivots.`,"journey");
+    else if(bf>=3) add("soft","The journey is partly mapped",`${bf} of 9 beats. The four that matter most are the Mirror, the Collapse, the Choice and Who They Are Now.`,"journey");
+    else add("fail","No journey mapped","You have a person, not a story, until the beats exist.","journey");
+
+    // 14 agency
+    const acts = b.filter(x=>x.mode==="act").length, reacts = b.filter(x=>x.mode==="react").length;
+    if(acts>=4) add("pass","The character drives their own story",`${acts} beats where they move first.`,"journey");
+    else if(acts+reacts===0) add("soft","Agency not marked yet","On the Journey tab, mark each beat 'they act' or 'they react'.","journey");
+    else add("fail","This character mostly reacts",`${acts} act / ${reacts} react. Convert at least two reactive beats into a choice they make before the world forces it.`,"journey");
+
+    // 15 behaviour translation
+    const beh = ["behavior.pressure","behavior.tell","behavior.neverSay","behavior.object"].filter(filled).length;
+    if(beh>=3) add("pass","Motivation is translated into behaviour","This is what you paste into a drafting prompt.","behavior");
+    else add("soft","Motivation hasn't reached the page yet",`${beh} of 4 key behaviour fields. Without these, the dossier stays theory and the prose stays generic.`,"behavior");
+
+    // 16 chapter-five test
+    if(filled("engine.ch5")) add("pass","Survives the chapter-five test","You know what would still be wrong if they got the want early — that's your real story.","engine");
+    else add("soft","Chapter-five test unanswered","Ask it: if they got the want in chapter five, what would still be broken? The answer is usually the book.","engine");
+
+    return checks;
+  },
+  score(){
+    const ch=this.run(); if(!ch.length) return 0;
+    const pts = ch.reduce((a,c)=>a+(c.state==="pass"?1:(c.state==="soft"?.5:0)),0);
+    return Math.round(pts/ch.length*100);
+  },
+  render(){
+    const ch=this.run(), s=this.score();
+    const col = s>=80?"var(--good)":(s>=55?"var(--warn)":"var(--bad)");
+    const verdict = s>=85?"Draftable. This character will carry scenes on their own."
+      : s>=70?"Close. Fix the red flags and this holds for a full book."
+      : s>=45?"Half-built. The bones are there; the joins aren't."
+      : "Not ready to draft. Everything red below is load-bearing.";
+    const fails = ch.filter(c=>c.state==="fail"), softs = ch.filter(c=>c.state==="soft"), passes = ch.filter(c=>c.state==="pass");
+    document.querySelector('.view[data-view="diagnostics"]').innerHTML = `
+      <div class="card">
+        <h2>Pressure Test — ${esc(C().name||"this character")}</h2>
+        <p class="lead">Sixteen structural checks. This tests whether the motivation <i>holds together</i> — it can't judge whether the prose is good. That part's still yours.</p>
+        <div class="score">
+          <div><div class="big" style="color:${col}">${s}</div><div class="lbl">out of 100</div></div>
+          <div class="meter">
+            <div class="bar"><i style="width:${s}%;background:${col}"></i></div>
+            <div style="margin-top:8px;font-size:13.5px">${verdict}</div>
+            <div style="margin-top:4px;font-size:12px;color:var(--ink-dim)">${passes.length} solid · ${softs.length} to sharpen · ${fails.length} load-bearing gap${fails.length===1?"":"s"}</div>
+          </div>
+        </div>
+        ${fails.length?`<h3>Fix these first</h3>${fails.map(this.row).join("")}`:""}
+        ${softs.length?`<h3>Sharpen these</h3>${softs.map(this.row).join("")}`:""}
+        ${passes.length?`<h3>Holding</h3>${passes.map(this.row).join("")}`:""}
+      </div>`;
+  },
+  row(c){
+    return `<div class="check ${c.state}">
+      <div class="ci">${c.state==="pass"?"✓":(c.state==="fail"?"✕":"!")}</div>
+      <div style="flex:1"><div class="ct">${c.title}</div>${c.desc?`<div class="cd">${c.desc}</div>`:""}</div>
+      ${c.tab?`<div class="cgo"><button class="mini" onclick="go('${c.tab}')">open</button></div>`:""}
+    </div>`;
+  }
+};
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+const Exporter = {
+  mode:"dossier",
+  set(m){ this.mode=m; this.render(); },
+  render(){
+    const modes=[["dossier","Full dossier"],["card","One-page card"],["draft","Drafting prompt"],["interview","Interview prompt"],["audit","Chapter audit prompt"],["gaps","Fill-the-gaps prompt"],["cast","Whole cast"]];
+    const text=this.build();
+    document.querySelector('.view[data-view="export"]').innerHTML=`
+      <div class="card">
+        <h2>Export</h2>
+        <p class="lead">Take it into your draft, into Claude, or into the story bible.</p>
+        <div class="exptabs">${modes.map(m=>`<button class="exptab ${this.mode===m[0]?"on":""}" onclick="Exporter.set('${m[0]}')">${m[1]}</button>`).join("")}</div>
+        <div class="row" style="margin:10px 0">
+          <button class="btn primary" onclick="Exporter.copy()">Copy to clipboard</button>
+          <button class="btn" onclick="Exporter.download()">Download .md</button>
+          <button class="btn ghost" onclick="window.print()">Print / PDF</button>
+        </div>
+        <div class="advisor info">${this.blurb()}</div>
+        <div class="outbox" id="outbox">${esc(text)}</div>
+      </div>`;
+  },
+  blurb(){
+    return {
+      dossier:"Everything you've built, as markdown. Drop it into the story bible, a Claude Project, or the top of your manuscript file.",
+      card:"The short version — what you actually need at the keyboard. Print it and keep it beside you while drafting.",
+      draft:"Paste into Claude before asking for a scene. It loads the motivation so the character behaves like themselves instead of like a generic protagonist.",
+      interview:"Paste into Claude, then ask questions. Claude answers <i>as</i> the character — the fastest way to find out whether you actually know them.",
+      audit:"Paste this plus a chapter you've already written. It checks whether the character is acting from their real motivation on that page.",
+      gaps:"You have blanks. This asks Claude to propose options for exactly the ones you've left empty — then you pick, edit, and paste back in.",
+      cast:"Every character in the story, side by side. Good for the series bible and for handing to a co-writer or editor."
+    }[this.mode];
+  },
+  build(){
+    const f = {dossier:"dossier",card:"card",draft:"draft",interview:"interview",audit:"audit",gaps:"gaps",cast:"cast"}[this.mode];
+    return this[f]();
+  },
+  /* ---- helpers ---- */
+  L(label,p){ const v=val(p); return v && String(v).trim() ? `**${label}:** ${String(v).trim()}\n\n` : ""; },
+  head(){
+    const c=C(), b=S.book;
+    let s = `# ${c.name||"Unnamed character"} — Character Deep Dive\n\n`;
+    s += `*${c.role}`;
+    if(b.title) s += ` · ${b.title}`;
+    if(b.series) s += ` (${b.series})`;
+    s += ` · ${G().label.replace(/&amp;/g,"&")}*\n\n`;
+    return s;
+  },
+  dossier(){
+    const c=C();
+    let s=this.head();
+    if(val("arc.oneLine")) s += `> ${val("arc.oneLine")}\n\n`;
+    s += `---\n\n## THE SHORT VERSION\n\n`;
+    s += this.L("Wants","engine.want")+this.L("Because","engine.wantWhy")+this.L("Believes the lie","wound.lie");
+    s += this.L("Really needs","engine.need")+this.L("Deepest fear","fear.deep")+this.L("Why now","engine.whyNow");
+
+    s += `\n---\n\n## WHO THEY ARE\n\n`;
+    s += this.L("Species / origin","identity.kind")+this.L("Place in the world's order","identity.station")+this.L("Age / stage","identity.age");
+    s += this.L("Good at","identity.competence")+this.L("Said about them","identity.reputation");
+    s += this.L("How they'd describe themselves","identity.selfImage")+this.L("What contradicts that","identity.contradiction");
+    s += this.L("Needs to be seen as","identity.wantsToBeSeen")+this.L("Blind spot","identity.blindSpot");
+
+    s += `\n## WORLD PRESSURE\n\n`;
+    s += this.L("The rule that costs them","world.rule")+this.L("What it has taken","world.cost")+this.L("Unearned advantage","world.privilege");
+    s += this.L("The clock","world.threat")+this.L("Forbidden to them","world.forbidden")+this.L("Leverage against them","world.leverage");
+    if(getPath(c,"world.swapFail")) s += `> ⚠ Swap test failed — flagged as could-exist-in-a-contemporary-novel.${val("world.swapFix")?" Fix noted: "+val("world.swapFix"):""}\n\n`;
+
+    s += `\n## WOUND & LIE\n\n`;
+    const a = WOUNDS.find(w=>w.k===val("wound.archetype"));
+    if(a) s += `**Wound shape:** ${a.n} — ${a.d}\n\n`;
+    s += this.L("What happened","wound.ghost")+this.L("Who they were before","wound.before")+this.L("What was taken","wound.lost")+this.L("Blame","wound.blame");
+    s += this.L("The lie","wound.lie")+this.L("Evidence the world keeps giving","wound.evidence")+this.L("What the lie protects","wound.serves");
+    s += this.L("The truth","wound.truth")+this.L("Who carries the truth in","wound.truthCarrier")+this.L("Cost of accepting it","wound.truthCost");
+
+    s += `\n## WANT · NEED · WHY NOW\n\n`;
+    s += this.L("External want","engine.want")+this.L("Why this, why them","engine.wantWhy")+this.L("Visible in chapter one as","engine.wantVisible")+this.L("Why the want won't fix them","engine.wantWrong");
+    s += this.L("Internal need","engine.need")+this.L("Want/need collision","engine.collide")+this.L("Chapter-five test","engine.ch5");
+    s += this.L("Why now","engine.whyNow")+this.L("Why not a year ago","engine.whyNotBefore")+this.L("Why not later","engine.whyNotLater")+this.L("Cost of walking away","engine.doNothing");
+
+    s += `\n## FEAR & COST LADDER\n\n`;
+    s += this.L("Admits to fearing","fear.surface")+this.L("Never says","fear.deep")+this.L("Arranges life to avoid","fear.avoid");
+    const lad = (c.fear.ladder||[]).map((r,i)=> (r.give||"").trim()? `${i+1}. **${LADDER_RUNGS[i].n}** — ${r.give.trim()}` : null).filter(Boolean);
+    if(lad.length) s += `**What the story can take, in order:**\n\n${lad.join("\n")}\n\n`;
+    s += this.L("The line they won't cross","fear.line")+this.L("What would make them cross it","fear.lineCross")+this.L("Who they'd be after","fear.after");
+
+    s += `\n## OPPOSITION\n\n`;
+    s += this.L("Opposed by","opposition.antagonist")+this.L("The mirror","opposition.mirror")+this.L("Where the opposition is right","opposition.antagRight")+this.L("How the world blocks them","opposition.worldOpp");
+    s += this.L("The ally who pulls wrong","opposition.ally")+this.L("The temptation","opposition.temptation")+this.L("Witness to the change","opposition.witness");
+    if(getPath(c,"opposition.convoFail")) s += this.L("Why one honest conversation can't fix it","opposition.convoWhy");
+
+    s += `\n## THE JOURNEY — ${(ARCS[c.arc.type]||ARCS.positive).n}\n\n`;
+    s += `*${(ARCS[c.arc.type]||ARCS.positive).d}*\n\n`;
+    const beats = Journey.beats();
+    c.arc.beats.forEach((b,i)=>{
+      if(!(b.believe||"").trim() && !(b.act||"").trim()) return;
+      s += `### ${i+1}. ${beats[i].t}${b.mode?` *(they ${b.mode})*`:""}\n`;
+      if((b.believe||"").trim()) s += `- **Believes:** ${b.believe.trim()}\n`;
+      if((b.act||"").trim()) s += `- **Does:** ${b.act.trim()}\n`;
+      s += `- *Grip of the lie: ${b.grip==null?(ARCS[c.arc.type]||ARCS.positive).curve[i]:b.grip}%*\n\n`;
+    });
+
+    s += `\n## ON THE PAGE\n\n`;
+    s += this.L("Under pressure","behavior.pressure")+this.L("Physical tell","behavior.tell")+this.L("Lies about","behavior.lieAbout");
+    s += this.L("Uses words to","behavior.speech")+this.L("Would never say","behavior.neverSay")+this.L("Curses / prays by","behavior.swear");
+    s += this.L("Carries","behavior.object")+this.L("Costly kindness","behavior.kindness")+this.L("Would die for / kill for","behavior.dieFor")+this.L("Happy looks like","behavior.joy");
+
+    s += `\n---\n\n*Pressure test: ${Diag.score()}/100 · built in Character Deep Dive*\n`;
+    return s;
+  },
+  card(){
+    const c=C();
+    let s=`# ${c.name||"Unnamed"} — at the keyboard\n\n`;
+    if(val("arc.oneLine")) s+=`> ${val("arc.oneLine")}\n\n`;
+    const rows=[
+      ["WANTS","engine.want"],["BECAUSE","engine.wantWhy"],["LIE","wound.lie"],["TRUTH","wound.truth"],
+      ["NEEDS","engine.need"],["FEARS","fear.deep"],["WHY NOW","engine.whyNow"],
+      ["IF THEY WALK AWAY","engine.doNothing"],["UNDER PRESSURE","behavior.pressure"],["TELL","behavior.tell"],
+      ["WOULD NEVER SAY","behavior.neverSay"],["OPPOSED BY","opposition.antagonist"]
+    ];
+    rows.forEach(r=>{ const v=val(r[1]); if(v&&String(v).trim()) s+=`**${r[0]}** — ${String(v).trim()}\n\n`; });
+    const lad=(c.fear.ladder||[]).map((r,i)=>(r.give||"").trim()?`${LADDER_RUNGS[i].n}: ${r.give.trim()}`:null).filter(Boolean);
+    if(lad.length) s+=`**COST LADDER** — ${lad.join(" → ")}\n\n`;
+    s+=`**ARC** — ${(ARCS[c.arc.type]||ARCS.positive).n}\n`;
+    return s;
+  },
+  draft(){
+    const c=C();
+    let s=`You're drafting a scene for ${S.book.title?`"${S.book.title}"`:"my novel"}${S.book.penName?` (pen name: ${S.book.penName})`:""}, ${G().label.replace(/&amp;/g,"&")}.\n\n`;
+    s+=`Here is the full motivation dossier for ${c.name||"the POV character"}. Read it before you write a word.\n\n`;
+    s+=`---\n\n${this.dossier()}\n---\n\n`;
+    s+=`## HOW TO USE THIS\n\n`;
+    s+=`1. Every choice ${c.name||"this character"} makes in the scene must trace back to the want, the lie, or the fear. If a line could be spoken by any character in this genre, cut it.\n`;
+    s+=`2. They do NOT know their own lie and never name it. They never say the need out loud. The reader sees both through behaviour.\n`;
+    s+=`3. Use the physical tell when the lie is threatened. Don't explain the tell.\n`;
+    s+=`4. Keep the world pressure live: the rule that costs them should press on this scene, not just sit in the background.\n`;
+    s+=`5. Match the grip of the lie for wherever we are in the arc — early scenes, the lie is running them; late scenes, it's losing.\n`;
+    s+=`6. No interior summary of their psychology. Behaviour, dialogue, and choice only.\n\n`;
+    s+=`Ask me what beat we're on and what the scene needs to accomplish, then write it.\n`;
+    return s;
+  },
+  interview(){
+    const c=C();
+    let s=`Play ${c.name||"this character"} in a live interview. Stay in character the whole time — first person, present, in their voice. Never break, never analyse yourself, never speak as an assistant.\n\n`;
+    s+=`WHO YOU ARE:\n\n${this.card()}\n`;
+    s+=`WORLD: ${val("world.rule")||S.book.worldRules||"(see below)"}\n${S.book.premise?"SITUATION: "+S.book.premise+"\n":""}\n`;
+    s+=`RULES OF THE INTERVIEW:\n`;
+    s+=`- You do not know you believe a lie. When a question gets near it, you deflect, joke, change the subject, or get sharp — the way you actually would.\n`;
+    s+=`- You never say your deepest fear plainly. You'll circle it.\n`;
+    s+=`- You're allowed to lie to me. You're allowed to refuse a question.\n`;
+    s+=`- Answer in your rhythm: ${val("behavior.speech")||"clipped, guarded, occasionally funnier than you mean to be"}.\n`;
+    s+=`- If I ask something you'd have no way of knowing, say so in character.\n\n`;
+    s+=`Start by telling me where we are and what you were doing before I interrupted. Then I'll ask my questions.\n`;
+    return s;
+  },
+  audit(){
+    const c=C();
+    let s=`I'm going to paste a chapter. Audit it against this character's motivation — don't rewrite it unless I ask.\n\n---\n\n${this.card()}\n---\n\n`;
+    s+=`ARC: ${(ARCS[c.arc.type]||ARCS.positive).n} — ${(ARCS[c.arc.type]||ARCS.positive).d}\n\n`;
+    s+=`CHECK AND REPORT:\n\n`;
+    s+=`1. **Driving want** — in this chapter, what is ${c.name||"the character"} trying to get, scene by scene? Quote the line where it's visible. If a scene has no visible want, name the scene.\n`;
+    s+=`2. **The lie** — is it running them here, and does that match where we are in the arc? Flag anywhere they behave more healed than they've earned.\n`;
+    s+=`3. **Agency** — do they choose first, or only respond to what's done to them? Count both.\n`;
+    s+=`4. **Contradictions** — anything they say or do that contradicts the dossier. Quote it.\n`;
+    s+=`5. **World pressure** — is the rule that costs them actually pressing on this chapter, or is the setting decorative here?\n`;
+    s+=`6. **Interiority leaks** — anywhere the prose explains their psychology instead of showing it.\n\n`;
+    s+=`Be blunt. Then give me the three highest-leverage fixes, in order.\n\n`;
+    s+=`Here's the chapter:\n\n[PASTE CHAPTER HERE]\n`;
+    return s;
+  },
+  gaps(){
+    const c=C(), missing=[];
+    Object.keys(SECTIONS).forEach(k=>{
+      SECTIONS[k].blocks.forEach(b=>b.fields.forEach(f=>{
+        if(f.t==="chk"||f.t==="woundpick") return;
+        if(!has(f.p)) missing.push(`- **${SECTIONS[k].title.replace(/&amp;/g,"&")} → ${f.l.replace(/&amp;/g,"&")}** — ${f.hint||""}`);
+      }));
+    });
+    const emptyBeats = Journey.beats().map((b,i)=> ((c.arc.beats[i].believe||"").trim()||(c.arc.beats[i].act||"").trim())?null:`- **Beat ${i+1}: ${b.t}** — ${b.ask}`).filter(Boolean);
+
+    let s=`Help me finish building this character. Here's what I have so far:\n\n---\n\n${this.dossier()}\n---\n\n`;
+    if(!missing.length && !emptyBeats.length) return s+`Nothing is blank — instead, push back on what's here. Which three answers are the weakest, most generic, or most likely to produce a flat character? Be specific and unkind.\n`;
+    s+=`## STILL BLANK\n\n${missing.join("\n")}\n${emptyBeats.length?"\n"+emptyBeats.join("\n")+"\n":""}\n`;
+    s+=`For each blank, propose **three** options that are consistent with everything above — specific to this world, not generic. Number them so I can pick.\n\n`;
+    s+=`Rules: no therapy-speak, no abstractions like "learns to trust". Concrete people, objects, dates and prices. Where the ${G().label.replace(/&amp;/g,"&")} setting can do the work, use it.\n\n`;
+    s+=`Then tell me which single blank matters most and why.\n`;
+    return s;
+  },
+  cast(){
+    let s=`# ${S.book.title||"Untitled"} — Cast Motivation Map\n\n`;
+    if(S.book.series) s+=`*${S.book.series} · ${G().label.replace(/&amp;/g,"&")}*\n\n`;
+    if(S.book.premise) s+=`${S.book.premise}\n\n`;
+    if(S.book.worldRules) s+=`**World rules:** ${S.book.worldRules}\n\n`;
+    s+=`---\n\n`;
+    const prev=S.activeId;
+    S.chars.forEach(c=>{
+      S.activeId=c.id;
+      s+=`## ${c.name||"Unnamed"} — ${c.role}\n\n`;
+      s+=this.L("Wants","engine.want")+this.L("Because","engine.wantWhy")+this.L("Lie","wound.lie")+this.L("Needs","engine.need")+this.L("Fear","fear.deep")+this.L("Opposed by","opposition.antagonist");
+      s+=`**Arc:** ${(ARCS[c.arc.type]||ARCS.positive).n}\n\n`;
+      if(val("arc.oneLine")) s+=`*${val("arc.oneLine")}*\n\n`;
+      s+=`---\n\n`;
+    });
+    S.activeId=prev;
+    if(S.book.collisions) s+=`## Where the wants crash\n\n${S.book.collisions}\n`;
+    return s;
+  },
+  copy(){
+    const t=this.build();
+    if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Copied")).catch(()=>toast("Select the text and copy"));
+    else toast("Select the text and copy");
+  },
+  download(){
+    const t=this.build();
+    const blob=new Blob([t],{type:"text/markdown"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=((C().name||"character")+"-"+this.mode).replace(/[^a-z0-9]+/gi,"-").toLowerCase()+".md";
+    a.click(); toast("Downloaded");
+  }
+};
+
+/* ============================================================
+   LADDER (rendered into the Fear tab after Section.render)
+   ============================================================ */
+function renderLadder(){
+  const view=document.querySelector('.view[data-view="fear"]');
+  const card=view.querySelector(".card"); if(!card) return;
+  const c=C();
+  const html=`<h3>The cost ladder — what the story takes, and in what order</h3>
+    <div class="section-intro">Fill from the top down. Rungs 1–2 belong in act one, 3–4 in act two, and rung 5 is the climax. If you can't name what they'd give up at each level, the middle of the book will escalate by adding events instead of raising the price.</div>
+    <div class="ladder">${LADDER_RUNGS.map((r,i)=>`
+      <div class="rung">
+        <span class="rnum">${i+1}</span>
+        <div class="rl"><b>${r.n}</b><span>${r.s}</span></div>
+        <textarea data-cpath="fear.ladder.${i}.give" placeholder="What would they give up here — and who asks for it?">${esc((c.fear.ladder[i]||{}).give||"")}</textarea>
+      </div>`).join("")}</div>`;
+  const marker=document.createElement("div");
+  marker.innerHTML=html;
+  const h3s=card.querySelectorAll("h3");
+  const lineHeader=Array.from(h3s).find(h=>h.textContent.trim()==="The line");
+  if(lineHeader) card.insertBefore(marker, lineHeader); else card.appendChild(marker);
+}
+
+/* ============================================================
+   CHANGE HANDLING (delegated — never re-renders while typing)
+   ============================================================ */
+function afterChange(){ renderSpine(); paintDots(); }
+
+document.addEventListener("input", e=>{
+  const el=e.target;
+  if(el.dataset && el.dataset.cpath){ setPath(C(), el.dataset.cpath, el.value); Store.save(); afterChange(); if(el.dataset.cpath==="name") Roster.fillSelect(); }
+  else if(el.dataset && el.dataset.bpath){ S.book[el.dataset.bpath]=el.value; Store.save(); afterChange(); }
+});
+document.addEventListener("change", e=>{
+  const el=e.target;
+  if(el.type==="checkbox" && el.dataset.cpath){ setPath(C(), el.dataset.cpath, el.checked); Store.save(); afterChange(); return; }
+  if(el.tagName==="SELECT" && el.dataset.cpath){ setPath(C(), el.dataset.cpath, el.value); Store.save(); Roster.fillSelect(); afterChange(); }
+  if(el.tagName==="SELECT" && el.dataset.bpath){
+    S.book[el.dataset.bpath]=el.value; Store.save();
+    if(el.dataset.bpath==="genre"){ Book.render(); toast(GENRES[el.value].label.replace(/&amp;/g,"&")+" playbook loaded"); }
+    afterChange();
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function refreshChrome(){ Roster.fillSelect(); renderSpine(); paintDots(); }
+
+const _sectionRender = Section.render.bind(Section);
+Section.render = function(key){ _sectionRender(key); if(key==="fear") renderLadder(); };
+
+function boot(){
+  buildTabs();
+  refreshChrome();
+  go(CURRENT||"book");
+}
+
+Store.load();
+boot();
+if(!S.book.title && !C().name) go("book");
+</script>
+</body>
+</html>
