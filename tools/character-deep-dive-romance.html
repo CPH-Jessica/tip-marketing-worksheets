@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Character Deep Dive: Romance — Two People, One Reason It Has To Be Them</title>
+<style>
+/* ============================================================
+   CHARACTER DEEP DIVE — ROMANCE EDITION
+   Single-file, offline, localStorage.
+   A two-hander: both leads excavated, then the thing that only
+   these two can give each other, and the journey that proves it.
+   ============================================================ */
+:root{
+  --bg:#180d15; --bg2:#22131d; --panel:#2a1826; --panel2:#361f2f;
+  --ink:#fbeef4; --ink-dim:#c3a0b2; --line:#4a2c3f;
+  --accent:#e8a0b4; --accent2:#c9789c; --accent3:#f0cf9a; --accent4:#d9a55f;
+  --a:#e8a0b4; --b:#8fb8d8;
+  --good:#7fd6a8; --warn:#f0c06a; --bad:#f0808f;
+  --chip:#3a2231; --radius:14px; --shadow:0 10px 34px rgba(0,0,0,.45);
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 600px at 80% -10%, rgba(232,160,180,.20), transparent 62%),
+    radial-gradient(900px 520px at 6% 6%, rgba(240,207,154,.10), transparent 60%),
+    linear-gradient(170deg,var(--bg),#100810 66%);
+  background-attachment:fixed;
+  color:var(--ink); line-height:1.5; min-height:100vh;
+}
+a{color:var(--accent)}
+button{font-family:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px 110px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:#43273a;border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+header.top{position:sticky;top:0;z-index:60;background:rgba(24,13,21,.94);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:var(--maxw);margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{font-size:24px;filter:drop-shadow(0 2px 8px rgba(232,160,180,.6))}
+.brand h1{font-size:18px;margin:0;letter-spacing:.3px;white-space:nowrap}
+.brand .sub{font-size:11.5px;color:var(--ink-dim);margin-top:-2px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.swap{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.swap button{border:none;background:transparent;color:var(--ink-dim);padding:6px 13px;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:700;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.swap button.on{color:#20111b}
+.swap button.on[data-who="0"]{background:var(--a)}
+.swap button.on[data-who="1"]{background:var(--b)}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:var(--panel)}
+.btn.primary{background:linear-gradient(120deg,var(--accent2),var(--accent));border:none;color:#20111b}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+
+nav.tabs{max-width:var(--maxw);margin:0 auto;padding:6px 12px 0;display:flex;gap:3px;flex-wrap:wrap}
+.tab{border:1px solid transparent;background:transparent;color:var(--ink-dim);padding:9px 12px;border-radius:10px 10px 0 0;cursor:pointer;font-size:12.5px;font-weight:600;white-space:nowrap;position:relative}
+.tab:hover{color:var(--ink);background:var(--panel)}
+.tab.active{color:#fff;background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel)}
+.tab .num{display:inline-block;min-width:16px;text-align:center;opacity:.55;margin-right:3px;font-size:11px}
+.tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line);margin-left:6px;vertical-align:middle}
+.tab .dot.on{background:var(--good);box-shadow:0 0 8px rgba(127,214,168,.7)}
+.tab .dot.part{background:var(--warn)}
+.tab.solo:before{content:"";position:absolute;left:6px;top:7px;width:3px;height:calc(100% - 16px);border-radius:2px;background:var(--who,transparent)}
+.tab.solo{padding-left:15px}
+
+/* spine */
+.spine{max-width:var(--maxw);margin:0 auto;padding:12px 18px 4px}
+.spine-inner{display:flex;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.snode{flex:1;min-width:0;padding:9px 11px;border-right:1px solid var(--line);cursor:pointer;transition:.15s}
+.snode:last-child{border-right:none}
+.snode:hover{background:var(--panel2)}
+.snode .sk{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-dim);display:flex;align-items:center;gap:5px}
+.snode .sk i{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block}
+.snode.on .sk i{background:var(--accent);box-shadow:0 0 8px rgba(232,160,180,.85)}
+.snode .sv{font-size:12px;margin-top:3px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snode.on .sv{color:var(--ink)}
+@media(max-width:820px){.spine-inner{flex-wrap:wrap}.snode{flex:1 1 33%;border-bottom:1px solid var(--line)}}
+
+.view{display:none;animation:fade .22s}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:20px;letter-spacing:.2px}
+.card h3{margin:24px 0 6px;font-size:14px;color:var(--accent);letter-spacing:.4px;text-transform:uppercase}
+.card h3:first-of-type{margin-top:14px}
+.lead{color:var(--ink-dim);font-size:13.5px;margin:0 0 8px}
+.section-intro{font-size:13px;color:var(--ink-dim);background:var(--bg2);border-left:3px solid var(--accent2);padding:11px 14px;border-radius:0 10px 10px 0;margin:8px 0 16px}
+.section-intro b{color:var(--ink)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:800px){.g2,.g3{grid-template-columns:1fr}}
+
+label.f{display:block;margin:12px 0}
+label.f .lab{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--ink);flex-wrap:wrap}
+label.f .hint{display:block;font-weight:400;color:var(--ink-dim);font-size:11.5px;margin-bottom:5px;line-height:1.4}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit}
+textarea{resize:vertical;min-height:62px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,160,180,.13)}
+select{cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.tools{display:inline-flex;gap:5px;margin-left:auto}
+.mini{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:7px;padding:2px 8px;font-size:11px;cursor:pointer;font-weight:600}
+.mini:hover{color:var(--ink);border-color:var(--accent)}
+.mini.seed:hover{border-color:var(--accent3);color:var(--accent3)}
+.probe{background:rgba(201,120,156,.13);border:1px solid rgba(201,120,156,.45);border-radius:10px;padding:10px 12px;margin:7px 0 0;font-size:12.5px;display:none}
+.probe.open{display:block;animation:fade .18s}
+.probe .pq{color:var(--ink);margin:0 0 6px}
+.probe .pq:before{content:"↳ ";color:var(--accent);font-weight:700}
+.probe .pnav{display:flex;gap:6px;align-items:center;margin-top:6px}
+.probe .pnum{font-size:11px;color:var(--ink-dim);margin-left:auto}
+.seedbox{background:var(--bg2);border:1px dashed var(--line);border-radius:10px;padding:9px 11px;margin:7px 0 0;font-size:12.5px;display:none}
+.seedbox.open{display:block}
+.seedbox .sd{padding:6px 9px;border-radius:8px;cursor:pointer;color:var(--ink-dim);border:1px solid transparent}
+.seedbox .sd:hover{background:var(--panel2);color:var(--ink);border-color:var(--line)}
+.seedbox .sdh{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent3);margin-bottom:4px}
+
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--chip);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;transition:.12s;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:linear-gradient(120deg,var(--accent2),var(--accent));border-color:transparent;color:#20111b;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+.tcat{margin:12px 0}
+.tcat h4{margin:8px 0 5px;font-size:12px;color:var(--accent3);text-transform:uppercase;letter-spacing:.7px}
+
+.advisor{border-radius:12px;padding:11px 14px;font-size:13px;margin:10px 0;border:1px solid var(--line);line-height:1.5}
+.advisor.good{background:rgba(127,214,168,.10);border-color:rgba(127,214,168,.42)}
+.advisor.warn{background:rgba(240,192,106,.10);border-color:rgba(240,192,106,.42)}
+.advisor.bad{background:rgba(240,128,143,.10);border-color:rgba(240,128,143,.42)}
+.advisor.info{background:rgba(201,120,156,.12);border-color:rgba(201,120,156,.42)}
+.advisor b{color:var(--ink)}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;margin-left:6px}
+.pill.good{background:rgba(127,214,168,.2);color:var(--good)}
+.pill.warn{background:rgba(240,192,106,.2);color:var(--warn)}
+.pill.bad{background:rgba(240,128,143,.2);color:var(--bad)}
+.pill.dim{background:var(--chip);color:var(--ink-dim)}
+.pill.a{background:rgba(232,160,180,.22);color:var(--a)}
+.pill.b{background:rgba(143,184,216,.22);color:var(--b)}
+
+/* two-column couple fields */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+@media(max-width:800px){.pair{grid-template-columns:1fr}}
+.pcol{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.pcol.a{border-top:3px solid var(--a)}
+.pcol.b{border-top:3px solid var(--b)}
+.pcol .pn{font-size:13px;font-weight:800;margin-bottom:2px}
+.pcol.a .pn{color:var(--a)} .pcol.b .pn{color:var(--b)}
+
+/* ladder */
+.rung{display:flex;gap:11px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:8px 0}
+.rung .rl{min-width:132px}
+.rung .rl b{display:block;font-size:12.5px}
+.rung .rl span{font-size:11px;color:var(--ink-dim)}
+.rung textarea{min-height:44px}
+.rung .rnum{width:26px;height:26px;border-radius:8px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex:none;margin-top:2px}
+.rung.off{opacity:.42}
+@media(max-width:700px){.rung{flex-wrap:wrap}.rung .rl{min-width:0;flex:1}}
+
+/* beats */
+.beat{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:10px 0}
+.beat.pivot{border-color:rgba(232,160,180,.55);background:linear-gradient(180deg,rgba(232,160,180,.07),var(--bg2))}
+.beat .bh{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.beat .bn{width:27px;height:27px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--accent);flex:none}
+.beat.pivot .bn{background:linear-gradient(120deg,var(--accent2),var(--accent));color:#20111b}
+.beat .bt{font-size:14px;font-weight:700}
+.beat .bask{font-size:12px;color:var(--ink-dim);margin:6px 0 8px;line-height:1.45}
+.sliders{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:780px){.sliders{grid-template-columns:1fr}}
+.sl{display:flex;align-items:center;gap:8px}
+.sl .gl{font-size:10.5px;color:var(--ink-dim);white-space:nowrap;min-width:64px}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:4px;background:var(--panel2);flex:1;cursor:pointer;min-width:60px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);cursor:pointer}
+input[type=range].ra::-webkit-slider-thumb{background:var(--a)}
+input[type=range].rb::-webkit-slider-thumb{background:var(--b)}
+.gripval{font-size:11px;font-weight:700;color:var(--ink-dim);min-width:30px;text-align:right}
+
+.chartbox{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.chartbox svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-dim);margin-top:8px}
+.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.score .big{font-size:44px;font-weight:800;line-height:1;letter-spacing:-1px}
+.score .lbl{font-size:12px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.9px}
+.meter{flex:1;min-width:180px}
+.meter .bar{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.meter .bar i{display:block;height:100%;transition:width .4s}
+.check{display:flex;gap:11px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:8px 0}
+.check .ci{font-size:16px;line-height:1.2;flex:none;width:22px;text-align:center}
+.check.pass{border-color:rgba(127,214,168,.35)}
+.check.fail{border-color:rgba(240,128,143,.35)}
+.check.soft{border-color:rgba(240,192,106,.35)}
+.check .ct{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.check .cd{font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+.check .cgo{margin-left:auto;flex:none}
+
+.outbox{background:#120a10;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:12px;white-space:pre-wrap;max-height:520px;overflow:auto;line-height:1.55;color:#f0dde7}
+.exptabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.exptab{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:9px;padding:7px 12px;font-size:12.5px;cursor:pointer;font-weight:600}
+.exptab.on{background:var(--panel2);color:var(--ink);border-color:var(--accent)}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--accent);color:var(--ink);padding:11px 20px;border-radius:11px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:.28s;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer.foot{max-width:var(--maxw);margin:0 auto;padding:14px 18px 40px;color:var(--ink-dim);font-size:11.5px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.chk{display:flex;gap:9px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--accent);flex:none}
+.chk .ck{font-size:13px;font-weight:600}
+.chk .cs{font-size:11.5px;color:var(--ink-dim);line-height:1.45;margin-top:2px}
+.heatbar{display:flex;gap:6px;margin:8px 0}
+.heatbar button{flex:1;border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:10px;padding:9px 6px;cursor:pointer;font-size:12px;font-weight:700;transition:.15s}
+.heatbar button:hover{border-color:var(--accent)}
+.heatbar button.on{background:linear-gradient(120deg,var(--accent2),var(--accent));color:#20111b;border-color:transparent}
+.heatbar button small{display:block;font-weight:400;font-size:10px;opacity:.85;margin-top:2px}
+@media print{header.top,nav.tabs,.spine,.top-actions,footer.foot{display:none}body{background:#fff;color:#111}.card{box-shadow:none;border-color:#ccc;background:#fff}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="glyph">❥</span>
+      <div>
+        <h1>Character Deep Dive: Romance</h1>
+        <div class="sub">Two people — and the one reason it has to be them</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="swap" id="swap"></div>
+      <button class="btn sm ghost" onclick="Store.exportJSON()">Save file</button>
+      <button class="btn sm ghost" onclick="Store.importFile()">Load</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="spine" id="spine"></div>
+
+<div class="wrap">
+  <div class="view" data-view="book"></div>
+  <div class="view" data-view="identity"></div>
+  <div class="view" data-view="wound"></div>
+  <div class="view" data-view="engine"></div>
+  <div class="view" data-view="why"></div>
+  <div class="view" data-view="barrier"></div>
+  <div class="view" data-view="tropes"></div>
+  <div class="view" data-view="journey"></div>
+  <div class="view" data-view="heat"></div>
+  <div class="view" data-view="black"></div>
+  <div class="view" data-view="behavior"></div>
+  <div class="view" data-view="diagnostics"></div>
+  <div class="view" data-view="export"></div>
+</div>
+
+<footer class="foot">
+  <span>Everything saves in this browser automatically.</span>
+  <span>Use <b>Save file</b> for a backup — or to start a second couple.</span>
+  <span style="margin-left:auto"><button class="btn sm danger ghost" onclick="Store.reset()">Start over</button></span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = { storageKey:"tip-romance-deep-dive-v1", version:1 };
+
+/* ============================================================
+   SUBGENRE PLAYBOOKS
+   ============================================================ */
+const LANES = {
+smalltown:{label:"Small Town", heat:[2,4],
+  driver:"Coming home to the people who remember who you used to be",
+  wounds:["They left in the middle of the night and never explained it to anyone","They were the family everyone gossiped about, and they felt every word of it","They stayed when they wanted to go, and gave up the thing they were good at"],
+  lies:["If I need this town, it gets to decide who I am","People here already made up their minds about me — nothing I do changes it","Staying means settling, and I'm not going to be my mother"],
+  wants:["Sell the house, settle the estate, and be gone by spring","Save the business her grandmother started","Get the town to sign off on the thing they've refused three times"],
+  barriers:["One of them is leaving in six weeks and both of them know it","Their families are on opposite sides of something the town hasn't forgiven","Everyone will know within a day, and one of them can't afford that"],
+  tropes:["Return to Hometown","Second Chance","Small Business in Trouble","Grumpy/Sunshine","Forced Proximity"],
+  warn:"Small-town trap: <b>the town becomes the plot.</b> Casseroles and quirky neighbours are texture. The book is about two people who cannot be private in a place where nothing is private."},
+
+billionaire:{label:"Billionaire / Boss", heat:[3,5],
+  driver:"Power on one side, principle on the other — and what money can't buy",
+  wounds:["They were loved for what they could provide, and found out on a specific date","They watched their family lose everything and swore never to be at anyone's mercy again","They were somebody's second choice, publicly"],
+  lies:["Everything is a transaction — I just make sure I set the price","If I stop producing, I stop being worth keeping","Wanting to be taken care of is weakness"],
+  wants:["Close the deal that finally puts the family company out of reach","Keep the job, the visa, or the custody arrangement","Prove they earned the position everyone assumes they were given"],
+  barriers:["He signs her paycheque and she needs it more than she'll admit","A contract, an NDA, or a board that will remove one of them","The gap in what each stands to lose is not equal, and both know it"],
+  tropes:["Boss/Employee","Fake Relationship","Marriage of Convenience","Grumpy/Sunshine","Only One Bed"],
+  warn:"Billionaire trap: <b>wealth as personality.</b> The jet is not a character trait. The engine is the power imbalance — write what she can't say to him because of what he controls."},
+
+darkmafia:{label:"Dark Romance / Mafia", heat:[4,5],
+  driver:"Possession, danger braided into desire, and the question of what she'll survive",
+  wounds:["They were traded, promised, or sold as a term in someone else's arrangement","They learned early that the people who protect you are the people who own you","They were taught their softness would be the thing that killed them"],
+  lies:["If I am the most dangerous thing in the room, nothing can be done to me","Being wanted this much is the closest thing to being safe","I don't get a choice, so wanting one is just a way to suffer"],
+  wants:["Get out of the marriage, the debt, or the house before the date","Take the seat at the head of the table so no one can move her again","Find who gave the order and end them"],
+  barriers:["He is the reason she isn't free, and she needs him to survive the week","Her family's continued breathing depends on her staying exactly where she is","Loving him means becoming complicit in what he does"],
+  tropes:["Forced Marriage","Captive/Captor","Enemies to Lovers","Possessive Hero","Morally Gray","Touch Her and Die"],
+  warn:"Dark romance trap: <b>cruelty without interiority.</b> The reader has to feel her calculation — what she's trading, what she's choosing, where her power actually is. Menace without her POV is just menace."},
+
+sports:{label:"Sports Romance", heat:[3,5],
+  driver:"A body with an expiry date, and what's left when the career ends",
+  wounds:["They were the family's investment, and the return was always due","An injury took the identity before they'd built a second one","They were traded, cut, or benched in front of everyone who mattered"],
+  lies:["I'm only worth what I put up on the board","If I let anyone close during the season, I lose the season","Nobody sticks around once the highlight reel stops"],
+  wants:["Make the roster, the final, or the comeback nobody thinks is possible","Keep the contract that pays for a sibling's care","Get through one season without the press finding out"],
+  barriers:["She's staff, press, or the coach's daughter — and it's a fireable offence","He's traded in eleven weeks and the city is not negotiable","Going public would cost one of them the thing they've bled for"],
+  tropes:["Forbidden","Grumpy/Sunshine","Fake Dating","Brother's Best Friend","Forced Proximity"],
+  warn:"Sports trap: <b>the games instead of the stakes.</b> Nobody needs a play-by-play. They need to know what he loses if he's distracted, and what she loses if she isn't."},
+
+cowboy:{label:"Cowboy / Western", heat:[2,5],
+  driver:"Land, legacy, and a kind of man who was taught not to say things",
+  wounds:["They inherited a place that's already failing and can't say so","They were the one who stayed to run it when the others got to leave","A death on the property that the family still doesn't discuss"],
+  lies:["Talking about it doesn't fix anything, so I don't","If I set it down for a second, all of it goes","People leave this life. It's just what they do"],
+  wants:["Save the ranch through one more season","Buy back the acreage that was sold off","Get the family to sign before the developer's offer expires"],
+  barriers:["She's the one buying it, or reporting on it, or representing the other side","Everyone in three counties will know by Sunday","He won't leave the land and her whole life is somewhere else"],
+  tropes:["Grumpy/Sunshine","City Girl/Country Boy","Single Dad","Marriage of Convenience","Forced Proximity"],
+  warn:"Cowboy trap: <b>strong and silent with nothing underneath.</b> If he doesn't talk, the reader needs his interiority on the page — or she needs to be sharp enough to read him out loud."},
+
+military:{label:"Military / First Responder", heat:[3,5],
+  driver:"Duty that outranks love, and the cost of coming home",
+  wounds:["They came back and someone didn't","They were the one who made the call, and it was the right call","They were left behind by someone who couldn't keep waiting"],
+  lies:["Everyone I love becomes something I can lose, so I keep the number low","I don't get to fall apart — other people need me upright","They'd leave too, if they knew what I actually did"],
+  wants:["Get through the deployment, the inquiry, or the recovery","Keep the promise they made to someone who died","Be trusted with the team, the shift, or the kid again"],
+  barriers:["He's deploying and won't ask her to wait","She's in his chain of command","One of them can't be told the truth about where the other goes"],
+  tropes:["Second Chance","Best Friend's Sibling","Protector","Touch-Her-and-Die","Slow Burn"],
+  warn:"Military trap: <b>trauma as backstory decoration.</b> If it isn't changing what he does in scene — what he can't sleep through, what he can't be asked — it isn't in the book."},
+
+mc:{label:"MC / Biker", heat:[4,5],
+  driver:"Club before blood, and what it costs to be someone's property",
+  wounds:["They were raised in it and never got asked whether they wanted in","They lost someone to a vote they weren't allowed to attend","They ran once, were brought back, and everyone pretends it didn't happen"],
+  lies:["Loyalty is the only thing that's ever been real, and it comes first","Out there I'm nobody — in here at least I'm something","Wanting a normal life is a kind of betrayal"],
+  wants:["Get her kid out of the life before he's old enough to patch in","Take the gavel and change what the club does","Pay off what's owed and walk out clean"],
+  barriers:["The club votes on her, and she doesn't get a voice","He's sworn to someone who wants her gone","Choosing her means choosing against the only family he's had"],
+  tropes:["Found Family","Forbidden","Possessive Hero","Enemies to Lovers","Old Lady"],
+  warn:"MC trap: <b>the club as wallpaper.</b> The vote, the rank, the debt — those are the plot. If she could just walk out of the clubhouse, there's no book."},
+
+secondchance:{label:"Second Chance", heat:[2,5],
+  driver:"The people they were, standing in the room with who they are now",
+  wounds:["One of them left, and the reason was never actually said out loud","They lost a pregnancy, a parent, or a business, and grieved it separately","They chose the safe thing and have never stopped doing the maths"],
+  lies:["We already proved we don't work","If I let it start again I'll be the one left standing there twice","The version of me they loved doesn't exist anymore"],
+  wants:["Sell the shared thing — house, business, dog — and be done","Get an answer to the question they never asked","Prove to themselves they've moved on"],
+  barriers:["Nobody has said what actually happened, and both think they know","A child, an ex, or a promise made to someone else","One of them has a life now that has no room in it"],
+  tropes:["Second Chance","Secret Baby","Forced Proximity","Slow Burn","Miscommunication Resolved Fast"],
+  warn:"Second chance trap: <b>the withheld reason.</b> If the whole book waits on one unsaid sentence, readers get furious. Say it by the midpoint and let the real problem be that it doesn't fix anything."},
+
+singleparent:{label:"Single Parent", heat:[2,4],
+  driver:"A love that has to be safe enough for someone else",
+  wounds:["They were left holding everything and told it was for the best","They chose someone unstable once and their child paid for it","They were the child in a house like the one they're trying not to build"],
+  lies:["I don't get to want anything for myself anymore","If I bring someone in and it fails, it's my kid who breaks","Being needed is the same thing as being loved"],
+  wants:["Keep custody, keep the house, keep the routine intact","Get the diagnosis, the placement, or the surgery paid for","One year where nothing falls over"],
+  barriers:["Introducing anyone is a risk she isn't allowed to take twice","He's leaving, and a child cannot be asked to survive that","The other parent is still in the picture and has leverage"],
+  tropes:["Single Dad","Nanny","Grumpy/Sunshine","Fake Relationship","Slow Burn"],
+  warn:"Single-parent trap: <b>the child as a prop.</b> Give the kid a want of their own. And remember the real obstacle is risk assessment, not attraction."},
+
+workplace:{label:"Workplace / Rivals", heat:[3,5],
+  driver:"Two people who are excellent at the same thing",
+  wounds:["They were passed over and told they weren't ready","They were the one who got it, and the whisper was that they didn't earn it","They gave up a relationship for the career once and it was worth it, mostly"],
+  lies:["If I stop being the best, I stop being necessary","Softness gets used against you in a room like this","I can have the work or the person, and I already chose"],
+  wants:["Land the promotion, the account, or the corner office","Keep the department from being cut","Win the competition they were told they'd lose"],
+  barriers:["Only one of them can get it","HR, a policy, or a client who would walk","Telling the truth about the numbers would end one of their careers"],
+  tropes:["Enemies to Lovers","Rivals","Forced Proximity","Only One Bed","Fake Dating"],
+  warn:"Workplace trap: <b>banter with no jeopardy.</b> Great dialogue isn't conflict. Make the promotion real, make it single, and make the reader unsure who should get it."},
+
+romcom:{label:"Rom-Com", heat:[2,4],
+  driver:"Two people whose coping mechanisms are extremely funny from the outside",
+  wounds:["They were humiliated in a way everyone found hilarious","They were the responsible one in a family of chaos and never got to be a mess","They were dumped in a way that became a story other people tell"],
+  lies:["If I get there first with the joke, nobody else gets to land it","I'm the funny friend, not the one someone chooses","Being earnest is how you get embarrassed"],
+  wants:["Pull off the wedding, the launch, the trip, the bet","Get through the family event without being the story","Win the thing they publicly announced they'd win"],
+  barriers:["A lie that started small and now has a guest list","Someone else is already in the picture and is genuinely nice","One of them is leaving, and it's already booked"],
+  tropes:["Fake Dating","Enemies to Lovers","Forced Proximity","Only One Bed","Grumpy/Sunshine","He Falls First"],
+  warn:"Rom-com trap: <b>the premise carries the first half and nothing carries the second.</b> Decide now what's underneath the joke — the wound the humour is protecting."},
+
+holiday:{label:"Holiday / Seasonal", heat:[1,4],
+  driver:"A deadline made of tradition, and everyone watching",
+  wounds:["Something ended at Christmas and the season has never been neutral since","They were the one who kept it all going and nobody noticed","They stopped going home and can't fully explain why"],
+  lies:["It's easier to be alone than to be disappointed again","If I do it perfectly, this year will feel like it used to","Nobody wants the version of me that isn't cheerful"],
+  wants:["Save the inn, the festival, the shop, the family tradition","Get through the visit and back to the city","Give one person the Christmas they didn't get"],
+  barriers:["The clock: one of them leaves on the 26th","A family obligation nobody is allowed to skip","They're already promised to someone else for the season"],
+  tropes:["Forced Proximity","Fake Relationship","Snowed In","Return to Hometown","Grumpy/Sunshine"],
+  warn:"Holiday trap: <b>the season instead of a story.</b> Cocoa is not conflict. The deadline is your best friend here — put a date on the ticket and make it non-refundable."},
+
+agegap:{label:"Age Gap", heat:[3,5],
+  driver:"Two people at different points in a life, and everyone's opinion about it",
+  wounds:["They were treated as a phase, and it worked — they were left","They built a whole life and it turned out to be someone else's plan","They were told they were too much or not yet enough, in exactly those words"],
+  lies:["Someone at my stage doesn't get to start again","They'll wake up one day and want the years back","I'd be taking something from them by staying"],
+  wants:["Get the practice, the tenure, the custody, the second act","Prove they're not the impulsive thing everyone assumes","Keep the standing they spent twenty years building"],
+  barriers:["A professional line — teacher, boss, doctor, guardian's friend","Family who will say it out loud at a dinner table","One of them wants children and the other has done that part"],
+  tropes:["Age Gap","Forbidden","Best Friend's Parent","Slow Burn","Grumpy/Sunshine"],
+  warn:"Age-gap trap: <b>the gap as the only conflict.</b> Other people disapproving isn't an internal obstacle. What does each of them privately believe the gap proves about them?"},
+
+forbidden:{label:"Forbidden / Taboo", heat:[3,5],
+  driver:"The cost of being caught, and the fact that it doesn't stop them",
+  wounds:["They were the secret once, and were dropped the second it got expensive","They lost a family, a faith, or a place for loving the wrong person","They kept a secret for someone else and it cost them everything"],
+  lies:["Anything real would have to be hidden, so hidden is what real feels like","If they had to choose me in public, they wouldn't","I ruin things by wanting them"],
+  wants:["Keep the position, the family, or the congregation","Get through the season, term, or trial without discovery","Be chosen out loud, once"],
+  barriers:["Discovery costs one of them a career, a child, or a community","A vow, a contract, or a person standing between them who has done nothing wrong","They're on opposite sides of something their families won't cross"],
+  tropes:["Forbidden","Best Friend's Sibling","Secret Relationship","Enemies to Lovers","Slow Burn"],
+  warn:"Forbidden trap: <b>a rule with no enforcer.</b> Someone must be able to catch them, and the consequence must be specific, near, and awful."},
+
+romantasy:{label:"Romantasy / Paranormal", heat:[3,5],
+  driver:"Magic that decides for them, and two people trying to choose anyway",
+  wounds:["The bond chose them and nobody asked","Their power woke the night they lost someone, and they've never separated the two","They were promised to a house, court, or pack before they could speak"],
+  lies:["Being wanted by something that strong is not the same as being safe","If they see all of it, they'll run — so they see the version that stays","Choosing love means handing someone the knife"],
+  wants:["Break the bond, the betrothal, or the curse before the season turns","Take the seat so no one can trade them again","Find out what really happened the night everything changed"],
+  barriers:["Their courts, packs, or species are at war and both are expected to lead","The magic itself charges a price for loving him — in years, power, or blood","One of them is a weapon the other side is owed"],
+  tropes:["Fated Mates","Enemies to Lovers","Forced Proximity","Touch Her and Die","Morally Gray","Found Family"],
+  warn:"Romantasy trap: <b>the bond replaces the wanting.</b> Fate explains the pull, not the choice. Make each of them choose the other on a day when the magic isn't helping."},
+
+historical:{label:"Historical / Regency", heat:[1,4],
+  driver:"Reputation, money, and everything that cannot be said in a drawing room",
+  wounds:["They were ruined, or nearly, and the family has never let it go","They were married off once and survived it","They watched a sister, a mother, or a friend be destroyed by one rumour"],
+  lies:["Wanting anything for myself puts my sisters at risk","Feeling is a luxury for people with independent means","I am a set of terms in a negotiation, and pretending otherwise is dangerous"],
+  wants:["Secure the settlement, the entail, or a match before the season ends","Keep the estate solvent without anyone finding out how bad it is","Get one sister safely married and then be left alone"],
+  barriers:["Rank, fortune, or an existing engagement that cannot be broken without ruin","They cannot be alone in a room without consequences","A scandal that would take a whole family down, not just them"],
+  tropes:["Marriage of Convenience","Forced Proximity","Enemies to Lovers","Wallflower","Rake Reformed","Compromised"],
+  warn:"Regency trap: <b>modern people in period dress.</b> The pressure IS the plot: what she can't own, can't say, can't be seen doing. Take that away and there's no book."},
+
+clean:{label:"Clean / Inspirational", heat:[1,2],
+  driver:"Restraint, faith, and the enormous weight of a small gesture",
+  wounds:["They were let down by someone who was supposed to be steady","They lost their certainty — about a person, a plan, or a faith","They were shamed for something they had no control over"],
+  lies:["If I'm good enough, nothing bad happens","Needing help means I've failed at the one thing I'm for","It's safer to want less"],
+  wants:["Keep the shelter, the school, the farm, the practice open","Repair the relationship they walked out of","Say yes to the thing they've said no to for five years"],
+  barriers:["A promise made to someone who is still owed it","One of them is leaving for a calling they can't refuse","Their communities expect two different lives"],
+  tropes:["Slow Burn","Second Chance","Small Business in Trouble","Grumpy/Sunshine","Marriage of Convenience"],
+  warn:"Clean-romance trap: <b>nothing at stake but a kiss.</b> With the door closed, the tension has to come from what a look costs. Make every restrained gesture expensive."},
+
+suspense:{label:"Romantic Suspense", heat:[3,5],
+  driver:"Trust as a life-or-death decision",
+  wounds:["They trusted the wrong person and somebody died for it","They were the one who got away, and have been careful ever since","They were investigated, accused, or blamed and never fully cleared"],
+  lies:["The moment I stop watching, it happens again","I can protect them better from a distance","Everyone is capable of it — I've seen the files"],
+  wants:["Find who did it before the trail goes cold","Keep the witness, the sister, or themselves alive until Friday","Clear their name with something that stands up in court"],
+  barriers:["One of them is a suspect, and the evidence is genuinely bad","Telling the truth would put the other in the line of fire","They're on opposite sides of the investigation"],
+  tropes:["Protector","Forced Proximity","Enemies to Lovers","On the Run","Only One Bed"],
+  warn:"Suspense trap: <b>the case and the romance running on separate rails.</b> The investigation should keep forcing exactly the intimacy each of them is defended against."},
+
+academic:{label:"Campus / New Adult", heat:[3,5],
+  driver:"Becoming someone, in public, for the first time",
+  wounds:["They got here on somebody's sacrifice and can feel the weight of it daily","They were the smartest in a small place and are ordinary in a big one","Something happened at a party and nobody handled it right"],
+  lies:["If I let up for one semester, the whole thing goes","I'm here on a technicality and someone will notice","I can't be the person my family thinks I am and the person I want to be"],
+  wants:["Keep the scholarship, the placement, the visa, the spot","Get through the year without going home","Be taken seriously by the one person whose opinion counts"],
+  barriers:["A TA/student line, a roommate, a team rule","One of them graduates and leaves in May","Their families expect incompatible futures"],
+  tropes:["Roommates","Rivals","Fake Dating","Forced Proximity","Best Friend's Sibling"],
+  warn:"Campus trap: <b>low stakes disguised as high drama.</b> Attach the romance to something that can actually be lost — the funding, the visa, the place."},
+
+medical:{label:"Medical", heat:[3,5],
+  driver:"Competence under pressure, and who gets to see them shake afterwards",
+  wounds:["They lost a patient they shouldn't have, and the review cleared them","They watched someone they loved be failed by a system they now work in","They were the child who did the caring"],
+  lies:["Feeling it makes me worse at this, so I don't","If I'm the one holding it together, I can't also be someone who needs holding","Attachment is a risk I'm trained to manage"],
+  wants:["Get the fellowship, the department, the trial approved","Keep one specific patient alive","Get through the inquiry with their licence intact"],
+  barriers:["A hospital policy, an attending/resident line, a patient between them","Opposite shifts and a genuine inability to be present","One of them is the reason the other's case went the way it did"],
+  tropes:["Workplace","Forced Proximity","Second Chance","Grumpy/Sunshine","Slow Burn"],
+  warn:"Medical trap: <b>procedure crowding out the people.</b> The reader is here for the four minutes after the shift, in the car, when the hands finally shake."}
+};
+
+/* ============================================================
+   TROPES — grouped, with the motivation question attached
+   ============================================================ */
+const TROPES = {
+"Setup / How they're stuck":["Forced Proximity","Only One Bed","Snowed In","Roommates","Marriage of Convenience","Fake Dating","Fake Engagement","On the Run","Road Trip","Stuck Working Together"],
+"How they meet":["Enemies to Lovers","Rivals","Friends to Lovers","Second Chance","Strangers to Lovers","Meet Ugly","Instalove","Wrong Number / Letters","Blind Date Gone Wrong"],
+"Who they are to each other":["Boss/Employee","Bodyguard","Nanny","Best Friend's Sibling","Brother's Best Friend","Best Friend's Parent","Single Dad","Single Mum","Neighbours","Teacher/Mentor line"],
+"The tension":["Grumpy/Sunshine","He Falls First","She Falls First","Touch Her and Die","Slow Burn","Forbidden","Secret Relationship","Age Gap","Size Difference","Opposites Attract"],
+"The complication":["Secret Baby","Secret Identity","Amnesia","Fake Ex","Love Triangle","Marriage Pact","Bet / Wager","Rebound","Reformed Rake","Return to Hometown"],
+"Speculative":["Fated Mates","Bonded","Curse","Soul Marks","Shifter","Vampire/Fae","Time-Crossed","Arranged by Magic","Monster Romance"],
+"Darker":["Possessive Hero","Morally Gray","Captive/Captor","Forced Marriage","Obsession","Revenge","Stalker-Protector","Kidnapping","Enemies with Benefits"],
+"The warmth":["Found Family","Small Business in Trouble","Grand Gesture","Golden Retriever Hero","Cinnamon Roll","Praise Kink","Caretaking","He's Obsessed With Her"]
+};
+
+/* ============================================================
+   HEAT LEVELS
+   ============================================================ */
+const HEAT = {
+1:{n:"Sweet", s:"Closed door", d:"Kisses at most. Tension lives in restraint — a hand not taken, a sentence not finished.",
+   ladder:["A look held one beat too long","An accidental touch neither acknowledges","A deliberate touch — hand, wrist, small of the back","The first kiss","A promise made out loud"],
+   note:"At heat 1 the ladder IS the plot. Every rung has to be paid for, and the reader has to feel the cost of each one."},
+2:{n:"Behind the door", s:"Fade to black", d:"Attraction is explicit in the wanting, not on the page. Intimacy happens; the reader is shown the doorway, not the room.",
+   ladder:["A look that gives them away","A touch that changes the temperature of the scene","The first kiss, and what it costs them after","The night — approached, then the door closes","The morning after, which is the emotional scene"],
+   note:"At heat 2 the morning-after scene does the work the closed door didn't. Don't skip it."},
+3:{n:"Warm", s:"Open door, tasteful", d:"On the page, sensual rather than graphic. The emotion of the act is what's rendered in detail.",
+   ladder:["The charged near-miss","First kiss, and it goes further than either planned","The first time — with the emotional turn on the page","A morning that changes the terms","Intimacy as a place they now go to be honest"],
+   note:"At heat 3 every intimate scene must move the relationship. If you could cut it and lose nothing, cut it."},
+4:{n:"Spicy", s:"Explicit, romance-first", d:"Fully on the page and detailed, but the arc still owns it. Sex is where the truth leaks out.",
+   ladder:["The first time they can't pretend it's nothing","The line each of them crosses first","The first time — and what one of them says that they can't take back","Intimacy while the secret is still live","The time after the black moment, which is a different act entirely"],
+   note:"At heat 4 use the bedroom for revelation. What does each of them do there that they'd never do dressed?"},
+5:{n:"Explicit", s:"Fully open door", d:"Explicit and central. Power, need, and vulnerability negotiated physically — and it carries the character work.",
+   ladder:["The first collision — want overriding sense","What they each need it to mean, and how those differ","The scene where control changes hands","Intimacy as the only honest language they have","After the break: the version that costs them something to ask for"],
+   note:"At heat 5 the reader should be able to chart the whole relationship from the intimate scenes alone. If they read as interchangeable, the arc isn't in them yet."}
+};
+
+/* ============================================================
+   ROMANCE BEAT MAP — 12 beats
+   ============================================================ */
+const BEATS = [
+{t:"Before Each Other", ask:"Show each of them coping alone, and show the lie working. What does their life protect them from right now?", a:"Her ordinary day", b:"His ordinary day", r:"Do they know the other exists?"},
+{t:"The Meet (or Re-meet)", ask:"First contact. What does each one decide about the other in the first sixty seconds — and what are they both wrong about?", a:"What she decides about him", b:"What he decides about her", r:"What actually happens in the room"},
+{t:"The Hook", ask:"Why can't they walk away? The deal, the job, the storm, the bond, the shared problem. Make it structural, not chemistry.", a:"What holds her here", b:"What holds him here", r:"The arrangement between them"},
+{t:"Attraction, Denied", ask:"Both feel it and both explain it away. What exactly does each of them tell themselves?", a:"Her explanation", b:"His explanation", r:"What the reader can see that they can't"},
+{t:"The First Crack", ask:"One of them sees behind the other's guard — accidentally. Not a confession. A moment of being witnessed.", a:"What she sees", b:"What he sees", r:"What changes after"},
+{t:"The Could-Be (midpoint)", ask:"A stretch of real intimacy where the HEA becomes visible. The reader should want it badly here. What do they get to have for one day?", a:"What she lets herself have", b:"What he lets himself have", r:"The moment that becomes the thing they lose later"},
+{t:"Falling — With Teeth", ask:"Now it can cost something. The secret, the deadline, the goal — what has grown fangs since the midpoint?", a:"What she's now risking", b:"What he's now risking", r:"What they still haven't said"},
+{t:"The World Presses", ask:"Outside pressure arrives: family, job, town, court, press, ex. Each retreats into the old defence. Which one?", a:"How she protects herself", b:"How he protects himself", r:"The first real fight — and what it's actually about"},
+{t:"The Black Moment", ask:"The lie wins. It must come from character, not coincidence — one of them does the exact thing their wound trained them to do.", a:"What she does or believes", b:"What he does or believes", r:"How it breaks, and who walks"},
+{t:"The Dark Night", ask:"Apart, each alone with what's left. What does each finally admit that they couldn't while together?", a:"What she faces", b:"What he faces", r:"What each thinks the other believes"},
+{t:"The Proof", ask:"Change demonstrated at cost — not an apology, an action. What does each give up, and who goes first?", a:"What she gives up", b:"What he gives up", r:"The grovel / the reaching"},
+{t:"The New Normal", ask:"Prove the HEA with something they could not have done in chapter one. Show it, don't promise it.", a:"Who she is now", b:"Who he is now", r:"The image the reader closes the book on"}
+];
+const IDEAL = {
+  close:[6,20,32,40,54,76,82,66,18,26,74,96],
+  gA:   [88,84,78,72,60,40,36,54,86,62,28,10],
+  gB:   [92,88,82,76,66,48,40,60,90,70,24,8]
+};
+
+/* ============================================================
+   PROBES
+   ============================================================ */
+const PROBES = {
+"identity.dateable":["What would their last ex say about them, fairly?","What do they do on a first date that they think is charming and isn't?","What's the thing they're proud of that nobody else finds impressive?"],
+"identity.contradiction":["Do they know they do it?","Who has seen it and said nothing?","What would it cost them to stop?"],
+"wound.ghost":["Write it as a scene: where are they, what's the last ordinary thing said before it turns?","What did they DO in the first hour after — not felt, did?","Who else was there, and would they tell it differently?"],
+"wound.lovelie":["Say it first person, in seven words or fewer.","When did they first say it to themselves — what happened that week?","What has this lie actually protected them from? It has to have worked."],
+"wound.lastcost":["What did loving someone take from them last time — specifically?","Who watched it happen?","What did they promise themselves afterwards, and have they kept it?"],
+"wound.guard":["What does the guard look like on a Tuesday, at work, with a stranger?","Who is allowed past it already, and why them?","What's the tell that it just went up?"],
+"engine.want":["Could a camera film them getting it? If not, it's a need, not a want.","Does this goal survive the romance — or does the love interest solve it? If solved, it's too weak.","What's the deadline, and who set it?"],
+"engine.need":["Finish it: 'They can't be loved properly until they accept that...'","Who has already tried to tell them and failed?","Why would they rather lose the relationship than accept it?"],
+"engine.whynow":["Why is this the year they can't do the usual thing?","What arrived, ended, or expired?","Why couldn't they have met three years ago and had it work?"],
+"why.gives":["Name the specific thing — a behaviour, not an adjective. Not 'he makes her feel safe' but what he DOES.","Could anyone else in the cast do this for them? If yes, keep digging.","When does the reader first see it happen on the page?"],
+"why.sees":["What do other people get wrong about them that this person gets right?","What's the first moment they realise they've been seen?","Do they find it a relief or a threat?"],
+"why.wrong":["What does each of them believe about the other that is flatly untrue?","When does the reader learn it's untrue — before or after the character does?","What keeps them from checking?"],
+"barrier.internal":["What would each of them have to believe to walk away for good?","Is the barrier something they hold, or something done to them? Both should be present.","Which one gives way first, and why is it that one?"],
+"black.moment":["Trace it back: which wound produced this exact behaviour?","Could the reader have predicted it at 30%? They should be able to.","What's the last thing said before the door closes?"],
+"black.proof":["Is it proportional? Big harm, big proof.","What does it cost them that the old version would never have paid?","Who watches them do it?"],
+"behavior.flirt":["What do they do when they want someone and won't admit it?","How is that different from how they behave with someone they don't want?","Who's noticed?"],
+"behavior.fight":["Do they get loud, cold, precise, funny, or leave?","What's the sentence they reach for that always lands hardest?","Do they regret it in the moment or a day later?"]
+};
+
+/* ============================================================
+   FIELD SCHEMA
+   ============================================================ */
+const PERSON = {
+identity:{
+  title:"Who They Are",
+  lead:"Build the person a reader would fall for — and the crack that makes it complicated.",
+  intro:"Romance readers forgive almost anything except <b>vagueness</b>. The gap between the sentence they'd use about themselves and what they actually do is where the reader leans in.",
+  blocks:[
+   {h:"Basics", fields:[
+    {p:"name", l:"Name", t:"txt"},
+    {p:"identity.role", l:"What they do", t:"txt", hint:"Job, rank, position — and whether it's the one they wanted."},
+    {p:"identity.age", l:"Age / stage of life", t:"txt"},
+    {p:"identity.competence", l:"What they're genuinely good at", t:"ta", hint:"And how they got good at it. Competence is always paid for — and it's most of what makes a lead attractive."}
+   ]},
+   {h:"The surface", fields:[
+    {p:"identity.dateable", l:"What they're like to be with", t:"ta", hint:"Not a description — behaviour. What's it like to be across a table from them?", probe:1},
+    {p:"identity.reputation", l:"What people say when they leave the room", t:"ta", hint:"It should be partly wrong."},
+    {p:"identity.selfImage", l:"The sentence they'd use about themselves", t:"ta", hint:"First person, flattering, mostly sincere."},
+    {p:"identity.contradiction", l:"One thing they do that contradicts it", t:"ta", hint:"One repeatable behaviour, not a flaw list.", probe:1}
+   ]},
+   {h:"Why the reader stays on their side", fields:[
+    {p:"identity.forgive", l:"What makes the reader forgive them", t:"ta", hint:"Leads get to be difficult. They have to earn it in the first two chapters — usually with a costly kindness nobody sees."},
+    {p:"identity.wantsToBeSeen", l:"How they need to be seen", t:"ta", hint:"Capable, harmless, dangerous, good, wanted. Everything they perform aims at this."}
+   ]}
+  ]},
+
+wound:{
+  title:"Wound &amp; Love Lie",
+  lead:"The thing that happened, and what it taught them about being loved.",
+  intro:"Romance runs on a specific kind of lie: not <i>the world is dangerous</i> but <b>this is what happens to me when I let someone in</b>. Get that sentence right and half the book writes itself.",
+  blocks:[
+   {h:"The wound", fields:[
+    {p:"wound.ghost", l:"What happened", t:"ta", hint:"A scene, not a summary. When, where, who was there, the last ordinary sentence before it turned.", probe:1, seed:"wounds", big:1},
+    {p:"wound.before", l:"Who they were before it", t:"ta", hint:"This is what the love interest is quietly giving back to them."},
+    {p:"wound.lastcost", l:"What loving someone cost them last time", t:"ta", hint:"Specific. A year, a job, a child, a city, a version of themselves.", probe:1}
+   ]},
+   {h:"The love lie", fields:[
+    {p:"wound.lovelie", l:"What they now believe about being loved", t:"ta", hint:"First person, short, and reasonable-sounding. \"If they see the whole thing, they go.\"", probe:1, seed:"lies"},
+    {p:"wound.evidence", l:"The proof life keeps handing them", t:"ta", hint:"The lie has to keep being confirmed, or they'd have dropped it years ago."},
+    {p:"wound.truth", l:"The truth that would dismantle it", t:"ta", hint:"Specific to them. Not \"love is worth it\" — \"he didn't leave because you asked for too much.\""}
+   ]},
+   {h:"The guard", fields:[
+    {p:"wound.guard", l:"How they keep people out", t:"ta", hint:"Charm, competence, distance, jokes, usefulness, picking fights, being unavailable, leaving first.", probe:1},
+    {p:"wound.guardtell", l:"The tell that the guard just went up", t:"ta", hint:"Physical and repeatable. Teach it to the reader early so they see it before the other lead does."},
+    {p:"wound.past", l:"Who's already past the guard", t:"ta", hint:"A sibling, a best friend, a dog, a barman. Shows the reader it's possible."},
+    {p:"wound.breaks", l:"What gets past it that they can't defend against", t:"ta", hint:"Usually one specific kind of kindness. This is the love interest's actual weapon."}
+   ]}
+  ]},
+
+engine:{
+  title:"Want · Need · Why Now",
+  lead:"Every lead needs a life that would still be happening if the other one never showed up.",
+  intro:"<b>The most common flat-lead problem in romance:</b> she has no goal except him. Give each of them something they're chasing that the romance <i>complicates</i> rather than solves.",
+  blocks:[
+   {h:"The want — outside the romance", fields:[
+    {p:"engine.want", l:"What they're trying to get", t:"ta", hint:"Filmable, dated, and not the other lead. \"Keep the bakery open past March.\"", probe:1, seed:"wants"},
+    {p:"engine.wantWhy", l:"Why this, and why it has to be them", t:"ta", hint:"The join between the wound and the goal."},
+    {p:"engine.wantVsLove", l:"How the romance makes that goal harder", t:"ta", hint:"If falling in love helps them get what they want with no cost, there's no tension."}
+   ]},
+   {h:"The need", fields:[
+    {p:"engine.need", l:"What they'd have to accept to be loved properly", t:"ta", hint:"\"They can't be loved properly until they accept that ___.\"", probe:1},
+    {p:"engine.needResist", l:"Why they'd rather lose the relationship than accept it", t:"ta", hint:"If accepting it is easy, the black moment won't hold."},
+    {p:"engine.ask", l:"What they need from a partner but would never ask for", t:"ta", hint:"This is the thing the other lead eventually gives without being asked. Write it now."}
+   ]},
+   {h:"Why now", fields:[
+    {p:"engine.whynow", l:"Why this is the year it happens", t:"ta", hint:"An arrival, a death, a deadline, a sale, a diagnosis, a return.", probe:1},
+    {p:"engine.whynotbefore", l:"Why not last year, or with someone else", t:"ta", hint:"Especially important for second chance and friends-to-lovers."},
+    {p:"engine.ready", l:"What makes them <i>almost</i> ready", t:"ta", hint:"Readers need to believe the change is possible — one crack in the armour before they meet."}
+   ]}
+  ]},
+
+behavior:{
+  title:"On the Page",
+  lead:"Everything above is theory until it becomes behaviour a reader can watch.",
+  intro:"These are the fields you actually paste into a drafting prompt — the difference between a character and a placeholder.",
+  blocks:[
+   {h:"Wanting", fields:[
+    {p:"behavior.flirt", l:"How they behave when they want someone and won't admit it", t:"ta", hint:"Deflection, teasing, over-helpfulness, sudden formality, being rude.", probe:1},
+    {p:"behavior.touch", l:"How they are about touch", t:"ta", hint:"Who initiates, what they do with their hands, what kind of contact undoes them."},
+    {p:"behavior.jealous", l:"What jealousy looks like on them", t:"ta", hint:"Most leads reveal themselves here. Is it possessive, quiet, self-punishing, funny?"}
+   ]},
+   {h:"Conflict", fields:[
+    {p:"behavior.fight", l:"How they fight", t:"ta", hint:"Loud, cold, precise, funny, leaving. And what they say that lands hardest.", probe:1},
+    {p:"behavior.apologise", l:"How they apologise — if they do", t:"ta", hint:"Words, acts, gifts, or pretending it didn't happen."},
+    {p:"behavior.pressure", l:"What they do under pressure", t:"ta", hint:"Fight, fix, flee, freeze, charm — plus a specific example."}
+   ]},
+   {h:"Voice &amp; texture", fields:[
+    {p:"behavior.speech", l:"What they use words for", t:"ta", hint:"Deflect, control, connect, wound, comfort. Plus rhythm — clipped, warm, formal, meandering."},
+    {p:"behavior.neverSay", l:"The sentence they'd never say aloud", t:"ta", hint:"Write it exactly. Then decide which chapter almost gets it out of them."},
+    {p:"behavior.kindness", l:"The kindness they do that costs them", t:"ta", hint:"Where the reader falls for them."},
+    {p:"behavior.joy", l:"What they're like happy", t:"ta", hint:"Show it once early and the black moment hurts twice as much."}
+   ]}
+  ]}
+};
+
+const COUPLE = {
+why:{
+  title:"Why These Two",
+  lead:"The question every romance reader is really asking — and the one most drafts never answer on the page.",
+  intro:"Chemistry is why they notice each other. <b>This tab is why it has to be them.</b> If someone else in the cast could do it, the reader will feel that even if they can't name it.",
+  blocks:[
+   {h:"What only they can give", pair:1, fields:[
+    {p:"gives", l:"What {OTHER} gives {SELF} that nobody else could", t:"ta", hint:"A behaviour, not an adjective. Not \"safety\" — what he actually does.", probe:"why.gives"},
+    {p:"sees", l:"What {OTHER} sees in {SELF} that everyone else misses", t:"ta", hint:"And whether {SELF} finds that a relief or a threat.", probe:"why.sees"},
+    {p:"wrong", l:"What {SELF} is flatly wrong about regarding {OTHER}", t:"ta", hint:"Both should be wrong about something. It's where the black moment gets its fuel.", probe:"why.wrong"},
+    {p:"changes", l:"How {OTHER} changes what {SELF} wants", t:"ta", hint:"By the end, the original goal should mean something different."}
+   ]},
+   {h:"The two-hander", fields:[
+    {p:"why.chemistry", l:"Why they can't stop noticing each other", t:"ta", hint:"Physical, but be specific — what exactly, in what light, doing what?"},
+    {p:"why.compat", l:"Why they'd actually work — the unsexy version", t:"ta", hint:"Shared humour, matched pace, the same thing they find unbearable. This is what makes readers believe in the HEA."},
+    {p:"why.argue", l:"What they argue about", t:"ta", hint:"The surface argument. It should recur three or four times in the book."},
+    {p:"why.realargue", l:"What the argument is actually about", t:"ta", hint:"Two wounds talking past each other. Name both."},
+    {p:"why.mirror", l:"How their wounds fit together", t:"ta", hint:"The strongest pairings press exactly where the other is bruised — and heal exactly where the other is starving."},
+    {p:"why.oneline", l:"One sentence: why it has to be these two", t:"ta", hint:"If you can't write it, keep working above. This line goes in your blurb."}
+   ]}
+  ]},
+
+barrier:{
+  title:"The Barrier",
+  lead:"What keeps them apart for 300 pages without either of them looking stupid.",
+  intro:"You need <b>both</b>: an external barrier with an enforcer, and an internal barrier in each of them. External alone gets solved. Internal alone reads as two people being difficult.",
+  blocks:[
+   {h:"Internal — one each", pair:1, fields:[
+    {p:"internal", l:"What {SELF} would have to believe to walk away for good", t:"ta", hint:"Trace it to the love lie.", probe:"barrier.internal"},
+    {p:"risk", l:"What {SELF} genuinely risks by choosing {OTHER}", t:"ta", hint:"Real, nameable, and not equal on both sides — unequal risk is where the tension lives."}
+   ]},
+   {h:"External", fields:[
+    {p:"barrier.external", l:"The external barrier", t:"ta", hint:"A rule, a contract, a job, a family, a distance, a deadline, a third person.", seed:"barriers"},
+    {p:"barrier.enforcer", l:"Who enforces it", t:"ta", hint:"A barrier nobody polices isn't a barrier. Name the person who can catch them and what they'd do."},
+    {p:"barrier.cost", l:"What being caught actually costs", t:"ta", hint:"Specific, near, and awful."},
+    {p:"barrier.erodes", l:"How the barrier weakens across the book", t:"ta", hint:"It should shrink as the internal barrier grows. Otherwise the middle sags."}
+   ]},
+   {h:"The conversation test", fields:[
+    {p:"barrier.convoFail", l:"Could one honest conversation solve this?", t:"chk", hint:"Tick if yes. Not fatal — but you must answer the next field, and readers are merciless about this one."},
+    {p:"barrier.convoWhy", l:"If yes: what makes that conversation impossible?", t:"ta", hint:"Not stubbornness. A vow, a risk to someone else, a thing they'd have to confess first, a physical separation."},
+    {p:"barrier.almost", l:"Where they almost say it", t:"ta", hint:"Plan two near-misses. Interruption is cheap once and infuriating twice — better that one of them chooses not to say it, and the reader understands why."}
+   ]}
+  ]},
+
+black:{
+  title:"Black Moment &amp; Grovel",
+  lead:"The break has to come from who they are — not from a misunderstanding a phone call would fix.",
+  intro:"The rule: <b>the black moment is the love lie winning.</b> One of them does the exact thing their wound trained them to do, and it works, and it costs them everything.",
+  blocks:[
+   {h:"The break", fields:[
+    {p:"black.moment", l:"What happens", t:"ta", hint:"The event, on the page, in a room.", probe:"black.moment", big:1},
+    {p:"black.whose", l:"Whose lie wins", t:"sel", opts:["—","Partner A's","Partner B's","Both at once"]},
+    {p:"black.trace", l:"Trace it back to the wound", t:"ta", hint:"One sentence: because of X, they always do Y — and here they do Y at the worst possible moment."},
+    {p:"black.foreshadow", l:"Where it was foreshadowed", t:"ta", hint:"Name two earlier scenes. The reader should be able to say \"of course\" and \"no\" at the same time."},
+    {p:"black.said", l:"The last thing said before the door closes", t:"ta", hint:"Write the actual line."},
+    {p:"black.believe", l:"What each believes the other now thinks", t:"ta", hint:"They're both wrong. That's the dark night."}
+   ]},
+   {h:"The proof — one each", pair:1, fields:[
+    {p:"faces", l:"What {SELF} finally admits, alone", t:"ta", hint:"The truth field from their wound tab, arriving at last."},
+    {p:"gives_up", l:"What {SELF} gives up to fix it", t:"ta", hint:"Proportional to the harm. Not an apology — a cost.", probe:"black.proof"},
+    {p:"proof", l:"The action that proves the change", t:"ta", hint:"Something the chapter-one version of them could not have done."}
+   ]},
+   {h:"The landing", fields:[
+    {p:"black.first", l:"Who reaches first, and why it's that one", t:"ta", hint:"Usually the one whose lie won. Not always."},
+    {p:"black.witness", l:"Who witnesses it", t:"ta", hint:"Grovels land harder with an audience who knows what it costs."},
+    {p:"black.hea", l:"The HEA, proven by an action", t:"ta", hint:"Not a promise — a thing they DO in the last chapter that would have been impossible in the first."},
+    {p:"black.epilogue", l:"The image the reader closes the book on", t:"ta", hint:"One picture. This is what they'll remember and recommend."}
+   ]}
+  ]}
+};
+/* ============================================================
+   STATE
+   ============================================================ */
+const NEWPERSON = () => ({ name:"", identity:{}, wound:{}, engine:{}, behavior:{}, pair:{} });
+const DEFAULT = () => ({
+  book:{ title:"", series:"", penName:"", lane:"smalltown", heat:3, pov:"Dual POV", promise:"", tropes:[], tropeWhy:{} },
+  people:[ NEWPERSON(), NEWPERSON() ],
+  rel:{ why:{}, barrier:{}, black:{}, ladder:[{},{},{},{},{}],
+        beats: BEATS.map(()=>({a:"",b:"",r:"",close:null,gA:null,gB:null})) },
+  who:0, meta:{ v:CONFIG.version }
+});
+let S = DEFAULT();
+
+function P(){ return S.people[S.who]; }
+function O(){ return S.people[S.who?0:1]; }
+function L(){ return LANES[S.book.lane] || LANES.smalltown; }
+function nm(i){ return S.people[i].name || (i? "Partner B":"Partner A"); }
+function selfName(){ return nm(S.who); }
+function otherName(){ return nm(S.who?0:1); }
+
+const Store = {
+  save(){ try{ localStorage.setItem(CONFIG.storageKey, JSON.stringify(S)); }catch(e){} },
+  load(){
+    try{
+      const r=localStorage.getItem(CONFIG.storageKey); if(!r) return;
+      const p=JSON.parse(r); S=Object.assign(DEFAULT(), p);
+      if(!Array.isArray(S.people)||S.people.length!==2) S.people=[NEWPERSON(),NEWPERSON()];
+      S.people=S.people.map(x=>Object.assign(NEWPERSON(), x));
+      const d=DEFAULT().rel; S.rel=Object.assign(d, S.rel||{});
+      if(!Array.isArray(S.rel.beats)||S.rel.beats.length!==BEATS.length) S.rel.beats=BEATS.map(()=>({a:"",b:"",r:"",close:null,gA:null,gB:null}));
+      if(!Array.isArray(S.rel.ladder)||S.rel.ladder.length!==5) S.rel.ladder=[{},{},{},{},{}];
+      if(!Array.isArray(S.book.tropes)) S.book.tropes=[];
+      if(!S.book.tropeWhy) S.book.tropeWhy={};
+      if(S.who!==0 && S.who!==1) S.who=0;
+    }catch(e){}
+  },
+  reset(){ if(!confirm("Clear this couple and start fresh? Save a file first if you want to keep them.")) return;
+    S=DEFAULT(); Store.save(); boot(); toast("Cleared — fresh start"); },
+  exportJSON(){
+    const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=(S.book.title||"romance-deep-dive").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-couple.json"; a.click();
+    toast("Saved a backup file");
+  },
+  importFile(){ document.getElementById("fileInput").click(); }
+};
+document.getElementById("fileInput").addEventListener("change",function(e){
+  const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=()=>{ try{ localStorage.setItem(CONFIG.storageKey, r.result); Store.load(); Store.save(); boot(); toast("Loaded"); }
+    catch(err){ toast("Couldn't read that file"); } };
+  r.readAsText(f); e.target.value="";
+});
+
+function getPath(o,p){ return p.split(".").reduce((a,k)=>(a&&a[k]!==undefined&&a[k]!==null)?a[k]:undefined,o); }
+function setPath(o,p,v){ const k=p.split("."); let c=o;
+  for(let i=0;i<k.length-1;i++){ if(typeof c[k[i]]!=="object"||c[k[i]]===null) c[k[i]]={}; c=c[k[i]]; }
+  c[k[k.length-1]]=v; }
+function pv(p,i){ const v=getPath(S.people[i===undefined?S.who:i],p); return v===undefined?"":v; }
+function rv(p){ const v=getPath(S.rel,p); return v===undefined?"":v; }
+function ph(p,i){ const v=pv(p,i); return typeof v==="string"?v.trim().length>2:!!v; }
+function rh(p){ const v=rv(p); return typeof v==="string"?v.trim().length>2:!!v; }
+
+let toastT;
+function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2100); }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fid(p){ return "f_"+p.replace(/[^a-z0-9]/gi,"_"); }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+const TABS = [
+  ["book","The Book",0],["identity","Who They Are",1],["wound","Wound &amp; Love Lie",1],["engine","Want · Need · Now",1],
+  ["why","Why These Two",0],["barrier","The Barrier",0],["tropes","Tropes",0],["journey","The Journey",0],
+  ["heat","Heat &amp; Intimacy",0],["black","Black Moment",0],["behavior","On the Page",1],
+  ["diagnostics","Pressure Test",0],["export","Export",0]
+];
+let CURRENT="book";
+function buildTabs(){
+  document.getElementById("tabs").innerHTML = TABS.map((t,i)=>
+    `<button class="tab ${t[2]?"solo":""}" data-tab="${t[0]}" style="--who:${S.who?"var(--b)":"var(--a)"}" onclick="go('${t[0]}')"><span class="num">${i+1}</span>${t[1]}<span class="dot" data-dot="${t[0]}"></span></button>`).join("");
+}
+function go(v){
+  CURRENT=v; renderView(v);
+  document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.dataset.view===v));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===v));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderView(v){
+  if(PERSON[v]) return Solo.render(v);
+  if(COUPLE[v]) return Duo.render(v);
+  if(v==="book") return Book.render();
+  if(v==="tropes") return Tropes.render();
+  if(v==="journey") return Journey.render();
+  if(v==="heat") return Heat.render();
+  if(v==="diagnostics") return Diag.render();
+  if(v==="export") return Exporter.render();
+}
+
+/* ============================================================
+   COMPLETION
+   ============================================================ */
+function personPct(key,i){
+  const fs=PERSON[key].blocks.flatMap(b=>b.fields);
+  return Math.round(fs.filter(f=>ph(f.p,i)).length/fs.length*100);
+}
+function duoPct(key){
+  const s=COUPLE[key]; let n=0,t=0;
+  s.blocks.forEach(b=>{
+    if(b.pair){ b.fields.forEach(f=>{ [0,1].forEach(i=>{ t++; if(ph("pair."+f.p,i)) n++; }); }); }
+    else b.fields.forEach(f=>{ if(f.t==="chk") return; t++; if(rh(f.p)) n++; });
+  });
+  return t?Math.round(n/t*100):0;
+}
+function journeyPct(){ const b=S.rel.beats; return Math.round(b.filter(x=>(x.a||"").trim()||(x.b||"").trim()||(x.r||"").trim()).length/b.length*100); }
+function heatPct(){ return Math.round(S.rel.ladder.filter(r=>(r.note||"").trim().length>2).length/5*100); }
+function tropePct(){ if(!S.book.tropes.length) return 0;
+  return Math.round(S.book.tropes.filter(t=>(S.book.tropeWhy[t]||"").trim().length>2).length/S.book.tropes.length*100); }
+function bookPct(){ const k=["title","lane","promise"]; return Math.round(k.filter(x=>String(S.book[x]||"").trim().length>1).length/k.length*100); }
+function tabPct(k){
+  if(PERSON[k]) return Math.round((personPct(k,0)+personPct(k,1))/2);
+  if(COUPLE[k]) return duoPct(k);
+  if(k==="book") return bookPct();
+  if(k==="journey") return journeyPct();
+  if(k==="heat") return heatPct();
+  if(k==="tropes") return tropePct();
+  if(k==="diagnostics") return Diag.score();
+  return -1;
+}
+function paintDots(){
+  document.querySelectorAll("[data-dot]").forEach(d=>{ const p=tabPct(d.dataset.dot);
+    d.className="dot"+(p>=85?" on":(p>=25?" part":"")); });
+}
+
+/* ============================================================
+   SPINE
+   ============================================================ */
+function renderSpine(){
+  const nodes=[
+    {k:nm(0)+"'s lie", v:pv("wound.lovelie",0), tab:"wound", who:0},
+    {k:nm(1)+"'s lie", v:pv("wound.lovelie",1), tab:"wound", who:1},
+    {k:"Why these two", v:rv("why.oneline"), tab:"why"},
+    {k:"The barrier", v:rv("barrier.external"), tab:"barrier"},
+    {k:"Black moment", v:rv("black.moment"), tab:"black"},
+    {k:"HEA, proven", v:rv("black.hea"), tab:"black"}
+  ];
+  document.getElementById("spine").innerHTML="<div class='spine-inner'>"+nodes.map(n=>{
+    const v=String(n.v||"").trim(), on=v.length>2;
+    const jump = n.who!==undefined ? `Swap.to(${n.who});go('${n.tab}')` : `go('${n.tab}')`;
+    return `<div class="snode ${on?"on":""}" onclick="${jump}" title="${esc(v)}">
+      <div class="sk"><i></i>${esc(n.k)}</div>
+      <div class="sv">${on?esc(v.length>60?v.slice(0,58)+"…":v):"—"}</div></div>`;
+  }).join("")+"</div>";
+}
+
+/* ============================================================
+   PERSON SWAP
+   ============================================================ */
+const Swap = {
+  paint(){
+    document.getElementById("swap").innerHTML=[0,1].map(i=>
+      `<button data-who="${i}" class="${S.who===i?"on":""}" onclick="Swap.to(${i})">${esc(nm(i))}</button>`).join("");
+  },
+  to(i){ if(S.who===i){ return; } S.who=i; Store.save(); buildTabs();
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===CURRENT));
+    this.paint(); renderView(CURRENT); paintDots(); }
+};
+
+/* ============================================================
+   FIELDS
+   ============================================================ */
+function fieldHTML(f,opts){
+  opts=opts||{};
+  const root=opts.root||"person";            // person | rel
+  const idx = opts.idx===undefined?S.who:opts.idx;
+  const path = opts.prefix ? opts.prefix+f.p : f.p;
+  const uniq = path + (root==="person"?("_"+idx):"");
+  const id=fid(uniq);
+  const v = root==="person" ? pv(path,idx) : rv(path);
+  const attr = root==="person" ? `data-ppath="${path}" data-idx="${idx}"` : `data-rpath="${path}"`;
+
+  let label=f.l, hint=f.hint||"";
+  if(opts.self!==undefined){
+    label=label.replace(/\{SELF\}/g,opts.self).replace(/\{OTHER\}/g,opts.other);
+    hint=hint.replace(/\{SELF\}/g,opts.self).replace(/\{OTHER\}/g,opts.other);
+  }
+  const tools=[];
+  const probeKey = typeof f.probe==="string" ? f.probe : path;
+  if(f.probe && PROBES[probeKey]) tools.push(`<button type="button" class="mini" onclick="Probe.toggle('${probeKey}','${uniq}')">dig deeper</button>`);
+  if(f.seed) tools.push(`<button type="button" class="mini seed" onclick="Seeds.toggle('${uniq}','${f.seed}')">seeds</button>`);
+  const toolbar=tools.length?`<span class="tools">${tools.join("")}</span>`:"";
+
+  let input="";
+  if(f.t==="txt") input=`<input type="text" id="${id}" ${attr} value="${esc(v)}">`;
+  else if(f.t==="sel") input=`<select id="${id}" ${attr}>${(f.opts||[]).map(o=>`<option ${o===v?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  else if(f.t==="chk") return `<label class="chk"><input type="checkbox" ${attr} ${v?"checked":""}>
+      <span><span class="ck">${label}</span><span class="cs">${hint}</span></span></label>`;
+  else input=`<textarea id="${id}" ${attr} style="min-height:${f.big?100:62}px">${esc(v)}</textarea>`;
+
+  return `<label class="f"><span class="lab">${label}${toolbar}</span>
+    ${hint?`<span class="hint">${hint}</span>`:""}${input}
+    <div class="probe" id="pb_${id}"></div><div class="seedbox" id="sb_${id}"></div></label>`;
+}
+
+const Probe = {
+  idx:{},
+  toggle(key,uniq){
+    const box=document.getElementById("pb_"+fid(uniq));
+    if(box.classList.contains("open")){ box.classList.remove("open"); return; }
+    this.idx[uniq]=this.idx[uniq]||0; this.paint(key,uniq); box.classList.add("open");
+  },
+  next(key,uniq){ this.idx[uniq]=((this.idx[uniq]||0)+1)%PROBES[key].length; this.paint(key,uniq); },
+  paint(key,uniq){
+    const list=PROBES[key], i=this.idx[uniq]||0, id=fid(uniq);
+    document.getElementById("pb_"+id).innerHTML=`<div class="pq">${list[i]}</div>
+      <div class="pnav"><button type="button" class="mini" onclick="Probe.next('${key}','${uniq}')">another question</button>
+      <button type="button" class="mini" onclick="document.getElementById('pb_${id}').classList.remove('open')">close</button>
+      <span class="pnum">${i+1} / ${list.length}</span></div>`;
+  }
+};
+
+const Seeds = {
+  toggle(uniq,kind){
+    const id=fid(uniq), box=document.getElementById("sb_"+id);
+    if(box.classList.contains("open")){ box.classList.remove("open"); return; }
+    const items=(L()[kind]||[]).slice();
+    box.innerHTML=`<div class="sdh">${esc(L().label)} — click to drop in, then make it yours</div>`+
+      items.map((s,i)=>`<div class="sd" onclick="Seeds.use('${uniq}',${i})">${esc(s)}</div>`).join("")+
+      `<div style="margin-top:7px"><button type="button" class="mini" onclick="document.getElementById('sb_${id}').classList.remove('open')">close</button></div>`;
+    box._items=items; box.classList.add("open");
+  },
+  use(uniq,i){
+    const id=fid(uniq), box=document.getElementById("sb_"+id), el=document.getElementById(id);
+    const text=box._items[i], cur=(el.value||"").trim();
+    el.value=cur?cur+"\n"+text:text;
+    el.dispatchEvent(new Event("input",{bubbles:true}));
+    box.classList.remove("open"); toast("Dropped in — now make it theirs");
+  }
+};
+
+/* ============================================================
+   SOLO (per-person) SECTIONS
+   ============================================================ */
+const Solo = {
+  render(key){
+    const s=PERSON[key], pct=personPct(key,S.who);
+    const col=S.who?"var(--b)":"var(--a)";
+    document.querySelector(`.view[data-view="${key}"]`).innerHTML=`
+      <div class="card" style="border-top:3px solid ${col}">
+        <h2>${s.title} — <span style="color:${col}">${esc(selfName())}</span>
+          <span class="pill ${pct>=85?"good":(pct>=25?"warn":"dim")}">${pct}% filled</span></h2>
+        <p class="lead">${s.lead}</p>
+        <div class="section-intro">${s.intro}</div>
+        <div class="advisor info" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <span>You're building <b style="color:${col}">${esc(selfName())}</b>.</span>
+          <button class="btn sm" onclick="Swap.to(${S.who?0:1})">Switch to ${esc(otherName())} →</button>
+        </div>
+        ${s.blocks.map(b=>`<h3>${b.h}</h3>${b.fields.map(f=>fieldHTML(f)).join("")}`).join("")}
+      </div>`;
+  }
+};
+
+/* ============================================================
+   DUO (couple) SECTIONS
+   ============================================================ */
+const Duo = {
+  render(key){
+    const s=COUPLE[key], pct=duoPct(key);
+    document.querySelector(`.view[data-view="${key}"]`).innerHTML=`
+      <div class="card">
+        <h2>${s.title} <span class="pill ${pct>=85?"good":(pct>=25?"warn":"dim")}">${pct}% filled</span></h2>
+        <p class="lead">${s.lead}</p>
+        <div class="section-intro">${s.intro}</div>
+        ${key==="why"?`<div class="advisor warn"><b>${esc(L().label)} watch-out:</b> ${L().warn}</div>`:""}
+        ${s.blocks.map(b=> b.pair ? this.pairBlock(b) : `<h3>${b.h}</h3>${b.fields.map(f=>fieldHTML(f,{root:"rel"})).join("")}`).join("")}
+      </div>`;
+  },
+  pairBlock(b){
+    return `<h3>${b.h}</h3><div class="pair">${[0,1].map(i=>`
+      <div class="pcol ${i?"b":"a"}">
+        <div class="pn">${esc(nm(i))}</div>
+        ${b.fields.map(f=>fieldHTML(f,{root:"person",idx:i,prefix:"pair.",self:nm(i),other:nm(i?0:1)})).join("")}
+      </div>`).join("")}</div>`;
+  }
+};
+
+/* ============================================================
+   BOOK
+   ============================================================ */
+const Book = {
+  render(){
+    const l=L(), h=HEAT[S.book.heat];
+    document.querySelector('.view[data-view="book"]').innerHTML=`
+      <div class="card" style="border-color:rgba(232,160,180,.34)">
+        <h2>Start here</h2>
+        <p class="lead">This is a two-hander. You'll build both leads, then the thing only they can give each other, then the journey that proves it.</p>
+        <div class="grid g3" style="margin-top:12px">
+          <div class="advisor info" style="margin:0"><b>1 · Both leads</b><br>Use the name buttons at the top right to switch between them. Every field has <b>dig deeper</b> and genre <b>seeds</b>.</div>
+          <div class="advisor info" style="margin:0"><b>2 · The couple</b><br>Why these two, the barrier, the tropes, the heat ladder, the black moment.</div>
+          <div class="advisor info" style="margin:0"><b>3 · Journey &amp; test</b><br>12 beats with a closeness curve and two guard curves, then 18 structural checks and your exports.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>The Book</h2>
+        <p class="lead">Subgenre and heat drive everything downstream — the seeds, the intimacy ladder, the watch-outs and the prompts.</p>
+        <div class="grid g2">
+          <label class="f"><span class="lab">Title / working title</span><input type="text" data-bpath="title" value="${esc(S.book.title)}"></label>
+          <label class="f"><span class="lab">Series</span><input type="text" data-bpath="series" value="${esc(S.book.series)}"></label>
+          <label class="f"><span class="lab">Pen name</span><input type="text" data-bpath="penName" value="${esc(S.book.penName)}"></label>
+          <label class="f"><span class="lab">Subgenre</span>
+            <select data-bpath="lane">${Object.keys(LANES).map(k=>`<option value="${k}" ${S.book.lane===k?"selected":""}>${LANES[k].label}</option>`).join("")}</select></label>
+        </div>
+        <div class="advisor info"><b>${esc(l.label)}</b> — this shelf runs on: ${l.driver}.</div>
+        <div class="advisor warn"><b>The trap in this subgenre:</b> ${l.warn}</div>
+
+        <h3>Heat level</h3>
+        <div class="heatbar">${[1,2,3,4,5].map(n=>`<button class="${S.book.heat===n?"on":""}" onclick="Book.heat(${n})">${n} · ${HEAT[n].n}<small>${HEAT[n].s}</small></button>`).join("")}</div>
+        <div class="advisor ${(S.book.heat>=l.heat[0]&&S.book.heat<=l.heat[1])?"info":"warn"}">
+          <b>Heat ${S.book.heat} — ${h.n}.</b> ${h.d}
+          ${(S.book.heat>=l.heat[0]&&S.book.heat<=l.heat[1])?"":`<br><span class="pill warn">${esc(l.label)} readers usually expect ${l.heat[0]}–${l.heat[1]}</span> Deliberate is fine — just make sure the cover and blurb signal it honestly.`}
+        </div>
+
+        <div class="grid g2">
+          <label class="f"><span class="lab">POV structure</span>
+            <select data-bpath="pov">${["Dual POV","Single POV (hers)","Single POV (his)","Dual + epilogue swap","Multi POV"].map(o=>`<option ${S.book.pov===o?"selected":""}>${esc(o)}</option>`).join("")}</select></label>
+          <label class="f"><span class="lab">The promise to the reader</span><span class="hint">The emotional experience they picked this book up for.</span>
+            <textarea data-bpath="promise">${esc(S.book.promise)}</textarea></label>
+        </div>
+
+        <h3>The two leads</h3>
+        <div class="pair">${[0,1].map(i=>`
+          <div class="pcol ${i?"b":"a"}">
+            <div class="pn">${i?"Partner B":"Partner A"}</div>
+            <label class="f" style="margin-top:6px"><span class="lab">Name</span>
+              <input type="text" data-ppath="name" data-idx="${i}" value="${esc(S.people[i].name)}" placeholder="${i?"His / their name":"Her / their name"}"></label>
+            <div style="font-size:12px;color:var(--ink-dim);margin-top:6px">${personPct("identity",i)}% of their profile built · <a href="#" onclick="Swap.to(${i});go('identity');return false">open →</a></div>
+          </div>`).join("")}</div>
+        <p class="lead" style="margin-top:10px">Writing a triangle or a reverse harem? Build the core pair here, then <b>Save file</b> and start a second copy for the other pairing.</p>
+      </div>`;
+  },
+  heat(n){ S.book.heat=n; Store.save(); Book.render(); afterChange(); }
+};
+
+/* ============================================================
+   TROPES
+   ============================================================ */
+const Tropes = {
+  render(){
+    const sel=S.book.tropes, sug=L().tropes||[];
+    document.querySelector('.view[data-view="tropes"]').innerHTML=`
+      <div class="card">
+        <h2>Tropes — And Why They Fit <i>These</i> Wounds</h2>
+        <p class="lead">Tropes are how readers find the book. Motivation is why they finish it. This tab joins the two.</p>
+        <div class="section-intro">Pick your stack, then answer the question under each one: <b>why does this trope suit this couple's specific wounds?</b> Fake dating in a book about two people terrified of being seen is a different book from fake dating in a rom-com about a wedding. That answer is your whole angle.</div>
+        <div class="advisor info"><b>${esc(L().label)} readers expect to see:</b> ${sug.map(t=>esc(t)).join(" · ")}</div>
+        ${Object.keys(TROPES).map(cat=>`<div class="tcat"><h4>${cat}</h4><div class="chips">
+          ${TROPES[cat].map(t=>`<span class="chip ${sel.includes(t)?"on":""}" onclick="Tropes.toggle('${t.replace(/'/g,"\\'")}')">${esc(t)}${sug.includes(t)&&!sel.includes(t)?" ★":""}</span>`).join("")}
+        </div></div>`).join("")}
+      </div>
+      ${sel.length?`<div class="card">
+        <h2>Your stack <span class="pill ${tropePct()>=85?"good":"warn"}">${tropePct()}% justified</span></h2>
+        <p class="lead">One line each. If you can't answer it, the trope is decoration — either cut it or find the wound it's serving.</p>
+        ${sel.map(t=>`<label class="f"><span class="lab">${esc(t)} — why this trope, for these two?</span>
+          <span class="hint">Whose wound does it press on, and what does it force them to do that they'd otherwise avoid?</span>
+          <textarea data-tpath="${esc(t)}">${esc(S.book.tropeWhy[t]||"")}</textarea></label>`).join("")}
+        <div class="advisor ${sel.length>6?"warn":"good"}">${sel.length>6
+          ?`<b>${sel.length} tropes is a lot.</b> Readers buy on two or three. The rest should be quiet texture — make sure you know which three are on the cover copy.`
+          :`<b>${sel.length} trope${sel.length===1?"":"s"}.</b> Good working stack — two or three headline tropes is what sells a blurb.`}</div>
+      </div>`:`<div class="card"><p class="lead" style="text-align:center;padding:20px">Pick a few tropes above and they'll appear here with the question that matters.</p></div>`}`;
+  },
+  toggle(t){
+    const i=S.book.tropes.indexOf(t);
+    if(i>-1){ S.book.tropes.splice(i,1); delete S.book.tropeWhy[t]; } else S.book.tropes.push(t);
+    Store.save(); this.render(); afterChange();
+  }
+};
+
+/* ============================================================
+   HEAT & INTIMACY
+   ============================================================ */
+const Heat = {
+  render(){
+    const h=HEAT[S.book.heat];
+    document.querySelector('.view[data-view="heat"]').innerHTML=`
+      <div class="card">
+        <h2>Heat &amp; Intimacy <span class="pill ${heatPct()>=85?"good":(heatPct()>=25?"warn":"dim")}">${heatPct()}% mapped</span></h2>
+        <p class="lead">Physical escalation is emotional escalation. Each rung should change what they know about each other.</p>
+        <div class="section-intro">This ladder is built for <b>heat ${S.book.heat} — ${h.n}</b>. Change the level on the Book tab and the rungs rewrite themselves — your notes stay put in rungs 1–5, so re-read them after a heat change.</div>
+        <div class="advisor info"><b>${h.n} · ${h.s}</b> — ${h.d}</div>
+        <div class="advisor warn">${h.note}</div>
+        ${h.ladder.map((r,i)=>`<div class="rung">
+          <span class="rnum">${i+1}</span>
+          <div class="rl"><b>${esc(r)}</b><span>rung ${i+1} of 5</span></div>
+          <textarea data-lpath="${i}" placeholder="Where does this land in the book, and what does each of them learn from it?">${esc(S.rel.ladder[i].note||"")}</textarea>
+        </div>`).join("")}
+        <h3>The rules of the bedroom (or the doorway)</h3>
+        <label class="f"><span class="lab">What each of them needs it to mean</span>
+          <span class="hint">The most common source of quiet conflict in romance: one of them is having a different conversation.</span>
+          <textarea data-rpath="ladderMeaning" style="min-height:80px">${esc(rv("ladderMeaning"))}</textarea></label>
+        <label class="f"><span class="lab">What changes afterwards — every time</span>
+          <span class="hint">If nothing changes, the scene is decoration. Name the shift for each rung you've used.</span>
+          <textarea data-rpath="ladderAfter" style="min-height:80px">${esc(rv("ladderAfter"))}</textarea></label>
+        <label class="f"><span class="lab">Consent, power and who's steering</span>
+          <span class="hint">Especially at heat 4–5 and in dark romance: where the power actually sits, how it's negotiated, and where it shifts.</span>
+          <textarea data-rpath="ladderPower" style="min-height:80px">${esc(rv("ladderPower"))}</textarea></label>
+      </div>`;
+  }
+};
+
+/* ============================================================
+   THE JOURNEY
+   ============================================================ */
+const Journey = {
+  render(){
+    document.querySelector('.view[data-view="journey"]').innerHTML=`
+      <div class="card">
+        <h2>The Journey <span class="pill ${journeyPct()>=85?"good":(journeyPct()>=25?"warn":"dim")}">${journeyPct()}% mapped</span></h2>
+        <p class="lead">Twelve beats, tracked three ways: how close they are, and how high each of their guards is.</p>
+        <div class="section-intro">The shape you're aiming for: closeness climbs, both guards fall, then beat 9 breaks all three at once. If your guard lines drop early and stay down, the second half will drift.</div>
+        ${this.chart()}
+        ${BEATS.map((b,i)=>this.beatHTML(b,i)).join("")}
+      </div>`;
+  },
+  beatHTML(b,i){
+    const v=S.rel.beats[i], pivot=[5,8,10,11].includes(i);
+    const g=(k,d)=> v[k]==null?IDEAL[d][i]:v[k];
+    return `<div class="beat ${pivot?"pivot":""}">
+      <div class="bh"><span class="bn">${i+1}</span><span class="bt">${b.t}</span></div>
+      <div class="bask">${b.ask}</div>
+      <div class="pair" style="margin:8px 0">
+        <div class="pcol a"><div class="pn">${esc(nm(0))} — ${b.a}</div>
+          <textarea data-bt="${i}.a" style="min-height:58px;margin-top:6px">${esc(v.a||"")}</textarea></div>
+        <div class="pcol b"><div class="pn">${esc(nm(1))} — ${b.b}</div>
+          <textarea data-bt="${i}.b" style="min-height:58px;margin-top:6px">${esc(v.b||"")}</textarea></div>
+      </div>
+      <label class="f" style="margin:6px 0"><span class="lab" style="font-size:11.5px">Between them — ${b.r}</span>
+        <textarea data-bt="${i}.r" style="min-height:52px">${esc(v.r||"")}</textarea></label>
+      <div class="sliders">
+        <div class="sl"><span class="gl">Closeness</span><input type="range" min="0" max="100" step="5" value="${g("close","close")}" oninput="Journey.set(${i},'close',this.value)"><span class="gripval" id="v${i}close">${g("close","close")}</span></div>
+        <div class="sl"><span class="gl">${esc(nm(0)).slice(0,10)} guard</span><input class="ra" type="range" min="0" max="100" step="5" value="${g("gA","gA")}" oninput="Journey.set(${i},'gA',this.value)"><span class="gripval" id="v${i}gA">${g("gA","gA")}</span></div>
+        <div class="sl"><span class="gl">${esc(nm(1)).slice(0,10)} guard</span><input class="rb" type="range" min="0" max="100" step="5" value="${g("gB","gB")}" oninput="Journey.set(${i},'gB',this.value)"><span class="gripval" id="v${i}gB">${g("gB","gB")}</span></div>
+      </div>
+    </div>`;
+  },
+  set(i,k,val){ S.rel.beats[i][k]=+val; document.getElementById("v"+i+k).textContent=val; Store.save(); this.repaint(); },
+  series(k,d){ return S.rel.beats.map((b,i)=> b[k]==null?IDEAL[d][i]:b[k]); },
+  path(vals,w,h,pad){
+    const n=vals.length;
+    return vals.map((v,i)=>{ const x=pad+i*((w-pad*2)/(n-1)), y=pad+(100-v)/100*(h-pad*2);
+      return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1); }).join(" ");
+  },
+  svg(){
+    const w=700,h=230,pad=22;
+    const close=this.series("close","close"), gA=this.series("gA","gA"), gB=this.series("gB","gB");
+    const grid=[0,50,100].map(v=>{ const y=pad+(100-v)/100*(h-pad*2);
+      return `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#4a2c3f" stroke-width="1" stroke-dasharray="${v===50?"3 5":"0"}"/>`;}).join("");
+    const dots=(vals,col)=>vals.map((v,i)=>{ const x=pad+i*((w-pad*2)/11), y=pad+(100-v)/100*(h-pad*2);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="${col}" stroke="#22131d" stroke-width="1.6"><title>${i+1}. ${esc(BEATS[i].t)} — ${v}</title></circle>`;}).join("");
+    const nums=BEATS.map((b,i)=>{ const x=pad+i*((w-pad*2)/11);
+      return `<text x="${x.toFixed(1)}" y="${h-5}" fill="#c3a0b2" font-size="9.5" text-anchor="middle">${i+1}</text>`;}).join("");
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Closeness and guard across twelve beats">
+      ${grid}
+      <path d="${this.path(IDEAL.close,w,h,pad)}" fill="none" stroke="#f0cf9a" stroke-width="7" opacity=".18" stroke-linejoin="round"/>
+      <path d="${this.path(gA,w,h,pad)}" fill="none" stroke="#e8a0b4" stroke-width="2.2" stroke-dasharray="5 4" stroke-linejoin="round"/>
+      <path d="${this.path(gB,w,h,pad)}" fill="none" stroke="#8fb8d8" stroke-width="2.2" stroke-dasharray="5 4" stroke-linejoin="round"/>
+      <path d="${this.path(close,w,h,pad)}" fill="none" stroke="#f0cf9a" stroke-width="3.2" stroke-linejoin="round"/>
+      ${dots(close,"#f0cf9a")}${nums}
+    </svg>`;
+  },
+  chart(){
+    return `<div class="chartbox" id="chartbox">${this.svg()}
+      <div class="legend">
+        <span><i style="background:#f0cf9a"></i>closeness</span>
+        <span><i style="background:#e8a0b4"></i>${esc(nm(0))}'s guard</span>
+        <span><i style="background:#8fb8d8"></i>${esc(nm(1))}'s guard</span>
+        <span style="margin-left:auto">the pale band is the shape a romance usually makes</span>
+      </div></div>`;
+  },
+  repaint(){ const b=document.getElementById("chartbox"); if(b) b.querySelector("svg").outerHTML=this.svg(); }
+};
+
+/* ============================================================
+   DIAGNOSTICS
+   ============================================================ */
+const Diag = {
+  run(){
+    const out=[], add=(s,t,d,tab)=>out.push({state:s,title:t,desc:d,tab});
+    const A=nm(0), B=nm(1);
+    const both=(p)=>[ph(p,0),ph(p,1)];
+    const nameMissing=[0,1].filter(i=>!S.people[i].name.trim());
+
+    if(nameMissing.length) add("soft","Leads aren't named yet","Names make every other field easier to write, and they show up all over this tool.","book");
+    else add("pass","Both leads named","","book");
+
+    // wants
+    const w=both("engine.want");
+    if(!w[0]&&!w[1]) add("fail","Neither lead has a goal outside the romance","This is the number one cause of a saggy romance middle. Each of them needs something they're chasing that the other complicates.","engine");
+    else if(!w[0]||!w[1]) add("fail",`${w[0]?B:A} has no goal outside the romance`,"Whoever lacks one will read as a prize rather than a person — they'll only ever react to the other lead.","engine");
+    else add("pass","Both leads want something outside each other","","engine");
+
+    // want complicated by romance
+    const vl=both("engine.wantVsLove");
+    if(vl[0]&&vl[1]) add("pass","Falling in love makes both goals harder","That's the engine — every step toward each other costs them something they were chasing.","engine");
+    else add("soft","The romance doesn't cost them their goals yet","If loving each other helps them both get what they want, there's nothing to resist.","engine");
+
+    // love lies
+    const ll=both("wound.lovelie");
+    if(!ll[0]||!ll[1]) add("fail","Missing a love lie",`${!ll[0]?A:""}${(!ll[0]&&!ll[1])?" and ":""}${!ll[1]?B:""} has no stated belief about being loved. The black moment has nothing to be made of.`,"wound");
+    else {
+      const norm=s=>String(s).toLowerCase().replace(/[^a-z ]/g,"").split(/\s+/).filter(x=>x.length>3);
+      const a=new Set(norm(pv("wound.lovelie",0))), bb=norm(pv("wound.lovelie",1));
+      const ov=bb.length? bb.filter(x=>a.has(x)).length/Math.max(a.size,bb.length):0;
+      if(ov>0.55) add("soft","Both leads believe nearly the same lie","Mirrored wounds can work, but if they're identical there's nobody in the book who can show the other a way out. Angle one of them differently.","wound");
+      else add("pass","Two different lies about love","Good — each can be the evidence that disproves the other's.","wound");
+    }
+
+    // wounds
+    const gh=both("wound.ghost");
+    if(gh[0]&&gh[1]) add("pass","Both wounds are on the page","","wound");
+    else add("fail",`Missing a wound for ${gh[0]?B:(gh[1]?A:"both leads")}`,"Without it the lie is unearned and the guard is just rudeness.","wound");
+
+    // guard + what breaks it
+    const br=both("wound.breaks");
+    if(br[0]&&br[1]) add("pass","You know what gets past each guard","That's what the other lead is actually for.","wound");
+    else add("soft","One of the guards has no key","Name the specific kindness each can't defend against — it's the other lead's real weapon.","wound");
+
+    // why these two
+    const gv=both("pair.gives"), ss=both("pair.sees");
+    if(gv[0]&&gv[1]) add("pass","'Why these two' is answered both directions","The question every reader is really asking.","why");
+    else if(gv[0]||gv[1]) add("fail","'Why these two' only works one way",`You've written what one gives the other but not the reverse. One-sided need reads as rescue, not romance.`,"why");
+    else add("fail","'Why these two' is unanswered","Everything else can be good and the book will still feel interchangeable.","why");
+    if(ss[0]&&ss[1]) add("pass","Each sees something in the other that nobody else does","","why");
+    else add("soft","Not established what each sees that others miss","This is where readers fall in love with the pairing rather than the people.","why");
+
+    if(rh("why.oneline")) add("pass","You can say why it has to be them in one sentence","Put that line in the blurb.","why");
+    else add("soft","No one-line answer for 'why these two'","Write it — it's your blurb, your pitch, and the spine of every scene.","why");
+
+    if(rh("why.compat")) add("pass","There's a reason they'd actually work","Chemistry gets them into bed; this is what makes readers believe the HEA.","why");
+    else add("soft","Chemistry without compatibility","Name the unsexy reason they fit: shared humour, matched pace, the same thing they find unbearable.","why");
+
+    // barrier
+    if(rh("barrier.external") && rh("barrier.enforcer")) add("pass","The external barrier has an enforcer","A rule nobody polices isn't a rule.","barrier");
+    else if(rh("barrier.external")) add("soft","Barrier has no enforcer","Name who can catch them and what they'd do about it.","barrier");
+    else add("fail","No external barrier","Internal barriers alone read as two people being difficult for 300 pages.","barrier");
+
+    const ib=both("pair.internal");
+    if(ib[0]&&ib[1]) add("pass","Both leads have an internal barrier","","barrier");
+    else add("fail","Internal barrier missing for one or both leads","External-only obstacles get solved in a scene. The reason they resist has to live inside them.","barrier");
+
+    if(rv("barrier.convoFail") && !rh("barrier.convoWhy"))
+      add("fail","One honest conversation would fix this","You've flagged it yourself and left the reason blank. Romance readers punish this harder than any other flaw.","barrier");
+    else if(rv("barrier.convoFail")) add("pass","You've closed the conversation loophole","Keep that reason alive in every near-miss.","barrier");
+    else add("pass","The conflict survives an honest conversation","","barrier");
+
+    // black moment
+    if(rh("black.moment") && rh("black.trace")) add("pass","The black moment comes from character","The lie wins — that's the only version readers accept.","black");
+    else if(rh("black.moment")) add("soft","Black moment isn't traced to a wound","If you can't trace it, it'll read as a misunderstanding or a coincidence.","black");
+    else add("fail","No black moment","","black");
+
+    if(rh("black.foreshadow")) add("pass","The break is foreshadowed","Reader reaction should be 'of course' and 'no' at the same time.","black");
+    else add("soft","Black moment isn't planted","Name two earlier scenes where the same behaviour shows up smaller.","black");
+
+    const gu=both("pair.gives_up"), pf=both("pair.proof");
+    if(gu[0]&&gu[1]&&(pf[0]||pf[1])) add("pass","Both give something up to repair it","Mutual cost is what makes an HEA feel earned rather than granted.","black");
+    else if(gu[0]||gu[1]) add("soft","Only one of them pays for the repair","If one grovels and the other just accepts, readers side against the one who didn't move.","black");
+    else add("fail","No proof of change","An apology isn't a grovel. Name what each gives up.","black");
+
+    if(rh("black.hea")) add("pass","The HEA is proven by an action","","black");
+    else add("soft","HEA is a promise, not a proof","Show them doing something in the last chapter that was impossible in the first.","black");
+
+    // tropes
+    if(S.book.tropes.length){
+      const j=S.book.tropes.filter(t=>(S.book.tropeWhy[t]||"").trim().length>2).length;
+      if(j===S.book.tropes.length) add("pass","Every trope is doing character work","","tropes");
+      else add("soft",`${S.book.tropes.length-j} trope${S.book.tropes.length-j===1?"":"s"} not justified`,"Either tie each one to a wound or cut it — unjustified tropes are what make a book feel generic.","tropes");
+    } else add("soft","No tropes picked","Romance readers shop by trope. Pick two or three headline ones and tie them to the wounds.","tropes");
+
+    // journey
+    const bf=S.rel.beats.filter(x=>(x.a||"").trim()||(x.b||"").trim()||(x.r||"").trim()).length;
+    if(bf>=9) add("pass","The journey is mapped",`${bf} of 12 beats.`,"journey");
+    else if(bf>=4) add("soft","The journey is partly mapped",`${bf} of 12 beats. The ones that matter most are 6 (the Could-Be), 9 (the break) and 11 (the proof).`,"journey");
+    else add("fail","No journey mapped","","journey");
+
+    // guard curve sanity
+    const gA=Journey.series("gA","gA"), gB=Journey.series("gB","gB"), cl=Journey.series("close","close");
+    if(cl[8] > cl[5]) add("soft","Closeness doesn't dip at the black moment","Beat 9 should be the lowest point of the book. Right now it's higher than your midpoint.","journey");
+    else add("pass","The break actually breaks","","journey");
+    if(gA[4]<25 && gB[4]<25) add("soft","Both guards are down before the midpoint","If they're this open by beat 5, the back half has nothing left to earn. Hold one of them higher.","journey");
+
+    // heat
+    if(heatPct()>=60) add("pass","Intimacy ladder mapped","Each rung earns the next.","heat");
+    else add("soft","Intimacy ladder mostly empty",`At heat ${S.book.heat} the ladder is where the relationship actually changes. Fill at least three rungs.`,"heat");
+
+    // behaviour
+    const beh=[0,1].map(i=>["behavior.flirt","behavior.fight","behavior.neverSay"].filter(p=>ph(p,i)).length);
+    if(beh[0]>=2&&beh[1]>=2) add("pass","Both leads translated into behaviour","This is what you paste into a drafting prompt.","behavior");
+    else add("soft","Motivation hasn't reached the page for one lead","How they flirt, how they fight, what they'd never say — without these the prose goes generic.","behavior");
+
+    return out;
+  },
+  score(){ const c=this.run(); if(!c.length) return 0;
+    return Math.round(c.reduce((a,x)=>a+(x.state==="pass"?1:(x.state==="soft"?.5:0)),0)/c.length*100); },
+  render(){
+    const ch=this.run(), s=this.score();
+    const col=s>=80?"var(--good)":(s>=55?"var(--warn)":"var(--bad)");
+    const verdict=s>=85?"Draftable. This couple will carry a book."
+      :s>=70?"Close. Fix the red flags and it holds."
+      :s>=45?"Half-built. The people are there; the reason they need each other isn't yet."
+      :"Not ready to draft. Everything red below is load-bearing.";
+    const f=ch.filter(c=>c.state==="fail"), so=ch.filter(c=>c.state==="soft"), p=ch.filter(c=>c.state==="pass");
+    document.querySelector('.view[data-view="diagnostics"]').innerHTML=`
+      <div class="card">
+        <h2>Pressure Test — ${esc(nm(0))} &amp; ${esc(nm(1))}</h2>
+        <p class="lead">Structural checks built for romance. It tests whether the relationship <i>holds together</i> — not whether the prose is any good. That part's yours.</p>
+        <div class="score">
+          <div><div class="big" style="color:${col}">${s}</div><div class="lbl">out of 100</div></div>
+          <div class="meter"><div class="bar"><i style="width:${s}%;background:${col}"></i></div>
+            <div style="margin-top:8px;font-size:13.5px">${verdict}</div>
+            <div style="margin-top:4px;font-size:12px;color:var(--ink-dim)">${p.length} solid · ${so.length} to sharpen · ${f.length} load-bearing gap${f.length===1?"":"s"}</div></div>
+        </div>
+        ${f.length?`<h3>Fix these first</h3>${f.map(this.row).join("")}`:""}
+        ${so.length?`<h3>Sharpen these</h3>${so.map(this.row).join("")}`:""}
+        ${p.length?`<h3>Holding</h3>${p.map(this.row).join("")}`:""}
+      </div>`;
+  },
+  row(c){ return `<div class="check ${c.state}"><div class="ci">${c.state==="pass"?"✓":(c.state==="fail"?"✕":"!")}</div>
+    <div style="flex:1"><div class="ct">${c.title}</div>${c.desc?`<div class="cd">${c.desc}</div>`:""}</div>
+    ${c.tab?`<div class="cgo"><button class="mini" onclick="go('${c.tab}')">open</button></div>`:""}</div>`; }
+};
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+const Exporter = {
+  mode:"dossier",
+  set(m){ this.mode=m; this.render(); },
+  render(){
+    const modes=[["dossier","Couple dossier"],["cards","Lead cards"],["draft","Drafting prompt"],
+      ["interview","Interview prompt"],["audit","Chapter audit"],["stress","Black-moment stress test"],["gaps","Fill-the-gaps prompt"]];
+    document.querySelector('.view[data-view="export"]').innerHTML=`
+      <div class="card">
+        <h2>Export</h2>
+        <p class="lead">Take it into the draft, into Claude, or into the story bible.</p>
+        <div class="exptabs">${modes.map(m=>`<button class="exptab ${this.mode===m[0]?"on":""}" onclick="Exporter.set('${m[0]}')">${m[1]}</button>`).join("")}</div>
+        <div class="row" style="margin:10px 0">
+          <button class="btn primary" onclick="Exporter.copy()">Copy to clipboard</button>
+          <button class="btn" onclick="Exporter.download()">Download .md</button>
+          <button class="btn ghost" onclick="window.print()">Print / PDF</button>
+        </div>
+        <div class="advisor info">${this.blurb()}</div>
+        <div class="outbox">${esc(this.build())}</div>
+      </div>`;
+  },
+  blurb(){ return {
+    dossier:"Both leads plus the relationship layer, as markdown. Drop it in the story bible or the top of the manuscript file.",
+    cards:"The short version for each lead — print both and keep them beside you while drafting.",
+    draft:"Paste into Claude before asking for a scene. Loads both leads so they behave like themselves.",
+    interview:"Paste into Claude and ask questions — it answers as one or both leads, in voice.",
+    audit:"Paste this plus a chapter you've written. Checks whether both leads are acting from their real motivation.",
+    stress:"The one to run before you draft the third act. Attacks your black moment for coincidence, misunderstanding, and cheap grovels.",
+    gaps:"Asks Claude for options for exactly the fields you've left blank."
+  }[this.mode]; },
+  build(){ return this[this.mode](); },
+
+  PL(label,p,i){ const v=pv(p,i); return v&&String(v).trim()?`**${label}:** ${String(v).trim()}\n\n`:""; },
+  RL(label,p){ const v=rv(p); return v&&String(v).trim()?`**${label}:** ${String(v).trim()}\n\n`:""; },
+  head(){
+    let s=`# ${nm(0)} & ${nm(1)}\n\n*`;
+    if(S.book.title) s+=`${S.book.title}`; else s+=`Untitled`;
+    if(S.book.series) s+=` (${S.book.series})`;
+    s+=` · ${L().label} · heat ${S.book.heat} — ${HEAT[S.book.heat].n} · ${S.book.pov}`;
+    if(S.book.penName) s+=` · ${S.book.penName}`;
+    s+=`*\n\n`;
+    if(rv("why.oneline")) s+=`> ${rv("why.oneline")}\n\n`;
+    if(S.book.tropes.length) s+=`**Tropes:** ${S.book.tropes.join(" · ")}\n\n`;
+    return s;
+  },
+  person(i){
+    let s=`## ${nm(i)}\n\n`;
+    s+=this.PL("What they do","identity.role",i)+this.PL("Age / stage","identity.age",i)+this.PL("Good at","identity.competence",i);
+    s+=this.PL("What they're like to be with","identity.dateable",i)+this.PL("Said about them","identity.reputation",i);
+    s+=this.PL("How they'd describe themselves","identity.selfImage",i)+this.PL("What contradicts that","identity.contradiction",i);
+    s+=this.PL("Why the reader forgives them","identity.forgive",i)+this.PL("Needs to be seen as","identity.wantsToBeSeen",i);
+    s+=`\n### Wound & love lie\n\n`;
+    s+=this.PL("What happened","wound.ghost",i)+this.PL("Who they were before","wound.before",i)+this.PL("What loving someone cost them","wound.lastcost",i);
+    s+=this.PL("THE LOVE LIE","wound.lovelie",i)+this.PL("Evidence life keeps handing them","wound.evidence",i)+this.PL("The truth","wound.truth",i);
+    s+=this.PL("The guard","wound.guard",i)+this.PL("Guard tell","wound.guardtell",i)+this.PL("Already past the guard","wound.past",i)+this.PL("What gets past it","wound.breaks",i);
+    s+=`\n### Want · need · why now\n\n`;
+    s+=this.PL("External want","engine.want",i)+this.PL("Why this, why them","engine.wantWhy",i)+this.PL("How love makes it harder","engine.wantVsLove",i);
+    s+=this.PL("Need","engine.need",i)+this.PL("Why they'd rather lose the relationship","engine.needResist",i)+this.PL("What they need but won't ask for","engine.ask",i);
+    s+=this.PL("Why now","engine.whynow",i)+this.PL("Why not before","engine.whynotbefore",i)+this.PL("What makes them almost ready","engine.ready",i);
+    s+=`\n### On the page\n\n`;
+    s+=this.PL("Wanting, unadmitted","behavior.flirt",i)+this.PL("About touch","behavior.touch",i)+this.PL("Jealousy","behavior.jealous",i);
+    s+=this.PL("How they fight","behavior.fight",i)+this.PL("How they apologise","behavior.apologise",i)+this.PL("Under pressure","behavior.pressure",i);
+    s+=this.PL("Uses words to","behavior.speech",i)+this.PL("Would never say","behavior.neverSay",i)+this.PL("Costly kindness","behavior.kindness",i)+this.PL("Happy looks like","behavior.joy",i);
+    return s;
+  },
+  dossier(){
+    let s=this.head()+`---\n\n`;
+    s+=this.person(0)+`\n---\n\n`+this.person(1)+`\n---\n\n`;
+    s+=`## WHY THESE TWO\n\n`;
+    [0,1].forEach(i=>{
+      s+=`**${nm(i)}** — ${otherOf(i)} gives them: ${pv("pair.gives",i)||"—"}\n`;
+      s+=`- Sees in them: ${pv("pair.sees",i)||"—"}\n`;
+      s+=`- Is wrong about them: ${pv("pair.wrong",i)||"—"}\n`;
+      s+=`- Changes what they want: ${pv("pair.changes",i)||"—"}\n\n`;
+    });
+    s+=this.RL("Chemistry","why.chemistry")+this.RL("Compatibility","why.compat")+this.RL("What they argue about","why.argue");
+    s+=this.RL("What it's really about","why.realargue")+this.RL("How the wounds fit","why.mirror");
+    s+=`\n## THE BARRIER\n\n`;
+    [0,1].forEach(i=>{ s+=`**${nm(i)}'s internal barrier:** ${pv("pair.internal",i)||"—"}\n**What ${nm(i)} risks:** ${pv("pair.risk",i)||"—"}\n\n`; });
+    s+=this.RL("External barrier","barrier.external")+this.RL("Enforced by","barrier.enforcer")+this.RL("Cost of being caught","barrier.cost")+this.RL("How it erodes","barrier.erodes");
+    if(rv("barrier.convoFail")) s+=this.RL("Why one conversation can't fix it","barrier.convoWhy");
+    s+=this.RL("Where they almost say it","barrier.almost");
+    if(S.book.tropes.length){
+      s+=`\n## TROPES, AND WHY\n\n`;
+      S.book.tropes.forEach(t=>{ s+=`- **${t}** — ${S.book.tropeWhy[t]||"*not yet justified*"}\n`; });
+      s+=`\n`;
+    }
+    s+=`\n## HEAT ${S.book.heat} — ${HEAT[S.book.heat].n.toUpperCase()}\n\n`;
+    HEAT[S.book.heat].ladder.forEach((r,i)=>{ if((S.rel.ladder[i].note||"").trim()) s+=`${i+1}. **${r}** — ${S.rel.ladder[i].note.trim()}\n`; });
+    s+=`\n`+this.RL("What each needs it to mean","ladderMeaning")+this.RL("What changes afterwards","ladderAfter")+this.RL("Power and consent","ladderPower");
+    s+=`\n## THE JOURNEY\n\n`;
+    S.rel.beats.forEach((b,i)=>{
+      if(!(b.a||"").trim()&&!(b.b||"").trim()&&!(b.r||"").trim()) return;
+      s+=`### ${i+1}. ${BEATS[i].t}\n`;
+      if((b.a||"").trim()) s+=`- **${nm(0)}:** ${b.a.trim()}\n`;
+      if((b.b||"").trim()) s+=`- **${nm(1)}:** ${b.b.trim()}\n`;
+      if((b.r||"").trim()) s+=`- **Between them:** ${b.r.trim()}\n`;
+      s+=`- *closeness ${b.close==null?IDEAL.close[i]:b.close} · guards ${b.gA==null?IDEAL.gA[i]:b.gA}/${b.gB==null?IDEAL.gB[i]:b.gB}*\n\n`;
+    });
+    s+=`\n## BLACK MOMENT & REPAIR\n\n`;
+    s+=this.RL("What happens","black.moment")+this.RL("Whose lie wins","black.whose")+this.RL("Traced to the wound","black.trace");
+    s+=this.RL("Foreshadowed in","black.foreshadow")+this.RL("Last thing said","black.said")+this.RL("What each believes the other thinks","black.believe");
+    [0,1].forEach(i=>{
+      s+=`**${nm(i)} finally admits:** ${pv("pair.faces",i)||"—"}\n**${nm(i)} gives up:** ${pv("pair.gives_up",i)||"—"}\n**${nm(i)}'s proof:** ${pv("pair.proof",i)||"—"}\n\n`;
+    });
+    s+=this.RL("Who reaches first","black.first")+this.RL("Witnessed by","black.witness")+this.RL("The HEA, proven","black.hea")+this.RL("Final image","black.epilogue");
+    s+=`\n---\n\n*Pressure test: ${Diag.score()}/100 · built in Character Deep Dive: Romance*\n`;
+    return s;
+  },
+  cards(){
+    let s=this.head();
+    [0,1].forEach(i=>{
+      s+=`## ${nm(i)} — at the keyboard\n\n`;
+      [["WANTS","engine.want"],["LOVE LIE","wound.lovelie"],["TRUTH","wound.truth"],["NEEDS","engine.need"],
+       ["GUARD","wound.guard"],["GUARD TELL","wound.guardtell"],["WHAT GETS PAST IT","wound.breaks"],
+       ["WON'T ASK FOR","engine.ask"],["WHEN THEY WANT SOMEONE","behavior.flirt"],["HOW THEY FIGHT","behavior.fight"],
+       ["WOULD NEVER SAY","behavior.neverSay"]].forEach(r=>{
+        const v=pv(r[1],i); if(v&&String(v).trim()) s+=`**${r[0]}** — ${String(v).trim()}\n\n`;
+      });
+      s+=`**GETS FROM ${nm(i?0:1).toUpperCase()}** — ${pv("pair.gives",i)||"—"}\n\n---\n\n`;
+    });
+    if(rv("why.oneline")) s+=`**WHY THESE TWO** — ${rv("why.oneline")}\n\n`;
+    if(rv("barrier.external")) s+=`**BARRIER** — ${rv("barrier.external")}\n\n`;
+    if(rv("black.moment")) s+=`**BLACK MOMENT** — ${rv("black.moment")}\n`;
+    return s;
+  },
+  draft(){
+    let s=`You're drafting a scene for ${S.book.title?`"${S.book.title}"`:"my romance"}${S.book.penName?` (pen name: ${S.book.penName})`:""} — ${L().label}, heat ${S.book.heat} (${HEAT[S.book.heat].n}: ${HEAT[S.book.heat].s}), ${S.book.pov}.\n\n`;
+    s+=`Here is the full dossier for both leads. Read it before writing a word.\n\n---\n\n${this.dossier()}\n---\n\n## HOW TO USE THIS\n\n`;
+    s+=`1. Both leads are pursuing something that isn't each other. Keep those goals live in the scene.\n`;
+    s+=`2. Neither of them knows their own love lie and neither names it. The reader sees it through what they do instead.\n`;
+    s+=`3. Use each guard tell when the lie is threatened. Don't explain the tell.\n`;
+    s+=`4. They should each be wrong about the other in the specific way listed above — let that misreading shape their dialogue.\n`;
+    s+=`5. Every intimate beat must change something. Heat ${S.book.heat} means: ${HEAT[S.book.heat].d}\n`;
+    s+=`6. No summarising their psychology. Behaviour, dialogue, choice, and what they notice.\n`;
+    s+=`7. Match the beat: tell me which of the 12 beats we're on, and write to the closeness and guard levels for it.\n\n`;
+    s+=`Ask me what beat we're on and whose POV, then write the scene.\n`;
+    return s;
+  },
+  interview(){
+    let s=`Play these two characters. Stay in character — first person, in their voices. Never break, never analyse, never speak as an assistant.\n\n`;
+    s+=this.cards()+`\n`;
+    s+=`RULES:\n`;
+    s+=`- Neither of them knows they believe a lie. When a question gets near it, they deflect, joke, get sharp, or go quiet — the way they actually would.\n`;
+    s+=`- They may lie to me. They may refuse a question.\n`;
+    s+=`- If I address one by name, only that one answers. If I ask them both, they can interrupt each other.\n`;
+    s+=`- They do not agree about what's happening between them.\n\n`;
+    s+=`Start with each of them telling me, separately, what they think the other one wants from them. Then I'll ask my questions.\n`;
+    return s;
+  },
+  audit(){
+    let s=`I'll paste a chapter. Audit it against this couple's motivation — don't rewrite unless I ask.\n\n---\n\n${this.cards()}\n---\n\n`;
+    s+=`CHECK AND REPORT:\n\n`;
+    s+=`1. **Goals** — what is each lead trying to get in this chapter, outside the relationship? Quote the line. If either has no visible goal, say so.\n`;
+    s+=`2. **The lies** — is each one's love lie driving their behaviour here, and does that match where we are in the book?\n`;
+    s+=`3. **Guards** — are they open earlier than they've earned? Flag any intimacy that outpaces the trust built so far.\n`;
+    s+=`4. **The conversation problem** — is there anywhere the conflict would collapse if one of them simply said the true thing? If yes, quote the moment and tell me what's stopping them.\n`;
+    s+=`5. **Two-sidedness** — is one lead doing all the wanting, changing, or apologising? Count.\n`;
+    s+=`6. **Contradictions** — anything either does that contradicts the dossier. Quote it.\n`;
+    s+=`7. **Heat consistency** — does the physical content match heat ${S.book.heat} (${HEAT[S.book.heat].n})?\n\n`;
+    s+=`Be blunt, then give the three highest-leverage fixes in order.\n\nHere's the chapter:\n\n[PASTE CHAPTER HERE]\n`;
+    return s;
+  },
+  stress(){
+    let s=`Stress-test my third act before I draft it. Be adversarial — your job is to find the reasons a romance reader would throw this book.\n\n---\n\n${this.cards()}\n\n`;
+    s+=`**BLACK MOMENT:** ${rv("black.moment")||"[not written yet]"}\n\n`;
+    s+=`**Whose lie wins:** ${rv("black.whose")||"—"}\n**Traced to:** ${rv("black.trace")||"—"}\n**Foreshadowed in:** ${rv("black.foreshadow")||"—"}\n\n`;
+    [0,1].forEach(i=>{ s+=`**${nm(i)} gives up:** ${pv("pair.gives_up",i)||"—"}\n**${nm(i)}'s proof:** ${pv("pair.proof",i)||"—"}\n\n`; });
+    s+=`**HEA proven by:** ${rv("black.hea")||"—"}\n\n---\n\nATTACK IT ON THESE POINTS:\n\n`;
+    s+=`1. **Misunderstanding test** — could this break be resolved by one character finishing one sentence? If yes, it's a fake black moment. Say so plainly.\n`;
+    s+=`2. **Coincidence test** — does anything here happen TO them rather than BECAUSE of them? Name it.\n`;
+    s+=`3. **Proportion test** — is the repair proportional to the harm? Small grovels after big harm are the most common reason readers call a hero unforgivable.\n`;
+    s+=`4. **Both-sides test** — does only one of them change? If so, the other reads as a prize.\n`;
+    s+=`5. **Foreshadowing test** — given only the first half of this dossier, could a reader have predicted this? If not, it'll read as out of character.\n`;
+    s+=`6. **Forgivability** — is there anything here a reader won't forgive? Be specific about which line crosses it.\n\n`;
+    s+=`Then give me two alternative black moments that come more directly from these two wounds.\n`;
+    return s;
+  },
+  gaps(){
+    const miss=[];
+    Object.keys(PERSON).forEach(k=>PERSON[k].blocks.forEach(b=>b.fields.forEach(f=>{
+      [0,1].forEach(i=>{ if(!ph(f.p,i)) miss.push(`- **${nm(i)} → ${PERSON[k].title.replace(/&amp;/g,"&")} → ${f.l.replace(/&amp;/g,"&")}** — ${f.hint||""}`); });
+    })));
+    Object.keys(COUPLE).forEach(k=>COUPLE[k].blocks.forEach(b=>{
+      if(b.pair) b.fields.forEach(f=>[0,1].forEach(i=>{
+        if(!ph("pair."+f.p,i)) miss.push(`- **${COUPLE[k].title.replace(/&amp;/g,"&")} → ${f.l.replace(/\{SELF\}/g,nm(i)).replace(/\{OTHER\}/g,nm(i?0:1))}**`); }));
+      else b.fields.forEach(f=>{ if(f.t==="chk") return;
+        if(!rh(f.p)) miss.push(`- **${COUPLE[k].title.replace(/&amp;/g,"&")} → ${f.l.replace(/&amp;/g,"&")}** — ${f.hint||""}`); });
+    }));
+    const eb=S.rel.beats.map((b,i)=>((b.a||"").trim()||(b.b||"").trim()||(b.r||"").trim())?null:`- **Beat ${i+1}: ${BEATS[i].t}** — ${BEATS[i].ask}`).filter(Boolean);
+    let s=`Help me finish building this couple. Here's what I have:\n\n---\n\n${this.dossier()}\n---\n\n`;
+    if(!miss.length&&!eb.length) return s+`Nothing's blank — so push back instead. Which three answers are the weakest or most generic, and most likely to produce a forgettable couple? Be specific and unkind.\n`;
+    s+=`## STILL BLANK\n\n${miss.slice(0,60).join("\n")}\n${miss.length>60?`\n*(…and ${miss.length-60} more)*\n`:""}${eb.length?"\n"+eb.join("\n")+"\n":""}\n`;
+    s+=`For each blank, propose **three** options consistent with everything above — specific to these two people and this ${L().label} setup, not generic romance. Number them so I can pick.\n\n`;
+    s+=`Rules: no therapy-speak, no abstractions like "learns to trust". Concrete behaviour, objects, dates, and things people actually say. Keep it at heat ${S.book.heat}.\n\n`;
+    s+=`Then tell me which single blank matters most, and why.\n`;
+    return s;
+  },
+  copy(){ const t=this.build();
+    if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Copied")).catch(()=>toast("Select the text and copy"));
+    else toast("Select the text and copy"); },
+  download(){ const t=this.build(), blob=new Blob([t],{type:"text/markdown"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=((nm(0)+"-"+nm(1)+"-"+this.mode).replace(/[^a-z0-9]+/gi,"-").toLowerCase())+".md"; a.click(); toast("Downloaded"); }
+};
+function otherOf(i){ return nm(i?0:1); }
+
+/* ============================================================
+   CHANGE HANDLING
+   ============================================================ */
+function afterChange(){ renderSpine(); paintDots(); Swap.paint(); }
+
+document.addEventListener("input", e=>{
+  const el=e.target, d=el.dataset||{};
+  if(d.ppath!==undefined){ setPath(S.people[+d.idx], d.ppath, el.value); Store.save(); afterChange();
+    if(d.ppath==="name"){ Swap.paint(); buildTabs(); document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===CURRENT)); } }
+  else if(d.rpath!==undefined){ setPath(S.rel, d.rpath, el.value); Store.save(); afterChange(); }
+  else if(d.bpath!==undefined){ S.book[d.bpath]=el.value; Store.save(); afterChange(); }
+  else if(d.tpath!==undefined){ S.book.tropeWhy[d.tpath]=el.value; Store.save(); afterChange(); }
+  else if(d.lpath!==undefined){ S.rel.ladder[+d.lpath].note=el.value; Store.save(); afterChange(); }
+  else if(d.bt!==undefined){ const [i,k]=d.bt.split("."); S.rel.beats[+i][k]=el.value; Store.save(); afterChange(); }
+});
+document.addEventListener("change", e=>{
+  const el=e.target, d=el.dataset||{};
+  if(el.type==="checkbox" && d.rpath!==undefined){ setPath(S.rel,d.rpath,el.checked); Store.save(); afterChange(); return; }
+  if(el.tagName==="SELECT" && d.rpath!==undefined){ setPath(S.rel,d.rpath,el.value); Store.save(); afterChange(); }
+  if(el.tagName==="SELECT" && d.bpath!==undefined){
+    S.book[d.bpath]=el.value; Store.save();
+    if(d.bpath==="lane"){ Book.render(); toast(LANES[el.value].label+" playbook loaded"); }
+    afterChange();
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot(){ buildTabs(); Swap.paint(); renderSpine(); paintDots(); go(CURRENT||"book"); }
+Store.load();
+boot();
+</script>
+</body>
+</html>
