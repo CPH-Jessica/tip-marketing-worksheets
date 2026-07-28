@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Da Bot — The Story Interrogator</title>
+<style>
+/* ============================================================
+   DA BOT — THE STORY INTERROGATOR
+   Single file. Offline. localStorage. No dependencies.
+   Built from the Debi Brady method: she will not let you
+   describe events. She wants the STORY.
+   ============================================================ */
+:root{
+  --bg:#0b0a12; --bg2:#141221; --panel:#191627; --panel2:#211d34;
+  --ink:#f2edff; --ink-dim:#a49bc4; --line:#332c4e;
+  --accent:#ffb43d;          /* interrogation lamp */
+  --accent2:#c05cff;         /* violet */
+  --accent3:#ff7a9c;
+  --good:#54d6a0; --warn:#ffc861; --bad:#ff6f85;
+  --chip:#2a2440; --radius:14px; --shadow:0 12px 38px rgba(0,0,0,.5);
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(1000px 560px at 82% -14%, rgba(192,92,255,.20), transparent 62%),
+    radial-gradient(860px 500px at 6% 2%, rgba(255,180,61,.10), transparent 60%),
+    linear-gradient(170deg,var(--bg),#08070d 66%);
+  background-attachment:fixed;
+  color:var(--ink); line-height:1.5; min-height:100vh;
+}
+a{color:var(--accent)}
+button{font-family:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px 120px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:#2e2846;border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* header */
+header.top{position:sticky;top:0;z-index:60;background:rgba(11,10,18,.94);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:var(--maxw);margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{font-size:26px;filter:drop-shadow(0 2px 10px rgba(255,180,61,.6))}
+.brand h1{font-size:18px;margin:0;letter-spacing:.3px;white-space:nowrap}
+.brand .sub{font-size:11.5px;color:var(--ink-dim);margin-top:-2px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.who{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px 6px 4px 11px}
+.who .lbl{font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.6px}
+.who select{background:transparent;border:none;color:var(--ink);font-size:13px;font-weight:700;max-width:200px;padding:4px 2px}
+.who select:focus{outline:none}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:var(--panel)}
+.btn.primary{background:linear-gradient(120deg,var(--accent2),var(--accent));border:none;color:#17121f}
+.btn.primary:hover{filter:brightness(1.09)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* tabs */
+nav.tabs{max-width:var(--maxw);margin:0 auto;padding:6px 12px 0;display:flex;gap:3px;flex-wrap:wrap}
+.tab{border:1px solid transparent;background:transparent;color:var(--ink-dim);padding:9px 11px;border-radius:10px 10px 0 0;cursor:pointer;font-size:12.5px;font-weight:600;white-space:nowrap}
+.tab:hover{color:var(--ink);background:var(--panel)}
+.tab.active{color:#fff;background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel)}
+.tab .num{display:inline-block;min-width:15px;text-align:center;opacity:.5;margin-right:3px;font-size:11px}
+.tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line);margin-left:6px;vertical-align:middle}
+.tab .dot.on{background:var(--good);box-shadow:0 0 8px rgba(84,214,160,.7)}
+.tab .dot.part{background:var(--warn)}
+
+/* progress spine */
+.spine{max-width:var(--maxw);margin:0 auto;padding:12px 18px 2px}
+.spine-inner{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.snode{flex:1;min-width:0;padding:8px 10px;border-right:1px solid var(--line);cursor:pointer;transition:.15s}
+.snode:last-child{border-right:none}
+.snode:hover{background:var(--panel2)}
+.snode .sk{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-dim);display:flex;align-items:center;gap:5px}
+.snode .sk i{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block;font-style:normal;flex:none}
+.snode.on .sk i{background:var(--good);box-shadow:0 0 8px rgba(84,214,160,.75)}
+.snode .sv{font-size:11.5px;margin-top:2px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snode.on .sv{color:var(--ink)}
+@media(max-width:860px){.spine-inner{flex-wrap:wrap}.snode{flex:1 1 33%;border-bottom:1px solid var(--line)}}
+
+/* panels */
+.view{display:none;animation:fade .22s}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:21px;letter-spacing:.2px}
+.card h3{margin:24px 0 6px;font-size:13px;color:var(--accent);letter-spacing:.5px;text-transform:uppercase}
+.card h3:first-of-type{margin-top:12px}
+.lead{color:var(--ink-dim);font-size:13.5px;margin:0 0 10px}
+.quote{font-size:14.5px;font-style:italic;color:var(--ink);background:linear-gradient(90deg,rgba(255,180,61,.13),transparent);border-left:3px solid var(--accent);padding:11px 15px;border-radius:0 10px 10px 0;margin:10px 0 14px}
+.quote .by{display:block;font-style:normal;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-dim);margin-top:5px}
+.note{font-size:12.5px;color:var(--ink-dim);background:var(--bg2);border-left:3px solid var(--accent2);padding:11px 14px;border-radius:0 10px 10px 0;margin:10px 0 14px}
+.note b{color:var(--ink)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}}
+
+/* fields */
+label.f{display:block;margin:14px 0}
+label.f .lab{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;margin-bottom:4px;color:var(--ink);flex-wrap:wrap}
+label.f .req{color:var(--accent3);font-size:11px}
+label.f .hint{display:block;font-weight:400;color:var(--ink-dim);font-size:11.5px;margin-bottom:6px;line-height:1.45}
+input[type=text],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit}
+textarea{resize:vertical;min-height:64px;line-height:1.55}
+textarea.big{min-height:190px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,180,61,.12)}
+select{cursor:pointer}
+.tools{display:inline-flex;gap:5px;margin-left:auto}
+.mini{border:1px solid var(--line);background:var(--bg2);color:var(--ink-dim);border-radius:7px;padding:2px 8px;font-size:11px;cursor:pointer;font-weight:600}
+.mini:hover{color:var(--ink);border-color:var(--accent)}
+.count{font-size:11px;color:var(--ink-dim);margin-top:4px;text-align:right}
+
+/* pushback */
+.push{border-radius:10px;padding:10px 12px;margin-top:7px;font-size:12.5px;display:none;line-height:1.5}
+.push.show{display:block;animation:fade .18s}
+.push.bad{background:rgba(255,111,133,.11);border:1px solid rgba(255,111,133,.45);color:#ffd3da}
+.push.warn{background:rgba(255,200,97,.10);border:1px solid rgba(255,200,97,.42);color:#ffeec4}
+.push.ok{background:rgba(84,214,160,.10);border:1px solid rgba(84,214,160,.38);color:#c9f6e2}
+.push b{color:#fff}
+
+/* probes */
+.probe{background:rgba(192,92,255,.10);border:1px solid rgba(192,92,255,.40);border-radius:10px;padding:11px 13px;margin:12px 0 0;font-size:13px}
+.probe .pq{margin:0 0 7px;color:var(--ink)}
+.probe .pq:before{content:"↳ ";color:var(--accent2);font-weight:700}
+.probe .pnav{display:flex;gap:6px;align-items:center}
+.probe .pnum{font-size:11px;color:var(--ink-dim);margin-left:auto}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.chip{border:1px solid var(--line);background:var(--chip);color:var(--ink-dim);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;transition:.14s}
+.chip:hover{color:var(--ink);border-color:var(--accent)}
+.chip.on{background:linear-gradient(120deg,var(--accent2),var(--accent));color:#17121f;border-color:transparent;font-weight:700}
+
+/* spine sentence */
+.sentence{background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;font-size:16px;line-height:1.7;margin-top:14px}
+.sentence .fillin{color:var(--accent);font-weight:700}
+.sentence .blank{color:var(--ink-dim);font-style:italic}
+
+/* gauges */
+.gauge{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.bar{flex:1;min-width:160px;height:9px;background:var(--bg2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--good),var(--warn),var(--bad));width:0;transition:width .25s}
+.gtag{font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px;border:1px solid var(--line);background:var(--bg2)}
+.gtag.good{color:var(--good);border-color:rgba(84,214,160,.5)}
+.gtag.warn{color:var(--warn);border-color:rgba(255,200,97,.5)}
+.gtag.bad{color:var(--bad);border-color:rgba(255,111,133,.5)}
+
+/* genre promise */
+.promise{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13px}
+.promise h4{margin:0 0 8px;font-size:14px;color:var(--accent)}
+.promise .prow{display:flex;gap:9px;padding:5px 0;border-top:1px solid var(--line)}
+.promise .prow:first-of-type{border-top:none}
+.promise .pk{flex:none;width:132px;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-dim);padding-top:2px}
+.promise .pv{flex:1;color:var(--ink)}
+
+/* lock curtain */
+.curtain{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:34px 26px;margin:16px 0;text-align:center}
+.curtain .lk{font-size:34px;margin-bottom:8px}
+.curtain h3{margin:0 0 6px;font-size:17px;color:var(--ink);text-transform:none;letter-spacing:0}
+.curtain p{color:var(--ink-dim);font-size:13.5px;max-width:560px;margin:0 auto 14px}
+.curtain ul{text-align:left;max-width:520px;margin:0 auto 16px;color:var(--ink-dim);font-size:13px}
+.curtain li{margin:4px 0}
+
+/* nav footer */
+.stepnav{display:flex;gap:10px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.stepnav .verdictline{font-size:12.5px;color:var(--ink-dim);margin-left:auto;text-align:right}
+
+/* verdict card */
+.sheet{background:#fffdf8;color:#1a1626;border-radius:14px;padding:26px 30px;margin-top:14px;box-shadow:var(--shadow);font-size:13.5px;line-height:1.6}
+.sheet h3{color:#7a3fbf;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 5px;border-bottom:1px solid #e6ddf5;padding-bottom:4px}
+.sheet h3:first-child{margin-top:0}
+.sheet h2{margin:0 0 2px;font-size:23px;color:#231b36}
+.sheet .sub{color:#6b6382;font-size:12.5px;margin-bottom:6px}
+.sheet .big{font-size:16px;line-height:1.65;background:#f6f0ff;border-left:3px solid #a970ff;padding:11px 14px;border-radius:0 8px 8px 0;margin:6px 0}
+.sheet .kv{display:flex;gap:10px;padding:4px 0;border-top:1px dotted #e2dbef}
+.sheet .kv:first-of-type{border-top:none}
+.sheet .kv .k{flex:none;width:150px;color:#6b6382;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;padding-top:2px}
+.sheet .kv .v{flex:1}
+.sheet .missing{color:#b6adc7;font-style:italic}
+
+/* score */
+.scorewrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:800;flex:none;
+  background:conic-gradient(var(--good) calc(var(--p)*1%), var(--bg2) 0);position:relative}
+.ring:after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--panel)}
+.ring span{position:relative;z-index:2}
+
+/* table (page test) */
+table.rub{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+table.rub th,table.rub td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.rub th{background:var(--bg2);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-dim)}
+table.rub td.n{width:74px;text-align:center}
+table.rub input{width:100%;text-align:center;padding:4px;font-size:13px}
+table.rub tr.tot td{background:var(--bg2);font-weight:800}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.met{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.met .mk{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-dim)}
+.met .mv{font-size:16px;font-weight:800;margin-top:1px}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--accent);color:var(--ink);
+  padding:10px 18px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:var(--shadow)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media print{
+  header.top,nav.tabs,.spine,.stepnav,.no-print{display:none!important}
+  body{background:#fff}
+  .view{display:none!important}.view.active{display:block!important}
+  .card{box-shadow:none;border:none;background:#fff;color:#000;padding:0}
+  .sheet{box-shadow:none;padding:0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="glyph">🎙️</div>
+      <div>
+        <h1>Da Bot <span style="color:var(--ink-dim);font-weight:400;font-size:14px">— The Story Interrogator</span></h1>
+        <div class="sub">Pieces of a story are not a story.</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="who">
+        <span class="lbl">Story</span>
+        <select id="projSel"></select>
+      </div>
+      <button class="btn sm" id="btnNew">+ New</button>
+      <button class="btn sm" id="btnRename">Rename</button>
+      <button class="btn sm" id="btnExport">Backup</button>
+      <button class="btn sm" id="btnImport">Restore</button>
+      <button class="btn sm danger" id="btnDelete">Delete</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="spine"><div class="spine-inner" id="spine"></div></div>
+
+<div class="wrap" id="views"></div>
+
+<div id="toast"></div>
+<input type="file" id="fileIn" accept=".json" style="display:none">
+
+<script>
+"use strict";
+
+/* ============================================================
+   1. THE INTERROGATION — station + field definitions
+   ============================================================ */
+
+const FEELINGS = ["Seen","Hopeful","Wrecked (the good kind)","Safe","Fired up","Homesick","Vindicated","Comforted","Unsettled","Believing again","Less alone","Grateful","Breathless","Warm","Ready to fight for something"];
+
+const GENRES = {
+  "Contemporary Romance":{promise:"Two people I can root for, falling in love against a real obstacle.",must:"Meet-cute or forced proximity early, escalating intimacy, a black moment that costs something.",ending:"HEA or HFN. Non-negotiable.",warn:"If they don't end up together you're writing women's fiction, not romance. Different shelf, different reader."},
+  "Small-Town Romance":{promise:"A town I want to move to and a love story that repairs something.",must:"The town as a character, community pressure, a returning-home or outsider wound.",ending:"HEA plus the town healed a little.",warn:"If the town is just scenery, this is a contemporary romance wearing a flannel shirt."},
+  "Romantasy / Fantasy Romance":{promise:"A world with rules and a love that breaks or bends them.",must:"Magic system with a cost, fated/forbidden pull, escalating stakes in both plot and bond.",ending:"HEA (or clear HFN if it's a series) AND the magic plot resolved.",warn:"If the romance could be deleted without changing the plot, it's fantasy with a subplot. Say so in the blurb."},
+  "Dark Romance":{promise:"Danger braided into desire, with a hero I shouldn't want.",must:"Power imbalance, explicit consent architecture, real menace, obsession.",ending:"HEA, earned through surrender not rescue.",warn:"Content notes are part of the promise here. Skipping them breaks trust, not taboo."},
+  "Cozy Fantasy":{promise:"Low stakes, high warmth, magic that makes life better not scarier.",must:"A place readers want to live, small human problems, gentle magic, found community.",ending:"Comfort restored, someone belongs now.",warn:"A world-ending threat kills cozy on contact. Keep the stakes personal."},
+  "Cozy Mystery":{promise:"A puzzle I can solve, in a town I like, with nothing too ugly on the page.",must:"Body by chapter 3, amateur sleuth with a reason to care, fair-play clues, comic relief.",ending:"Killer caught, order restored, sleuth changed slightly.",warn:"On-page violence or a bleak ending breaks the cozy contract."},
+  "Romantic Suspense":{promise:"Love under threat, and the threat is real.",must:"Ticking clock, competent leads, danger that forces proximity.",ending:"Threat neutralized AND HEA. Both.",warn:"If the suspense resolves 40 pages before the romance, you've written two books in a trench coat."},
+  "Women's Fiction":{promise:"A woman's interior life changing, honestly.",must:"Internal arc drives plot, relationships beyond the romantic, hard-won self-knowledge.",ending:"Transformation. Not necessarily love.",warn:"Marketing this as romance gets you one-star reviews from readers who wanted a HEA."},
+  "Space Opera":{promise:"Big feelings, big ships, a galaxy worth saving.",must:"Scale, a crew or found family, moral clarity under pressure, a villain with a worldview.",ending:"Victory with a cost. Setup for the next front.",warn:"Space opera is fantasy in space. If you want rigorous physics, you're writing hard SF and a different reader is buying."},
+  "Hard Science Fiction":{promise:"The science is real and the problem is solved with brains.",must:"Consistent rules, competence porn, consequences that follow from physics not fate.",ending:"The problem is solved (or provably not) by reasoning.",warn:"A mystical power system contradicts the promise. Pick one."},
+  "Christian / Inspirational Speculative":{promise:"A story that takes faith seriously and leaves me strengthened.",must:"A spiritual question at the center, a character wrestling honestly, no cheap conversions.",ending:"Faith tested and held, or found — and the cost shown.",warn:"If the faith thread could be cut without changing the ending, it's decoration and the target reader will feel it."},
+  "Epic Fantasy":{promise:"A world to live in and a war worth the page count.",must:"Deep world, multiple POVs, rising scale, a prophecy or throne or apocalypse.",ending:"The world order changes.",warn:"Epic means long and slow-building. Readers of fast fantasy adventure will bounce."},
+  "Urban Fantasy":{promise:"Magic hidden in our world and a protagonist who polices the seams.",must:"First-person voice, a case, factions, escalating supernatural politics.",ending:"Case closed, larger arc opened.",warn:"If the romance is the point, market it as paranormal romance instead."},
+  "Thriller":{promise:"I will not be able to put this down.",must:"Threat on page one, short chapters, reversals, a hunter and a hunted.",ending:"Threat defeated, protagonist changed by what it took.",warn:"Interiority slows the promise. Save the meditation for the denouement."},
+  "Mystery / Detective":{promise:"A fair puzzle and a satisfying reveal.",must:"Crime early, clues planted, red herrings, a detective with a method.",ending:"Solution earned, all clues accounted for.",warn:"A reveal that relies on withheld information breaks the contract."},
+  "Horror":{promise:"Make me afraid, and make the fear mean something.",must:"Dread curve, rules for the threat, isolation, escalating violations.",ending:"Survival at a price, or defeat that lands.",warn:"A comforting ending deflates horror. So does explaining the monster too early."},
+  "Young Adult":{promise:"First-time intensity, a voice that sounds like now.",must:"Teen agency, adults sidelined, identity at stake, immediacy.",ending:"Growth, not resolution of adult life.",warn:"An adult-feeling narrator with a teen age tag fools nobody."},
+  "Historical Fiction":{promise:"A time and place I can smell, with people who belong in it.",must:"Period logic, research worn lightly, stakes native to the era.",ending:"History and character resolve together.",warn:"Modern values in a period mouth breaks immersion for this reader."},
+  "Literary Fiction":{promise:"Sentences worth rereading and a truth I can't shake.",must:"Voice, interiority, ambiguity, thematic pressure.",ending:"Illumination, not necessarily resolution.",warn:"Plot-driven marketing sets the wrong expectation and gets punished."}
+};
+
+const FLAVORS = ["Second chance","Enemies to lovers","Found family","Fated mates","Grumpy/sunshine","Slow burn","Forced proximity","Redemption arc","Heist","Survival","Quest","Revenge","Coming of age","Time loop","Body swap","Locked room","Chosen one","Small-town charm","Courtroom","Military","Sports","Holiday","Retelling","Age gap","Single parent","Marriage of convenience","Amnesia","Rivals","Undercover","Haunting"];
+
+const DRIVE_AXES = [
+  {a:["sacrifice","die","give his life","give her life","martyr","go down with","stay behind","lay down my life"],
+   b:["survive","get home","get back","make it out","live","return to","see them again","reunite"],
+   msg:"He can't be willing to die for the mission AND be doing everything to get home. Those are two different books. Pick the one that wins in the last act — the other becomes the temptation he refuses."},
+  {a:["revenge","make them pay","kill him","kill her","destroy them","vengeance","get even"],
+   b:["forgive","let go","heal","move on","make peace","forgiveness"],
+   msg:"Revenge and forgiveness are opposite endings. One is the want, one is the need — decide which is which, or the ending will feel like a shrug."},
+  {a:["hide","stay hidden","keep the secret","anonymous","nobody can know","disappear"],
+   b:["be seen","be known","prove","recognition","famous","claim","take credit","come forward"],
+   msg:"Hiding and being seen can't both be the goal. This is usually the real engine of the book — make one the want and one the terror."},
+  {a:["leave","escape","run","get out of this town","start over somewhere"],
+   b:["stay","belong","roots","build a life here","home","keep the farm","save the shop"],
+   msg:"Leaving and belonging are competing drives. Great tension — but only one can win, and the reader needs to feel you know which."},
+  {a:["duty","the mission","the many","the world","the crew","orders"],
+   b:["family","his kids","her kids","the one","his wife","her husband","love","the child"],
+   msg:"The many vs. the one. That's your moral dilemma — good. But it's a dilemma only if choosing one genuinely destroys the other. Make the cost real."},
+  {a:["justice","the law","do it right","the rules"],
+   b:["mercy","protect them anyway","break the rules","cover it up"],
+   msg:"Justice vs. mercy is a strong spine — as long as the story forces the choice instead of letting him have both."}
+];
+
+const PLOT_WORDS = ["and then","after that","meanwhile","next,","chapter","scene ","he goes","she goes","they go to","later,","first,","subsequently","by the end of","in the beginning of the book","then he ","then she ","then they "];
+const MISSION_WORDS = ["his duty","her duty","the mission","protect earth","save the world","save earth","defend the planet","complete the mission","following orders","serve his country","serve her country","protect the base","defeat the"];
+const EVERYBODY = ["everybody","everyone","anyone who","all readers","any reader","the general public","wide audience","people who like books","most people"];
+
+function words(v){return (v||"").trim().split(/\s+/).filter(Boolean);}
+function wc(v){return words(v).length;}
+function low(v){return (v||"").toLowerCase();}
+function hits(v,list){const t=low(v);return list.filter(function(h){return t.indexOf(h)>-1;});}
+function bad(m){return {level:"bad",msg:m};}
+function warn(m){return {level:"warn",msg:m};}
+function ok(m){return {level:"ok",msg:m};}
+
+function jaccard(a,b){
+  const A=new Set(low(a).replace(/[^a-z0-9\s]/g," ").split(/\s+/).filter(function(w){return w.length>3;}));
+  const B=new Set(low(b).replace(/[^a-z0-9\s]/g," ").split(/\s+/).filter(function(w){return w.length>3;}));
+  if(!A.size||!B.size) return 0;
+  let inter=0; A.forEach(function(w){if(B.has(w))inter++;});
+  return inter/(A.size+B.size-inter);
+}
+
+const STATIONS = [
+{
+  id:"dump", label:"The Dump", icon:"🗃️", spine:"Pieces",
+  title:"Station 0 · Get the pieces out of your system",
+  quote:"You're telling me bits of the story that I don't need to know. I just need to know the character.",
+  intro:"This is the only room where you're allowed to ramble. Paste the outline, the scene blocking, the world doc, the chapter you already wrote, the four genres you think it might be. Get it all out — then we close the drawer and don't open it again until the verdict.<br><br><b>Nothing here is graded.</b> Everything after this is.",
+  fields:[
+    {id:"dump_title",type:"text",lab:"Working title",hint:"Whatever you're calling it today."},
+    {id:"dump_raw",type:"area",big:true,lab:"Everything you've got",hint:"Scenes, notes, the outline, the chapter, the thing you keep telling people at parties. Dump it."}
+  ],
+  probes:[],
+  gate:function(){return {pass:true,missing:[]};}
+},
+{
+  id:"person", label:"The Person", icon:"👤", spine:"Person",
+  title:"Station 1 · Who is this, when nothing is happening?",
+  quote:"That doesn't tell me who he is. That just tells me his mission.",
+  intro:"Before the aliens, before the murder, before the meet-cute. If the plot never showed up, this person would still be walking around with a problem. Name that.",
+  fields:[
+    {id:"p_name",type:"text",req:true,lab:"Main character's name",hint:"One person. If you're about to type two names, pick whose book this is."},
+    {id:"p_who",type:"area",req:true,lab:"Who are they? Not what they do.",hint:"No job titles, no rank, no mission. A person.",
+      check:function(v){
+        if(!v.trim())return null;
+        if(wc(v)<8) return bad("Not enough. I can't picture a human being from that.");
+        const m=hits(v,MISSION_WORDS);
+        if(m.length) return bad("That's a mission, not a person. “"+m[0]+"” is what he's assigned to do. Who is he while he's doing it?");
+        const p=hits(v,PLOT_WORDS);
+        if(p.length>=2) return bad("That's plot. I didn't ask what happens. I asked who this is.");
+        if(p.length===1) return warn("You're drifting into events. Stay on the person.");
+        return ok("Now I can see somebody.");
+      }},
+    {id:"p_lie",type:"area",req:true,lab:"What do they believe about themselves that isn't true?",hint:"The lie they'd defend in an argument. “I don't need anyone.” “I'm the only one who can hold this together.”",
+      check:function(v){if(!v.trim())return null;if(wc(v)<4)return warn("Say it as a sentence they'd actually say out loud.");return ok("Good. That's the thing the story gets to break.");}},
+    {id:"p_follow",type:"area",req:true,lab:"Why would I follow this person for 300 pages?",hint:"Not “because the plot is exciting.” Because of something about them.",
+      check:function(v){if(!v.trim())return null;
+        if(/plot|action|exciting|twists|world.?build/i.test(v)) return warn("You just told me about the book. I asked about the person.");
+        return ok("Okay. I'd follow that.");}}
+  ],
+  probes:["If the story never happened, what would still be wrong with their life?","What do they do when nobody is watching?","What's the one thing they'd never admit out loud?","Who do they think they are — and who are they actually?","What are they good at that nobody has ever thanked them for?"],
+  gate:std(["p_name","p_who","p_lie","p_follow"])
+},
+{
+  id:"arc", label:"Transformation", icon:"🎢", spine:"Change",
+  title:"Station 2 · The funhouse",
+  quote:"Think of it as walking through a funhouse, and at the end, he comes out and he's like — oh my god, I'm different. What is that like?",
+  intro:"Beginning. End. Nothing in between. If you can't tell me how they're different on the last page, there is no story yet — there's a sequence of events.",
+  fields:[
+    {id:"a_start",type:"area",req:true,lab:"On page one, they are…",hint:"A state of being. Not a situation.",
+      check:function(v){if(!v.trim())return null;if(wc(v)<5)return warn("A few more words.");return null;}},
+    {id:"a_end",type:"area",req:true,lab:"On the last page, they are…",hint:"The thing that changed inside them. Not what they achieved.",
+      check:function(v,d){
+        if(!v.trim())return null;
+        if(wc(v)<5) return warn("A few more words.");
+        const s=d.a_start||"";
+        if(s && jaccard(s,v)>0.55) return bad("That's the same sentence with different punctuation. Nothing happened to this person.");
+        if(/win|wins|defeat|kill|save the|gets the|rescues|escapes/i.test(v) && !/learn|accept|forgive|believe|trust|let|stop|admit|realize|becomes someone/i.test(v))
+          return warn("That's an outcome, not a transformation. He won. Fine. But who is he now that he wasn't before?");
+        return ok("That's a journey. Now everything in the middle has a job.");
+      }},
+    {id:"a_cost",type:"area",req:true,lab:"What does the change cost them?",hint:"Nobody transforms for free. What do they have to put down?",
+      check:function(v){if(!v.trim())return null;if(/nothing|not much|n\/a/i.test(v))return bad("Then it isn't a transformation, it's an upgrade. Readers don't cry at upgrades.");return ok("Good — that's the price of admission.");}},
+    {id:"a_moment",type:"area",lab:"The moment it becomes irreversible",hint:"The door that locks behind them. Optional, but if you know it, write it."}
+  ],
+  probes:["What would the version of them from page one say about the version on the last page?","What do they lose that they'd have said they could never live without?","Who notices they've changed, and what do they say about it?","Is there a version of the ending where they change back? Why doesn't it happen?"],
+  gate:std(["a_start","a_end","a_cost"])
+},
+{
+  id:"want", label:"Heart's Desire", icon:"🫀", spine:"Want",
+  title:"Station 3 · What do they want, what's in the way, what happens if they don't get it",
+  quote:"What's his heart's desire?",
+  intro:"Three questions. That's the whole engine of a story. If you can answer all three in a sentence each, you can write the book.",
+  fields:[
+    {id:"w_want",type:"area",req:true,lab:"What do they WANT?",hint:"Concrete. Sayable out loud. Something they'd fight a stranger over.",
+      check:function(v){if(!v.trim())return null;
+        if(/happy|happiness|peace|to be better|fulfilment|fulfillment|purpose/i.test(v)&&wc(v)<8) return warn("Too abstract. “Happiness” isn't a want, it's a weather report. What would they physically go get?");
+        return ok();}},
+    {id:"w_need",type:"area",req:true,lab:"What do they actually NEED?",hint:"The thing they don't know yet. Usually the opposite of the want.",
+      check:function(v,d){if(!v.trim())return null;
+        if(d.w_want && jaccard(d.w_want,v)>0.6) return warn("Want and need are the same here. That's allowed — but then the book has no interior argument. Consider making the need something the want is hiding from.");
+        return ok();}},
+    {id:"w_block",type:"area",req:true,lab:"What's in the way?",hint:"Ideally a person with their own reasons, not weather or bad luck.",
+      check:function(v){if(!v.trim())return null;
+        if(/bad luck|coincidence|timing|circumstance/i.test(v)) return warn("Circumstance isn't an antagonist. Who benefits from them failing?");
+        return ok();}},
+    {id:"w_stakes",type:"area",req:true,lab:"What happens if they don't get it?",hint:"If the honest answer is “they go back to their life,” you don't have stakes yet.",
+      check:function(v){if(!v.trim())return null;
+        if(/nothing|go back|status quo|same as before/i.test(v)) return bad("Then there's no reason to read to the end. Something must be unrecoverable if they fail.");
+        return ok("Good. Now failure costs something.");}}
+  ],
+  probes:["What would they do that's genuinely out of character to get this?","Who else wants the same thing, and why do they deserve it too?","What's the cheap version of the want that the story offers them halfway through — the deal they almost take?","If they got it on page 50, what would still be broken?"],
+  gate:std(["w_want","w_need","w_block","w_stakes"])
+},
+{
+  id:"spine", label:"Spine Sentence", icon:"🦴", spine:"Spine",
+  title:"Station 4 · Fill in the blanks",
+  quote:"Readers will primarily follow a character who ____, while trying to ____, and the story's main pleasure comes from ____.",
+  intro:"This is the sentence that goes on the cover letter, the blurb, the ad, and the sticky note over your monitor. If you can't fill it in, no amount of world-building will save the book.",
+  fields:[
+    {id:"s_who",type:"text",req:true,lab:"…a character who",hint:"e.g. “was left for dead on a moon base”",
+      check:function(v){if(!v.trim())return null;if(wc(v)>18)return warn("Too long. This is a blank, not a paragraph.");return null;}},
+    {id:"s_trying",type:"text",req:true,lab:"…while trying to",hint:"One goal. If you type “and” twice, you have two books.",
+      check:function(v){if(!v.trim())return null;
+        const ands=(low(v).match(/\band\b/g)||[]).length;
+        if(ands>=2) return bad("You're stacking goals. One spine. Which of these does the last chapter actually resolve?");
+        if(wc(v)>18) return warn("Too long. Tighter.");
+        return null;}},
+    {id:"s_pleasure",type:"text",req:true,lab:"…and the main pleasure comes from",hint:"Why a reader keeps turning pages. Banter? Dread? Puzzle-solving? Longing? Competence?",
+      check:function(v){if(!v.trim())return null;if(wc(v)>18)return warn("Too long. Name the pleasure in a handful of words.");return null;}}
+  ],
+  probes:["Read it out loud. Would a stranger say “oh, I'd read that” — or “huh”?","Does the pleasure you named actually appear in chapter one?","Could you swap your protagonist for someone else and keep this sentence true? If yes, the character isn't load-bearing yet."],
+  gate:std(["s_who","s_trying","s_pleasure"])
+},
+{
+  id:"genre", label:"Genre Lock", icon:"🔒", spine:"Genre",
+  title:"Station 5 · Pick one shelf",
+  quote:"There's four or five different mixed trope genres this could fall into — that's going to be a problem when you try to find a place to market it. I have no idea who your audience is.",
+  intro:"You get <b>one</b> primary genre. That's the shelf, the also-boughts, the ad targeting, the reader's expectation. Everything else is <i>flavour</i> — you can layer two of those on top. Three or more primaries isn't ambitious, it's unsellable.",
+  fields:[
+    {id:"g_primary",type:"select",req:true,lab:"Primary genre — the shelf",hint:"The one whose readers you're actually going after.",options:Object.keys(GENRES)},
+    {id:"g_flavors",type:"chips",req:true,lab:"Flavour layers (max 2)",hint:"Tropes and textures on top of the shelf. Not extra genres.",options:FLAVORS,max:2},
+    {id:"g_shelf",type:"text",req:true,lab:"Two published books that sit beside yours",hint:"Real titles a reader would recognise. If you can't name two, you don't know the shelf yet.",
+      check:function(v){if(!v.trim())return null;
+        if(!/,| and | & |\//i.test(v)) return warn("I asked for two. Name the second one — that's the one that proves you know the market.");
+        return ok();}},
+    {id:"g_break",type:"area",lab:"What are you doing differently from those two?",hint:"Same shelf, different book. One sentence."}
+  ],
+  probes:["If a reader bought this expecting the shelf you picked, what would disappoint them?","Which of your flavour layers would you cut if an editor made you cut one?","Does your ending honour the contract of the primary genre — or break it?"],
+  gate:function(d){
+    const miss=[];
+    if(!d.g_primary) miss.push("Pick a primary genre");
+    const f=(d.g_flavors||"").split("|").filter(Boolean);
+    if(!f.length) miss.push("Pick at least one flavour layer");
+    if(f.length>2) miss.push("Too many flavour layers — cut to two");
+    if(!(d.g_shelf||"").trim()) miss.push("Name two comparable published books");
+    return {pass:miss.length===0,missing:miss};
+  }
+},
+{
+  id:"reader", label:"The Reader", icon:"🎯", spine:"Reader",
+  title:"Station 6 · You are never writing for everybody",
+  quote:"You're never writing for everybody. Ever.",
+  intro:"One real person. Someone you could describe to a stranger. They are carrying a question, and your book is the answer they didn't know they were shopping for.<br><br>And remember the Roddenberry rule: he couldn't sell a philosophy show, so he sold <i>cowboys in space</i> — and smuggled the philosophy in. The bait and the message are two different things. You need both.",
+  fields:[
+    {id:"r_who",type:"area",req:true,lab:"Describe ONE reader",hint:"Age-ish, what they read last month, what their week is like, why they're reaching for a book at all.",
+      check:function(v){if(!v.trim())return null;
+        const e=hits(v,EVERYBODY);
+        if(e.length) return bad("“"+e[0]+"” is not a reader. You're never writing for everybody. One person.");
+        if(wc(v)<12) return warn("Give me more of her. I should be able to pick her out of a room.");
+        return ok("Good. Now every decision has somebody to answer to.");}},
+    {id:"r_question",type:"area",req:true,lab:"What question are they carrying?",hint:"The thing they're quietly hoping a story will answer this month.",
+      check:function(v){if(!v.trim())return null;if(v.indexOf("?")===-1)return warn("Phrase it as an actual question. That's the test.");return ok();}},
+    {id:"r_answer",type:"area",req:true,lab:"How does your story answer it?",hint:"Through what happens — not through a speech someone gives in chapter 20."},
+    {id:"r_bait",type:"area",req:true,lab:"The bait — what makes them click BUY?",hint:"The cover-and-blurb promise. The cowboys.",
+      check:function(v){if(!v.trim())return null;
+        if(/theme|message|meaning|lesson|faith|moral/i.test(v)) return warn("That's the message, not the bait. Nobody buys a lesson. What's the surface pleasure on the cover?");
+        return ok();}},
+    {id:"r_message",type:"area",req:true,lab:"The thing you're smuggling in",hint:"The reason you're actually writing it. The philosophy under the cowboys."}
+  ],
+  probes:["Where does this reader hang out — which newsletter, which shelf, which TikTok?","What did they read last that disappointed them, and why?","If your bait and your message fight each other, which one is on the cover?","Would this reader be embarrassed to be seen reading it? That changes the cover."],
+  gate:std(["r_who","r_question","r_answer","r_bait","r_message"])
+},
+{
+  id:"dilemma", label:"The Dilemma", icon:"⚖️", spine:"Dilemma",
+  title:"Station 7 · The impossible choice",
+  quote:"Does he sacrifice the one for the good of the many, or the many for the good of the one? And what would you do in that situation?",
+  intro:"The man at the railway switch. His son is on the tracks; a passenger train is coming; the bridge is open. He can save one. That's a story — because whichever way he chooses, it costs everything.<br><br>Find yours. If your protagonist can have both things, you don't have a climax, you have a schedule.",
+  fields:[
+    {id:"d_choice",type:"area",req:true,lab:"The two things they cannot both have",hint:"Write it as: “Either ___ or ___.”",
+      check:function(v){if(!v.trim())return null;
+        if(!/\bor\b/i.test(v)) return bad("I don't see a choice in there. Write it as “either X or Y” — two things, one of which has to die.");
+        return ok("That's a dilemma. Now the ending means something.");}},
+    {id:"d_pick",type:"area",req:true,lab:"Which do they choose — and what does it cost?",hint:"You're allowed to change your mind later. You're not allowed to dodge."},
+    {id:"d_dodge",type:"area",lab:"The cheat you're tempted to write",hint:"The clever plot move where they get both. Name it here so you don't accidentally use it."},
+    {id:"d_object",type:"text",lab:"The MacGuffin (optional)",hint:"The object everyone's chasing. Castaway had a package with wings on it — the thing that carried the meaning."}
+  ],
+  probes:["Would a decent person choose the other way? If not, it isn't a dilemma.","What does the choice reveal that nothing else could have?","Who never forgives them for it?","If they choose right, what's still broken at the end?"],
+  gate:std(["d_choice","d_pick"])
+},
+{
+  id:"compat", label:"Compatibility", icon:"🧨", spine:"Conflict",
+  title:"Station 8 · Are your drives fighting each other?",
+  quote:"You can't be willing to sacrifice himself and doing everything to get back to Earth at the same time. Because they're not compatible.",
+  intro:"List what your protagonist is driving at — everything you've been telling people the book is about. Da Bot will flag drives that cancel each other out. Contradiction is fine. <b>Unacknowledged</b> contradiction is what makes a story feel like it's wandering.",
+  fields:[
+    {id:"c_drives",type:"area",req:true,lab:"One drive per line",hint:"e.g.\nHe'll die to protect Earth\nHe'll do anything to get home to his wife\nHe wants to know what happened to his unit",
+      rows:6,
+      check:function(v){if(!v.trim())return null;
+        const lines=v.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+        if(lines.length<2) return warn("Give me at least two. One drive is a errand, not a story.");
+        const clashes=[];
+        for(let i=0;i<lines.length;i++)for(let j=i+1;j<lines.length;j++){
+          DRIVE_AXES.forEach(function(ax){
+            const iA=hits(lines[i],ax.a).length>0, iB=hits(lines[i],ax.b).length>0;
+            const jA=hits(lines[j],ax.a).length>0, jB=hits(lines[j],ax.b).length>0;
+            if((iA&&jB)||(iB&&jA)){ if(clashes.indexOf(ax.msg)===-1) clashes.push(ax.msg); }
+          });
+        }
+        if(clashes.length) return warn("<b>Incompatible drives detected.</b><br>"+clashes.join("<br><br>"));
+        return ok("No head-on collisions detected. Doesn't mean there aren't any — read them out loud and see if you believe all of them at once.");
+      }},
+    {id:"c_wins",type:"area",req:true,lab:"When two of these fight in the last act, which one wins?",hint:"Name it. The other one becomes the sacrifice — and that's your ending."},
+    {id:"c_layers",type:"area",lab:"A-plot / B-plot / C-plot",hint:"Optional. Which drive is the spine, which is the subplot, which is the seasoning."}
+  ],
+  probes:["Say all your drives out loud in a row. Do you believe a real person holds all of them?","Which drive would your protagonist deny having?","If you cut the weakest drive entirely, does the book get worse or just shorter?"],
+  gate:std(["c_drives","c_wins"])
+},
+{
+  id:"land", label:"The Last Page", icon:"🌒", spine:"Landing",
+  title:"Station 9 · The screen goes dark",
+  quote:"You should be able to tell your story to a five-year-old, and they'll go — I wanna read that story.",
+  intro:"Two final questions. The feeling, and the pitch. If the pitch needs a glossary, it isn't a pitch.",
+  fields:[
+    {id:"l_feel",type:"chipsfree",req:true,lab:"They close the book. What do they feel?",hint:"Pick or type your own. This is the thing your marketing is actually selling.",options:FEELINGS},
+    {id:"l_pitch",type:"area",req:true,lab:"The five-year-old pitch",hint:"25 words max. No invented nouns. No genre labels. Just: who, what they want, what's in the way.",
+      counter:25,
+      check:function(v){
+        if(!v.trim())return null;
+        const n=wc(v);
+        if(n>32) return bad("That's "+n+" words. A five-year-old checked out at word 20. Cut it.");
+        if(n>25) return warn(n+" words. Close. Trim it to 25.");
+        const caps=(v.match(/\b[A-Z][a-z]{2,}/g)||[]).filter(function(w){return ["The","And","But","When","After","Before","She","He","They","His","Her","Their","A","An"].indexOf(w)===-1;});
+        if(caps.length>2) return warn("You've used "+caps.length+" proper nouns ("+caps.slice(0,3).join(", ")+"…). The five-year-old doesn't know what those are. Try it with none.");
+        return ok("That's a pitch. Say it at a party and watch their face.");
+      }},
+    {id:"l_promise",type:"area",req:true,lab:"Does the last page pay off the first page?",hint:"Name the specific promise chapter one makes, and where it's paid."}
+  ],
+  probes:["Tell the pitch to someone who doesn't read your genre. Where do their eyes go dead?","Is the feeling you named actually the feeling your ending produces — or the one you hope it does?","What's the last image? Not the last event — the last picture in their head."],
+  gate:std(["l_feel","l_pitch","l_promise"])
+}
+];
+
+function std(ids){
+  return function(d){
+    const miss=[];
+    ids.forEach(function(id){
+      if(!(d[id]||"").trim()){
+        const f=findField(id);
+        miss.push(f?f.lab:id);
+      }
+    });
+    // hard checks
+    ids.forEach(function(id){
+      const f=findField(id);
+      if(f&&f.check&&(d[id]||"").trim()){
+        const r=f.check(d[id],d);
+        if(r&&r.level==="bad") miss.push("Da Bot isn't buying your answer to “"+f.lab+"”");
+      }
+    });
+    return {pass:miss.length===0,missing:miss};
+  };
+}
+function findField(id){
+  for(let i=0;i<STATIONS.length;i++){
+    const f=STATIONS[i].fields.filter(function(x){return x.id===id;})[0];
+    if(f) return f;
+  }
+  return null;
+}
+
+/* ============================================================
+   2. STORAGE
+   ============================================================ */
+const KEY="dabot.v1";
+let DB={projects:{},current:null};
+
+function uid(){return "s"+Math.random().toString(36).slice(2,9);}
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){DB=JSON.parse(raw);}
+  }catch(e){}
+  if(!DB.projects||!Object.keys(DB.projects).length){
+    const id=uid();
+    DB={projects:{},current:id};
+    DB.projects[id]={name:"Untitled story",created:new Date().toISOString(),data:{},unlocked:{}};
+  }
+  if(!DB.projects[DB.current]) DB.current=Object.keys(DB.projects)[0];
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){toast("Storage full — export a backup.");}}
+function P(){return DB.projects[DB.current];}
+function D(){return P().data;}
+
+function toast(m){
+  const t=document.getElementById("toast");
+  t.textContent=m;t.classList.add("show");
+  clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show");},2100);
+}
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function copy(text,label){
+  navigator.clipboard.writeText(text).then(function(){toast((label||"Copied")+" ✓");},
+    function(){
+      const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");toast((label||"Copied")+" ✓");}catch(e){toast("Copy failed");}
+      document.body.removeChild(ta);
+    });
+}
+
+/* ============================================================
+   3. RENDER
+   ============================================================ */
+const ALL_TABS = STATIONS.map(function(s){return {id:s.id,label:s.label,icon:s.icon};})
+  .concat([{id:"verdict",label:"The Verdict",icon:"📜"},{id:"pagetest",label:"Page Test",icon:"🥊"}]);
+
+let activeTab = STATIONS[0].id;
+
+function stationStatus(s){
+  const g=s.gate(D());
+  if(g.pass) return "on";
+  const any=s.fields.some(function(f){return (D()[f.id]||"").trim();});
+  return any?"part":"";
+}
+
+function renderTabs(){
+  const el=document.getElementById("tabs");
+  el.innerHTML=ALL_TABS.map(function(t,i){
+    let dot="";
+    const st=STATIONS.filter(function(s){return s.id===t.id;})[0];
+    if(st){const c=stationStatus(st);dot='<span class="dot '+c+'"></span>';}
+    return '<button class="tab'+(activeTab===t.id?" active":"")+'" data-tab="'+t.id+'">'+
+      (st?'<span class="num">'+i+'</span>':'')+t.icon+" "+t.label+dot+'</button>';
+  }).join("");
+  Array.prototype.forEach.call(el.querySelectorAll(".tab"),function(b){
+    b.onclick=function(){go(b.dataset.tab);};
+  });
+}
+
+function renderSpine(){
+  const el=document.getElementById("spine");
+  el.innerHTML=STATIONS.slice(1).map(function(s){
+    const on=s.gate(D()).pass;
+    let v="—";
+    const first=s.fields.filter(function(f){return f.req;})[0];
+    if(first){ const raw=(D()[first.id]||"").replace(/\|/g,", "); if(raw.trim()) v=raw.trim(); }
+    return '<div class="snode '+(on?"on":"")+'" data-tab="'+s.id+'"><div class="sk"><i></i>'+s.spine+'</div><div class="sv">'+esc(v.slice(0,60))+'</div></div>';
+  }).join("");
+  Array.prototype.forEach.call(el.querySelectorAll(".snode"),function(n){n.onclick=function(){go(n.dataset.tab);};});
+}
+
+function fieldHTML(f){
+  const d=D();
+  const v=d[f.id]||"";
+  const lab='<span class="lab">'+f.lab+(f.req?' <span class="req">required</span>':'')+'</span>'+
+            (f.hint?'<span class="hint">'+f.hint.replace(/\n/g,"<br>")+'</span>':'');
+  let input="";
+  if(f.type==="text") input='<input type="text" data-f="'+f.id+'" value="'+esc(v).replace(/"/g,"&quot;")+'">';
+  else if(f.type==="area") input='<textarea data-f="'+f.id+'" class="'+(f.big?"big":"")+'" '+(f.rows?'rows="'+f.rows+'"':'')+'>'+esc(v)+'</textarea>';
+  else if(f.type==="select"){
+    input='<select data-f="'+f.id+'"><option value="">— choose —</option>'+
+      f.options.map(function(o){return '<option'+(v===o?" selected":"")+'>'+o+'</option>';}).join("")+'</select>';
+  }
+  else if(f.type==="chips"){
+    const sel=v.split("|").filter(Boolean);
+    input='<div class="chips" data-chips="'+f.id+'" data-max="'+(f.max||99)+'">'+
+      f.options.map(function(o){return '<button type="button" class="chip'+(sel.indexOf(o)>-1?" on":"")+'" data-v="'+esc(o)+'">'+o+'</button>';}).join("")+'</div>';
+  }
+  else if(f.type==="chipsfree"){
+    input='<input type="text" data-f="'+f.id+'" value="'+esc(v).replace(/"/g,"&quot;")+'" placeholder="Type it, or pick one below">'+
+      '<div class="chips" data-fill="'+f.id+'">'+f.options.map(function(o){return '<button type="button" class="chip" data-v="'+esc(o)+'">'+o+'</button>';}).join("")+'</div>';
+  }
+  const counter=f.counter?'<div class="count" data-count="'+f.id+'"></div>':"";
+  return '<label class="f" data-fw="'+f.id+'">'+lab+input+counter+'<div class="push" data-push="'+f.id+'"></div></label>';
+}
+
+function stationHTML(s,idx){
+  const locked=idx>1 && !STATIONS[idx-1].gate(D()).pass && !(P().unlocked||{})[s.id];
+  if(locked){
+    const prev=STATIONS[idx-1];
+    const miss=prev.gate(D()).missing;
+    return '<div class="curtain"><div class="lk">🔒</div><h3>Finish '+prev.icon+' '+prev.label+' first.</h3>'+
+      '<p>Da Bot works in order on purpose. You can\'t choose a genre for a character you haven\'t described.</p>'+
+      '<ul>'+miss.map(function(m){return "<li>· "+esc(m)+"</li>";}).join("")+'</ul>'+
+      '<button class="btn primary" data-goto="'+prev.id+'">Back to '+prev.label+'</button> '+
+      '<button class="btn ghost" data-unlock="'+s.id+'">Let me in anyway</button></div>';
+  }
+  const g=s.gate(D());
+  let extra="";
+  if(s.id==="spine") extra='<div id="spineSentence"></div>';
+  if(s.id==="genre") extra='<div id="genreOut"></div>';
+  return '<div class="card">'+
+    '<h2>'+s.icon+' '+s.title+'</h2>'+
+    '<div class="quote">"'+s.quote+'"<span class="by">the interrogation</span></div>'+
+    '<div class="note">'+s.intro+'</div>'+
+    s.fields.map(fieldHTML).join("")+
+    extra+
+    (s.probes.length?'<div class="probe" data-probe="'+s.id+'"><p class="pq" data-pqtext></p><div class="pnav">'+
+      '<button class="btn sm ghost" data-pprev>‹ back</button><button class="btn sm" data-pnext>another question ›</button>'+
+      '<span class="pnum" data-pnum></span></div></div>':"")+
+    '<div class="stepnav">'+
+      (idx>0?'<button class="btn ghost" data-goto="'+STATIONS[idx-1].id+'">‹ '+STATIONS[idx-1].label+'</button>':'')+
+      '<button class="btn sm" data-grill="'+s.id+'">🎙️ Grill me on this in Claude</button>'+
+      (idx<STATIONS.length-1
+        ? '<button class="btn primary" data-goto="'+STATIONS[idx+1].id+'">'+STATIONS[idx+1].label+' ›</button>'
+        : '<button class="btn primary" data-goto="verdict">See the verdict ›</button>')+
+      '<div class="verdictline">'+(g.pass?'<span style="color:var(--good)">✓ station clear</span>':esc(g.missing[0]||"unfinished"))+'</div>'+
+    '</div></div>';
+}
+
+/* ---------- verdict ---------- */
+function score(){
+  let done=0;
+  STATIONS.slice(1).forEach(function(s){if(s.gate(D()).pass)done++;});
+  return {done:done,total:STATIONS.length-1,pct:Math.round(done/(STATIONS.length-1)*100)};
+}
+
+function verdictHTML(){
+  const d=D(), sc=score();
+  const gaps=[];
+  STATIONS.slice(1).forEach(function(s){
+    const g=s.gate(d);
+    if(!g.pass) gaps.push(s.icon+" "+s.label+" — "+g.missing.join("; "));
+  });
+  let ruling;
+  if(sc.pct===100) ruling="You have a story. Not pieces of one — a story. Go write it, and when you drift, come back and read this page out loud.";
+  else if(sc.pct>=70) ruling="Close. What's missing below is exactly the part that will make chapter twelve feel like it's wandering. Finish it before you draft.";
+  else if(sc.pct>=40) ruling="You have ideas and a character. You do not yet have a story. Keep going — the questions get easier once the transformation is nailed down.";
+  else ruling="Right now this is a premise and some scenes. That's a normal place to be. Work the stations in order.";
+
+  const flav=(d.g_flavors||"").split("|").filter(Boolean);
+  const gp=GENRES[d.g_primary];
+
+  function row(k,v,fb){return '<div class="kv"><div class="k">'+k+'</div><div class="v">'+(v&&v.trim()?esc(v).replace(/\n/g,"<br>"):'<span class="missing">'+(fb||"— not answered —")+'</span>')+'</div></div>';}
+
+  const sentence = (d.s_who||d.s_trying||d.s_pleasure)
+    ? "Readers will follow a character who <b>"+esc(d.s_who||"…")+"</b>, while trying to <b>"+esc(d.s_trying||"…")+"</b>, and the story's main pleasure comes from <b>"+esc(d.s_pleasure||"…")+"</b>."
+    : '<span class="missing">Spine sentence not written yet.</span>';
+
+  return '<div class="card">'+
+    '<h2>📜 The Verdict</h2>'+
+    '<div class="scorewrap"><div class="ring" style="--p:'+sc.pct+'"><span>'+sc.pct+'%</span></div>'+
+    '<div style="flex:1;min-width:240px"><div style="font-size:15px;line-height:1.6">'+ruling+'</div>'+
+    '<div style="font-size:12.5px;color:var(--ink-dim);margin-top:6px">'+sc.done+' of '+sc.total+' stations cleared.</div></div></div>'+
+    (gaps.length?'<h3>Still open</h3><ul style="font-size:13px;color:var(--ink-dim);margin:0;padding-left:18px">'+gaps.map(function(g){return "<li style=\"margin:4px 0\">"+esc(g)+"</li>";}).join("")+'</ul>':"")+
+    '<div class="stepnav no-print">'+
+      '<button class="btn primary" id="btnCopyCard">Copy the Story Spine Card</button>'+
+      '<button class="btn" id="btnDownMd">Download .md</button>'+
+      '<button class="btn" id="btnPrint">Print / PDF</button>'+
+      '<button class="btn" id="btnMaster">🎙️ Hand this to Claude</button>'+
+    '</div>'+
+    '<div class="sheet" id="sheet">'+
+      '<h2>'+esc(d.dump_title||"Untitled story")+'</h2>'+
+      '<div class="sub">Story Spine Card · Da Bot · '+new Date().toLocaleDateString()+'</div>'+
+      '<div class="big">'+sentence+'</div>'+
+      '<h3>The five-year-old pitch</h3><div>'+(d.l_pitch?esc(d.l_pitch):'<span class="missing">— not answered —</span>')+'</div>'+
+      '<h3>The person</h3>'+
+        row("Name",d.p_name)+row("Who they are",d.p_who)+row("The lie",d.p_lie)+row("Why we follow",d.p_follow)+
+      '<h3>The transformation</h3>'+
+        row("Page one",d.a_start)+row("Last page",d.a_end)+row("The cost",d.a_cost)+row("Irreversible at",d.a_moment,"— optional —")+
+      '<h3>The engine</h3>'+
+        row("Wants",d.w_want)+row("Needs",d.w_need)+row("In the way",d.w_block)+row("If they fail",d.w_stakes)+
+      '<h3>The shelf</h3>'+
+        row("Primary genre",d.g_primary)+row("Flavour layers",flav.join(" · "))+row("Sits beside",d.g_shelf)+row("Different because",d.g_break,"— optional —")+
+        (gp?'<div class="kv"><div class="k">The contract</div><div class="v"><b>Promise:</b> '+gp.promise+'<br><b>Must deliver:</b> '+gp.must+'<br><b>Ending owed:</b> '+gp.ending+'</div></div>':"")+
+      '<h3>The reader</h3>'+
+        row("One reader",d.r_who)+row("Their question",d.r_question)+row("Your answer",d.r_answer)+row("The bait",d.r_bait)+row("The message",d.r_message)+
+      '<h3>The dilemma</h3>'+
+        row("Either / or",d.d_choice)+row("They choose",d.d_pick)+row("The cheat to avoid",d.d_dodge,"— optional —")+row("MacGuffin",d.d_object,"— optional —")+
+      '<h3>Drives</h3>'+
+        row("Driving at",d.c_drives)+row("Wins in act three",d.c_wins)+row("A / B / C plot",d.c_layers,"— optional —")+
+      '<h3>The landing</h3>'+
+        row("They close it feeling",d.l_feel)+row("First page pays off",d.l_promise)+
+    '</div></div>';
+}
+
+function cardMarkdown(){
+  const d=D(), flav=(d.g_flavors||"").split("|").filter(Boolean), gp=GENRES[d.g_primary];
+  function r(k,v){return "**"+k+":** "+((v||"").trim()||"_not answered_")+"\n\n";}
+  let m="# "+(d.dump_title||"Untitled story")+"\n\n_Story Spine Card · Da Bot · "+new Date().toLocaleDateString()+"_\n\n---\n\n";
+  m+="## The spine sentence\n\nReaders will follow a character who **"+(d.s_who||"…")+"**, while trying to **"+(d.s_trying||"…")+"**, and the story's main pleasure comes from **"+(d.s_pleasure||"…")+"**.\n\n";
+  m+="## The five-year-old pitch\n\n"+((d.l_pitch||"").trim()||"_not answered_")+"\n\n";
+  m+="## The person\n\n"+r("Name",d.p_name)+r("Who they are",d.p_who)+r("The lie",d.p_lie)+r("Why we follow",d.p_follow);
+  m+="## The transformation\n\n"+r("Page one",d.a_start)+r("Last page",d.a_end)+r("The cost",d.a_cost)+r("Irreversible at",d.a_moment);
+  m+="## The engine\n\n"+r("Wants",d.w_want)+r("Needs",d.w_need)+r("In the way",d.w_block)+r("If they fail",d.w_stakes);
+  m+="## The shelf\n\n"+r("Primary genre",d.g_primary)+r("Flavour layers",flav.join(" · "))+r("Sits beside",d.g_shelf)+r("Different because",d.g_break);
+  if(gp) m+="**The contract:** "+gp.promise+"  \nMust deliver: "+gp.must+"  \nEnding owed: "+gp.ending+"\n\n";
+  m+="## The reader\n\n"+r("One reader",d.r_who)+r("Their question",d.r_question)+r("Your answer",d.r_answer)+r("The bait",d.r_bait)+r("The message",d.r_message);
+  m+="## The dilemma\n\n"+r("Either / or",d.d_choice)+r("They choose",d.d_pick)+r("The cheat to avoid",d.d_dodge)+r("MacGuffin",d.d_object);
+  m+="## Drives\n\n"+r("Driving at",d.c_drives)+r("Wins in act three",d.c_wins)+r("A/B/C plot",d.c_layers);
+  m+="## The landing\n\n"+r("They close it feeling",d.l_feel)+r("First page pays off",d.l_promise);
+  return m;
+}
+
+/* ---------- grill prompts ---------- */
+const DEBI_VOICE = "You are Da Bot — a blunt, warm, relentless story coach in the tradition of a marketer who has read ten thousand blurbs. "+
+"Your one rule: an author describing EVENTS is not describing a STORY. When they hand you plot, you stop them and ask again. "+
+"You ask ONE question at a time. You do not accept the first answer if it's a mission statement, a genre label, an abstraction, or a list of things that happen. "+
+"You are never cruel and never precious. You use plain words. You may say things like \"that's a mission, not a person\" or \"you're never writing for everybody\" or \"tell it to me like I'm five.\" "+
+"When the author finally gets there, you say so plainly and move on.";
+
+function grillPrompt(s){
+  const d=D();
+  let body=DEBI_VOICE+"\n\nWe are working on this station:\n\n### "+s.title+"\n";
+  body+="Guiding question: \""+s.quote+"\"\n\n";
+  body+="Here is what the author has written so far for this station:\n\n";
+  s.fields.forEach(function(f){
+    body+="- **"+f.lab+"**: "+((d[f.id]||"").trim()||"(blank)")+"\n";
+  });
+  if(d.p_name||d.g_primary){
+    body+="\nContext from earlier stations:\n";
+    if(d.p_name) body+="- Protagonist: "+d.p_name+"\n";
+    if(d.g_primary) body+="- Genre they've locked: "+d.g_primary+"\n";
+    if(d.s_who) body+="- Spine so far: a character who "+d.s_who+", while trying to "+(d.s_trying||"…")+"\n";
+  }
+  body+="\nNow interrogate me on this station. Start by telling me in one line whether what I wrote is a STORY answer or an EVENTS answer. Then ask me your first question. One question. Wait for my reply before the next one. When I've genuinely answered the station, give me a tightened version of my own words that I can paste back into the tool.";
+  return body;
+}
+
+function masterPrompt(){
+  return DEBI_VOICE+"\n\nHere is my completed Story Spine Card. Do three things, in this order:\n\n"+
+  "1. **The gut check.** Tell me, in five sentences, whether this is a story or a premise with scenery. Be specific about which answer is doing the least work.\n"+
+  "2. **The three weakest links.** Name the three answers most likely to make the middle of this book wander, and ask me one hard question about each.\n"+
+  "3. **The one-paragraph blurb.** Write the back-cover paragraph this spine earns — using the bait, not the message.\n\n"+
+  "Do not rewrite my story. Do not add plot. Work only with what's here.\n\n---\n\n"+cardMarkdown();
+}
+
+/* ---------- page test module ---------- */
+const RUBRIC=[
+ ["Hook","Does the first paragraph create a question I need answered?"],
+ ["Orientation","Do I know who, where, and when within half a page?"],
+ ["POV discipline","One head, consistently, with a distinct filter on the world."],
+ ["Voice","Could I tell this writer from another writer in the same genre?"],
+ ["Character sympathy","Is there a reason to care about this person, this early?"],
+ ["Stakes on the page","Do I feel something can be lost?"],
+ ["Forward momentum","Does every paragraph move, or do some just explain?"],
+ ["Exposition control","Is backstory withheld until it's earned?"],
+ ["Concrete detail","Specific, sensory, non-generic — or wallpaper?"],
+ ["Dialogue","Does it do two jobs at once (information + character)?"],
+ ["Prose economy","Any sentence that could be cut without loss?"],
+ ["Genre signal","Would the target reader know their shelf by page two?"],
+ ["Page-turn pull","Does the last line make me continue?"]
+];
+const FILTERS=["felt","saw","heard","noticed","realized","seemed","watched","wondered","knew","thought","looked","began to","started to","could see","could hear"];
+
+function textMetrics(t){
+  const w=words(t);
+  const sents=(t.match(/[^.!?]+[.!?]+/g)||[t]).filter(function(s){return s.trim();});
+  const dq=(t.match(/["“][^"”]{2,}["”]/g)||[]);
+  const dialogueWords=dq.reduce(function(a,s){return a+wc(s);},0);
+  const adv=w.filter(function(x){return /ly[.,!?"']?$/.test(x.toLowerCase())&&x.length>5;}).length;
+  const filt=FILTERS.reduce(function(a,f){return a+(low(t).split(f).length-1);},0);
+  return {
+    words:w.length,
+    sentences:sents.length,
+    avgSent:sents.length?Math.round(w.length/sents.length*10)/10:0,
+    dialoguePct:w.length?Math.round(dialogueWords/w.length*100):0,
+    adverbs:adv,
+    filters:filt,
+    para:(t.split(/\n\s*\n/).filter(function(p){return p.trim();})).length
+  };
+}
+
+function pagetestHTML(){
+  const d=D();
+  return '<div class="card">'+
+   '<h2>🥊 Draft Duel — A/B against the 13-point page rubric</h2>'+
+   '<div class="quote">"Neither one of them independently is going to be the best final version. You take the best quality of each and put them together."<span class="by">the method</span></div>'+
+   '<div class="note">Two versions of the same opening — the one you wrote by hand and the one the AI helped with, or draft 3 vs draft 7. Score them side by side, then <b>merge the winners</b>. The offline stats below are facts; the rubric is judgement.</div>'+
+   '<div class="grid g2">'+
+     '<label class="f"><span class="lab">Version A</span><span class="hint">Paste the full opening pages.</span><textarea data-f="pt_a" class="big"></textarea><div class="count" data-mets="A"></div></label>'+
+     '<label class="f"><span class="lab">Version B</span><span class="hint">The other one.</span><textarea data-f="pt_b" class="big"></textarea><div class="count" data-mets="B"></div></label>'+
+   '</div>'+
+   '<div class="grid g2"><div id="metA"></div><div id="metB"></div></div>'+
+   '<h3>The rubric — score each 1 to 5</h3>'+
+   '<table class="rub"><thead><tr><th style="width:150px">Quality</th><th>What you\'re judging</th><th class="n">A</th><th class="n">B</th></tr></thead><tbody>'+
+    RUBRIC.map(function(r,i){
+      return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td>'+
+        '<td class="n"><input type="text" inputmode="numeric" data-f="rb_a'+i+'" data-rub="a"></td>'+
+        '<td class="n"><input type="text" inputmode="numeric" data-f="rb_b'+i+'" data-rub="b"></td></tr>';
+    }).join("")+
+    '<tr class="tot"><td colspan="2">Total (out of 65)</td><td class="n" id="totA">—</td><td class="n" id="totB">—</td></tr>'+
+   '</tbody></table>'+
+   '<div id="duelVerdict" style="margin-top:12px"></div>'+
+   '<div class="stepnav"><button class="btn primary" id="btnDuelPrompt">🎙️ Have Claude score both + write the merge plan</button></div>'+
+
+   '<h3 style="margin-top:34px">The prologue test</h3>'+
+   '<div class="quote">"You have a tendency of wanting to start the story in the prologue, and that\'s not the job the prologue\'s supposed to do."<span class="by">the method</span></div>'+
+   '<div class="note">The move: <b>write the whole thing long</b> — it might be a cracking standalone short or a lead magnet. Then ask what fraction of it the reader actually needs before chapter one, and only that goes in the prologue. A prologue should be <i>shorter</i> than your average chapter.</div>'+
+   '<div class="grid g2">'+
+     '<label class="f"><span class="lab">Prologue word count</span><input type="text" data-f="pl_words" inputmode="numeric"></label>'+
+     '<label class="f"><span class="lab">Your average chapter word count</span><input type="text" data-f="pl_chap" inputmode="numeric"></label>'+
+   '</div>'+
+   '<div id="plOut"></div>'+
+   ['pl_q1|Could chapter one work if I deleted the prologue entirely?',
+    'pl_q2|Does the prologue introduce a character the reader will not see again for 100 pages?',
+    'pl_q3|Does it end on an unanswered question rather than a resolution?',
+    'pl_q4|Is there anything in it the reader MUST know before chapter one — and what, exactly?',
+    'pl_q5|Would this work better as a free standalone short / lead magnet, with only a page of it kept?'
+   ].map(function(q){const p=q.split("|");return '<label class="f"><span class="lab">'+p[1]+'</span><textarea data-f="'+p[0]+'" rows="2"></textarea></label>';}).join("")+
+   '</div>';
+}
+
+function duelPrompt(){
+  const d=D();
+  return "You are a first-pages editor. I have two versions of the same opening. Score BOTH, honestly and separately, against this 13-point rubric (1–5 each, 65 max):\n\n"+
+   RUBRIC.map(function(r,i){return (i+1)+". "+r[0]+" — "+r[1];}).join("\n")+
+   "\n\nThen do three things:\n"+
+   "1. A scoring table: rubric item, A score, B score, one-line reason for any gap of 2 or more.\n"+
+   "2. A MERGE PLAN: for each rubric item, say which version wins and exactly what to lift from it. I want to build a third version out of the best of both, not pick a winner.\n"+
+   "3. Flag anything in either version that flattens my voice — sentences that sound like a competent stranger rather than like me.\n\n"+
+   "Do not rewrite either version yet. Judge and plan.\n\n===== VERSION A =====\n"+(d.pt_a||"(empty)")+"\n\n===== VERSION B =====\n"+(d.pt_b||"(empty)");
+}
+
+/* ---------- master render ---------- */
+function render(){
+  renderTabs(); renderSpine();
+  const views=document.getElementById("views");
+  let html="";
+  STATIONS.forEach(function(s,i){
+    html+='<div class="view'+(activeTab===s.id?" active":"")+'" data-view="'+s.id+'">'+stationHTML(s,i)+'</div>';
+  });
+  html+='<div class="view'+(activeTab==="verdict"?" active":"")+'" data-view="verdict">'+verdictHTML()+'</div>';
+  html+='<div class="view'+(activeTab==="pagetest"?" active":"")+'" data-view="pagetest">'+pagetestHTML()+'</div>';
+  views.innerHTML=html;
+  wire();
+  runChecks();
+  updateSpineSentence();
+  updateGenre();
+  updateDuel();
+  updatePrologue();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+function go(tab){activeTab=tab;render();}
+
+function wire(){
+  const views=document.getElementById("views");
+
+  // text inputs
+  Array.prototype.forEach.call(views.querySelectorAll("[data-f]"),function(el){
+    el.addEventListener("input",function(){
+      D()[el.dataset.f]=el.value;
+      save();
+      runChecks();
+      updateSpineSentence();
+      updateGenre();
+      updateDuel();
+      updatePrologue();
+      renderSpine();
+      renderTabs();
+      updateVerdictLine();
+    });
+    if(el.tagName==="SELECT") el.addEventListener("change",function(){updateGenre();});
+  });
+
+  // chips (multi)
+  Array.prototype.forEach.call(views.querySelectorAll("[data-chips]"),function(box){
+    const id=box.dataset.chips, max=parseInt(box.dataset.max,10)||99;
+    Array.prototype.forEach.call(box.querySelectorAll(".chip"),function(c){
+      c.onclick=function(){
+        let sel=(D()[id]||"").split("|").filter(Boolean);
+        const v=c.dataset.v;
+        if(sel.indexOf(v)>-1) sel=sel.filter(function(x){return x!==v;});
+        else{ if(sel.length>=max){toast("Max "+max+". Take one off first."); return;} sel.push(v); }
+        D()[id]=sel.join("|"); save();
+        c.classList.toggle("on");
+        renderSpine();renderTabs();runChecks();updateGenre();updateVerdictLine();
+      };
+    });
+  });
+  // chips (fill a text field)
+  Array.prototype.forEach.call(views.querySelectorAll("[data-fill]"),function(box){
+    const id=box.dataset.fill;
+    Array.prototype.forEach.call(box.querySelectorAll(".chip"),function(c){
+      c.onclick=function(){
+        const inp=views.querySelector('[data-f="'+id+'"]');
+        inp.value=c.dataset.v; D()[id]=c.dataset.v; save();
+        runChecks();renderSpine();renderTabs();updateVerdictLine();
+      };
+    });
+  });
+
+  // navigation buttons
+  Array.prototype.forEach.call(views.querySelectorAll("[data-goto]"),function(b){b.onclick=function(){go(b.dataset.goto);};});
+  Array.prototype.forEach.call(views.querySelectorAll("[data-unlock]"),function(b){
+    b.onclick=function(){ P().unlocked=P().unlocked||{}; P().unlocked[b.dataset.unlock]=true; save(); render(); };
+  });
+
+  // probes
+  Array.prototype.forEach.call(views.querySelectorAll("[data-probe]"),function(box){
+    const s=STATIONS.filter(function(x){return x.id===box.dataset.probe;})[0];
+    let i=0;
+    function show(){
+      box.querySelector("[data-pqtext]").textContent=s.probes[i];
+      box.querySelector("[data-pnum]").textContent=(i+1)+" / "+s.probes.length;
+    }
+    box.querySelector("[data-pnext]").onclick=function(){i=(i+1)%s.probes.length;show();};
+    box.querySelector("[data-pprev]").onclick=function(){i=(i-1+s.probes.length)%s.probes.length;show();};
+    show();
+  });
+
+  // grill
+  Array.prototype.forEach.call(views.querySelectorAll("[data-grill]"),function(b){
+    b.onclick=function(){
+      const s=STATIONS.filter(function(x){return x.id===b.dataset.grill;})[0];
+      copy(grillPrompt(s),"Interrogation prompt copied — paste it into Claude");
+    };
+  });
+
+  // verdict buttons
+  const cc=document.getElementById("btnCopyCard");
+  if(cc) cc.onclick=function(){copy(cardMarkdown(),"Story Spine Card copied");};
+  const dm=document.getElementById("btnDownMd");
+  if(dm) dm.onclick=function(){
+    const blob=new Blob([cardMarkdown()],{type:"text/markdown;charset=utf-8"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=(D().dump_title||"story").replace(/[^\w\- ]/g,"").trim().replace(/\s+/g,"-").toLowerCase()+"-spine-card.md";
+    a.click();
+  };
+  const pr=document.getElementById("btnPrint"); if(pr) pr.onclick=function(){window.print();};
+  const mp=document.getElementById("btnMaster"); if(mp) mp.onclick=function(){copy(masterPrompt(),"Master prompt copied — paste into Claude");};
+  const dp=document.getElementById("btnDuelPrompt"); if(dp) dp.onclick=function(){copy(duelPrompt(),"Duel prompt copied");};
+
+  // restore page-test values
+  ["pt_a","pt_b","pl_words","pl_chap","pl_q1","pl_q2","pl_q3","pl_q4","pl_q5"].forEach(function(id){
+    const el=views.querySelector('[data-f="'+id+'"]'); if(el) el.value=D()[id]||"";
+  });
+  RUBRIC.forEach(function(r,i){
+    ["a","b"].forEach(function(s){
+      const el=views.querySelector('[data-f="rb_'+s+i+'"]'); if(el) el.value=D()["rb_"+s+i]||"";
+    });
+  });
+}
+
+function updateVerdictLine(){
+  const s=STATIONS.filter(function(x){return x.id===activeTab;})[0];
+  if(!s) return;
+  const el=document.querySelector('[data-view="'+activeTab+'"] .verdictline');
+  if(!el) return;
+  const g=s.gate(D());
+  el.innerHTML=g.pass?'<span style="color:var(--good)">✓ station clear</span>':esc(g.missing[0]||"unfinished");
+}
+
+function runChecks(){
+  const d=D();
+  STATIONS.forEach(function(s){
+    s.fields.forEach(function(f){
+      const box=document.querySelector('[data-push="'+f.id+'"]');
+      if(!box) return;
+      const v=d[f.id]||"";
+      let res=f.check?f.check(v,d):null;
+      if(!res||!res.msg){ box.className="push"; box.innerHTML=""; }
+      else { box.className="push show "+res.level; box.innerHTML=(res.level==="bad"?"🛑 ":res.level==="warn"?"⚠️ ":"✓ ")+res.msg; }
+      const c=document.querySelector('[data-count="'+f.id+'"]');
+      if(c&&f.counter){ const n=wc(v); c.textContent=n+" / "+f.counter+" words"; c.style.color=n>f.counter?"var(--bad)":"var(--ink-dim)"; }
+    });
+  });
+}
+
+function updateSpineSentence(){
+  const box=document.getElementById("spineSentence");
+  if(!box) return;
+  const d=D();
+  function part(v,ph){return v&&v.trim()?'<span class="fillin">'+esc(v.trim())+'</span>':'<span class="blank">'+ph+'</span>';}
+  box.innerHTML='<div class="sentence">Readers will primarily follow a character who '+part(d.s_who,"________")+
+    ', while trying to '+part(d.s_trying,"________")+
+    ', and the story’s main pleasure comes from '+part(d.s_pleasure,"________")+'.</div>'+
+    '<div class="stepnav no-print" style="border:none;padding-top:10px;margin-top:6px"><button class="btn sm" id="btnCopySpine">Copy the sentence</button></div>';
+  const b=document.getElementById("btnCopySpine");
+  if(b) b.onclick=function(){
+    copy("Readers will primarily follow a character who "+(d.s_who||"…")+", while trying to "+(d.s_trying||"…")+", and the story's main pleasure comes from "+(d.s_pleasure||"…")+".","Spine sentence copied");
+  };
+}
+
+function updateGenre(){
+  const box=document.getElementById("genreOut");
+  if(!box) return;
+  const d=D();
+  const g=GENRES[d.g_primary];
+  const flav=(d.g_flavors||"").split("|").filter(Boolean);
+  const soup=(d.g_primary?1:0)+flav.length;
+  let tag="good",note="Clean. A reader knows exactly what they're buying.";
+  if(soup>=4){tag="bad";note="Genre soup. This is the thing that makes a book unmarketable — not because it's bad, because nobody knows which reader it's for.";}
+  else if(soup===3){tag="warn";note="Getting busy. Two layers is the ceiling before the blurb starts hedging.";}
+  let html='<div class="gauge"><span class="gtag '+tag+'">'+soup+' label'+(soup===1?"":"s")+'</span><div class="bar"><i style="width:'+Math.min(100,soup*25)+'%"></i></div></div>'+
+    '<div class="note" style="margin-top:8px">'+note+'</div>';
+  if(g){
+    html+='<div class="promise"><h4>'+esc(d.g_primary)+' — the contract you just signed</h4>'+
+      '<div class="prow"><div class="pk">Reader promise</div><div class="pv">'+g.promise+'</div></div>'+
+      '<div class="prow"><div class="pk">Must deliver</div><div class="pv">'+g.must+'</div></div>'+
+      '<div class="prow"><div class="pk">Ending owed</div><div class="pv">'+g.ending+'</div></div>'+
+      '<div class="prow"><div class="pk">Watch out</div><div class="pv" style="color:var(--warn)">'+g.warn+'</div></div></div>';
+  }
+  box.innerHTML=html;
+}
+
+function updateDuel(){
+  const mA=document.getElementById("metA");
+  if(!mA) return;
+  const d=D();
+  function metBox(t,label){
+    if(!(t||"").trim()) return '<div class="met" style="grid-column:1/-1;color:var(--ink-dim)">Paste version '+label+' to see stats.</div>';
+    const m=textMetrics(t);
+    return '<div class="met"><div class="mk">Words</div><div class="mv">'+m.words+'</div></div>'+
+      '<div class="met"><div class="mk">Avg sentence</div><div class="mv">'+m.avgSent+'</div></div>'+
+      '<div class="met"><div class="mk">Dialogue</div><div class="mv">'+m.dialoguePct+'%</div></div>'+
+      '<div class="met"><div class="mk">Paragraphs</div><div class="mv">'+m.para+'</div></div>'+
+      '<div class="met"><div class="mk">-ly adverbs</div><div class="mv" style="color:'+(m.adverbs>m.words/100?"var(--warn)":"var(--ink)")+'">'+m.adverbs+'</div></div>'+
+      '<div class="met"><div class="mk">Filter words</div><div class="mv" style="color:'+(m.filters>m.words/120?"var(--warn)":"var(--ink)")+'">'+m.filters+'</div></div>';
+  }
+  mA.innerHTML='<div style="font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:5px">Version A</div><div class="metrics">'+metBox(d.pt_a,"A")+'</div>';
+  document.getElementById("metB").innerHTML='<div style="font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:5px">Version B</div><div class="metrics">'+metBox(d.pt_b,"B")+'</div>';
+
+  let ta=0,tb=0,na=0,nb=0;
+  RUBRIC.forEach(function(r,i){
+    const a=parseFloat(d["rb_a"+i]),b=parseFloat(d["rb_b"+i]);
+    if(!isNaN(a)){ta+=a;na++;} if(!isNaN(b)){tb+=b;nb++;}
+  });
+  const eA=document.getElementById("totA"),eB=document.getElementById("totB");
+  if(eA) eA.textContent=na?ta:"—";
+  if(eB) eB.textContent=nb?tb:"—";
+  const dv=document.getElementById("duelVerdict");
+  if(dv){
+    if(na<RUBRIC.length||nb<RUBRIC.length){ dv.innerHTML='<div class="note">Score all 13 on both to get the merge verdict. ('+na+'/13 and '+nb+'/13 done.)</div>'; }
+    else{
+      const wins=[];
+      RUBRIC.forEach(function(r,i){
+        const a=parseFloat(d["rb_a"+i]),b=parseFloat(d["rb_b"+i]);
+        if(a>b) wins.push(r[0]+" → take from <b>A</b>"); else if(b>a) wins.push(r[0]+" → take from <b>B</b>");
+      });
+      dv.innerHTML='<div class="note"><b>A '+ta+' · B '+tb+'</b> — but the total is not the point. Build version C:<br>'+
+        (wins.length?wins.join("<br>"):"Dead even on every line. Then pick the one that sounds more like you and cut 15%.")+'</div>';
+    }
+  }
+}
+
+function updatePrologue(){
+  const box=document.getElementById("plOut");
+  if(!box) return;
+  const d=D();
+  const p=parseInt(d.pl_words,10), c=parseInt(d.pl_chap,10);
+  if(isNaN(p)||isNaN(c)||!p||!c){ box.innerHTML=""; return; }
+  const ratio=p/c;
+  let tag="good",msg="Good length — the prologue is doing a prologue's job.";
+  if(ratio>1.3){tag="bad";msg="Your prologue is "+Math.round(ratio*100)+"% of a chapter. That's not a prologue, that's chapter one wearing a costume — or a standalone short story you should be giving away as a lead magnet. Write it long, then keep only what the reader must know.";}
+  else if(ratio>0.9){tag="warn";msg="Same size as a chapter. Ask yourself what a reader genuinely can't start chapter one without, and cut to that.";}
+  box.innerHTML='<div class="gauge"><span class="gtag '+tag+'">'+p+' vs '+c+' words</span><div class="bar"><i style="width:'+Math.min(100,ratio*70)+'%"></i></div></div><div class="note" style="margin-top:8px">'+msg+'</div>';
+}
+
+/* ============================================================
+   4. PROJECTS
+   ============================================================ */
+function renderProjects(){
+  const sel=document.getElementById("projSel");
+  sel.innerHTML=Object.keys(DB.projects).map(function(id){
+    return '<option value="'+id+'"'+(id===DB.current?" selected":"")+'>'+esc(DB.projects[id].name)+'</option>';
+  }).join("");
+}
+document.getElementById("projSel").onchange=function(e){DB.current=e.target.value;save();activeTab=STATIONS[0].id;render();};
+document.getElementById("btnNew").onclick=function(){
+  const n=prompt("Name this story:","New story");
+  if(n===null) return;
+  const id=uid();
+  DB.projects[id]={name:n||"Untitled story",created:new Date().toISOString(),data:{dump_title:n||""},unlocked:{}};
+  DB.current=id;save();renderProjects();activeTab=STATIONS[0].id;render();toast("Story created");
+};
+document.getElementById("btnRename").onclick=function(){
+  const n=prompt("Rename:",P().name);
+  if(n===null||!n.trim())return;
+  P().name=n.trim();save();renderProjects();toast("Renamed");
+};
+document.getElementById("btnDelete").onclick=function(){
+  if(Object.keys(DB.projects).length===1){toast("That's your only story.");return;}
+  if(!confirm("Delete “"+P().name+"”? This cannot be undone."))return;
+  delete DB.projects[DB.current];
+  DB.current=Object.keys(DB.projects)[0];
+  save();renderProjects();render();toast("Deleted");
+};
+document.getElementById("btnExport").onclick=function(){
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="da-bot-backup-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();toast("Backup downloaded");
+};
+document.getElementById("btnImport").onclick=function(){document.getElementById("fileIn").click();};
+document.getElementById("fileIn").onchange=function(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=function(){
+    try{
+      const j=JSON.parse(r.result);
+      if(!j.projects) throw 0;
+      Object.keys(j.projects).forEach(function(id){DB.projects[id]=j.projects[id];});
+      DB.current=j.current&&DB.projects[j.current]?j.current:Object.keys(DB.projects)[0];
+      save();renderProjects();render();toast("Restored");
+    }catch(err){toast("That file didn't look like a Da Bot backup.");}
+  };
+  r.readAsText(f);
+  e.target.value="";
+};
+
+/* ============================================================
+   5. GO
+   ============================================================ */
+load();
+renderProjects();
+render();
+</script>
+</body>
+</html>
