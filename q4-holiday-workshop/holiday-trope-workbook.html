@@ -22,6 +22,7 @@
     --spooky: #6b3fa0;
     --pumpkin: #C46A2B;
     --pine: #2F5D3A;
+    --alarm: #B23A3A;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); line-height: 1.6; }
@@ -42,8 +43,10 @@
   .helptext { color: var(--gray); font-size: 0.94em; margin: 8px 0 14px; }
 
   label { display: block; font-weight: bold; margin: 14px 0 5px; font-size: 0.95em; }
-  input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
-  input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(201,151,59,0.25); }
+  label .opt { font-weight: normal; color: var(--gray); font-size: 0.88em; }
+  input[type="text"], select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 1em; font-family: inherit; background: var(--cream); color: var(--text); }
+  textarea { resize: vertical; min-height: 62px; line-height: 1.5; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 2px rgba(201,151,59,0.25); }
   .form-row { display: flex; gap: 20px; flex-wrap: wrap; }
   .form-row > div { flex: 1; min-width: 220px; }
 
@@ -59,6 +62,7 @@
   .theme-tab .emoji { font-size:1.5em; }
   .theme-tab h3 { font-size:1.05em; margin-top:4px; }
   .theme-tab .win { font-size:0.76em; opacity:0.9; margin-top:3px; }
+  .theme-tab .booktitle { font-size:0.8em; font-style:italic; opacity:0.95; margin-top:4px; min-height:1.2em; }
   .theme-tab.spooky { background: linear-gradient(160deg, #3d2a4a, var(--spooky) 130%); }
   .theme-tab.autumn { background: linear-gradient(160deg, #7a4a1f, var(--pumpkin)); }
   .theme-tab.christmas { background: linear-gradient(160deg, #1f3d2a, var(--pine)); }
@@ -70,6 +74,8 @@
   .timing-strip .t { flex:1; min-width:160px; background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:11px 14px; }
   .timing-strip .t .k { font-size:0.7em; text-transform:uppercase; letter-spacing:1.5px; color:var(--sage); font-weight:bold; }
   .timing-strip .t .v { color:var(--navy); font-weight:bold; font-size:0.98em; }
+  .timing-strip .t.urgent { border-color: var(--alarm); background:#fce9e4; }
+  .timing-strip .t.urgent .v { color: var(--alarm); }
 
   /* Chip pickers */
   .cat-label { color: var(--sage); font-size: 0.78em; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 8px; padding-bottom:4px; border-bottom:1px dashed var(--border); }
@@ -77,17 +83,28 @@
   .trope { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 2px solid var(--light-gray); border-radius: 7px; cursor: pointer; transition: all 0.15s; background:white; }
   .trope:hover { border-color: var(--coral-light); background: var(--cream); }
   .trope.selected { border-color: var(--coral); background: rgba(201,151,59,0.12); }
+  .trope.dimmed { opacity:0.45; }
   .trope .tname { flex:1; font-size:0.92em; }
+  .trope .tnote { font-size:0.72em; color:var(--sage); font-weight:bold; letter-spacing:0.5px; }
   .selcount { color:var(--coral); font-weight:bold; font-size:0.92em; margin:14px 0 2px; }
 
-  .result-card { background: var(--cream); border:1px solid var(--gold-light); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:16px 18px; margin:14px 0; }
-  .result-card h3 { color:var(--navy); font-size:1.05em; margin-bottom:8px; }
+  .result-card { background: var(--cream); border:1px solid var(--gold-light); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:16px 18px; margin:14px 0; position:relative; }
+  .result-card h3 { color:var(--navy); font-size:1.05em; margin-bottom:8px; padding-right:96px; }
   .searchline { background:white; border:1px solid var(--light-gray); border-radius:6px; padding:9px 12px; margin:6px 0; font-family: 'Courier New', monospace; font-size:0.92em; color:var(--navy); display:flex; align-items:center; gap:8px; }
   .searchline::before { content:"\1F50D"; font-size:0.95em; }
+  .kwline { background:white; border:1px solid var(--light-gray); border-radius:6px; padding:8px 12px; margin:6px 0; font-family:'Courier New', monospace; font-size:0.9em; color:var(--navy); display:flex; gap:10px; align-items:baseline; }
+  .kwline .slot { color:var(--sage); font-weight:bold; font-size:0.8em; min-width:52px; }
+  .kwline .over { color:var(--alarm); font-size:0.78em; margin-left:auto; font-family:Georgia,serif; }
   .taghash { color:var(--coral-dark); font-weight:bold; }
   .hashwrap { line-height:2; }
   .positioning { font-size:1.12em; line-height:1.7; color:var(--navy); background:white; border:1px dashed var(--coral); border-radius:8px; padding:16px 18px; }
   .positioning b { color:var(--coral-dark); }
+  .skeleton { background:white; border:1px solid var(--light-gray); border-radius:6px; padding:12px 14px; font-size:0.98em; line-height:1.75; }
+  .skeleton .fill { color:var(--coral-dark); font-weight:bold; background:rgba(201,151,59,0.13); padding:0 5px; border-radius:3px; }
+
+  .copybtn { position:absolute; top:14px; right:16px; background:white; border:1px solid var(--border); color:var(--navy); border-radius:5px; padding:5px 12px; font-size:0.78em; font-family:inherit; cursor:pointer; letter-spacing:0.5px; }
+  .copybtn:hover { background:var(--navy); color:white; border-color:var(--navy); }
+  .copybtn.copied { background:var(--sage); color:white; border-color:var(--sage); }
 
   .callout { border-radius:8px; padding:14px 18px; margin:14px 0; font-size:0.94em; }
   .callout.beginner { background:#eef4ef; border-left:4px solid var(--sage); }
@@ -96,27 +113,59 @@
   .callout.beginner .tag { color:#4a7a52; }
   .callout.pro .tag { color:#6b5b8a; }
 
-  /* Lineup table */
+  /* Costume test */
+  .ctest { display:flex; align-items:flex-start; gap:10px; padding:11px 13px; border:2px solid var(--light-gray); border-radius:8px; background:white; cursor:pointer; margin:8px 0; transition:all 0.15s; }
+  .ctest:hover { border-color: var(--coral-light); }
+  .ctest.on { border-color: var(--sage); background:#eef4ef; }
+  .ctest .box { font-size:1.15em; line-height:1.2; color:var(--sage); }
+  .ctest .ctext { flex:1; font-size:0.95em; }
+  .ctest .ctext .sub { display:block; color:var(--gray); font-size:0.86em; margin-top:2px; }
+  .verdict { border-radius:8px; padding:14px 18px; margin:14px 0; font-size:0.97em; }
+  .verdict .vhead { display:block; font-weight:bold; font-size:1.05em; margin-bottom:4px; }
+  .verdict.fail { background:#fce3dc; border-left:4px solid var(--alarm); color:#8a3524; }
+  .verdict.fail .vhead { color:#8a3524; }
+  .verdict.half { background:#f4ecd6; border-left:4px solid var(--gold); color:#6b5420; }
+  .verdict.half .vhead { color:#6b5420; }
+  .verdict.pass { background:#eef4ef; border-left:4px solid var(--sage); color:#3d6244; }
+  .verdict.pass .vhead { color:#3d6244; }
+
+  /* Lineup + dossier */
   table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.93em; }
   th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--light-gray); vertical-align:top; }
   th { background:var(--navy); color:white; font-size:0.85em; letter-spacing:0.5px; }
   tr:nth-child(even) td { background:var(--cream); }
   .empty-lineup { color:var(--gray); font-style:italic; }
 
-  .savebar { text-align:center; font-size:0.8em; color:var(--gray); margin-top:6px; }
+  .dossier { border:1px solid var(--border); border-radius:10px; margin:18px 0; overflow:hidden; page-break-inside:avoid; }
+  .dossier .dhead { color:white; padding:12px 18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; }
+  .dossier .dhead .dwave { font-size:0.8em; opacity:0.92; font-weight:normal; }
+  .dossier.spooky .dhead { background: linear-gradient(160deg, #3d2a4a, var(--spooky) 160%); }
+  .dossier.autumn .dhead { background: linear-gradient(160deg, #7a4a1f, var(--pumpkin)); }
+  .dossier.christmas .dhead { background: linear-gradient(160deg, #1f3d2a, var(--pine)); }
+  .dossier .dbody { padding:14px 18px; font-size:0.94em; }
+  .dossier .drow { display:flex; gap:12px; padding:5px 0; border-bottom:1px dotted var(--light-gray); flex-wrap:wrap; }
+  .dossier .drow:last-child { border-bottom:none; }
+  .dossier .dk { min-width:130px; color:var(--sage); font-size:0.8em; font-weight:bold; letter-spacing:1px; text-transform:uppercase; padding-top:3px; }
+  .dossier .dv { flex:1; min-width:200px; }
+
+  .nextsteps { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+  .savebar { text-align:center; font-size:0.8em; color:var(--gray); margin-top:12px; }
   .savebar a { color:var(--coral); cursor:pointer; }
 
   footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
   footer a { color: var(--coral); }
   .print-wrap { text-align:center; margin: 26px 0; }
+  .toast { position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:var(--navy); color:white; padding:11px 22px; border-radius:24px; font-size:0.9em; box-shadow:0 4px 16px rgba(0,0,0,0.25); opacity:0; pointer-events:none; transition:opacity 0.25s; z-index:50; }
+  .toast.show { opacity:1; }
 
   @media print {
     body { background:white; font-size:10.5pt; }
-    .btn, .print-wrap, .no-print, .savebar, .trope:not(.selected) { display:none !important; }
+    .btn, .print-wrap, .no-print, .savebar, .copybtn, .toast, .trope:not(.selected) { display:none !important; }
     .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
     header { background:white; color:var(--navy); border-bottom:3px solid var(--coral); }
     header .brand, header .subtitle, header .weektag { color:var(--navy); background:none; }
     .theme-tabs { display:none; }
+    .dossier .dhead { background:white !important; color:var(--navy); border-bottom:2px solid var(--border); }
   }
 </style>
 </head>
@@ -132,7 +181,7 @@
 
   <div class="intro-box">
     <p><strong>Holiday readers search in season-speak.</strong> They don't look for "a romance in October" &mdash; they type <em>snowed in grumpy sunshine Christmas romance</em>. A holiday book is a normal trope stack wearing a seasonal costume: one <strong>seasonal wrapper</strong> (the holiday hook) plus two or three <strong>core tropes</strong> (the relationship engine).</p>
-    <p>Work one wave at a time below. Your picks save automatically in this browser, and every completed wave lands in <strong>Your Q4 Lineup</strong> at the bottom &mdash; print it when you're done.</p>
+    <p>Work one wave at a time below. Your picks save automatically in this browser, and every completed wave lands in <strong>Your Q4 Lineup</strong> at the bottom &mdash; print it, or send it straight into the Q4 Marketing Planner when you're done.</p>
   </div>
 
   <!-- STEP 1 -->
@@ -142,23 +191,12 @@
     <p class="helptext">Set once &mdash; applies to every wave you build.</p>
     <div class="form-row">
       <div>
-        <label for="penName">Pen name (optional)</label>
+        <label for="penName">Pen name <span class="opt">(optional)</span></label>
         <input type="text" id="penName" placeholder="Your author name" onchange="saveAll()">
       </div>
       <div>
         <label for="genre">Your genre / subgenre</label>
-        <select id="genre" onchange="refreshTheme(); saveAll()">
-          <option value="Contemporary Romance">Contemporary Romance</option>
-          <option value="Small Town Romance">Small Town Romance</option>
-          <option value="Romantic Comedy">Romantic Comedy</option>
-          <option value="Clean &amp; Wholesome Romance">Clean &amp; Wholesome Romance</option>
-          <option value="Paranormal Romance">Paranormal Romance</option>
-          <option value="Romantasy / Fantasy Romance">Romantasy / Fantasy Romance</option>
-          <option value="Romantic Suspense">Romantic Suspense</option>
-          <option value="Historical / Regency Romance">Historical / Regency Romance</option>
-          <option value="Cozy Mystery">Cozy Mystery</option>
-          <option value="Women's Fiction">Women's Fiction</option>
-        </select>
+        <select id="genre" onchange="refreshTheme(); saveAll()"></select>
       </div>
       <div>
         <label for="heat">Heat level</label>
@@ -166,6 +204,7 @@
           <option value="clean">Clean / closed door (1&ndash;2)</option>
           <option value="warm">Warm / on-page but soft (3)</option>
           <option value="spicy">Spicy / open door (4&ndash;5)</option>
+          <option value="none">No romance thread</option>
         </select>
       </div>
     </div>
@@ -175,9 +214,11 @@
   <div class="section">
     <div class="step">Step 2</div>
     <h2>Pick a Wave to Build</h2>
-    <p class="helptext">Click a wave to work on it. Build one, two, or all three &mdash; each keeps its own stack.</p>
+    <p class="helptext">Click a wave to work on it. Build one, two, or all three &mdash; each keeps its own book, wrapper and stack.</p>
     <div class="theme-tabs" id="themeTabs"></div>
     <div class="timing-strip" id="timingStrip"></div>
+    <label for="bookTitle">Working title for this book <span class="opt">(a placeholder is fine &mdash; it carries into the planner)</span></label>
+    <input type="text" id="bookTitle" placeholder="e.g. Snowed In at Maple Hollow" oninput="onTitleInput()">
   </div>
 
   <!-- STEP 3 -->
@@ -186,41 +227,54 @@
     <h2 id="wrapperHead">Choose Your Seasonal Wrapper</h2>
     <p class="helptext">The wrapper is the holiday hook &mdash; the setting or premise that puts your book on the seasonal shelf. <strong>Pick exactly one.</strong></p>
     <div class="trope-grid" id="wrapperGrid"></div>
+    <div id="wrapperFit"></div>
   </div>
 
   <!-- STEP 4 -->
   <div class="section">
     <div class="step">Step 4</div>
     <h2>Stack Your Core Tropes</h2>
-    <p class="helptext">The relationship engine underneath the costume. <strong>Pick up to three.</strong> These carry the emotional promise; the wrapper just sets the stage.</p>
+    <p class="helptext">The engine underneath the costume. <strong>Pick up to three.</strong> These carry the emotional promise; the wrapper just sets the stage.</p>
     <div class="trope-grid" id="coreGrid"></div>
     <div class="selcount" id="coreCount">0 of 3 selected</div>
     <div class="callout beginner">
       <span class="tag">If you're new to this</span>
       One proven pairing beats three clever ones. <em>Grumpy/sunshine + forced proximity</em> under almost any wrapper is a Q4 bestseller pattern for a reason.
     </div>
-    <div class="callout pro">
-      <span class="tag">Leveling up</span>
-      Make the wrapper do plot work, not just decoration. "Snowed in" should be the <em>reason</em> the forced proximity happens &mdash; if you could delete the holiday and the story survives, the seasonal readers will feel it.
-    </div>
   </div>
 
-  <!-- STEP 5 -->
+  <!-- STEP 5 — COSTUME TEST -->
   <div class="section">
     <div class="step">Step 5</div>
+    <h2>The Costume Test</h2>
+    <p class="helptext">The single biggest reason holiday books flop: the season is <em>decoration</em>, not <em>plot</em>. Readers can smell a wreath glued onto a regular book. Answer honestly &mdash; this is the part that makes the book actually seasonal.</p>
+    <div id="costumeTest"></div>
+    <label for="seasonDoes">In one line: what does the season <em>make happen</em> that couldn't happen in June?</label>
+    <textarea id="seasonDoes" placeholder="e.g. The blizzard strands them at the inn — she can't leave, and the thing she's been avoiding saying for six years has nowhere to go but out." oninput="onSeasonDoesInput()"></textarea>
+    <div id="costumeVerdict"></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="section">
+    <div class="step">Step 6</div>
     <h2>Your Seasonal Stack, Translated</h2>
-    <p class="helptext">Everything below regenerates as you click &mdash; these are the words to use in your subtitle, keywords, hashtags, and ad copy.</p>
+    <p class="helptext">Everything below regenerates as you click &mdash; these are the exact words to paste into your subtitle, KDP keyword slots, hashtags, and ad copy. Hit <strong>Copy</strong> on any block.</p>
     <div id="genOut"><p class="empty-lineup">Pick a wrapper and at least one core trope above to generate your stack.</p></div>
   </div>
 
   <!-- LINEUP -->
   <div class="section">
     <h2>Your Q4 Lineup</h2>
-    <p class="helptext">Every wave with a completed stack shows up here. This is page one of your marketing plan.</p>
+    <p class="helptext">Every wave with a completed stack shows up here &mdash; full detail, all waves, ready to print. This is page one of your marketing plan.</p>
     <div id="lineupOut"></div>
+    <div id="dossierOut"></div>
     <div class="callout beginner">
       <span class="tag">Next step</span>
-      Take this lineup into the <a href="q4-marketing-planner.html">Q4 Marketing Planner</a> and turn each release into a dated, week-by-week timeline.
+      Send this lineup into the <a href="q4-marketing-planner.html">Q4 Marketing Planner</a> and turn each release into a dated, week-by-week timeline. The planner will pick up your titles and waves automatically.
+    </div>
+    <div class="nextsteps no-print">
+      <a class="btn btn-gold" href="q4-marketing-planner.html">Open the Q4 Marketing Planner &rarr;</a>
+      <button class="btn" onclick="copyLineup()">Copy my lineup as text</button>
     </div>
   </div>
 
@@ -235,14 +289,43 @@
   The Invisible Pen &middot; Q4 Holiday Release Workshop &middot; <a href="https://cph-jessica.github.io/tip-marketing-worksheets/">Worksheet Library</a>
 </footer>
 
+<div class="toast" id="toast"></div>
+
 <script>
+/* ---------------------------------------------------------------
+   GENRES — each carries its own shelf language so the generated
+   copy never calls a cozy mystery a "romance".
+   --------------------------------------------------------------- */
+var GENRES = [
+  { v:"Contemporary Romance",        shelf:"contemporary romance", short:"romance",           romance:true  },
+  { v:"Small Town Romance",          shelf:"small town romance",   short:"romance",           romance:true  },
+  { v:"Romantic Comedy",             shelf:"romantic comedy",      short:"romcom",            romance:true  },
+  { v:"Clean & Wholesome Romance",   shelf:"clean romance",        short:"clean romance",     romance:true  },
+  { v:"Paranormal Romance",          shelf:"paranormal romance",   short:"paranormal romance",romance:true  },
+  { v:"Romantasy / Fantasy Romance", shelf:"romantasy",            short:"romantasy",         romance:true  },
+  { v:"Romantic Suspense",           shelf:"romantic suspense",    short:"romantic suspense", romance:true  },
+  { v:"Historical / Regency Romance",shelf:"regency romance",      short:"regency romance",   romance:true  },
+  { v:"Cozy Mystery",                shelf:"cozy mystery",         short:"cozy mystery",      romance:false },
+  { v:"Women's Fiction",             shelf:"women's fiction",      short:"women's fiction",   romance:false }
+];
+function genreObj() {
+  var g = GENRES.filter(function(x){ return x.v === state.genre; });
+  return g.length ? g[0] : GENRES[0];
+}
+
+/* ---------------------------------------------------------------
+   THE THREE WAVES
+   --------------------------------------------------------------- */
 var THEMES = {
   spooky: {
     label: "Spooky Season", emoji: "🎃", cls: "spooky",
     buy: "Sept 1 – Oct 31", releaseBy: "Oct 1", sweet: "Sept 15 – 25",
+    releaseByMD: [9,1],
     kw: "halloween", adj: "spooky",
     promise: "shivers with their swoon",
+    promiseNoRom: "atmosphere and a chill down the spine",
     tags: ["SpookySeason","HalloweenRomance","WitchyRomance","FallReads"],
+    tagsNoRom: ["SpookySeason","HalloweenReads","CozyMystery","FallReads"],
     wrappers: [
       ["Haunted inn / house", "haunted house"],
       ["Witchy heroine", "witch"],
@@ -261,9 +344,12 @@ var THEMES = {
   autumn: {
     label: "Cozy Autumn", emoji: "🍂", cls: "autumn",
     buy: "Sept 15 – Nov 25", releaseBy: "Oct 20", sweet: "Oct 1 – 15",
+    releaseByMD: [9,20],
     kw: "fall", adj: "cozy autumn",
     promise: "sweater-weather comfort",
+    promiseNoRom: "sweater-weather comfort",
     tags: ["CozyFallReads","AutumnRomance","SmallTownRomance","PumpkinSpice"],
+    tagsNoRom: ["CozyFallReads","AutumnReads","SmallTownMystery","PumpkinSpice"],
     wrappers: [
       ["Harvest festival", "harvest festival"],
       ["Apple orchard", "apple orchard"],
@@ -282,9 +368,12 @@ var THEMES = {
   christmas: {
     label: "Christmas & Holiday", emoji: "🎄", cls: "christmas",
     buy: "Oct 1 – Dec 20", releaseBy: "Nov 15", sweet: "Nov 1 – 10",
+    releaseByMD: [10,15],
     kw: "christmas", adj: "holiday",
     promise: "twinkle-light magic",
+    promiseNoRom: "twinkle-light magic",
     tags: ["ChristmasRomance","HolidayRomance","SnowedIn","ChristmasBooks"],
+    tagsNoRom: ["ChristmasBooks","HolidayReads","CozyChristmas","WinterReads"],
     wrappers: [
       ["Snowed in", "snowed in"],
       ["Christmas tree farm", "christmas tree farm"],
@@ -302,31 +391,68 @@ var THEMES = {
   }
 };
 
+/* Core tropes. `rom:false` entries are the ones that still work
+   when there's no romance thread (cozy mystery / women's fiction). */
 var CORE_TROPES = [
-  "Grumpy / Sunshine", "Enemies to Lovers", "Second Chance", "Fake Dating",
-  "Forced Proximity", "Small Town", "Single Dad / Mom", "Friends to Lovers",
-  "Fated Mates", "Brother's Best Friend", "Marriage of Convenience", "Opposites Attract",
-  "Secret Identity", "Age Gap", "Bodyguard / Protector", "Boss & Employee",
-  "Childhood Sweethearts", "Love Triangle (resolved)"
+  { n:"Grumpy / Sunshine",       rom:true  },
+  { n:"Enemies to Lovers",       rom:true  },
+  { n:"Second Chance",           rom:true  },
+  { n:"Fake Dating",             rom:true  },
+  { n:"Forced Proximity",        rom:false },
+  { n:"Small Town",              rom:false },
+  { n:"Single Dad / Mom",        rom:false },
+  { n:"Friends to Lovers",       rom:true  },
+  { n:"Fated Mates",             rom:true  },
+  { n:"Brother's Best Friend",   rom:true  },
+  { n:"Marriage of Convenience", rom:true  },
+  { n:"Opposites Attract",       rom:true  },
+  { n:"Secret Identity",         rom:false },
+  { n:"Age Gap",                 rom:true  },
+  { n:"Bodyguard / Protector",   rom:true  },
+  { n:"Boss & Employee",         rom:true  },
+  { n:"Childhood Sweethearts",   rom:true  },
+  { n:"Return to Hometown",      rom:false },
+  { n:"Amateur Sleuth",          rom:false },
+  { n:"Found Family",            rom:false }
 ];
 
 var HEAT_TAGS = {
   clean: ["CleanRomance","SweetRomance"],
-  warm: ["ContemporaryRomance","RomanceReader"],
-  spicy: ["SpicyRomance","BookTok"]
+  warm:  ["ContemporaryRomance","RomanceReader"],
+  spicy: ["SpicyRomance","BookTok"],
+  none:  ["BookishCommunity"]
 };
 var HEAT_PROMISE = {
   clean: "and a kiss worth waiting for",
-  warm: "and slow-burn heat",
-  spicy: "and plenty of spice"
+  warm:  "and slow-burn heat",
+  spicy: "and plenty of spice",
+  none:  ""
 };
 
-var state = {
+/* The Costume Test — the workshop's core teaching, made checkable. */
+var COSTUME_Qs = [
+  ["Delete the holiday and the plot breaks.",
+   "Not “feels different” — actually breaks. The season causes something."],
+  ["The season creates the pressure, the deadline, or the trap.",
+   "The blizzard strands them. The festival has a date. The curse lifts at midnight."],
+  ["At least one scene could only happen in this season.",
+   "A scene you physically could not stage in June."],
+  ["The ending lands because of the season, not just during it.",
+   "The holiday earns the emotional payoff — it isn't backdrop at the finish line."]
+];
+
+/* --------------------------------------------------------------- */
+
+var DEFAULT_STATE = {
   penName: "", genre: "Contemporary Romance", heat: "clean",
   current: "spooky",
-  waves: { spooky: {wrapper:null, tropes:[]}, autumn: {wrapper:null, tropes:[]}, christmas: {wrapper:null, tropes:[]} }
+  waves: {
+    spooky:    { title:"", wrapper:null, tropes:[], costume:[], seasonDoes:"" },
+    autumn:    { title:"", wrapper:null, tropes:[], costume:[], seasonDoes:"" },
+    christmas: { title:"", wrapper:null, tropes:[], costume:[], seasonDoes:"" }
+  }
 };
-
+var state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 var KEY = "tip-q4-trope-workbook";
 
 function saveAll() {
@@ -341,12 +467,34 @@ function loadAll() {
     var raw = localStorage.getItem(KEY);
     if (raw) {
       var s = JSON.parse(raw);
-      if (s && s.waves) { state = s; }
+      if (s && typeof s === "object") {
+        // Merge onto defaults so older saved files never break the page.
+        state.penName = s.penName || "";
+        state.genre   = s.genre   || DEFAULT_STATE.genre;
+        state.heat    = s.heat    || DEFAULT_STATE.heat;
+        state.current = (s.current && THEMES[s.current]) ? s.current : "spooky";
+        Object.keys(DEFAULT_STATE.waves).forEach(function(k){
+          var src = (s.waves && s.waves[k]) ? s.waves[k] : {};
+          state.waves[k] = {
+            title:      src.title      || "",
+            wrapper:    src.wrapper    || null,
+            tropes:     Array.isArray(src.tropes)  ? src.tropes  : [],
+            costume:    Array.isArray(src.costume) ? src.costume : [],
+            seasonDoes: src.seasonDoes || ""
+          };
+        });
+      }
     }
   } catch(e) {}
-  document.getElementById('penName').value = state.penName || "";
-  document.getElementById('genre').value = state.genre || "Contemporary Romance";
-  document.getElementById('heat').value = state.heat || "clean";
+
+  var gsel = document.getElementById('genre');
+  gsel.innerHTML = GENRES.map(function(g){
+    return '<option value="' + g.v.replace(/&/g,'&amp;') + '">' + g.v.replace(/&/g,'&amp;') + '</option>';
+  }).join("");
+
+  document.getElementById('penName').value = state.penName;
+  gsel.value = state.genre;
+  document.getElementById('heat').value = state.heat;
 }
 
 function clearAll() {
@@ -355,6 +503,52 @@ function clearAll() {
   location.reload();
 }
 
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(function(){ t.classList.remove('show'); }, 1700);
+}
+
+function copyText(txt, btn) {
+  function done() {
+    if (btn) {
+      var old = btn.textContent;
+      btn.textContent = "Copied ✓";
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = old; btn.classList.remove('copied'); }, 1600);
+    }
+    toast("Copied to clipboard");
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(done, function(){ fallback(txt, done); });
+  } else { fallback(txt, done); }
+}
+function fallback(txt, done) {
+  var ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch(e) { toast("Couldn't copy — select the text and copy manually"); }
+  document.body.removeChild(ta);
+}
+
+/* ---------------- Days-left urgency ---------------- */
+function daysUntilReleaseBy(t) {
+  var now = new Date(); now.setHours(0,0,0,0);
+  var y = now.getFullYear();
+  var target = new Date(y, t.releaseByMD[0], t.releaseByMD[1]);
+  if (target < now) target = new Date(y + 1, t.releaseByMD[0], t.releaseByMD[1]);
+  return Math.round((target - now) / 86400000);
+}
+
+/* ---------------- Rendering ---------------- */
 function buildTabs() {
   var wrap = document.getElementById('themeTabs');
   wrap.innerHTML = "";
@@ -363,21 +557,39 @@ function buildTabs() {
     var w = state.waves[k];
     var div = document.createElement('div');
     div.className = "theme-tab " + t.cls + (state.current === k ? " active" : "") + (w.wrapper && w.tropes.length ? " has-stack" : "");
-    div.innerHTML = '<div class="emoji">' + t.emoji + '</div><h3>' + t.label + '</h3><div class="win">Release by ' + t.releaseBy + '</div><span class="done-dot">Stack built ✓</span>';
+    div.innerHTML = '<div class="emoji">' + t.emoji + '</div><h3>' + t.label + '</h3>' +
+      '<div class="win">Release by ' + t.releaseBy + '</div>' +
+      '<div class="booktitle">' + (w.title ? esc(w.title) : "") + '</div>' +
+      '<span class="done-dot">Stack built ✓</span>';
     div.onclick = function(){ state.current = k; saveAll(); refreshTheme(); };
     wrap.appendChild(div);
   });
 }
 
+function onTitleInput() {
+  state.waves[state.current].title = document.getElementById('bookTitle').value;
+  saveAll();
+  buildTabs(); generate(); lineup();
+}
+function onSeasonDoesInput() {
+  state.waves[state.current].seasonDoes = document.getElementById('seasonDoes').value;
+  saveAll();
+  renderVerdict(); generate(); lineup();
+}
+
 function refreshTheme() {
   buildTabs();
   var k = state.current, t = THEMES[k], w = state.waves[k];
+  var days = daysUntilReleaseBy(t);
 
   document.getElementById('timingStrip').innerHTML =
     '<div class="t"><div class="k">Readers buy</div><div class="v">' + t.buy + '</div></div>' +
     '<div class="t"><div class="k">Release by</div><div class="v">' + t.releaseBy + '</div></div>' +
-    '<div class="t"><div class="k">Launch sweet spot</div><div class="v">' + t.sweet + '</div></div>';
+    '<div class="t"><div class="k">Launch sweet spot</div><div class="v">' + t.sweet + '</div></div>' +
+    '<div class="t' + (days < 70 ? ' urgent' : '') + '"><div class="k">Time left</div><div class="v">' + days + ' days</div></div>';
 
+  document.getElementById('bookTitle').value = w.title || "";
+  document.getElementById('seasonDoes').value = w.seasonDoes || "";
   document.getElementById('wrapperHead').textContent = "Choose Your " + t.label + " Wrapper";
 
   var wg = document.getElementById('wrapperGrid');
@@ -393,92 +605,316 @@ function refreshTheme() {
     wg.appendChild(div);
   });
 
+  var g = genreObj();
   var cg = document.getElementById('coreGrid');
   cg.innerHTML = "";
-  CORE_TROPES.forEach(function(name){
+  CORE_TROPES.forEach(function(tr){
+    var name = tr.n;
     var sel = w.tropes.indexOf(name) >= 0;
+    var offGenre = tr.rom && !g.romance;
     var div = document.createElement('div');
-    div.className = "trope" + (sel ? " selected" : "");
-    div.innerHTML = '<span class="tname">' + name + '</span>';
+    div.className = "trope" + (sel ? " selected" : "") + (offGenre && !sel ? " dimmed" : "");
+    div.innerHTML = '<span class="tname">' + name + '</span>' +
+      (offGenre ? '<span class="tnote">romance</span>' : '');
     div.onclick = function(){
       var i = w.tropes.indexOf(name);
       if (i >= 0) { w.tropes.splice(i,1); }
       else if (w.tropes.length < 3) { w.tropes.push(name); }
+      else { toast("Three is the cap — unpick one first"); return; }
       saveAll(); refreshTheme();
     };
     cg.appendChild(div);
   });
   document.getElementById('coreCount').textContent = w.tropes.length + " of 3 selected";
 
+  renderWrapperFit();
+  renderCostume();
   generate();
   lineup();
 }
 
+/* A nudge when the wrapper and the genre are pulling in opposite directions. */
+function renderWrapperFit() {
+  var k = state.current, t = THEMES[k], w = state.waves[k], g = genreObj();
+  var box = document.getElementById('wrapperFit');
+  if (!w.wrapper) { box.innerHTML = ""; return; }
+  var paranormalWrappers = ["Witchy heroine","Ghost hero(ine)","Monster romance","Vampire / werewolf","Cursed family / town","Paranormal investigator"];
+  var isPara = paranormalWrappers.indexOf(w.wrapper) >= 0;
+  var paraGenre = /Paranormal|Romantasy/.test(g.v);
+  var html = "";
+  if (isPara && !paraGenre && g.romance) {
+    html = '<div class="callout pro"><span class="tag">Shelf check</span>' +
+      '<b>' + esc(w.wrapper) + '</b> puts this book on the paranormal shelf, but you’ve set your genre to <b>' + esc(g.v) + '</b>. ' +
+      'That’s fine if the magic is light and the romance drives — just make sure the cover and blurb signal which shelf you actually want, or you’ll get returns from both sides.</div>';
+  } else {
+    html = '<div class="callout pro"><span class="tag">Leveling up</span>' +
+      'Make the wrapper do plot work, not just decoration. “' + esc(w.wrapper) + '” should be the <em>reason</em> something happens — that’s exactly what the Costume Test below is checking.</div>';
+  }
+  box.innerHTML = html;
+}
+
+function renderCostume() {
+  var w = state.waves[state.current];
+  var wrap = document.getElementById('costumeTest');
+  wrap.innerHTML = "";
+  COSTUME_Qs.forEach(function(q, i){
+    var on = w.costume.indexOf(i) >= 0;
+    var div = document.createElement('div');
+    div.className = "ctest" + (on ? " on" : "");
+    div.innerHTML = '<span class="box">' + (on ? "☑" : "☐") + '</span>' +
+      '<span class="ctext">' + q[0] + '<span class="sub">' + q[1] + '</span></span>';
+    div.onclick = function(){
+      var idx = w.costume.indexOf(i);
+      if (idx >= 0) w.costume.splice(idx,1); else w.costume.push(i);
+      saveAll(); renderCostume(); renderVerdict(); lineup();
+    };
+    wrap.appendChild(div);
+  });
+  renderVerdict();
+}
+
+function costumeScore(w) {
+  var n = w.costume.length;
+  if (w.seasonDoes && w.seasonDoes.trim().length > 25) n += 1;
+  return Math.min(n, 5);
+}
+
+function renderVerdict() {
+  var w = state.waves[state.current], t = THEMES[state.current];
+  var out = document.getElementById('costumeVerdict');
+  var n = costumeScore(w);
+  var total = COSTUME_Qs.length + 1;
+  if (!w.wrapper) { out.innerHTML = '<p class="empty-lineup">Pick a wrapper above, then run the test.</p>'; return; }
+  var cls, head, body;
+  if (n <= 1) {
+    cls = "fail"; head = "⚠️ Right now this is a costume.";
+    body = "If you can lift the " + t.label.toLowerCase() + " off this book and the story still works, seasonal readers will feel it — and they'll say so in the reviews. " +
+           "Before you draft, change one structural thing so the season <em>causes</em> something. That's usually a one-sentence fix, not a rewrite.";
+  } else if (n <= 3) {
+    cls = "half"; head = "🧩 Halfway there — the season is doing some work.";
+    body = "You've got real seasonal load-bearing here. Push on the weakest unchecked box above: most books get all the way there by giving the season a <b>deadline</b> (the festival is Saturday, the flight leaves Christmas Eve, the curse lifts at midnight).";
+  } else {
+    cls = "pass"; head = "✅ This is a real holiday book, not a wreath on a cover.";
+    body = "The season causes, pressures, and pays off. This is the version that earns its place on the " + t.label.toLowerCase() +
+           " shelf — and the version readers come back for next year.";
+  }
+  out.innerHTML = '<div class="verdict ' + cls + '"><span class="vhead">' + head + '</span>' + body +
+    '<div style="margin-top:8px;font-size:0.88em;opacity:0.85;">Score: <b>' + n + ' of ' + total + '</b></div></div>';
+}
+
+/* ---------------- Generated output ---------------- */
 function tagify(s) {
   return s.replace(/&/g,"And").replace(/[^a-zA-Z0-9 ]/g,"").split(" ").filter(Boolean)
     .map(function(x){ return x.charAt(0).toUpperCase() + x.slice(1); }).join("");
 }
-
 function wrapperKw(t, w) {
   var found = t.wrappers.filter(function(p){ return p[0] === w.wrapper; });
   return found.length ? found[0][1] : "";
 }
+function tropeList(w) {
+  return w.tropes.map(function(x){ return x.toLowerCase().replace(/ \/ /g," ").replace(/ & /g," "); });
+}
+
+/* Amazon gives you 7 keyword slots, 50 chars each. Build real phrases,
+   longest-tail first, deduped and length-checked. */
+function kdpKeywords(t, w, g) {
+  var kw = wrapperKw(t, w), tl = tropeList(w);
+  var out = [];
+  function push(s){
+    s = s.replace(/\s+/g," ").trim();
+    if (s && out.indexOf(s) < 0) out.push(s);
+  }
+  push(kw + " " + t.kw + " " + g.short);
+  if (tl[0]) push(tl[0] + " " + t.kw + " " + g.short);
+  if (tl[1]) push(tl[1] + " " + kw + " " + g.short);
+  if (tl[0] && tl[1]) push(tl[0] + " " + tl[1] + " " + t.adj + " book");
+  if (tl[2]) push(tl[2] + " " + t.kw + " story");
+  push((state.heat === "clean" ? "clean " : "") + t.kw + " " + g.short + " " + (tl[0] || kw));
+  push(t.adj + " " + g.short + " standalone");
+  push(kw + " " + g.short + " series");
+  return out.slice(0,7);
+}
 
 function generate() {
-  var k = state.current, t = THEMES[k], w = state.waves[k];
+  var k = state.current, t = THEMES[k], w = state.waves[k], g = genreObj();
   var out = document.getElementById('genOut');
   if (!w.wrapper || !w.tropes.length) {
     out.innerHTML = '<p class="empty-lineup">Pick a wrapper and at least one core trope above to generate your stack.</p>';
     return;
   }
-  var genre = state.genre.replace(/ \/ .*$/, "");
-  var genreShort = genre.toLowerCase().replace("clean & wholesome romance","clean romance").replace("historical / regency romance","regency romance");
   var kw = wrapperKw(t, w);
-  var tl = w.tropes.map(function(x){ return x.toLowerCase().replace(/ \/ /g," "); });
+  var tl = tropeList(w);
+  var isRom = g.romance && state.heat !== "none";
 
+  /* Reader search phrases */
   var searches = [];
-  searches.push(kw + " " + genreShort);
-  searches.push(tl[0] + " " + t.kw + " romance");
-  if (tl[1]) searches.push(tl[0] + " " + tl[1] + " " + t.adj + " romance");
-  searches.push((state.heat === "clean" ? "clean " : "") + t.kw + " " + tl[0] + " books");
+  searches.push(kw + " " + g.short);
+  searches.push(tl[0] + " " + t.kw + " " + g.short);
+  if (tl[1]) searches.push(tl[0] + " " + tl[1] + " " + t.adj + " " + g.short);
+  searches.push((state.heat === "clean" && isRom ? "clean " : "") + t.kw + " " + tl[0] + " books");
 
-  var hashtags = t.tags.concat(w.tropes.map(tagify)).concat(HEAT_TAGS[state.heat]);
+  /* Hashtags */
+  var baseTags = isRom ? t.tags : t.tagsNoRom;
+  var hashtags = [];
+  baseTags.concat(w.tropes.map(tagify)).concat(HEAT_TAGS[state.heat] || []).forEach(function(h){
+    if (hashtags.indexOf(h) < 0) hashtags.push(h);
+  });
 
-  var tropesBold = w.tropes.map(function(x){ return "<b>" + x.toLowerCase() + "</b>"; });
+  /* Positioning line */
+  var tropesBold = w.tropes.map(function(x){ return "<b>" + x.toLowerCase().replace(/ \/ /g,"/") + "</b>"; });
   var tropeLine = tropesBold.length === 1 ? tropesBold[0] :
       tropesBold.slice(0,-1).join(", ") + " and " + tropesBold[tropesBold.length-1];
-  var pos = "A <b>" + w.wrapper.toLowerCase() + "</b> " + genreShort + " with " + tropeLine +
-      " — for readers who want " + t.promise + " " + HEAT_PROMISE[state.heat] + ".";
+  var promise = isRom ? t.promise : t.promiseNoRom;
+  var heatTail = isRom ? (" " + HEAT_PROMISE[state.heat]) : "";
+  var pos = "A <b>" + w.wrapper.toLowerCase() + "</b> " + g.shelf + " with " + tropeLine +
+      " — for readers who want " + promise + heatTail.replace(/\s+$/,"") + ".";
+  var posPlain = pos.replace(/<[^>]+>/g,"");
+
+  /* Subtitle — title-cased, trimmed at the first slash or comma.
+     Capitalise only at word starts so "New Year's Eve" doesn't become "New Year'S Eve". */
+  function titleCase(s) {
+    return s.replace(/(^|\s)([a-z])/g, function(m, pre, ch){ return pre + ch.toUpperCase(); });
+  }
+  var wrapShort = titleCase(w.wrapper.replace(/\s*[\/,].*$/,"").replace(/\(.*?\)/g,"").trim());
+  var season = (t.kw === "fall") ? "Autumn" : titleCase(t.kw);
+  var shelfTitle = titleCase(g.shelf);
+  /* Don't say "Christmas" twice if the wrapper already carries the season word. */
+  var subtitle = "A " + wrapShort + " " +
+                 (wrapShort.toLowerCase().indexOf(t.kw) >= 0 ? "" : season + " ") + shelfTitle;
+  subtitle = subtitle.replace(/\s+/g," ").trim();
+
+  /* KDP keywords */
+  var kws = kdpKeywords(t, w, g);
+
+  /* Hook skeleton — a frame she fills, not fake blurb prose.
+     The wrapper is stated as its own line so no wrapper can break the grammar. */
+  var whoTail = isRom ? "the one person she swore she was done with" : "the one problem she can't walk away from";
+  var hook =
+    '<b>Your setup:</b> ' + esc(w.wrapper) + '.<br>' +
+    'When <span class="fill">[character]</span> <span class="fill">[what drops her into it]</span>, ' +
+    'she is stuck with ' + whoTail +
+    ' until <span class="fill">[' + esc(t.label) + ' deadline]</span> — and she has that long to ' +
+    '<span class="fill">[what she must decide or fix]</span>.<br>' +
+    '<b>Why now:</b> ' +
+    (w.seasonDoes ? esc(w.seasonDoes) : '<span class="fill">[what the season makes happen]</span>');
 
   var html = "";
-  html += '<div class="result-card"><h3>' + t.emoji + ' Search phrases your readers are typing</h3>';
-  searches.forEach(function(s){ html += '<div class="searchline">' + s + '</div>'; });
+
+  html += '<div class="result-card"><button class="copybtn" data-copy="' + esc(searches.join("\n")) + '">Copy</button>' +
+          '<h3>' + t.emoji + ' Search phrases your readers are typing</h3>';
+  searches.forEach(function(s){ html += '<div class="searchline">' + esc(s) + '</div>'; });
   html += '</div>';
-  html += '<div class="result-card"><h3>#️⃣ Hashtag set</h3><div class="hashwrap">';
+
+  html += '<div class="result-card"><button class="copybtn" data-copy="' + esc(kws.join("\n")) + '">Copy all 7</button>' +
+          '<h3>🔑 Your 7 KDP keyword slots</h3>' +
+          '<p class="helptext" style="margin-top:0;">Paste one per box at upload. Amazon allows 50 characters per slot &mdash; anything over is flagged below.</p>';
+  kws.forEach(function(s, i){
+    var over = s.length > 50;
+    html += '<div class="kwline"><span class="slot">Slot ' + (i+1) + '</span><span>' + esc(s) + '</span>' +
+            (over ? '<span class="over">' + s.length + ' chars — trim it</span>' : '') + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="result-card"><button class="copybtn" data-copy="' + esc(subtitle) + '">Copy</button>' +
+          '<h3>🏷️ Subtitle line</h3><div class="searchline" style="font-family:Georgia,serif;">' + esc(subtitle) + '</div>' +
+          '<p class="helptext" style="margin-bottom:0;">Goes in the KDP subtitle field and on the cover. It tells a browsing reader the shelf and the season in one glance.</p></div>';
+
+  html += '<div class="result-card"><button class="copybtn" data-copy="' + esc(hashtags.map(function(h){return "#"+h;}).join(" ")) + '">Copy</button>' +
+          '<h3>#️⃣ Hashtag set</h3><div class="hashwrap">';
   hashtags.forEach(function(h){ html += '<span class="taghash">#' + h + '</span> '; });
   html += '</div></div>';
-  html += '<div class="result-card"><h3>📌 Positioning line (subtitle / ad copy / pinned post)</h3><div class="positioning">' + pos + '</div></div>';
-  html += '<div class="result-card"><h3>⏰ Timing reminder</h3><p>Readers shop this wave <b>' + t.buy + '</b>. Release by <b>' + t.releaseBy + '</b>; the launch sweet spot is <b>' + t.sweet + '</b>. Miss the window and this becomes next year’s book — which is fine, but decide that on purpose.</p></div>';
+
+  html += '<div class="result-card"><button class="copybtn" data-copy="' + esc(posPlain) + '">Copy</button>' +
+          '<h3>📌 Positioning line (subtitle / ad copy / pinned post)</h3><div class="positioning">' + pos + '</div></div>';
+
+  html += '<div class="result-card"><h3>✍️ Hook skeleton — fill the gold blanks</h3>' +
+          '<div class="skeleton">' + hook + '</div>' +
+          '<p class="helptext" style="margin-bottom:0;">This is the first line of your blurb and the spine of every ad. Fill the blanks in your own words &mdash; don’t polish yet, just get it true.</p></div>';
+
+  html += '<div class="result-card"><h3>⏰ Timing reminder</h3><p>Readers shop this wave <b>' + t.buy +
+          '</b>. Release by <b>' + t.releaseBy + '</b>; the launch sweet spot is <b>' + t.sweet + '</b> — that’s <b>' +
+          daysUntilReleaseBy(t) + ' days</b> from today. Miss the window and this becomes next year’s book — which is fine, but decide that on purpose.</p></div>';
+
   out.innerHTML = html;
+
+  out.querySelectorAll('.copybtn').forEach(function(b){
+    b.onclick = function(){ copyText(b.dataset.copy, b); };
+  });
+}
+
+/* ---------------- Lineup + full dossier ---------------- */
+function completedWaves() {
+  return Object.keys(THEMES).filter(function(k){
+    var w = state.waves[k];
+    return w.wrapper && w.tropes.length;
+  });
 }
 
 function lineup() {
-  var rows = "";
-  Object.keys(THEMES).forEach(function(k){
-    var t = THEMES[k], w = state.waves[k];
-    if (w.wrapper && w.tropes.length) {
-      rows += "<tr><td>" + t.emoji + " <b>" + t.label + "</b></td><td>" + w.wrapper + "</td><td>" + w.tropes.join(" + ") + "</td><td>" + t.releaseBy + "</td></tr>";
-    }
-  });
+  var done = completedWaves();
   var out = document.getElementById('lineupOut');
-  if (!rows) {
+  var dos = document.getElementById('dossierOut');
+
+  if (!done.length) {
     out.innerHTML = '<p class="empty-lineup">No completed waves yet &mdash; build a stack above and it appears here.</p>';
-  } else {
-    var who = state.penName ? " &mdash; " + state.penName : "";
-    out.innerHTML = '<p><strong>Q4 release lineup' + who + '</strong> &middot; ' + state.genre + '</p>' +
-      '<table><thead><tr><th>Wave</th><th>Seasonal wrapper</th><th>Core trope stack</th><th>Release by</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    dos.innerHTML = "";
+    return;
   }
+
+  var rows = "";
+  done.forEach(function(k){
+    var t = THEMES[k], w = state.waves[k];
+    var n = costumeScore(w);
+    var mark = n >= 4 ? "✅" : (n >= 2 ? "🧩" : "⚠️");
+    rows += "<tr><td>" + t.emoji + " <b>" + t.label + "</b></td><td>" + esc(w.title || "(untitled)") + "</td><td>" +
+      esc(w.wrapper) + "</td><td>" + esc(w.tropes.join(" + ")) + "</td><td>" + t.releaseBy + "</td><td>" + mark + " " + n + "/5</td></tr>";
+  });
+  var who = state.penName ? " &mdash; " + esc(state.penName) : "";
+  out.innerHTML = '<p><strong>Q4 release lineup' + who + '</strong> &middot; ' + esc(state.genre) + '</p>' +
+    '<table><thead><tr><th>Wave</th><th>Working title</th><th>Seasonal wrapper</th><th>Core trope stack</th><th>Release by</th><th>Costume test</th></tr></thead><tbody>' + rows + '</tbody></table>';
+
+  /* Full per-wave dossier — every wave, always visible, prints cleanly. */
+  var g = genreObj();
+  var html = "";
+  done.forEach(function(k){
+    var t = THEMES[k], w = state.waves[k];
+    var kws = kdpKeywords(t, w, g);
+    html += '<div class="dossier ' + t.cls + '">' +
+      '<div class="dhead"><span>' + t.emoji + ' ' + esc(w.title || "Untitled " + t.label + " book") + '</span>' +
+      '<span class="dwave">' + t.label + ' &middot; release by ' + t.releaseBy + '</span></div><div class="dbody">' +
+      '<div class="drow"><div class="dk">Wrapper</div><div class="dv">' + esc(w.wrapper) + '</div></div>' +
+      '<div class="drow"><div class="dk">Core tropes</div><div class="dv">' + esc(w.tropes.join(" + ")) + '</div></div>' +
+      '<div class="drow"><div class="dk">Buy window</div><div class="dv">' + t.buy + ' &middot; sweet spot ' + t.sweet + '</div></div>' +
+      '<div class="drow"><div class="dk">KDP keywords</div><div class="dv">' + esc(kws.join(" · ")) + '</div></div>' +
+      '<div class="drow"><div class="dk">Season does</div><div class="dv">' + (w.seasonDoes ? esc(w.seasonDoes) : '<span class="empty-lineup">not answered yet</span>') + '</div></div>' +
+      '<div class="drow"><div class="dk">Costume test</div><div class="dv">' + costumeScore(w) + ' of 5</div></div>' +
+      '</div></div>';
+  });
+  dos.innerHTML = html;
 }
+
+function copyLineup() {
+  var done = completedWaves();
+  if (!done.length) { toast("Nothing to copy yet — build a stack first"); return; }
+  var g = genreObj();
+  var lines = ["Q4 RELEASE LINEUP" + (state.penName ? " — " + state.penName : ""), state.genre, ""];
+  done.forEach(function(k){
+    var t = THEMES[k], w = state.waves[k];
+    lines.push(t.label.toUpperCase() + " — " + (w.title || "(untitled)"));
+    lines.push("  Wrapper: " + w.wrapper);
+    lines.push("  Tropes: " + w.tropes.join(" + "));
+    lines.push("  Release by: " + t.releaseBy + "  (buy window " + t.buy + ")");
+    lines.push("  KDP keywords: " + kdpKeywords(t, w, g).join(" | "));
+    if (w.seasonDoes) lines.push("  Season does: " + w.seasonDoes);
+    lines.push("  Costume test: " + costumeScore(w) + "/5");
+    lines.push("");
+  });
+  copyText(lines.join("\n"));
+}
+
+['penName','genre','heat'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', saveAll);
+});
 
 loadAll();
 refreshTheme();
