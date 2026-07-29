@@ -103,6 +103,17 @@
   .btn.ghost:hover { background:var(--teal-soft); }
   .actions .note { font-size:0.86em; color:var(--ink-soft); font-style:italic; }
 
+  /* Replay strip — NOT named .replay: that would collide with the
+     .status.replay pill and clobber its padding/display. */
+  .replaybox { border-radius:9px; padding:14px 18px; margin:16px 0 0; font-size:0.95em; display:flex;
+               gap:14px; align-items:center; flex-wrap:wrap; }
+  .replaybox.live { background:var(--teal-soft); border:1px solid var(--teal); }
+  .replaybox.pending { background:#f7f1e2; border:1px dashed var(--gold-deep); color:var(--gold-deep); font-style:italic; }
+  .replaybox .rtext { flex:1; min-width:200px; }
+  .replaybox .rtext b { color:var(--teal-deep); display:block; font-size:0.82em; letter-spacing:1.5px;
+                        text-transform:uppercase; margin-bottom:3px; font-style:normal; }
+  .replaybox.pending .rtext b { color:var(--gold-deep); }
+
   /* Placeholder for the next workshop */
   .comingcard { border:2px dashed var(--line); border-radius:12px; padding:24px 22px; text-align:center;
                 color:var(--ink-soft); background:transparent; margin:20px 0; }
@@ -138,7 +149,8 @@
 <div class="container">
 
   <div class="intro-box">
-    <p><strong>Every workshop on this page is free to attend live with your Standard membership.</strong> No upgrade, no extra fee &mdash; show up, bring a book idea, and leave with something built.</p>
+    <p><strong>Every workshop on this page is yours with your Standard membership &mdash; live and on replay.</strong> No upgrade, no extra fee. Show up, bring a book idea, and leave with something built.</p>
+    <p>Can't make it live? You're not missing it. The <strong>full replay</strong> of every workshop goes up afterwards, and it's included &mdash; so come to the ones you can and catch the rest whenever it suits you.</p>
     <p>These aren't watch-and-take-notes sessions. We open the same worksheets together and you fill yours in while I fill mine in. Come with a real book in mind, even a fuzzy one.</p>
   </div>
 
@@ -146,6 +158,7 @@
     <h2>What your Standard membership gets you</h2>
     <ul>
       <li><b>Live attendance at every workshop</b> &mdash; all of them, always free to you.</li>
+      <li><b>The full replay of every workshop</b> &mdash; the whole session, start to finish, yours to rewatch any time.</li>
       <li><b>The worksheets during the session</b> &mdash; I drop the links in chat and we work through them together, live.</li>
       <li><b>Q&amp;A in the room</b> &mdash; ask me anything about your own book while we're in it.</li>
       <li><b>The community thread afterwards</b> &mdash; where people post what they built and keep each other honest.</li>
@@ -175,13 +188,18 @@
    TO ADD A WORKSHOP: copy one block below and fill it in.
    Order on the page = order in this array (first = top).
 
-   status:  "open"   → signups open, shows the gold "Signing up now" pill
-            "soon"   → announced, no date yet
-            "replay" → it has already run
-   theme:   "christmas" or "generic" (just the header gradient)
-   waves:   optional coloured pills. Leave as [] to hide them.
-   premium: what Premium adds ON TOP. Leave "" to hide the Premium box.
-   links:   [label, url, style] — style is "gold", "" (solid navy) or "ghost"
+   status:    "open"  → signups open, shows the gold "Signing up now" pill
+              "soon"  → announced, no date yet
+   theme:     "christmas" or "generic" (just the header gradient)
+   waves:     optional coloured pills. Leave as [] to hide them.
+   premium:   what Premium adds ON TOP. Leave [] to hide the Premium box.
+   links:     [label, url, style] — style is "gold", "" (solid navy) or "ghost"
+
+   replayUrl: PASTE THE YOUTUBE LINK HERE when the replay is up.
+              Leave "" and the card shows "replay coming shortly".
+              As soon as it has a URL the card grows a Watch button and the
+              status pill flips to "Replay available" by itself — nothing
+              else to change.
    ===================================================================== */
 var WORKSHOPS = [
 
@@ -198,14 +216,15 @@ var WORKSHOPS = [
       ["autumn", "🍂 Cozy Autumn"],
       ["xmas",   "🎄 Christmas & Holiday"]
     ],
+    replayUrl: "",
     standard: [
       "Attend the full live session, free",
+      "<b>The full replay</b> &mdash; the whole workshop, yours to rewatch any time",
       "Build your holiday trope stack with me, live in the worksheet",
       "Backward-plan a real release date &mdash; and find out on the spot whether your writing pace can actually hit it",
       "Ask about your own book in the live Q&amp;A"
     ],
     premium: [
-      "The full replay",
       "The Holiday Trope Workbook and Q4 Marketing Planner to <b>keep</b> &mdash; reuse them every year"
     ],
     upsell: "Standard members use both tools with me during the session. Premium keeps them afterwards.",
@@ -226,10 +245,16 @@ function render() {
   var html = "";
 
   WORKSHOPS.forEach(function(w){
+    /* A replay URL is the strongest signal there is — once one exists the
+       session has run, so the pill flips itself rather than going stale. */
+    var hasReplay  = !!(w.replayUrl && w.replayUrl.trim());
+    var statusCls  = hasReplay ? "replay" : w.status;
+    var statusText = hasReplay ? "Replay available" : w.statusLabel;
+
     html += '<div class="wcard ' + (w.theme || "generic") + '" id="' + w.id + '">';
 
     html += '<div class="whead"><div class="wtop">' +
-            '<span class="status ' + w.status + '">' + w.statusLabel + '</span></div>' +
+            '<span class="status ' + statusCls + '">' + statusText + '</span></div>' +
             '<h3>' + w.title + '</h3>' +
             '<div class="wwhen">' + w.when + '</div></div>';
 
@@ -252,6 +277,16 @@ function render() {
       html += '</ul>' + (w.upsell ? '<span class="upsell">' + w.upsell + '</span>' : '') + '</div>';
     }
     html += '</div>';
+
+    /* Replay strip — promises the replay before it exists, links it after. */
+    if (hasReplay) {
+      html += '<div class="replaybox live"><span class="rtext"><b>Full replay</b>' +
+              'The complete workshop, start to finish. Rewatch it whenever you need it.</span>' +
+              '<a class="btn" href="' + w.replayUrl + '" target="_blank" rel="noopener">&#9654; Watch the replay</a></div>';
+    } else {
+      html += '<div class="replaybox pending"><span class="rtext"><b>Full replay</b>' +
+              'Going up on YouTube shortly &mdash; the link will appear right here, and it\'s included with your Standard membership.</span></div>';
+    }
 
     if (w.links && w.links.length) {
       html += '<div class="actions">';
