@@ -353,7 +353,7 @@ function viewBook(){
     <input type="text" id="newTitle" placeholder="Chapter One">
     <label class="f">Paste the chapter here</label>
     <textarea id="newText" rows="9" placeholder="Paste your chapter…"></textarea>
-    <div class="toolbar"><button class="btn primary" onclick="addChapter()">+ Add this chapter</button></div>
+    <div class="toolbar"><button class="btn primary" onclick="addChapter()">+ Add this chapter</button><button class="btn" onclick="loadSample()">Load a sample chapter</button></div>
   </div>
   ${done>=2?`<div class="card" style="border-top:4px solid var(--gold)">
     <h2>🎓 Ready for more?</h2>
@@ -370,6 +370,25 @@ function refreshHello(){
 /* harvest first — leaving a chapter must never eat what they just pasted */
 function openChapter(id){grabOpen();S.cur=id;save();render();window.scrollTo(0,0);}
 function backToBook(){grabOpen();S.cur=null;save();render();window.scrollTo(0,0);}
+/* A sample chapter for the walkthrough / first-time users — the same scene the
+   Story Clinic uses, so an author sees the identical chapter in both tools. */
+const SAMPLE_TITLE="Chapter One (sample)";
+const SAMPLE_TEXT=`The bell over the bakery door jingled, and Mara looked up from the dough she was punching down. She felt her heart hammer when she saw him. Cole Henderson, back in town after all these years, filling the doorway like he owned it.
+
+"Didn't think you'd still be here," he said quietly.
+
+She crossed her arms. "Somebody has to keep the place running." Suddenly the air between them was thick. She couldn't help but notice the way his jaw clenched. She was angry. She was nervous. She was undone.
+
+He took a step closer, and she found herself holding her breath. The scent of him — cedar and rain — undid something in her chest. Slowly, carefully, she set down the dough and met his gaze.
+
+"Mara," he started to say, but she shook her head.
+
+"Don't." Her voice came out before she could stop it. "You don't get to come back and—" She let out a breath she didn't know she was holding.`;
+function loadSample(){
+  const t=document.getElementById('newTitle'), x=document.getElementById('newText'); if(!t||!x)return;
+  t.value=SAMPLE_TITLE; x.value=SAMPLE_TEXT;
+  toast('Sample chapter loaded — hit “+ Add this chapter” to try it'); x.focus();
+}
 function addChapter(){
   const t=document.getElementById('newTitle').value.trim()||('Chapter '+(S.chapters.length+1));
   const x=document.getElementById('newText').value.trim();
