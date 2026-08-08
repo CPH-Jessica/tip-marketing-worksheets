@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beta Besties — CRIMSON BEARING — Full Reader Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sounding:#E4EAE7; --paper:#FBF9F5; --ink:#16242C; --ink-soft:#4A5C63;
+  --notation:#A8305E; --shoal:#9FC3CE; --shoal-deep:#3E7C8C;
+  --crimson:#B32E22; --rule:#C6D0CC; --buff:#EFE6D2;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sounding);color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.62}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+
+.hero{position:relative;background:var(--paper);margin-top:28px;border:1px solid var(--rule);
+  background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:44px 44px;background-position:-1px -1px}
+.hero-inner{background:linear-gradient(to right,rgba(251,249,245,.94),rgba(251,249,245,.78));
+  padding:34px 30px 26px;display:grid;grid-template-columns:1fr 190px;gap:26px;align-items:center}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--notation);margin:0 0 12px}
+h1{font-family:"Archivo Narrow",Arial Narrow,sans-serif;font-weight:700;
+  font-size:clamp(38px,6.4vw,62px);line-height:.94;letter-spacing:.015em;text-transform:uppercase;margin:0 0 6px}
+.byline{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);letter-spacing:.06em;margin:0 0 18px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:2px;background:var(--rule);border:1px solid var(--rule)}
+.meta div{background:var(--paper);padding:9px 11px}
+.meta dt{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 3px}
+.meta dd{margin:0;font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:16px}
+
+.scope{background:var(--buff);border:1px solid #D9C9A4;border-left:5px solid var(--notation);
+  padding:15px 18px;margin:0 0 6px;font-size:15.5px}
+.scope strong{font-family:"Archivo Narrow",sans-serif;text-transform:uppercase;letter-spacing:.05em}
+
+.tabs{display:flex;flex-wrap:wrap;gap:2px;margin:22px 0 0;background:var(--rule);border:1px solid var(--rule);border-bottom:none}
+.tabs button{flex:1 1 auto;font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:12.5px;
+  letter-spacing:.11em;text-transform:uppercase;padding:13px 10px;border:0;cursor:pointer;
+  background:#F0EDE6;color:var(--ink-soft);transition:background .12s,color .12s}
+.tabs button:hover{background:#fff;color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--paper);color:var(--notation);box-shadow:inset 0 3px 0 var(--notation)}
+.tabs button:focus-visible{outline:3px solid var(--shoal-deep);outline-offset:-3px}
+.panel{background:var(--paper);border:1px solid var(--rule);padding:34px 34px 40px}
+.panel[hidden]{display:none}
+
+h2{font-family:"Archivo Narrow",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:25px;margin:0 0 4px}
+h3{font-family:"Archivo Narrow",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.09em;font-size:15px;margin:34px 0 8px;color:var(--shoal-deep)}
+h3:first-of-type{margin-top:26px}
+.q{font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.55;color:var(--ink-soft);
+  border-left:3px solid var(--shoal);padding:7px 0 7px 13px;margin:0 0 16px}
+p{margin:0 0 15px}
+ul{margin:0 0 16px;padding-left:20px}
+li{margin-bottom:8px}
+
+.verdict{background:#F3F6F5;border:1px solid var(--rule);border-top:4px solid var(--notation);padding:16px 19px;margin:0 0 22px}
+.verdict .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:var(--notation);display:block;margin-bottom:5px}
+.verdict p:last-child{margin-bottom:0}
+.flag{border-left:4px solid var(--crimson);background:#FCF3F1;padding:13px 16px;margin:0 0 14px}
+.flag .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--crimson);display:block;margin-bottom:4px}
+.flag p:last-child{margin-bottom:0}
+.win{border-left:4px solid var(--shoal-deep);background:#F0F6F7;padding:13px 16px;margin:0 0 14px}
+.win .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--shoal-deep);display:block;margin-bottom:4px}
+.win p:last-child{margin-bottom:0}
+.quote{font-style:italic;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:14px;margin:0 0 15px}
+
+figure{margin:24px 0 28px}
+figcaption{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.05em;margin-top:9px;line-height:1.5}
+svg{display:block;width:100%;height:auto}
+
+table{width:100%;border-collapse:collapse;margin:0 0 20px;font-size:15px}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;text-align:left;color:var(--ink-soft);border-bottom:2px solid var(--ink);padding:7px 9px 7px 0}
+td{padding:9px 9px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td:first-child{font-family:"Archivo Narrow",sans-serif;font-weight:700;white-space:nowrap;padding-right:18px}
+
+footer{margin-top:26px;padding:20px 4px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.7;border-top:1px solid var(--rule)}
+footer strong{color:var(--notation)}
+
+@media (max-width:760px){
+  .hero-inner{grid-template-columns:1fr;padding:26px 20px 22px}
+  .rose{max-width:210px;margin:0 auto}
+  .panel{padding:26px 20px 32px}
+  .tabs button{flex:1 1 44%;font-size:11.5px;padding:11px 6px}
+  body{font-size:16.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.tabs{display:none}.panel{display:block!important;page-break-before:always;border:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<div class="hero-inner">
+  <div>
+    <p class="eyebrow">The Beta Besties · Paid Reader Report · Full Manuscript</p>
+    <h1>Crimson<br>Bearing</h1>
+    <p class="byline">JJ BRAÑA · READ BY PAPRIKA LYNN · AUGUST 2026</p>
+    <dl class="meta">
+      <div><dt>Read tier</dt><dd>Basic · $25</dd></div>
+      <div><dt>Words read</dt><dd>86,729</dd></div>
+      <div><dt>Chapters</dt><dd>22 + epi.</dd></div>
+      <div><dt>Coverage</dt><dd>Complete</dd></div>
+    </dl>
+  </div>
+  <div class="rose">
+    <svg viewBox="0 0 200 200" role="img" aria-label="Compass rose with a bearing line drawn to 212 degrees true">
+      <circle cx="100" cy="100" r="78" fill="none" stroke="#C6D0CC" stroke-width="1"/>
+      <circle cx="100" cy="100" r="60" fill="none" stroke="#C6D0CC" stroke-width="1"/>
+      <circle cx="100" cy="100" r="42" fill="none" stroke="#C6D0CC" stroke-width="1"/>
+      <g stroke="#C6D0CC" stroke-width="1">
+        <line x1="100" y1="22" x2="100" y2="178"/><line x1="22" y1="100" x2="178" y2="100"/>
+        <line x1="45" y1="45" x2="155" y2="155"/><line x1="155" y1="45" x2="45" y2="155"/>
+      </g>
+      <line x1="100" y1="100" x2="58.7" y2="166.1" stroke="#A8305E" stroke-width="2.4"/>
+      <circle cx="58.7" cy="166.1" r="4" fill="#A8305E"/>
+      <circle cx="100" cy="100" r="3" fill="#16242C"/>
+      <text x="100" y="16" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#4A5C63">N</text>
+      <text x="100" y="192" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#4A5C63">S</text>
+      <text x="46" y="182" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="500" fill="#A8305E">212°T</text>
+    </svg>
+  </div>
+</div>
+</div>
+
+<div class="scope">
+  <strong>What this is.</strong> One reader's honest response to the complete manuscript, read straight through, answering the sixteen questions you sent. You asked to be told the truth rather than be handled gently, so that's what this is. Nothing here is an editorial mandate. Take what's useful and argue with the rest.
+</div>
+
+<div class="tabs" role="tablist" aria-label="Report sections">
+  <button role="tab" id="t1" aria-controls="p1" aria-selected="true">First read</button>
+  <button role="tab" id="t2" aria-controls="p2" aria-selected="false">Pace &amp; pull</button>
+  <button role="tab" id="t3" aria-controls="p3" aria-selected="false">Marco</button>
+  <button role="tab" id="t4" aria-controls="p4" aria-selected="false">The spring</button>
+  <button role="tab" id="t5" aria-controls="p5" aria-selected="false">People</button>
+  <button role="tab" id="t6" aria-controls="p6" aria-selected="false">Craft</button>
+  <button role="tab" id="t7" aria-controls="p7" aria-selected="false">The ending</button>
+  <button role="tab" id="t8" aria-controls="p8" aria-selected="false">The big one</button>
+</div>
+
+<!-- ============ 1 ============ -->
+<section class="panel" role="tabpanel" id="p1" aria-labelledby="t1">
+<h2>First read</h2>
+
+<div class="verdict">
+<span class="lbl">Before I got analytical</span>
+<p>This is a real book. Not a promising draft with a real book somewhere inside it. A real book, with a genuine idea at its center that I have not seen anyone else do: the fountain of youth was never about youth. It's a mirror, and it has been misfiled in the historical record for five hundred years because the only people who lived to write it down were the ones who left before the reflection arrived.</p>
+<p>That's a great premise. And the execution has a problem I want to name early so everything else makes sense: <strong>the writing is not uniform.</strong> There are stretches here — the 1979 basin, the mess deck on Sunday night, the whole of Chapter Nine, Charlie's chili, the Miami kitchen — that are as good as anything on the shelf in this space. And there are stretches, concentrated in Part Three, that read like they were written down fast so the shape wouldn't be lost. A reader feels that difference. I felt it.</p>
+</div>
+
+<h3>The residual</h3>
+<p>Three things, a day later.</p>
+<p>The security man at the basin in 1979, looking at his own hand and seeing mangrove bark, and <em>not being frightened.</em> "This did not frighten him. This was the horror of it, not that he was frightened, but that he was not." I put my phone down after that.</p>
+<p>Charlie at the far end of the mess table saying the sweet thing in the chili was McBride's, and then: "And now he'll be the missing ingredient that will never ride with us again." That's the emotional high point of the entire manuscript and it happens in a galley over a pot of chili. It works because nobody makes a speech about it.</p>
+<p>And Marco lighting his grandmother's candle in Chapter Twenty-Two. Ten months unlit because his mother knew the difference between continuing a practice and claiming it. That's the whole novel compressed into one gesture, and you don't explain it, which is exactly right.</p>
+
+<h3>Describe it to a friend in two or three sentences</h3>
+<div class="quote">
+<p>It's October 1990, and a Navy electronic warfare tech on a hydrofoil out of Key West keeps picking up a signal on a bearing toward Cuba that isn't in any database and shouldn't exist. It leads to a spring the Spanish spent four centuries misunderstanding — the water doesn't restore youth, it returns whatever you brought to it, at full weight. He's a man who files everything he can't handle and never opens the drawer, which makes him either the worst person alive to stand at that water or the only one who needs to.</p>
+</div>
+<p>I could write that sentence honestly after finishing. I could not have written it from Part One alone. More on that in a moment.</p>
+
+<h3>One housekeeping note before the rest</h3>
+<div class="flag">
+<span class="lbl">Your file arrives partly highlighted</span>
+<p>Chapters Seventeen, Nineteen and Twenty-One come through with 86–92% of their text highlighted. Chapter Eighteen is about 15%. Everything else is clean.</p>
+<p>I don't know what the highlighting means to you and it's not my business. I'm flagging it because those same chapters read differently from the rest of the book, and the correlation is close to exact. Whatever process produced the highlight also produced a change in the prose. See the Craft tab.</p>
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="panel" role="tabpanel" id="p2" aria-labelledby="t2">
+<h2>Pace &amp; pull</h2>
+<p class="q">"Where, if anywhere, did you feel your attention drift or the pace drag?" · "Did you feel pulled to keep reading, chapter to chapter? Where was that pull strongest — and weakest?"</p>
+
+<figure>
+<svg viewBox="0 0 900 330" role="img" aria-label="Line chart of reader pull across all twenty-two chapters and the epilogue. Pull climbs through Part Two, peaks at Chapter Nine, drops sharply at Chapter Twelve, recovers, drops again at Chapters Seventeen and Nineteen, and peaks again at Chapters Eighteen and Twenty-Two.">
+  <rect x="0" y="0" width="900" height="330" fill="#FBF9F5"/>
+  <g stroke="#E2E8E5" stroke-width="1">
+    <line x1="52" y1="40" x2="878" y2="40"/><line x1="52" y1="88" x2="878" y2="88"/>
+    <line x1="52" y1="136" x2="878" y2="136"/><line x1="52" y1="184" x2="878" y2="184"/>
+    <line x1="52" y1="232" x2="878" y2="232"/>
+  </g>
+  <line x1="52" y1="280" x2="878" y2="280" stroke="#16242C" stroke-width="1.5"/>
+  <line x1="52" y1="40" x2="52" y2="280" stroke="#16242C" stroke-width="1.5"/>
+  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#4A5C63">
+    <text x="44" y="44" text-anchor="end">10</text><text x="44" y="140" text-anchor="end">6</text><text x="44" y="284" text-anchor="end">0</text>
+  </g>
+  <rect x="52" y="184" width="826" height="96" fill="#B32E22" opacity="0.05"/>
+  <text x="60" y="199" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#B32E22" letter-spacing="1">SKIM ZONE</text>
+  <!-- part dividers: after ch6 (idx5) and after ch9 (idx8); 24 pts, x=75..855 step ~33.9 -->
+  <line x1="261" y1="40" x2="261" y2="280" stroke="#9FC3CE" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="363" y1="40" x2="363" y2="280" stroke="#9FC3CE" stroke-width="1" stroke-dasharray="4 3"/>
+  <polyline fill="none" stroke="#A8305E" stroke-width="2.6" stroke-linejoin="round"
+    points="75,88 109,112 143,136 177,136 211,112 245,112 278,64 312,64 346,40 380,88 414,136 448,208 482,136 516,112 550,112 584,88 618,184 652,64 686,184 720,112 754,88 788,64 822,112"/>
+  <g fill="#A8305E">
+    <circle cx="75" cy="88" r="3.5"/><circle cx="109" cy="112" r="3.5"/><circle cx="143" cy="136" r="3.5"/>
+    <circle cx="177" cy="136" r="3.5"/><circle cx="211" cy="112" r="3.5"/><circle cx="245" cy="112" r="3.5"/>
+    <circle cx="278" cy="64" r="3.5"/><circle cx="312" cy="64" r="3.5"/><circle cx="346" cy="40" r="6" fill="#3E7C8C"/>
+    <circle cx="380" cy="88" r="3.5"/><circle cx="414" cy="136" r="3.5"/><circle cx="448" cy="208" r="6" fill="#B32E22"/>
+    <circle cx="482" cy="136" r="3.5"/><circle cx="516" cy="112" r="3.5"/><circle cx="550" cy="112" r="3.5"/>
+    <circle cx="584" cy="88" r="3.5"/><circle cx="618" cy="184" r="6" fill="#B32E22"/><circle cx="652" cy="64" r="3.5"/>
+    <circle cx="686" cy="184" r="6" fill="#B32E22"/><circle cx="720" cy="112" r="3.5"/><circle cx="754" cy="88" r="3.5"/>
+    <circle cx="788" cy="64" r="3.5"/><circle cx="822" cy="112" r="3.5"/>
+  </g>
+  <text x="346" y="30" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#3E7C8C">PEAK</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#4A5C63">
+    <text x="75" y="298" text-anchor="middle">1</text><text x="109" y="298" text-anchor="middle">2</text>
+    <text x="143" y="298" text-anchor="middle">3</text><text x="177" y="298" text-anchor="middle">4</text>
+    <text x="211" y="298" text-anchor="middle">5</text><text x="245" y="298" text-anchor="middle">6</text>
+    <text x="278" y="298" text-anchor="middle">7</text><text x="312" y="298" text-anchor="middle">8</text>
+    <text x="346" y="298" text-anchor="middle">9</text><text x="380" y="298" text-anchor="middle">10</text>
+    <text x="414" y="298" text-anchor="middle">11</text><text x="448" y="298" text-anchor="middle">12</text>
+    <text x="482" y="298" text-anchor="middle">13</text><text x="516" y="298" text-anchor="middle">14</text>
+    <text x="550" y="298" text-anchor="middle">15</text><text x="584" y="298" text-anchor="middle">16</text>
+    <text x="618" y="298" text-anchor="middle">17</text><text x="652" y="298" text-anchor="middle">18</text>
+    <text x="686" y="298" text-anchor="middle">19</text><text x="720" y="298" text-anchor="middle">20</text>
+    <text x="754" y="298" text-anchor="middle">21</text><text x="788" y="298" text-anchor="middle">22</text>
+    <text x="822" y="298" text-anchor="middle">E</text>
+  </g>
+  <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#9FB0B6">
+    <text x="156" y="318" text-anchor="middle">PART ONE</text>
+    <text x="312" y="318" text-anchor="middle">PART TWO</text>
+    <text x="600" y="318" text-anchor="middle">PART THREE</text>
+  </g>
+</svg>
+<figcaption>Reader pull by chapter. One reader, one pass, no re-reading. Part Two is a clean rising line. Part Three sawtooths badly.</figcaption>
+</figure>
+
+<h3>Strongest pull</h3>
+<p><strong>Chapters Seven through Nine.</strong> This is your book at full power and it is not close. Seven is the Morse arriving — the settled hand on the key, "not bored, beyond bored, the terrifying stability of competence so complete it became automatic," and Washington saying <em>spoons</em> from the next console. Eight is the prisoner talking to his own reflection in a dead television screen. Nine is the whole island: the tidal channel that finds Ferguson rather than the other way round, the calcified figures in the tree line with the Navy buttons and the iron ring at the ankle, and McBride's three words.</p>
+<p>Chapter Nine is the best chapter in the manuscript. I would not change a line of it.</p>
+<p>After that: Chapter Eighteen at the basin, Chapter Twenty-Two in Miami, and the 1979 Viktor sequence in Chapter Three.</p>
+
+<h3>Weakest pull, in order</h3>
+<div class="flag">
+<span class="lbl">1. Chapter Twelve — the lowest point in the book</span>
+<p>Two and a half thousand words on a hydraulic repair, immediately after the emotional detonation of Chapter Nine and the reveal of Chapter Ten. And the bulk of it is a comic set piece about Chief Narly's exophthalmos — his eyes tracking Williams and Finn "like a windshield wiper and a tennis match," with two crewmen up on deck narrating it.</p>
+<p>It's a funny bit. It is in absolutely the wrong place. McBride died three chapters ago. Hernandez is counting heads on the pier and getting four. And the chapter's controlling comic engine is a joke about a man's medical condition. That collision is going to cost you readers who were fully invested ninety minutes earlier.</p>
+<p>Cut the Narly comedy or move it to Part One, where the crew's texture is being established and the joke costs nothing.</p>
+</div>
+<div class="flag">
+<span class="lbl">2. Chapter Seventeen — your climax is your third-shortest chapter</span>
+<p>1,823 words. It contains: two vessels converging on the island at forty-six knots, two Cuban Osa-class missile boats painting the <em>Fortuna</em> with fire-control radar, Redstone answering with the SPG-60, the Cubans backing down, and Marco discovering he has invented a pattern that isn't there. Any one of those is a chapter.</p>
+<p>Instead they arrive as summary. "Two vectors. One point." "The window closed. The rationalization cracked." "It wasn't a theory anymore. It was a collision." That's a synopsis of a great chapter, not the chapter.</p>
+<p>The Cuban standoff in particular is the single most under-written thing in the manuscript. You have an American hydrofoil and two Soviet-built missile boats in a radar staring contest in international water, resolved without a shot because one captain says the only sentence that matters — <em>we see you and we are not stopping</em>. That should be four thousand words of unbearable tension. It's about six hundred.</p>
+</div>
+<div class="flag">
+<span class="lbl">3. Chapter Nineteen — 698 words carrying the entire comedown</span>
+<p>The ride home after the island. Marco failing three times to write down what happened, Ferguson saying her water sense went away and something else moved in. Both of those are excellent. Both get four lines. This is the chapter where the reader is supposed to metabolize what just happened and it's over before it starts.</p>
+</div>
+<p>Minor drag elsewhere: the <strong>117-year montage</strong> in Chapter Three (the telegraph through ARPANET, each paragraph ending on a variation of "the spring had no opinion" — you make the point in three and make it fourteen times, and the four-paragraph Smedley Butler detour stops the book to tell me about a man who never comes to the spring). And the <strong>Fantasy Fest tourist</strong> bit in Chapter Fourteen, which is charming and lands right after Garrett's line about McBride eating two bowls.</p>
+
+<h3>Where the weight actually sits</h3>
+<figure>
+<svg viewBox="0 0 900 200" role="img" aria-label="Bar chart of word count by part. Part One is 32,097 words, Part Two is 14,143 words, Part Three is 40,566 words.">
+  <rect x="0" y="0" width="900" height="200" fill="#FBF9F5"/>
+  <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#4A5C63">
+    <rect x="150" y="30" width="500" height="30" fill="#9FC3CE"/><text x="660" y="50">32,097 · 37%</text>
+    <rect x="150" y="76" width="220" height="30" fill="#3E7C8C"/><text x="380" y="96">14,143 · 16%</text>
+    <rect x="150" y="122" width="632" height="30" fill="#A8305E"/><text x="792" y="142">40,566 · 47%</text>
+  </g>
+  <g font-family="Archivo Narrow, sans-serif" font-weight="700" font-size="12" fill="#16242C" text-anchor="end">
+    <text x="140" y="50">PART ONE</text><text x="140" y="96">PART TWO</text><text x="140" y="142">PART THREE</text>
+  </g>
+</svg>
+<figcaption>Part Two is the shortest section and the best-written. Part Three is nearly half the book.</figcaption>
+</figure>
+<p>Your strongest material is your least. Part Two runs three chapters and 14,143 words and never puts a foot wrong. Part Three runs thirteen chapters and 40,566 words and contains both your best chapter after Nine (Twenty-Two) and your three weakest.</p>
+<p>Also worth knowing: the climax lands at roughly the 78% mark, which leaves about 12,000 words of falling action. That's a lot. In this case I think most of it earns its place — Chapters Twenty through Twenty-Two are doing real work — but Nineteen and Twenty-One are load-bearing and both are running on fumes.</p>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="panel" role="tabpanel" id="p3" aria-labelledby="t3">
+<h2>Marco</h2>
+<p class="q">"Did the opening hook you?" · "Did you feel you understood and connected with Marco as a person by the end of Chapter One, or did he feel more like a skilled observer than a character yet?"</p>
+
+<h3>The opening</h3>
+<p>Yes. "The sea had gone black an hour before the moon quit" is a first line that knows what it's doing, and a nine-hour EMCON exercise told entirely through a man listening should be unbearable and instead is taut the whole way.</p>
+<div class="win">
+<span class="lbl">Why it works</span>
+<p>You dramatize the method rather than explaining it. "A bearing that walked was a ship crossing your bow. A bearing that held still and got louder was a problem." Now I can read the plot alongside Marco, so when the bearing at 155 holds steady and strengthens, I feel it before you tell me to. And Redstone's "Good," landing hard <em>because</em> it's so small, is the best beat in the chapter.</p>
+</div>
+
+<h3>Your instinct about Chapter One is right</h3>
+<div class="verdict">
+<span class="lbl">And it costs more than you think, because of what comes later</span>
+<p>By the end of Chapter One, Marco is a function. Rank, rating, eleven years, a pair of ears. His grandmother's medal — the object the entire emotional architecture of this novel hangs on, the thing he touches at the basin, the thing he presses flat in Miami — is not mentioned once. Elena isn't mentioned. The 212 bearing isn't mentioned. The only interiority is professional.</p>
+<p>The chapter's thesis is in its last movement: the ship spent nine hours as nothing but ears, and the second she raised her voice the sky killed her. "There was something in that shaped like a rule. He didn't have the category for it yet." That's Marco's arc in miniature — a man who survives by not transmitting. It's exactly right. And it only lands as <em>character</em> if I already know he does this with Elena, with his father's death, with the notebook. I don't yet.</p>
+</div>
+<div class="win">
+<span class="lbl">The cheapest fix in the manuscript</span>
+<p>One paragraph. Somewhere in the long wait between 0347 and 0512, with the bearing walking left and nothing to do but listen, let his hand go to the medal under his shirt. Don't explain it. Four words about who gave it to him. You make this exact move all through Chapter Two and it works every time. Chapter One is the only chapter in the book where his body never gives him away.</p>
+</div>
+
+<h3>The notebook</h3>
+<p>Your single best structural device, and I want to be sure you know it. He writes the bearing down. He crosses it out. He writes it again. Four times written, three times crossed out, the fourth crossing-out never completed "because he ran out of the conviction that crossing it out required." Then in Chapter Ten he stops crossing things out entirely, and by Chapter Twenty-One he adds a line and leaves it.</p>
+<p>That runs the entire length of the book, tracks the whole arc, and never once announces itself. Whatever else you change, do not touch it.</p>
+
+<h3>The harder thing about Marco</h3>
+<p>He is a receiver, not an actor. Across 86,000 words, count what he actually <em>does</em>: he flags the bearing, he asks for Ramonoff on the shore party, and he declines the spring. That's it. The spring breaks Viktor. McBride saves the team. Ramonoff takes the keeper role. El Mayombe administers the sacrament. Ferguson finds the channel. Hernandez holds Ferguson together.</p>
+<p>His climactic choice — the biggest moment you give him — is a refusal. A decision to not do a thing.</p>
+<p>I understand the design. The book is explicitly about attending versus seeking, and Marco's restraint is the thematic answer. "It was not rejection; it was witness." That's coherent and I can defend it.</p>
+<p>It still cost me. And here's the proof that it's fixable: <strong>in Chapter Twenty-Two Marco finally initiates</strong> — he lights the candle his mother wouldn't light, he puts the deck on the table, he says McBride's name out loud to his family, he pulls out the chair for Elena. Four active choices in one chapter, and it's the most alive he is in the entire novel. You know exactly how to make him act. You do it at the 95% mark.</p>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="panel" role="tabpanel" id="p4" aria-labelledby="t4">
+<h2>The spring</h2>
+<p class="q">"Did the restraint around the spring — how little is explained directly — feel intriguing, or frustrating?" · "Was there a point where you wanted more explanation than you got? Where, specifically?"</p>
+
+<div class="verdict">
+<span class="lbl">The finding I most want you to sit with</span>
+<p><strong>The book is not restrained about the spring. It's restrained in the wrong hemisphere.</strong> You are genuinely reticent about the mythic and unexpectedly generous about the neurology, and I think you have those backwards.</p>
+</div>
+
+<h3>What you withhold, correctly</h3>
+<p>The rule itself, the Calusa name, the keeper lineage, the difference between seeking and tending, El Mayombe's origin. It arrives in Chapter Three delivered plainly, then the book returns to Marco who knows none of it. I know more than he does and it creates real tension for four hundred pages. That's well judged.</p>
+<p>The café scene in Chapter Two is the model — the pause before the surname, "almost certainly wrong about the location. <em>Almost.</em>" Perfect. I don't need a syllable more of that.</p>
+
+<h3>What you don't withhold at all</h3>
+<div class="flag">
+<span class="lbl">The mechanism dump</span>
+<p>The two deaths in 1979 are the best-written passages in the book and you interrupt both to explain the pharmacology. Anadenanthera. Bufotenine. DMT alkaloids as serotonergic. Hypocapnia constricting cerebral vessels and lowering the seizure threshold. The parietal lobe as the seat of spatial boundary processing. The God Helmet phenomenon, "documented but not yet named in 1979."</p>
+<p>Watch what happens inside one sentence: "The prop roots did not grab him. His mind, severed from the regulatory logic of the frontal lobe by forty minutes of Cohoba inhalation and a localized God Helmet field targeting his temporal lobes at the precise moment of maximum neurochemical load, simply stopped insisting on the distinction…" You had me inside a dissolving man and pulled me into a lecture hall mid-sentence.</p>
+<p>The horror of that scene is that <em>he isn't frightened.</em> Naming the receptor doesn't deepen it. It domesticates it. Every clinical term is a quiet reassurance that this is explicable, and a spring whose entire identity is that it only deals in truth should not be explicable.</p>
+</div>
+<p>My read: you're a nurse, you know this cold, and the instinct to ground the impossible in real neurochemistry comes from the same place your naval detail comes from. But the naval detail grounds a <em>world.</em> The neurochemistry grounds a <em>miracle</em>, and miracles don't survive it.</p>
+<p>Cut roughly seventy percent of the clinical vocabulary from both 1979 deaths. Keep the bodies entirely — the bark hands, the arrhythmia smoothing out, the relief, the sound a man makes setting down something heavy. Keep one clinical sentence at most, from Viktor's POV, because Viktor is the man who instruments things and that's characterization rather than exposition.</p>
+<p>The same instinct shows up again in Chapter Nine, where the pyramid housing gets a full paragraph explaining resonant cavity geometry and ELF field concentration. You'd already made me feel it as "not a sound, a pressure." That was enough.</p>
+
+<h3>Where I wanted more, specifically</h3>
+<ul>
+<li><strong>Psychotronics.</strong> Redstone tells Marco not to use the word in any official channel. "You know which one." I don't, actually. That's the first moment an officer recognizes the thing, and you skip past it. Later chapters explain the program but never explain <em>Redstone</em> — how does a PHM captain in 1990 know that word well enough to be afraid of it?</li>
+<li><strong>The concrete slab.</strong> A 1950s American installation poured over the lagoon and decommissioned in place, with Navy dead calcified in the tree line beside it. Two paragraphs and a CIA footnote from 1958. That is the most tantalizing unpulled thread in the book, and it's more interesting than the Soviet layer because it's <em>ours</em>.</li>
+<li><strong>The Salvage.</strong> Named exactly once, in Chapter Fifteen, inside Fitzgerald's head, with no setup. Then referenced as "the third interest" twice more, and a man with an embossed notebook watches Marco from the waterfront in Chapter Twenty-One. If this is book two, fine — but right now a first-time reader gets an organization name dropped in a subordinate clause and never explained. Either seed it three times earlier or hold it entirely for the last chapter.</li>
+</ul>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="panel" role="tabpanel" id="p5" aria-labelledby="t5">
+<h2>People</h2>
+<p class="q">"Which character(s) did you connect with most? Least?" · "Did Marco's family/heritage material feel integrated, or bolted on?" · "Did the antagonist (Viktor) feel like a real threat?"</p>
+
+<h3>Most connected</h3>
+<table>
+<tr><th>Character</th><th>Reader note</th></tr>
+<tr><td>McBride</td><td>Number one, and it's a problem I'll get to. Reads the water like his uncle Earl read weather. The red snapper story is the best comic set piece in the book and it's also a character thesis: a boy told <em>don't move</em>, who didn't move, for twenty minutes. Then he holds a path in a hurricane and says three words. The Elijah frame around him — the 1 Kings epigraph, "and Elijah ascended in a tempest" — is quiet and earned and I noticed it and it landed.</td></tr>
+<tr><td>Charlie (MS1)</td><td>A supporting character who gets maybe twelve hundred words total and walks off with the emotional climax of the novel. The plantain chili argument, "I don't give out recipes, I give out results," and then the sweet ingredient. Perfect economy.</td></tr>
+<tr><td>Washington</td><td>Steps over his four-year-old without breaking stride. Uncle Carver who broke down beef at Circle Food Store for forty years, and the family figured that was worth honoring. "You been sitting with it because you don't know what it is, or because you do." He's also the only person who makes Marco talk, and you underuse him badly after Part One.</td></tr>
+<tr><td>Hernandez</td><td>Her Chapter Twenty is the best interior work in the book. <em>Cargado</em> as a framework that the spring takes away from her, the protective instinct inverting so she reads her own crew as threats, and naming the color after McBride before she knew he was going to give it. "She had named it after him. He had been it already."</td></tr>
+<tr><td>Elena</td><td>Almost entirely offstage and she carries the whole thematic payload. The notebook — "I wasn't documenting you. I was trying to find you" — and the realization that she was tending, not seeking, without ever having the word. Genuinely moving.</td></tr>
+</table>
+
+<h3>Least connected</h3>
+<p><strong>Viktor</strong> — see below.</p>
+<p><strong>Ramonoff</strong> — and I think you know. The interlude explicitly names the effect: "like a room where all the furniture is correctly arranged and no one has ever lived." It's deliberate. But by the time he inherits the spring in Chapter Eighteen, he's carrying the largest transformation in the novel, and I never got inside him enough to feel it as a cost. He has an inheritance and a heartbeat. He never has a want of his own that isn't the spring's.</p>
+<p><strong>The cast size.</strong> I counted upward of forty named characters. Some are lovely and cost nothing. But Chapter Four introduces seven LEDET personnel with hometowns and family backstories in a single sequence, and Chapter Twelve gives extended characterization to Narly, Williams, Finn, Hopper, Houck and Gray — six people, three of whom appear once. Every one of those names asks the reader for storage space. Pick the ones who recur and let the rest be a competent team.</p>
+
+<h3>Heritage — integrated or bolted on?</h3>
+<div class="verdict">
+<span class="lbl">Integrated. It's the spine, and it's better than you seem to think.</span>
+<p>The cemetery wall proves it: the frangipani he's been trying to place for thirty years turns out to be his grandmother's yard, which unlocks her voice — <em>la distancia tiene peso</em> — which he'd dismissed as poetry and which is now describing the actual pressure change his instruments are logging as normal variance. Heritage, sense memory, grief and the plot's central mechanism all arriving through one smell at one wall.</p>
+<p>Then it compounds. Abigail at the tree line in 1961. Rodrigo's <em>las aguas rojas del norte que recuerdan lo que cruzamos.</em> Fitzgerald's mother's <em>el mar tiene lugares que Dios no quiso que los hombres bebieran</em> — three generations of Cuban women who knew and didn't say, and a son who filed it under Mom being dramatic for twenty-three years. That's not decoration. That's the load-bearing wall.</p>
+</div>
+<p>Two cautions. First, <strong>the medal is getting touched a lot.</strong> I count it well past a dozen times, and by the last third the gesture has stopped meaning anything because it means everything. Redistribute rather than add — and give one of them to Chapter One, where it's absent.</p>
+<p>Second, you have three religious traditions running — Cuban Catholic/Santería, Taíno, and Baba Anya's Russian folk practice — and a Christian frame over the top of it in the Elijah epigraph and the Hopkins at the end. They coexist beautifully and they never once touch. Nobody notices that Baba Anya's <em>thin places</em> and Abigail's fresh water and the behique's set-and-setting are three names for the same discipline. One character noticing that would be a gift.</p>
+
+<h3>Is Viktor a real threat?</h3>
+<div class="flag">
+<span class="lbl">No. And this is the structural problem underneath your ending question.</span>
+<p>Viktor is a well-drawn <em>character</em> and an absent <em>antagonist</em>. Track what he actually does on the page across 86,000 words: he has a coffee with Marco in Chapter Two, drinks coffee alone in Havana in 1983, walks through Fantasy Fest and gets away, and kneels at the basin. He never threatens anyone. He never physically endangers Marco. His people grab Ramonoff — and Ramonoff wanted to go, and put both of them on the concrete in about nine seconds.</p>
+<p>Then the spring defeats him, in a passage where Marco stands across the clearing and watches. And he escapes in a single sentence: "Viktor was in open water before anyone reached his extraction point."</p>
+<p>Eleven years of buildup, and the reader never once fears him.</p>
+</div>
+<div class="win">
+<span class="lbl">And here's the thing that makes it fixable</span>
+<p>The café scene in Chapter Two — Viktor handing Marco the book's entire thesis over a cafecito, the horizon as the next position, the water being interested in what you brought, "almost certainly wrong about the location, <em>almost</em>" — is one of the five best scenes in the manuscript.</p>
+<p>It's also the <strong>only</strong> scene where Marco and Viktor speak to each other. Your protagonist and your antagonist share exactly one conversation, in Chapter Two, and never exchange another word for the rest of the book. Not at the basin. Not after. Nothing.</p>
+<p>You wrote the proof that these two are electric together and then kept them apart for four hundred pages.</p>
+</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="panel" role="tabpanel" id="p6" aria-labelledby="t6">
+<h2>Craft</h2>
+<p class="q">"Did the naval and technical detail ever feel like too much, or did it slow you down? Did it ever feel too thin?" · "Did the mix of military thriller, supernatural, and reflective/spiritual tone feel cohesive?" · "Was there anywhere you got confused about who was speaking or thinking?"</p>
+
+<h3>The naval material</h3>
+<p>Neither too much nor too thin. This is the most confident thing in the book and it isn't close. I'm not a Navy reader and I was never once lectured, because you almost always dramatize instead of explain: the ship "pretending to be smaller than she was," the 76mm servos ending a chase without a shot, Ferguson's glass-cannon briefing to the four juniors — aluminum that melts below what a fuel fire produces, "steel ships burn, aluminum ships stop being ships." Five hundred and twenty-nine thousand pounds standing on two foils the size of dinner tables.</p>
+<p>The one place it thins is Chapter Seventeen, where the Cuban standoff — Pot Drum fire-control, the SPG-60 answering, the lead boat stepping down — happens in about six hundred words of summary. That's not too much detail. That's not enough scene.</p>
+
+<h3>The genre blend</h3>
+<table>
+<tr><th>Register</th><th>Verdict</th></tr>
+<tr><td>Military + reflective</td><td><strong>Fused, and this is the book's real achievement.</strong> Marco's professional listening and his personal not-transmitting are the same trait, so the procedural and the interior run on one engine. The barometer and the grandmother's warning describing the same phenomenon. Nobody has to say the theme out loud.</td></tr>
+<tr><td>Military + supernatural</td><td><strong>Working.</strong> The signal is the right bridge — a bearing is a naval object and a mystical one simultaneously, and having the ALR-66 corroborate Marco's prototype keeps the supernatural inside the procedural's rules.</td></tr>
+<tr><td>Part Three</td><td><strong>Sequential rather than blended.</strong> Chapters Ten through Sixteen are almost entirely literary and domestic. Seventeen and Eighteen are thriller. Nineteen through Twenty-Two are literary again. The three registers stop being simultaneous and start taking turns.</td></tr>
+</table>
+
+<h3>The prose shift in Part Three</h3>
+<div class="flag">
+<span class="lbl">This is the craft note that matters most</span>
+<p>Compare two passages from the same book.</p>
+<p>Chapter Nine: "The color was wrong. Not dramatically wrong, a degree of wrong his uncle's shrimping knowledge registered as significant before his conscious mind had finished assigning language to it. The grease-black surface held a heavy, oily sheen that didn't separate when the hull sliced through it."</p>
+<p>Chapter Seventeen: "The window closed. The rationalization cracked. Ramonoff was marked and moving. The beacon broadcast again after eleven years of patience. Viktor pushed the throttles forward."</p>
+<p>Those are different writers. The second one is telling me what happened. The first one is putting me in the boat.</p>
+<p>Chapters Seventeen, Nineteen and Twenty-One are the three chapters that arrive highlighted in your file — 86 to 92 percent of their text — and they are also the three where the prose goes clipped and declarative and summary-shaped. Chapter Nineteen is 698 words. Chapter Seventeen is 1,823. They are your two shortest chapters and they carry your convergence and your comedown.</p>
+<p>Whatever produced the highlighting, those chapters have not had the pass the rest of the book has had. A reader will feel it as the book getting tired in the last third.</p>
+</div>
+
+<h3>Where I got confused about who was speaking</h3>
+<div class="flag">
+<span class="lbl">The surname/given-name switch — a systemic issue</span>
+<p>You switch between surname and first name for the same character mid-scene, with no signal, and it repeatedly reads as a new person entering.</p>
+<p>Chapter Five: "Marco came in at 2145 with a cup of coffee…" then four lines later, "Reyes looked over. 'Miss what.'" I stopped and reread, assuming Reyes was someone else.</p>
+<p>Chapter Thirteen: "BM2 Megan Ferguson was the senior remaining LEDET officer" then "Megan took out her phone and dialed."</p>
+<p>Chapter Twenty: Hernandez throughout, then "Miriam looked at him," then back to Hernandez, then Miriam again, alternating within a single scene.</p>
+<p>Pick one register per POV and hold it. If the first-name switch is doing deliberate work — the private self versus the professional one — you need to make that legible, because right now it reads as inconsistency.</p>
+</div>
+<p>Other confusion points:</p>
+<ul>
+<li><strong>Chapter Four's opening line:</strong> "In six days it flagged one thing he couldn't explain." No antecedent for "it." Cold open on an unattached pronoun.</li>
+<li><strong>Chapter Fourteen's second section</strong> opens: "Not about cooking. Those were older than the Navy." Not about cooking — <em>what</em> wasn't? The section starts mid-thought with no subject. This is the single most disorienting sentence in the manuscript and it's easily the most fixable.</li>
+<li><strong>Chapter Thirteen</strong> opens "He had two debriefs" and doesn't name Redstone for two full paragraphs.</li>
+<li><strong>Abigail</strong> is referenced in Chapter Two ("the kind his mother and Abigail both read") before the reader knows who she is. Name the relationship on first mention.</li>
+<li><strong>Chapter Twelve's POV floats</strong> — Narly, Gray, Hopper, Houck, Williams, and back, inside one scene.</li>
+</ul>
+
+<h3>Continuity flags</h3>
+<div class="flag">
+<span class="lbl">The Saturday recall, narrated twice, two different vehicles</span>
+<p>Chapter Two ends with the beepers going off in the park, Mackey saying "Phone, I'll take the bikes," and the two of them <em>riding hard through the crowd to the pier.</em> Chapter Four restarts the same evening at 1712, runs the same beeper at 1719 and the same recall — except this time Marco <em>drives</em>: "The drive back to the pier was a fight… his hands quiet on the wheel." Same night, same twenty minutes, narrated twice, two modes of transport.</p>
+</div>
+<div class="flag">
+<span class="lbl">Chapter Twenty can't decide what night it is</span>
+<p>Header and opening say Wednesday night, ten o'clock. Two thousand words later: "sitting at the end of a pier in Key West at 2230 on a Monday night." Same scene.</p>
+<p>Related: Chapter Twenty-One opens "The pier at Trumbo Point on a Saturday evening, late October 1990. Fantasy Fest was over" — but the ship returned Wednesday and the previous chapter is Wednesday night. Then "The BEQ room remained exactly as he had left it ten days ago." The last third's timeline needs a pass with a calendar.</p>
+</div>
+<div class="flag">
+<span class="lbl">Two smaller ones</span>
+<p><strong>Lunula / Lunnitsa.</strong> The pendant is the "Lunula" in Chapters Sixteen and Eighteen and the "Lunnitsa" three times in the Epilogue. Pick one.</p>
+<p><strong>Chapter Eight's ending.</strong> The mess-deck sequence ends with "the storm continued outside, the <em>Fortuna</em> ran north" — but Chapter Nine then has the ship holding position off the mangrove line with the shore party still on the island. As written, Eight appears to conclude after the return and Nine rewinds. If that interleaving is deliberate, it needs a signal.</p>
+</div>
+<p>One thing that <em>isn't</em> an error, in case anyone flags it at you: El Mayombe's numbers hold. Born 1845, receives the tending at fifteen in 1860, seventeen in the 1862 section, one hundred and forty-five years old in 1990 with one hundred and thirty years of tending. All consistent. But "the 145-year witness" and "one hundred and thirty years" sit close enough together to read as a slip, so consider giving the reader one clarifying clause.</p>
+
+<h3>Two smaller things</h3>
+<ul>
+<li><strong>Outline scaffolding is still in the prose.</strong> Chapter Eight has "MOVEMENT ONE: THE APPROACH / MOVEMENT TWO: THE CRESCENDO / MOVEMENT THREE: THE STORM PEAK." Chapter Nine has "The Fragmentation Begins," "The Crystallization," "The Sacrament," "Go On. I Got It." These read as planning headers rather than chapter architecture, and Chapter Nine in particular is good enough that it doesn't need signposts telling me what's about to happen. "The Crystallization" announces McBride's decision before he makes it.</li>
+<li><strong>The Hopkins is truncated.</strong> "God's Grandeur" ends mid-line — "Because the Holy Ghost over the bent" — missing the closing. Either finish it or cut it. Right now it reads as a file error rather than a choice.</li>
+</ul>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="panel" role="tabpanel" id="p7" aria-labelledby="t7">
+<h2>The ending</h2>
+<p class="q">"Did the ending feel earned, or did it feel like it was missing a bigger climax?"</p>
+
+<div class="verdict">
+<span class="lbl">Short answer</span>
+<p>The ending is <strong>emotionally earned and structurally underfed</strong> — and the thing it's missing is not a bigger climax. Adding spectacle would make it worse. What it's missing is a reckoning between the two men the whole book has been pointing at each other.</p>
+</div>
+
+<h3>What's earned</h3>
+<p>Chapter Twenty-Two is the correct ending to this novel and it is genuinely moving. The candle lit for the first time since January, by the hands his grandmother spent thirty years preparing. Rodrigo's prayer. His father to the window: "Whatever she told you. Whatever she put around your neck. It was accurate." And then Marco teaching his family Spades so McBride's game keeps going, which is the only funeral this book could give a man whose body the Gulf took.</p>
+<p>"He played Spades like a religion and Blackjack like a negotiation." Marco says that to his family in Miami. Marco said it to McBride's face in Chapter Five when McBride dealt him a perfect blackjack off a cut deck. That callback is one of the best things in the manuscript.</p>
+<p>Elena's arrival is a hair convenient — Teresa called her, and Teresa timed it — but Chapter Twenty-One does the work to make it land, and "Tell me," followed by Marco saying McBride's name, is the right last note.</p>
+<p>Marco's refusal at the basin is also earned, and I want to be clear about that: a bigger climax where he drinks would be a worse book. The restraint is right.</p>
+
+<h3>What isn't</h3>
+<div class="flag">
+<span class="lbl">Viktor leaves the novel in one sentence</span>
+<p>He arrives at the basin. He kneels. The spring shows him what he brought. Marco watches from across the clearing and shakes his head at Jackson. And then: "Viktor was in open water before anyone reached his extraction point. His exit was planned for eleven years. It worked."</p>
+<p>That's it. Eleven years of network-building, a nephew recruited, a dead security man, a beacon in a hollow, three cities of infrastructure — and the antagonist's departure is a summary sentence in a wrap-up paragraph.</p>
+<p>Worse: the spring beats him, not Marco. Your protagonist's role in the defeat of your antagonist is to decide not to intervene.</p>
+</div>
+<p>The other loose end is Ramonoff. He takes the keeper role in a scene that is thematically correct and emotionally muted, because I never had enough of him to feel the weight of what he's giving up. He's twenty-three. He's disappearing from the world. Jackson gets one exchange — "I'm not lost. Write it however you need to write it" — and that's the best moment in the sequence precisely because someone reacts like a human being. There should be more of that.</p>
+
+<h3>What I'd actually do about it</h3>
+<p>Not a bigger set piece. A conversation.</p>
+<p>Marco and Viktor meet once, in Chapter Two, over coffee, and it's excellent. Give them a second scene at the basin's edge — after the spring has done its work, while Viktor is still on his knees and stripped of the story he's been telling himself for eleven years. Marco is the only person in the clearing who has stood where Viktor stood and made the opposite choice. Viktor is the only person alive who can tell Marco what the other road costs.</p>
+<p>They don't have to fight. Neither of them is a fighter. But your entire theme is <em>what you brought and what came back</em>, and you have two men in a clearing holding opposite answers to that question who never speak.</p>
+<p>Then let Viktor go if you want. An escape after a reckoning is an ending. An escape instead of one is an exit.</p>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="panel" role="tabpanel" id="p8" aria-labelledby="t8">
+<h2>The big one</h2>
+<p class="q">"What's the single biggest thing you'd change if it were yours?"</p>
+
+<div class="verdict">
+<span class="lbl">One change</span>
+<p><strong>Give Marco one action that changes the outcome.</strong></p>
+<p>Right now the spring breaks Viktor, McBride saves the team, Ramonoff inherits the keeping, El Mayombe runs the sacrament, Ferguson finds the channel, Hernandez holds Ferguson together, and Redstone makes every command decision. Marco observes all seven. He is the most passive protagonist I have read in a book this good.</p>
+<p>The theme defends it — attending, not seeking, witness rather than possession — and I take that seriously. But theme is not the same as story, and a reader who doesn't have your outline in their head experiences four hundred pages of a man that things happen near.</p>
+</div>
+<p>The fix doesn't require breaking the theme. It requires finding the one moment where <em>attending</em> is itself an action with a cost. He half-does it already: asking for Ramonoff on the shore party is the single most consequential thing he does in the book, and you spend one page on it. That request puts Ramonoff on the island, which is how Ramonoff becomes compatible, which is how the spring finds its keeper. Marco causes the ending and neither he nor the reader ever registers it.</p>
+<p>Land that. Let him understand, at the end, that his one act of attention set all of it moving. That's an active protagonist who never once reaches for the water.</p>
+
+<h3>Everything else, in priority order</h3>
+<ul>
+<li><strong>Write Chapter Seventeen properly.</strong> The convergence and the Cuban standoff deserve four thousand words of scene, not eighteen hundred of summary. Same for Chapter Nineteen's comedown.</li>
+<li><strong>Give Marco and Viktor a second scene</strong> at the basin. Then let him escape.</li>
+<li><strong>Move or cut the Chapter Twelve comedy.</strong> Not because it isn't funny. Because it lands three chapters after McBride dies.</li>
+<li><strong>Strip the clinical vocabulary from the 1979 deaths.</strong> Keep the bodies, cut the receptors.</li>
+<li><strong>Break up Chapter Three.</strong> Six thousand words with no protagonist, parked right after six thousand words of low external movement. Thread it as interludes — you already prove the technique works, because the Ramonoff interlude is exactly that move at exactly the right length.</li>
+<li><strong>Cut the 117-year montage to under 400 words.</strong> Lose Smedley Butler entirely.</li>
+<li><strong>Give Marco the medal in Chapter One.</strong> One paragraph. Highest-value smallest change in the book.</li>
+<li><strong>Fix the name-switching, the timeline in Part Three, and the Chapter Two/Four recall seam.</strong></li>
+<li><strong>Thin the named cast</strong> and pull the outline headers out of Chapters Eight and Nine.</li>
+</ul>
+
+<h3>Last thing, and I mean it</h3>
+<p>You asked to be told the truth rather than be handled gently, so here's the part of the truth that matters most: <strong>almost nothing in this report is a writing problem.</strong> Every note above is about sequence, proportion, restraint, or one section not having had the same pass as the rest. The sentences are already there.</p>
+<p>The bark hands. The tidal channel finding Ferguson. Charlie and the sweet ingredient. The calcified sailors standing in the tree line with their hands still out. Hernandez naming a color after a man before she knew he'd give it. A grandmother's candle unlit for ten months because her daughter knew the difference between continuing a practice and claiming it.</p>
+<p>Writers who can do that are rare. Writers who will move a beloved chapter and delete a favorite fifteen hundred words are rarer. The second one is what this book needs, and it's the easier of the two to become.</p>
+<p style="font-family:'Archivo Narrow',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:26px">— Paprika Lynn</p>
+</section>
+
+<footer>
+<p><strong>THE BETA BESTIES · READER REPORT · CRIMSON BEARING · AUGUST 2026</strong><br>
+Basic Read, $25 tier. Full manuscript, 86,729 words, 22 chapters plus epilogue. Read once, straight through, in order.<br>
+This is one reader's honest response, not an editorial report. No line edits, no copyedit pass, no proofreading. Take what's useful and argue with the rest.</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role="tab"]'));
+  function show(i){
+    tabs.forEach(function(t,j){
+      var p=document.getElementById(t.getAttribute('aria-controls'));
+      var on=(i===j);
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+      p.hidden=!on;
+    });
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(i);window.scrollTo({top:document.querySelector('.tabs').offsetTop-12,behavior:'smooth'});});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight')n=(i+1)%tabs.length;
+      if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+      if(n!==null){e.preventDefault();show(n);tabs[n].focus();}
+    });
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
