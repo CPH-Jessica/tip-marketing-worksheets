@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Story Archaeologist</title>
+<style>
+/* ============================================================
+   THE STORY ARCHAEOLOGIST — dig the real story out of your
+   old draft (or your daydream) and walk away planner-ready.
+   Single file. Offline. localStorage. No dependencies.
+   The Invisible Pen — beginner discovery tool. Sits UPSTREAM
+   of the planner lessons (5 Core Elements → Premise → Codex →
+   Outline → Plot Hole Check → Chapter Prompts).
+   ============================================================ */
+:root{
+  --bg:#f7f1e6; --bg2:#fffaf1; --panel:#fffdf8; --panel2:#f3ead9;
+  --ink:#3a2c20; --ink-dim:#8a7660; --line:#e0d3bc;
+  --accent:#b5562c;          /* terracotta */
+  --accent2:#7a5c2e;         /* aged bronze */
+  --accent3:#4e6e58;         /* patina green */
+  --good:#3f7d5a; --warn:#a86a12; --bad:#b03a3a;
+  --chip:#efe4cf; --radius:14px; --shadow:0 10px 30px rgba(90,60,30,.10);
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:Georgia,"Times New Roman",serif;
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(181,86,44,.08), transparent 60%),
+    radial-gradient(700px 460px at 5% 0%, rgba(78,110,88,.07), transparent 55%),
+    linear-gradient(175deg,var(--bg),#f1e7d4 70%);
+  background-attachment:fixed;
+  color:var(--ink); line-height:1.55; min-height:100vh;
+}
+a{color:var(--accent)}
+button,select,input,textarea{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px 130px}
+
+/* header */
+header.top{position:sticky;top:0;z-index:60;background:rgba(247,241,230,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:var(--maxw);margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{font-size:27px;filter:drop-shadow(0 2px 6px rgba(181,86,44,.35))}
+.brand h1{font-size:18px;margin:0;letter-spacing:.3px;white-space:nowrap;font-family:Georgia,serif}
+.brand .sub{font-size:11.5px;color:var(--ink-dim);margin-top:-2px;font-family:"Segoe UI",system-ui,sans-serif}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.who{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px 6px 4px 11px}
+.who .lbl{font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.6px}
+.who select{background:transparent;border:none;color:var(--ink);font-size:13px;font-weight:700;max-width:190px;padding:4px 2px}
+.who select:focus{outline:none}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:var(--bg2)}
+.btn.primary{background:linear-gradient(120deg,var(--accent),#c9713f);border:none;color:#fff8ef}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* progress spine */
+.spine{max-width:var(--maxw);margin:0 auto;padding:12px 18px 2px}
+.spine-inner{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.snode{flex:1;min-width:0;padding:9px 12px;border-right:1px solid var(--line);cursor:pointer;transition:.15s;background:transparent;text-align:left}
+.snode:last-child{border-right:none}
+.snode:hover{background:var(--panel2)}
+.snode.here{background:var(--panel2);box-shadow:inset 0 -3px 0 var(--accent)}
+.snode .sk{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-dim);display:flex;align-items:center;gap:5px;font-family:"Segoe UI",system-ui,sans-serif}
+.snode .sk i{width:8px;height:8px;border-radius:50%;background:var(--line);display:inline-block;font-style:normal;flex:none}
+.snode.done .sk i{background:var(--good)}
+.snode.part .sk i{background:var(--warn)}
+.snode .sv{font-size:12.5px;margin-top:2px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;font-family:"Segoe UI",system-ui,sans-serif}
+@media(max-width:820px){.spine-inner{flex-wrap:wrap}.snode{flex:1 1 33%;border-bottom:1px solid var(--line)}}
+
+/* panels */
+.view{display:none;animation:fade .22s}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:22px;letter-spacing:.2px;font-family:Georgia,serif}
+.card h3{margin:26px 0 6px;font-size:13px;color:var(--accent2);letter-spacing:.7px;text-transform:uppercase;font-family:"Segoe UI",system-ui,sans-serif}
+.card h3:first-of-type{margin-top:12px}
+.lead{color:var(--ink-dim);font-size:14px;margin:0 0 10px}
+.quote{font-size:15px;font-style:italic;color:var(--ink);background:linear-gradient(90deg,rgba(181,86,44,.10),transparent);border-left:3px solid var(--accent);padding:11px 15px;border-radius:0 10px 10px 0;margin:10px 0 14px}
+.quote .by{display:block;font-style:normal;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-dim);margin-top:5px;font-family:"Segoe UI",system-ui,sans-serif}
+.note{font-size:13px;color:#5d4d3b;background:var(--bg2);border-left:3px solid var(--accent3);padding:11px 14px;border-radius:0 10px 10px 0;margin:10px 0 14px;font-family:"Segoe UI",system-ui,sans-serif}
+.note b{color:var(--ink)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:780px){.g2,.g3{grid-template-columns:1fr}}
+
+/* fields */
+label.f{display:block;margin:15px 0}
+label.f .lab{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;margin-bottom:4px;color:var(--ink);flex-wrap:wrap;font-family:"Segoe UI",system-ui,sans-serif}
+label.f .req{color:var(--accent);font-size:11px}
+label.f .hint{display:block;font-weight:400;color:var(--ink-dim);font-size:12px;margin-bottom:6px;line-height:1.5;font-family:"Segoe UI",system-ui,sans-serif}
+input[type=text],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 11px;font-size:13.5px}
+textarea{resize:vertical;min-height:70px;line-height:1.6}
+textarea.big{min-height:200px}
+textarea.paste{font-family:Georgia,serif;font-size:14px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(181,86,44,.13)}
+select{cursor:pointer}
+.count{font-size:11px;color:var(--ink-dim);margin-top:4px;text-align:right;font-family:"Segoe UI",system-ui,sans-serif}
+
+/* pushback + praise */
+.push{border-radius:10px;padding:10px 13px;margin-top:8px;font-size:12.5px;display:none;line-height:1.55;font-family:"Segoe UI",system-ui,sans-serif}
+.push.warn{display:block;background:rgba(168,106,18,.10);border:1px solid rgba(168,106,18,.35);color:#7c5210}
+.push.good{display:block;background:rgba(63,125,90,.10);border:1px solid rgba(63,125,90,.3);color:#2c5a41}
+.push.bad{display:block;background:rgba(176,58,58,.08);border:1px solid rgba(176,58,58,.3);color:#8a2f2f}
+
+/* path chooser */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+@media(max-width:700px){.paths{grid-template-columns:1fr}}
+.path-card{border:2px solid var(--line);background:var(--bg2);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.15s;text-align:left}
+.path-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.path-card.picked{border-color:var(--accent);background:linear-gradient(150deg,rgba(181,86,44,.08),transparent 60%),var(--panel)}
+.path-card .pc-emoji{font-size:32px}
+.path-card h4{margin:8px 0 4px;font-size:17px;font-family:Georgia,serif}
+.path-card p{margin:0;font-size:12.5px;color:var(--ink-dim);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.5}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:5px 13px;font-size:12.5px;cursor:pointer;transition:.12s;font-weight:600;font-family:"Segoe UI",system-ui,sans-serif}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff8ef}
+.chip-cat{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-dim);margin:14px 0 2px;font-family:"Segoe UI",system-ui,sans-serif;font-weight:700}
+.trope-meter{display:flex;align-items:center;gap:10px;margin-top:10px;font-family:"Segoe UI",system-ui,sans-serif;font-size:12.5px;font-weight:700}
+.trope-meter .bar{flex:1;height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.trope-meter .fill{height:100%;background:var(--good);width:0%;transition:.25s}
+.trope-meter.over .fill{background:var(--warn)}
+
+/* radios */
+.radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:700px){.radio-grid{grid-template-columns:1fr}}
+.rg-item{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--bg2);transition:.12s;font-family:"Segoe UI",system-ui,sans-serif}
+.rg-item:hover{border-color:var(--accent)}
+.rg-item.on{border-color:var(--accent);background:rgba(181,86,44,.07)}
+.rg-item input{margin-top:3px}
+.rg-item .rt{display:block;font-size:13px;font-weight:700}
+.rg-item .rd{display:block;font-size:11.5px;color:var(--ink-dim);line-height:1.4}
+.rg-item.flag .rt::after{content:" 🚩";font-size:11px}
+
+/* sliders */
+.slider-row{display:grid;grid-template-columns:110px 1fr 110px;gap:12px;align-items:center;margin:13px 0;font-family:"Segoe UI",system-ui,sans-serif}
+.slider-row .sl-end{font-size:12.5px;font-weight:700;color:var(--ink)}
+.slider-row .sl-end.r{text-align:right}
+.slider-row input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+@media(max-width:600px){.slider-row{grid-template-columns:80px 1fr 80px;gap:8px}.slider-row .sl-end{font-size:11px}}
+
+/* promise builder */
+.promise-live{font-size:16.5px;line-height:1.7;background:var(--panel2);border:1px dashed var(--accent2);border-radius:12px;padding:16px 18px;margin:14px 0;font-family:Georgia,serif}
+.promise-live .blank{color:var(--ink-dim);font-style:italic}
+.promise-live .filled{color:var(--accent);font-weight:700}
+.mode-toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0 4px}
+.mode-toggle button{border:none;background:var(--bg2);color:var(--ink-dim);padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.mode-toggle button.on{background:var(--accent);color:#fff8ef}
+
+/* brief output */
+.brief-box{background:#fffdf6;border:1px solid var(--line);border-radius:12px;padding:4px 18px;max-height:560px;overflow:auto;font-family:"Consolas","Courier New",monospace;font-size:12.5px;line-height:1.6;white-space:pre-wrap;color:#43331f}
+.gapline{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px;font-family:"Segoe UI",system-ui,sans-serif}
+.gapline:last-child{border-bottom:none}
+.gapline .gi{flex:none}
+.readybar{display:flex;align-items:center;gap:12px;margin:12px 0;font-family:"Segoe UI",system-ui,sans-serif}
+.readybar .bar{flex:1;height:12px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.readybar .fill{height:100%;background:linear-gradient(90deg,var(--warn),var(--good));width:0%;transition:.4s}
+.readybar .pct{font-weight:800;font-size:14px}
+
+/* footer nav */
+.footnav{position:fixed;left:0;right:0;bottom:0;z-index:55;background:rgba(247,241,230,.96);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.footnav-inner{max-width:var(--maxw);margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:10px}
+.footnav .spacer{flex:1;text-align:center;font-size:12px;color:var(--ink-dim);font-family:"Segoe UI",system-ui,sans-serif}
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff8ef;border-radius:10px;padding:10px 18px;font-size:13px;font-family:"Segoe UI",system-ui,sans-serif;opacity:0;pointer-events:none;transition:.3s;z-index:99}
+.toast.show{opacity:1}
+.hidden{display:none !important}
+.savehint{font-size:11px;color:var(--ink-dim);font-family:"Segoe UI",system-ui,sans-serif}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="glyph">⛏️</div>
+      <div>
+        <h1>The Story Archaeologist</h1>
+        <div class="sub">Dig the real story out of your draft — or your daydream · The Invisible Pen</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="who">
+        <span class="lbl">Dig site</span>
+        <select id="projSelect" onchange="switchProject(this.value)"></select>
+      </div>
+      <button class="btn sm" onclick="newProject()">+ New</button>
+      <button class="btn sm" onclick="exportJSON()">Backup</button>
+      <button class="btn sm" onclick="document.getElementById('importFile').click()">Restore</button>
+      <input type="file" id="importFile" accept=".json" class="hidden" onchange="importJSON(event)">
+      <button class="btn sm danger" onclick="deleteProject()">Delete</button>
+    </div>
+  </div>
+</header>
+
+<div class="spine">
+  <div class="spine-inner" id="spine"></div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ STATION 0 — BASE CAMP ============ -->
+<section class="view" id="view0">
+  <div class="card">
+    <h2>🏕️ Base Camp</h2>
+    <p class="lead">Somewhere in that old manuscript — or that idea you keep turning over in the shower — there's a real story buried. This tool helps you dig it out, one honest question at a time. When you're done, you'll have a <b>Planner Brief</b>: everything the planning process needs, in the exact shape it needs it, plus a <b>Voice Profile</b> for this project.</p>
+    <div class="quote">Plot is what happens. Story is why it matters. We're digging for the second one.<span class="by">The Archaeologist's Rule</span></div>
+    <div class="note"><b>How this works:</b> answer in your own words — messy is fine, this is a dig site, not a museum. Everything saves automatically in your browser as you type. Nothing is uploaded anywhere. Use <b>Backup</b> (top right) now and then to download a copy of your dig.</div>
+
+    <h3>Pick your dig site</h3>
+    <div class="paths">
+      <button class="path-card" id="pathA" onclick="setPath('manuscript')">
+        <div class="pc-emoji">📜</div>
+        <h4>I have an old manuscript</h4>
+        <p>A stalled draft, a trunk novel, chapters that lost their way. We'll excavate what's on the page, keep what's alive, and find the story you were actually trying to tell.</p>
+      </button>
+      <button class="path-card" id="pathB" onclick="setPath('idea')">
+        <div class="pc-emoji">💭</div>
+        <h4>I just have an idea</h4>
+        <p>A character, a scene, a what-if that won't leave you alone — but no plan. We'll flesh it out into something you can actually build a book from.</p>
+      </button>
+    </div>
+
+    <h3>Register the site</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Working title <span class="req">required</span></span>
+        <span class="hint">Doesn't have to be good. "The Bakery Book" works fine.</span>
+        <input type="text" data-key="title" placeholder="e.g., The Lighthouse Thing">
+      </label>
+      <label class="f"><span class="lab">Your name / pen name</span>
+        <input type="text" data-key="author" placeholder="e.g., J. R. Someone">
+      </label>
+    </div>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Genre (best guess) <span class="req">required</span></span>
+        <span class="hint">Guess now, sharpen later. Where would this sit on a bookstore shelf?</span>
+        <select data-key="genre">
+          <option value="">— choose —</option>
+          <option>Contemporary romance</option>
+          <option>Romantic comedy</option>
+          <option>Historical romance</option>
+          <option>Romantasy / fantasy romance</option>
+          <option>Paranormal romance</option>
+          <option>Dark romance</option>
+          <option>Romantic suspense</option>
+          <option>Fantasy</option>
+          <option>Science fiction</option>
+          <option>Mystery / crime</option>
+          <option>Thriller / psychological</option>
+          <option>Horror / gothic</option>
+          <option>Women's fiction</option>
+          <option>Young adult</option>
+          <option>Literary / book club</option>
+          <option>Other (say so in the next box)</option>
+        </select>
+      </label>
+      <label class="f"><span class="lab">Where does this project stand?</span>
+        <select data-key="status">
+          <option value="">— choose —</option>
+          <option>Just an idea — nothing written</option>
+          <option>Notes and scattered scenes</option>
+          <option>A few chapters, then it stalled</option>
+          <option>Half a draft (or more) that lost its way</option>
+          <option>A "finished" draft that doesn't work yet</option>
+        </select>
+      </label>
+    </div>
+    <label class="f"><span class="lab">Why this story? Why does it keep pulling you back?</span>
+      <span class="hint">One or two honest sentences. This is the heartbeat we'll be listening for the whole dig.</span>
+      <textarea data-key="why" placeholder="Every time I think about quitting this book, I remember the scene where..."></textarea>
+    </label>
+    <div class="push warn" id="pathNudge" style="display:none">Pick a dig site above before moving on — the next station changes depending on which one you choose.</div>
+  </div>
+</section>
+
+<!-- ============ STATION 1 — THE DIG (MANUSCRIPT) ============ -->
+<section class="view" id="view1">
+  <div class="card" id="digManuscript">
+    <h2>📜 The Dig — Excavating Your Draft</h2>
+    <p class="lead">Old drafts fail for one big reason: the writer was describing events instead of telling a story. So we're not going to reread the whole thing. We're going to core-sample it and find out what's alive down there.</p>
+
+    <h3>Sample 1 — Your opening</h3>
+    <label class="f"><span class="lab">Paste your current opening (first page or so)</span>
+      <span class="hint">Straight from the draft. Warts and all. It stays on your computer.</span>
+      <textarea class="big paste" data-key="m_opening" placeholder="Paste the first ~300 words of your manuscript here..."></textarea>
+    </label>
+    <span class="lab" style="font-weight:700;font-size:13.5px;font-family:'Segoe UI',system-ui,sans-serif">Now read it like a hostile stranger — someone hunting for a reason to quit your book. What is your opening <i>actually</i> doing?</span>
+    <div class="radio-grid" id="openingRadio">
+      <label class="rg-item"><input type="radio" name="otype" value="action"><span><span class="rt">Something is happening</span><span class="rd">Action, a problem already in motion, a charged collision.</span></span></label>
+      <label class="rg-item"><input type="radio" name="otype" value="wrongness"><span><span class="rt">Something feels wrong</span><span class="rd">A wrongness the reader feels in their gut from line one.</span></span></label>
+      <label class="rg-item flag"><input type="radio" name="otype" value="telling"><span><span class="rt">Telling / explaining</span><span class="rd">The narrator explains who the character is or what the world is like.</span></span></label>
+      <label class="rg-item flag"><input type="radio" name="otype" value="backstory"><span><span class="rt">Backstory / remembering</span><span class="rd">Waking up, reminiscing, "she had always been the kind of woman who…"</span></span></label>
+      <label class="rg-item flag"><input type="radio" name="otype" value="ordinary"><span><span class="rt">A nice ordinary day</span><span class="rd">Calm normal world, described pleasantly, before anything happens.</span></span></label>
+      <label class="rg-item flag"><input type="radio" name="otype" value="weather"><span><span class="rt">Weather, scenery, or lore</span><span class="rd">The sky, the town, the history, the worldbuilding.</span></span></label>
+    </div>
+    <div class="push bad" id="leahPush" style="display:none"><b>The hostile stranger just closed your book.</b> Don't panic — this is the single most common reason drafts stall, and it's completely fixable. The fix isn't a prettier paragraph. It's a different <i>first moment</i>. Answer the next question and you've already found your new chapter one.</div>
+    <div class="push good" id="leahPraise" style="display:none"><b>Good instinct.</b> An opening with something happening (or something wrong) is exactly what keeps a stranger reading. We'll make sure the rebuilt plan protects it.</div>
+    <label class="f" id="realTroubleWrap" style="display:none"><span class="lab">So — what's the FIRST moment of real trouble in this story? <span class="req">this becomes your new opening</span></span>
+      <span class="hint">Not the setup for the trouble. The trouble itself: the knock on the door, the body, the wrong bed, the letter, the collision. Start the book there and let backstory earn its way in later.</span>
+      <textarea data-key="m_realTrouble" placeholder="The actual first domino is..."></textarea>
+    </label>
+
+    <h3>Sample 2 — The scene that still breathes</h3>
+    <label class="f"><span class="lab">Paste the one scene (or passage) from this draft you'd rescue from a fire</span>
+      <span class="hint">The one you reread. The one that made you feel like a real writer. If nothing qualifies, paste the least-dead one.</span>
+      <textarea class="big paste" data-key="m_favScene" placeholder="Paste your favorite passage here..."></textarea>
+    </label>
+    <label class="f"><span class="lab">Why does that scene work when the rest doesn't? <span class="req">required</span></span>
+      <span class="hint">Look hard. Is it the voice? The tension between two people? A secret? A feeling? Whatever it is — that's not a fluke. That's the book you were actually trying to write.</span>
+      <textarea data-key="m_favWhy" placeholder="It works because..."></textarea>
+    </label>
+
+    <h3>Sample 3 — The stall point</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Where exactly did the draft die?</span>
+        <input type="text" data-key="m_stallWhere" placeholder="e.g., Chapter 6, right after they kissed">
+      </label>
+      <label class="f"><span class="lab">Your honest theory: why there?</span>
+        <input type="text" data-key="m_stallWhy" placeholder="e.g., I had no idea what they wanted after that">
+      </label>
+    </div>
+    <div class="note"><b>Field note:</b> drafts almost never die from bad writing. They die because a question ran out — the character got what they wanted, the secret came out too early, or there was never a real failure looming. The stations ahead rebuild that engine.</div>
+
+    <h3>Sample 4 — The person under the rubble</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Whose story is this, really? <span class="req">required</span></span>
+        <span class="hint">One character. If you're torn between two, pick whoever has the most to lose.</span>
+        <input type="text" data-key="m_who" placeholder="Name + one line: who are they when the book opens?">
+      </label>
+      <label class="f"><span class="lab">What do they want — badly? <span class="req">required</span></span>
+        <span class="hint">Concrete beats abstract. "To keep the farm" beats "to find herself."</span>
+        <input type="text" data-key="m_want" placeholder="They want...">
+      </label>
+    </div>
+    <div class="grid g2">
+      <label class="f"><span class="lab">What (or who) stands in the way? <span class="req">required</span></span>
+        <input type="text" data-key="m_obstacle" placeholder="The obstacle is...">
+      </label>
+      <label class="f"><span class="lab">What are they most afraid of?</span>
+        <span class="hint">The private fear, not the plot danger. This is where the emotional core lives.</span>
+        <input type="text" data-key="m_fear" placeholder="Deep down, they fear...">
+      </label>
+    </div>
+    <label class="f"><span class="lab">Strip away the plot. What is this story about <i>underneath</i>? <span class="req">required</span></span>
+      <span class="hint">Plot: "a woman inherits a bakery." Story: "a woman who ran from everyone who loved her has to find out if she's allowed to come home." Dig for the second sentence.</span>
+      <textarea data-key="m_under" placeholder="Underneath, this is a story about..."></textarea>
+    </label>
+
+    <h3>Sample 5 — The salvage report</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">KEEP pile — what survives the rebuild?</span>
+        <span class="hint">Characters, scenes, lines, the setting, the vibe. List everything worth carrying forward.</span>
+        <textarea data-key="m_keep" placeholder="- The heroine and her terrible dog&#10;- The storm scene&#10;- The small-town setting"></textarea>
+      </label>
+      <label class="f"><span class="lab">RELEASE pile — what are you allowed to let go of?</span>
+        <span class="hint">This is the freeing one. Subplots that went nowhere, characters doing nothing, chapters you wrote because you thought you "should." Give yourself permission.</span>
+        <textarea data-key="m_kill" placeholder="- The flashback chapters&#10;- The second love interest who never mattered"></textarea>
+      </label>
+    </div>
+  </div>
+
+  <!-- ============ STATION 1 — THE DIG (IDEA) ============ -->
+  <div class="card" id="digIdea">
+    <h2>💭 The Dig — Unpacking Your Idea</h2>
+    <p class="lead">An idea isn't a story yet — and that's not a flaw, it's a starting point. First we empty your pockets, then we ask the questions that turn a spark into something with a spine.</p>
+
+    <h3>The pocket dump</h3>
+    <label class="f"><span class="lab">Tell me everything you know about this story <span class="req">required</span></span>
+      <span class="hint">No order, no structure, no complete sentences required. Characters, scenes you can picture, lines of dialogue, the ending, the vibe, the song it feels like. Empty every pocket.</span>
+      <textarea class="big" data-key="i_dump" placeholder="Okay so there's this woman, and she... and I keep picturing this one scene where..."></textarea>
+    </label>
+
+    <h3>Finding the spine</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Whose story is this? <span class="req">required</span></span>
+        <span class="hint">One character to root for. If you don't have a name yet, describe them.</span>
+        <input type="text" data-key="i_who" placeholder="Name or description + who they are when the book opens">
+      </label>
+      <label class="f"><span class="lab">What do they want — badly? <span class="req">required</span></span>
+        <span class="hint">Concrete beats abstract. "To win the bakery competition" beats "happiness."</span>
+        <input type="text" data-key="i_want" placeholder="They want...">
+      </label>
+    </div>
+    <div class="grid g2">
+      <label class="f"><span class="lab">What (or who) stands in the way? <span class="req">required</span></span>
+        <span class="hint">A worthy obstacle. If they could solve it with one honest conversation, dig deeper.</span>
+        <input type="text" data-key="i_obstacle" placeholder="The obstacle is...">
+      </label>
+      <label class="f"><span class="lab">What does losing look like — specifically? <span class="req">required</span></span>
+        <span class="hint">Name the failure. "She loses the shop AND proves her mother right." A reader can't worry about a vague bad outcome.</span>
+        <input type="text" data-key="i_failure" placeholder="If they fail, then...">
+      </label>
+    </div>
+    <div class="grid g2">
+      <label class="f"><span class="lab">Why does this have to happen NOW?</span>
+        <span class="hint">The ticking clock, the deadline, the arriving stranger, the last chance. Urgency is what turns "interesting" into "unputdownable."</span>
+        <input type="text" data-key="i_whyNow" placeholder="It has to happen now because...">
+      </label>
+      <label class="f"><span class="lab">How should the ending FEEL?</span>
+        <span class="hint">Not what happens — how it lands. Triumphant? Bittersweet? Swoony? Chilling? This is the promise you're making the reader.</span>
+        <input type="text" data-key="i_endFeel" placeholder="When readers close the book, they should feel...">
+      </label>
+    </div>
+    <label class="f"><span class="lab">Describe the ONE scene you can already see in your head <span class="req">required</span></span>
+      <span class="hint">Every idea comes with at least one free scene — the one that made you want to write this. Describe it like you're watching it.</span>
+      <textarea data-key="i_scene" placeholder="I keep seeing the moment where..."></textarea>
+    </label>
+    <label class="f"><span class="lab">Why do YOU need to write this one?</span>
+      <span class="hint">There are a million ideas. This one stuck to you. Why?</span>
+      <textarea data-key="i_whyThis" placeholder="This one won't let go because..."></textarea>
+    </label>
+  </div>
+</section>
+
+<!-- ============ STATION 2 — 5 CORE ELEMENTS ============ -->
+<section class="view" id="view2">
+  <div class="card">
+    <h2>🧭 The 5 Core Elements</h2>
+    <p class="lead">Everything you dug up now gets sorted into the five elements every book plan is built on. Lock these here and the premise, codex, and outline stages practically write themselves.</p>
+
+    <h3>Element 1 — Genre (sharpened)</h3>
+    <label class="f"><span class="lab">Your specific sub-genre <span class="req">required</span></span>
+      <span class="hint">Not just "romance" — "grumpy/sunshine small-town romance" or "gothic mystery with a haunted-house heart." Specific enough that a reader knows exactly what shelf it lives on.</span>
+      <input type="text" data-key="e_genre" placeholder="e.g., enemies-to-lovers hockey rom-com">
+    </label>
+
+    <h3>Element 2 — Tropes (3 to 5, no more)</h3>
+    <span class="hint" style="font-family:'Segoe UI',system-ui,sans-serif;color:var(--ink-dim);font-size:12px">Tropes are reader promises, not clichés. Pick the 3–5 that are load-bearing for THIS book. Tap to select, or add your own.</span>
+    <div id="tropeArea"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+      <input type="text" id="customTrope" placeholder="Add your own trope..." style="max-width:260px" onkeydown="if(event.key==='Enter'){addCustomTrope();event.preventDefault()}">
+      <button class="btn sm" onclick="addCustomTrope()">Add</button>
+    </div>
+    <div class="trope-meter" id="tropeMeter"><span id="tropeCount">0 selected</span><div class="bar"><div class="fill" id="tropeFill"></div></div><span>5 max</span></div>
+    <div class="push warn" id="tropePush" style="display:none"><b>Easy there.</b> More than 5 tropes makes a muddy promise — and a muddy promise makes a muddy blurb, and a muddy blurb loses readers. Keep the load-bearing ones; save the rest for the next book.</div>
+    <div class="push warn" id="tropeFew" style="display:none">Fewer than 3 selected. Tropes aren't cheating — they're how readers find the exact book they're craving. Pick at least 3.</div>
+
+    <h3>Element 3 — Hook / Concept</h3>
+    <label class="f"><span class="lab">One sentence: why does THIS book stand out? <span class="req">required</span></span>
+      <span class="hint">The "oh I'd read that" sentence. Usually a collision of two things that don't belong together: "A 600-year-old vampire hiding in academia meets an archivist who talks to pottery."</span>
+      <textarea data-key="e_hook" placeholder="It's the one where..."></textarea>
+    </label>
+
+    <h3>Element 4 — Stakes (the three-part engine)</h3>
+    <div class="note"><b>The engagement engine:</b> a reader can't put a book down while a specific unresolved question is running in their head. That takes all three parts below — a person to root for, a nameable failure, and a reason it's urgent. Two out of three and the engine stalls.</div>
+    <label class="f"><span class="lab">Root-for: why will readers care about this character in chapter one? <span class="req">required</span></span>
+      <textarea data-key="e_stakesRoot" placeholder="Readers will root for her because..."></textarea>
+    </label>
+    <label class="f"><span class="lab">Failure state: what does losing CONCRETELY look like? <span class="req">required</span></span>
+      <span class="hint">Name it. If you can't name what losing looks like, the reader has nothing to dread.</span>
+      <textarea data-key="e_stakesFail" placeholder="If it all goes wrong..."></textarea>
+    </label>
+    <label class="f"><span class="lab">Urgency: why now? What's the clock? <span class="req">required</span></span>
+      <textarea data-key="e_stakesUrgency" placeholder="There's no time to wait because..."></textarea>
+    </label>
+
+    <h3>Element 5 — Emotional Core</h3>
+    <label class="f"><span class="lab">What should readers FEEL, and why does it matter? <span class="req">required</span></span>
+      <span class="hint">The feeling is the product. "I want readers to feel the terror and relief of being truly seen" — that's an emotional core.</span>
+      <textarea data-key="e_emotion" placeholder="I want readers to feel..."></textarea>
+    </label>
+
+    <h3>Bonus — The Big Question</h3>
+    <label class="f"><span class="lab">What SPECIFIC question will readers need answered by the last page? <span class="req">required</span></span>
+      <span class="hint">Not "will it work out?" — that's vague. "Will she choose the life she built or the home she never stopped loving?" That's a question a reader will lose sleep over.</span>
+      <textarea data-key="e_bigQ" placeholder="The question that keeps them turning pages is..."></textarea>
+    </label>
+  </div>
+</section>
+
+<!-- ============ STATION 3 — STORY PROMISE ============ -->
+<section class="view" id="view3">
+  <div class="card">
+    <h2>🤝 The Story Promise</h2>
+    <p class="lead">One sentence. Get it right and everything downstream — blurb, cover direction, reader trust — falls into place. If it won't fit in one sentence, the story isn't focused yet, and it's a thousand times cheaper to find that out here than in chapter fourteen.</p>
+
+    <div class="mode-toggle">
+      <button id="modeRom" onclick="setPromiseMode('romance')">Romance</button>
+      <button id="modeThr" onclick="setPromiseMode('thriller')">Thriller / Horror / Other</button>
+    </div>
+
+    <div id="promiseRomance">
+      <div class="promise-live" id="promiseLiveR"></div>
+      <label class="f"><span class="lab">The genre / trope stack</span>
+        <span class="hint">e.g., "fake-dating billionaire rom-com," "captive mafia romance"</span>
+        <input type="text" data-key="p_stack" placeholder="a ______ romance">
+      </label>
+      <label class="f"><span class="lab">The pair</span>
+        <span class="hint">Both leads, as archetypes with texture: "a grumpy CEO and a sunshine small-town baker"</span>
+        <input type="text" data-key="p_pair" placeholder="about ______ and ______">
+      </label>
+      <label class="f"><span class="lab">Forced to…</span>
+        <span class="hint">The proximity engine or central conflict: "snowed in at his estate," "co-parent a bakery"</span>
+        <input type="text" data-key="p_forced" placeholder="who are forced to ______">
+      </label>
+      <label class="f"><span class="lab">While hiding…</span>
+        <span class="hint">⚠️ This beat is the tension engine. If nobody is hiding anything, the story has no middle. A secret, a lie, a growing feeling, a past.</span>
+        <input type="text" data-key="p_hiding" placeholder="while hiding ______">
+      </label>
+      <label class="f"><span class="lab">Leading to…</span>
+        <span class="hint">The promised emotional payoff: "chaos, banter, and real feelings"</span>
+        <input type="text" data-key="p_payoff" placeholder="leading to ______">
+      </label>
+    </div>
+
+    <div id="promiseThriller">
+      <div class="promise-live" id="promiseLiveT"></div>
+      <label class="f"><span class="lab">The sub-genre</span>
+        <input type="text" data-key="t_sub" placeholder="e.g., psychological thriller, gothic horror">
+      </label>
+      <label class="f"><span class="lab">The protagonist</span>
+        <input type="text" data-key="t_protag" placeholder="about ______ (archetype with texture)">
+      </label>
+      <label class="f"><span class="lab">The inciting realization or circumstance</span>
+        <input type="text" data-key="t_incite" placeholder="who ______">
+      </label>
+      <label class="f"><span class="lab">Forced to…</span>
+        <input type="text" data-key="t_action" placeholder="forcing them to ______">
+      </label>
+      <label class="f"><span class="lab">While [the threat] threatens…</span>
+        <span class="hint">The antagonist, the world, or their own mind — threatening specific stakes.</span>
+        <input type="text" data-key="t_threat" placeholder="while ______ threatens ______">
+      </label>
+      <label class="f"><span class="lab">Leading to…</span>
+        <span class="hint">An earned resolution — for thriller/horror, earned doesn't have to mean happy.</span>
+        <input type="text" data-key="t_payoff" placeholder="leading to ______">
+      </label>
+    </div>
+
+    <div class="note"><b>The three rules:</b> ① ONE sentence — if it won't fit, the story is unfocused. ② Specific, not generic — "falls in love" is nothing; "forced to share a safe house during a vampire council hunt" is a promise. ③ The <i>hiding</i> beat is critical — that's your middle 200 pages.</div>
+  </div>
+</section>
+
+<!-- ============ STATION 4 — VOICE ============ -->
+<section class="view" id="view4">
+  <div class="card">
+    <h2>🎙️ Voice Discovery</h2>
+    <p class="lead">Voice isn't something you invent — it's something you already have that we're going to catch on paper. This profile travels with the project: it tells your planning process (and any AI co-writer you set up) what THIS book should sound like.</p>
+
+    <h3>Evidence — your own words</h3>
+    <label class="f"><span class="lab">Paste a passage of YOUR writing that sounds most like you <span class="req">required</span></span>
+      <span class="hint">From this draft or any other project — even an email or a journal entry. The paragraph where you read it back and thought "yeah, that's me."</span>
+      <textarea class="big paste" data-key="v_pass1" placeholder="Paste 100–300 words of your most YOU writing..."></textarea>
+    </label>
+    <label class="f"><span class="lab">What do you notice about it?</span>
+      <span class="hint">Short sentences? Long rambling ones? Jokes in dark moments? Sensory detail? Look at your own evidence like an archaeologist would.</span>
+      <textarea data-key="v_notice" placeholder="Reading it back, I notice..."></textarea>
+    </label>
+
+    <h3>Comps — voices that feel like home</h3>
+    <label class="f"><span class="lab">Name up to 3 authors (or books, shows, anything) whose VOICE feels like where your book lives <span class="req">required</span></span>
+      <span class="hint">Not plots you love — voices. "Emily Henry's banter," "T. Kingfisher's warmth with teeth," "the narration in Fleabag."</span>
+      <textarea data-key="v_comps" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+    </label>
+
+    <h3>The dials — where does this project sit?</h3>
+    <div class="slider-row"><span class="sl-end">Spare & clean</span><input type="range" min="0" max="100" value="50" data-key="v_s1"><span class="sl-end r">Lush & lyrical</span></div>
+    <div class="slider-row"><span class="sl-end">Serious</span><input type="range" min="0" max="100" value="50" data-key="v_s2"><span class="sl-end r">Funny</span></div>
+    <div class="slider-row"><span class="sl-end">Warm & cozy</span><input type="range" min="0" max="100" value="50" data-key="v_s3"><span class="sl-end r">Sharp & edgy</span></div>
+    <div class="slider-row"><span class="sl-end">Fast & punchy</span><input type="range" min="0" max="100" value="50" data-key="v_s4"><span class="sl-end r">Slow & savoring</span></div>
+    <div class="slider-row"><span class="sl-end">Plain-spoken</span><input type="range" min="0" max="100" value="50" data-key="v_s5"><span class="sl-end r">Ornate</span></div>
+    <div class="slider-row"><span class="sl-end">Intimate & close</span><input type="range" min="0" max="100" value="50" data-key="v_s6"><span class="sl-end r">Sweeping & cinematic</span></div>
+
+    <h3>The technical choices</h3>
+    <div class="grid g3">
+      <label class="f"><span class="lab">Point of view</span>
+        <select data-key="v_pov">
+          <option value="">— choose —</option>
+          <option>First person, one POV</option>
+          <option>First person, dual POV</option>
+          <option>Third person, one POV</option>
+          <option>Third person, dual POV</option>
+          <option>Third person, multiple POV</option>
+          <option>Not sure yet — recommend for me</option>
+        </select>
+      </label>
+      <label class="f"><span class="lab">Tense</span>
+        <select data-key="v_tense">
+          <option value="">— choose —</option>
+          <option>Past tense</option>
+          <option>Present tense</option>
+          <option>Not sure yet — recommend for me</option>
+        </select>
+      </label>
+      <label class="f"><span class="lab">Heat level (romance only)</span>
+        <select data-key="v_heat">
+          <option value="">— choose / N.A. —</option>
+          <option>1 — Sweet: kisses only, door firmly closed</option>
+          <option>2 — Warm: tension & longing, door closed</option>
+          <option>3 — Steamy: on-page, tastefully lit</option>
+          <option>4 — Explicit: open door, full scenes</option>
+          <option>5 — Scorching: explicit & frequent</option>
+          <option>Not a romance</option>
+        </select>
+      </label>
+    </div>
+
+    <h3>The fences</h3>
+    <div class="grid g2">
+      <label class="f"><span class="lab">This project should NEVER sound like…</span>
+        <span class="hint">"Never stiff or formal." "Never cruel to the heroine." "Never purple." Fences keep the voice honest.</span>
+        <textarea data-key="v_never" placeholder="Never..."></textarea>
+      </label>
+      <label class="f"><span class="lab">When someone finishes a chapter, what do they text their friend?</span>
+        <span class="hint">"OMG the TENSION." "I cackled." "I'm not okay." That text message is your voice's job description.</span>
+        <textarea data-key="v_react" placeholder="They text: ..."></textarea>
+      </label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATION 5 — THE BRIEF ============ -->
+<section class="view" id="view5">
+  <div class="card">
+    <h2>📦 The Planner Brief</h2>
+    <p class="lead">Everything you excavated, assembled into the shape the planning process needs. Copy it, or download it as a file to keep with your project.</p>
+    <div class="readybar"><span style="font-size:12.5px;font-weight:700">Dig completeness</span><div class="bar"><div class="fill" id="readyFill"></div></div><span class="pct" id="readyPct">0%</span></div>
+    <div id="gapReport"></div>
+    <h3>Your brief</h3>
+    <div class="brief-box" id="briefBox"></div>
+    <div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="copyBrief()">📋 Copy brief</button>
+      <button class="btn" onclick="downloadBrief()">⬇️ Download .md file</button>
+      <button class="btn" onclick="copyHandoff()">🤝 Copy the "start planning" prompt</button>
+    </div>
+    <h3>What to do next</h3>
+    <div class="note" style="font-size:13.5px">
+      <b>Step 1:</b> Click <b>"Copy the start-planning prompt"</b> above — it bundles your brief with instructions for your AI planning partner.<br><br>
+      <b>Step 2:</b> Open a fresh chat with Claude (ideally inside a Project set up for this book, the way the Foundations lessons show you) and paste it in.<br><br>
+      <b>Step 3:</b> Work the phases in order: confirm your <b>5 Core Elements &amp; Story Promise</b> → <b>Premise</b> → <b>Codex</b> → <b>Outline</b> → <b>Plot Hole Check</b> → <b>Chapter Prompts</b>. Don't skip phases — the planning time IS the drafting time you save later.<br><br>
+      <b>Step 4:</b> Only then do you draft. Planning first, prose second. That's the whole system.
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer class="footnav">
+  <div class="footnav-inner">
+    <button class="btn" id="navBack" onclick="nav(-1)">← Back</button>
+    <div class="spacer"><span class="savehint" id="saveHint">Auto-saving in this browser</span></div>
+    <button class="btn primary" id="navNext" onclick="nav(1)">Next station →</button>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= STATE ================= */
+var LS_KEY = 'story_archaeologist_v1';
+var STATIONS = [
+  {k:'BASE CAMP', v:'The Setup'},
+  {k:'STATION 1', v:'The Dig'},
+  {k:'STATION 2', v:'5 Core Elements'},
+  {k:'STATION 3', v:'Story Promise'},
+  {k:'STATION 4', v:'Voice'},
+  {k:'STATION 5', v:'Your Brief'}
+];
+var TROPES = {
+  'Relationship tropes':['Enemies to lovers','Friends to lovers','Second chance','Fake dating / marriage of convenience','Forced proximity','Grumpy / sunshine','Forbidden love','Slow burn','Instalove','Fated mates','Love triangle','Age gap','Opposites attract','Secret identity','Boss / employee','Brother’s best friend'],
+  'Plot & setting tropes':['Small town','Returning home','Only one bed','Snowed in / trapped together','Road trip','Competition / rivals','Secret baby','Amnesia','Found family','Inheritance with strings','Fish out of water','Bodyguard / protector','Heist / con','Chosen one','Hidden world','Haunted place','Unreliable narrator','Locked room / isolated setting','Race against time','Redemption arc'],
+  'Character tropes':['Cinnamon roll','Morally gray hero','Golden retriever','Black cat','Wounded warrior','Sunshine one','Grumpy one','Reformed villain','Reluctant hero','Single parent','Workaholic','Runaway bride/groom','He falls first','Touch her and die','Competent queen','Himbo']
+};
+var state = { projects:{}, active:'' };
+
+function blankProject(){
+  return { path:'', p_mode:'romance', tropes:[], customTropes:[], fields:{} };
+}
+function P(){ return state.projects[state.active]; }
+
+function load(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){ state = JSON.parse(raw); }
+  }catch(e){}
+  if(!state.projects || Object.keys(state.projects).length===0){
+    state = {projects:{'My first dig': blankProject()}, active:'My first dig'};
+  }
+  if(!state.projects[state.active]) state.active = Object.keys(state.projects)[0];
+}
+var saveT;
+function save(){
+  clearTimeout(saveT);
+  saveT = setTimeout(function(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+    var h = document.getElementById('saveHint');
+    h.textContent = 'Saved ✓';
+    setTimeout(function(){ h.textContent='Auto-saving in this browser'; }, 1400);
+  }, 350);
+}
+
+/* ================= PROJECTS ================= */
+function renderProjects(){
+  var sel = document.getElementById('projSelect');
+  sel.innerHTML = '';
+  Object.keys(state.projects).forEach(function(name){
+    var o = document.createElement('option');
+    o.value = name; o.textContent = name;
+    if(name===state.active) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+function switchProject(name){
+  state.active = name; save();
+  hydrate(); go(0);
+}
+function newProject(){
+  var name = prompt('Name this dig site (working title is fine):');
+  if(!name) return;
+  name = name.trim(); if(!name) return;
+  if(state.projects[name]){ toast('That name already exists.'); return; }
+  state.projects[name] = blankProject();
+  state.active = name; save();
+  renderProjects(); hydrate(); go(0);
+}
+function deleteProject(){
+  if(Object.keys(state.projects).length<=1){ toast('This is your only dig site — start a new one first.'); return; }
+  if(!confirm('Delete "'+state.active+'" and everything in it? This can’t be undone.')) return;
+  delete state.projects[state.active];
+  state.active = Object.keys(state.projects)[0];
+  save(); renderProjects(); hydrate(); go(0);
+}
+function exportJSON(){
+  var blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'story-archaeologist-backup.json';
+  a.click();
+  toast('Backup downloaded — keep it somewhere safe.');
+}
+function importJSON(ev){
+  var f = ev.target.files[0]; if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try{
+      var data = JSON.parse(r.result);
+      if(!data.projects) throw new Error('bad');
+      state = data;
+      if(!state.projects[state.active]) state.active = Object.keys(state.projects)[0];
+      save(); renderProjects(); hydrate(); go(0);
+      toast('Backup restored.');
+    }catch(e){ toast('That file doesn’t look like a Story Archaeologist backup.'); }
+  };
+  r.readAsText(f);
+  ev.target.value = '';
+}
+
+/* ================= FIELD BINDING ================= */
+function bindFields(){
+  document.querySelectorAll('[data-key]').forEach(function(el){
+    var evt = (el.tagName==='SELECT' || el.type==='range') ? 'change' : 'input';
+    el.addEventListener(evt, function(){
+      P().fields[el.getAttribute('data-key')] = el.value;
+      save();
+      if(el.getAttribute('data-key').charAt(0)==='p' || el.getAttribute('data-key').charAt(0)==='t') renderPromise();
+      refreshSpine();
+    });
+    if(el.type==='range'){
+      el.addEventListener('input', function(){
+        P().fields[el.getAttribute('data-key')] = el.value; save();
+      });
+    }
+  });
+  document.querySelectorAll('input[name=otype]').forEach(function(r){
+    r.addEventListener('change', function(){
+      P().fields.m_openingType = r.value; save();
+      renderOpeningVerdict(); refreshSpine();
+    });
+  });
+}
+function hydrate(){
+  var f = P().fields || {};
+  document.querySelectorAll('[data-key]').forEach(function(el){
+    var k = el.getAttribute('data-key');
+    el.value = (f[k]!==undefined) ? f[k] : (el.type==='range' ? 50 : '');
+  });
+  document.querySelectorAll('input[name=otype]').forEach(function(r){
+    r.checked = (f.m_openingType===r.value);
+    r.closest('.rg-item').classList.toggle('on', r.checked);
+  });
+  renderPath(); renderTropes(); renderOpeningVerdict();
+  setPromiseMode(P().p_mode || 'romance', true);
+  renderProjects(); refreshSpine();
+}
+
+/* ================= PATH ================= */
+function setPath(p){
+  P().path = p; save();
+  renderPath(); refreshSpine();
+  document.getElementById('pathNudge').style.display='none';
+}
+function renderPath(){
+  var p = P().path;
+  document.getElementById('pathA').classList.toggle('picked', p==='manuscript');
+  document.getElementById('pathB').classList.toggle('picked', p==='idea');
+  document.getElementById('digManuscript').classList.toggle('hidden', p!=='manuscript');
+  document.getElementById('digIdea').classList.toggle('hidden', p!=='idea');
+}
+
+/* ================= OPENING VERDICT (Leah gate) ================= */
+function renderOpeningVerdict(){
+  var v = P().fields.m_openingType || '';
+  var flags = {telling:1, backstory:1, ordinary:1, weather:1};
+  document.querySelectorAll('#openingRadio .rg-item').forEach(function(item){
+    var input = item.querySelector('input');
+    item.classList.toggle('on', input.checked);
+  });
+  document.getElementById('leahPush').style.display = flags[v] ? 'block' : 'none';
+  document.getElementById('leahPraise').style.display = (v==='action'||v==='wrongness') ? 'block' : 'none';
+  document.getElementById('realTroubleWrap').style.display = flags[v] ? 'block' : 'none';
+}
+
+/* ================= TROPES ================= */
+function renderTropes(){
+  var area = document.getElementById('tropeArea');
+  area.innerHTML = '';
+  var picked = P().tropes || [];
+  Object.keys(TROPES).forEach(function(cat){
+    var h = document.createElement('div'); h.className='chip-cat'; h.textContent = cat;
+    area.appendChild(h);
+    var box = document.createElement('div'); box.className='chips';
+    TROPES[cat].forEach(function(t){ box.appendChild(makeChip(t, picked.indexOf(t)>-1)); });
+    area.appendChild(box);
+  });
+  var customs = P().customTropes || [];
+  if(customs.length){
+    var h2 = document.createElement('div'); h2.className='chip-cat'; h2.textContent = 'Your own';
+    area.appendChild(h2);
+    var box2 = document.createElement('div'); box2.className='chips';
+    customs.forEach(function(t){ box2.appendChild(makeChip(t, picked.indexOf(t)>-1)); });
+    area.appendChild(box2);
+  }
+  updateTropeMeter();
+}
+function makeChip(t, on){
+  var c = document.createElement('button');
+  c.className = 'chip' + (on?' on':'');
+  c.textContent = t;
+  c.onclick = function(){
+    var arr = P().tropes;
+    var i = arr.indexOf(t);
+    if(i>-1) arr.splice(i,1); else arr.push(t);
+    save(); renderTropes(); refreshSpine();
+  };
+  return c;
+}
+function addCustomTrope(){
+  var inp = document.getElementById('customTrope');
+  var t = inp.value.trim(); if(!t) return;
+  if((P().customTropes||[]).indexOf(t)===-1){
+    P().customTropes = P().customTropes || [];
+    P().customTropes.push(t);
+    P().tropes.push(t);
+  }
+  inp.value=''; save(); renderTropes(); refreshSpine();
+}
+function updateTropeMeter(){
+  var n = (P().tropes||[]).length;
+  document.getElementById('tropeCount').textContent = n + ' selected';
+  var fill = document.getElementById('tropeFill');
+  fill.style.width = Math.min(100, n/5*100) + '%';
+  document.getElementById('tropeMeter').classList.toggle('over', n>5);
+  fill.style.background = n>5 ? 'var(--warn)' : 'var(--good)';
+  document.getElementById('tropePush').style.display = n>5 ? 'block':'none';
+  document.getElementById('tropeFew').style.display = (n>0 && n<3) ? 'block':'none';
+}
+
+/* ================= PROMISE ================= */
+function setPromiseMode(m, silent){
+  P().p_mode = m; if(!silent) save();
+  document.getElementById('modeRom').classList.toggle('on', m==='romance');
+  document.getElementById('modeThr').classList.toggle('on', m!=='romance');
+  document.getElementById('promiseRomance').classList.toggle('hidden', m!=='romance');
+  document.getElementById('promiseThriller').classList.toggle('hidden', m==='romance');
+  renderPromise();
+}
+function seg(val, blank){
+  return val ? '<span class="filled">'+esc(val)+'</span>' : '<span class="blank">'+blank+'</span>';
+}
+function renderPromise(){
+  var f = P().fields;
+  document.getElementById('promiseLiveR').innerHTML =
+    'This is a '+seg(f.p_stack,'[genre/trope stack]')+' romance about '+seg(f.p_pair,'[the pair]')+
+    ' who are forced to '+seg(f.p_forced,'[central conflict or proximity]')+
+    ' while hiding '+seg(f.p_hiding,'[secret or complication]')+
+    ', leading to '+seg(f.p_payoff,'[promised emotional payoff]')+'.';
+  document.getElementById('promiseLiveT').innerHTML =
+    'This is a '+seg(f.t_sub,'[sub-genre]')+' about '+seg(f.t_protag,'[protagonist]')+
+    ' who '+seg(f.t_incite,'[inciting realization]')+
+    ', forcing them to '+seg(f.t_action,'[unavoidable action]')+
+    ' while '+seg(f.t_threat,'[the threat] threatens [specific stakes]')+
+    ', leading to '+seg(f.t_payoff,'[earned resolution]')+'.';
+}
+function promiseText(){
+  var f = P().fields;
+  if((P().p_mode||'romance')==='romance'){
+    if(!(f.p_stack||f.p_pair||f.p_forced||f.p_hiding||f.p_payoff)) return '';
+    return 'This is a '+(f.p_stack||'___')+' romance about '+(f.p_pair||'___')+' who are forced to '+(f.p_forced||'___')+' while hiding '+(f.p_hiding||'___')+', leading to '+(f.p_payoff||'___')+'.';
+  }
+  if(!(f.t_sub||f.t_protag||f.t_incite||f.t_action||f.t_threat||f.t_payoff)) return '';
+  return 'This is a '+(f.t_sub||'___')+' about '+(f.t_protag||'___')+' who '+(f.t_incite||'___')+', forcing them to '+(f.t_action||'___')+' while '+(f.t_threat||'___')+', leading to '+(f.t_payoff||'___')+'.';
+}
+
+/* ================= COMPLETENESS ================= */
+function reqKeys(){
+  var f = P().fields;
+  var base = ['title','genre'];
+  var dig = P().path==='manuscript'
+    ? ['m_favWhy','m_who','m_want','m_obstacle','m_under']
+    : ['i_dump','i_who','i_want','i_obstacle','i_failure','i_scene'];
+  var elements = ['e_genre','e_hook','e_stakesRoot','e_stakesFail','e_stakesUrgency','e_emotion','e_bigQ'];
+  var voice = ['v_pass1','v_comps'];
+  return {base:base, dig:dig, elements:elements, voice:voice};
+}
+function stationScore(i){
+  var f = P().fields, r = reqKeys();
+  function frac(keys){
+    if(!keys.length) return 1;
+    var n = keys.filter(function(k){ return (f[k]||'').trim(); }).length;
+    return n/keys.length;
+  }
+  if(i===0) return P().path ? frac(r.base) : 0;
+  if(i===1) return P().path ? frac(r.dig) : 0;
+  if(i===2){
+    var t = (P().tropes||[]).length>=3 ? 1 : 0;
+    return (frac(r.elements)*7 + t)/8;
+  }
+  if(i===3) return promiseText() ? (promiseComplete()?1:.5) : 0;
+  if(i===4) return frac(r.voice);
+  return 0;
+}
+function promiseComplete(){
+  var f = P().fields;
+  if((P().p_mode||'romance')==='romance')
+    return ['p_stack','p_pair','p_forced','p_hiding','p_payoff'].every(function(k){return (f[k]||'').trim();});
+  return ['t_sub','t_protag','t_incite','t_action','t_threat','t_payoff'].every(function(k){return (f[k]||'').trim();});
+}
+function overallScore(){
+  var s = 0;
+  for(var i=0;i<5;i++) s += stationScore(i);
+  return Math.round(s/5*100);
+}
+
+/* ================= SPINE + NAV ================= */
+var cur = 0;
+function buildSpine(){
+  var sp = document.getElementById('spine');
+  sp.innerHTML='';
+  STATIONS.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.className='snode'; b.id='sn'+i;
+    b.innerHTML = '<span class="sk"><i></i>'+s.k+'</span><span class="sv">'+s.v+'</span>';
+    b.onclick = function(){ go(i); };
+    sp.appendChild(b);
+  });
+}
+function refreshSpine(){
+  for(var i=0;i<6;i++){
+    var n = document.getElementById('sn'+i);
+    n.classList.toggle('here', i===cur);
+    n.classList.remove('done','part');
+    if(i<5){
+      var sc = stationScore(i);
+      if(sc>=0.99) n.classList.add('done');
+      else if(sc>0) n.classList.add('part');
+    }
+  }
+}
+function go(i){
+  if(i>0 && !P().path && i!==5){
+    document.getElementById('pathNudge').style.display='block';
+    if(cur!==0){ i=0; } else { return; }
+  }
+  cur = Math.max(0, Math.min(5, i));
+  document.querySelectorAll('.view').forEach(function(v,idx){ v.classList.toggle('active', idx===cur); });
+  document.getElementById('navBack').disabled = (cur===0);
+  document.getElementById('navNext').textContent = cur===4 ? 'Assemble my brief →' : (cur===5 ? 'Done — review stations' : 'Next station →');
+  if(cur===5) buildBrief();
+  refreshSpine();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nav(d){
+  if(d>0 && cur===5){ go(0); return; }
+  go(cur+d);
+}
+
+/* ================= BRIEF ================= */
+function sliderWord(v, l, r){
+  v = parseInt(v||50,10);
+  if(v<=20) return 'strongly '+l;
+  if(v<=40) return 'leans '+l;
+  if(v<60) return 'balanced between '+l+' and '+r;
+  if(v<80) return 'leans '+r;
+  return 'strongly '+r;
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function line(label, val){ return val && val.trim() ? '**'+label+':** '+val.trim()+'\n' : ''; }
+function block(label, val){ return val && val.trim() ? '**'+label+':**\n'+val.trim()+'\n\n' : ''; }
+
+function buildBriefText(){
+  var f = P().fields, p = P().path;
+  var md = '';
+  md += '# PLANNER BRIEF — '+(f.title||'Untitled')+'\n';
+  md += '*Built with The Story Archaeologist (The Invisible Pen). Discovery phase complete; ready for the planning process.*\n\n';
+  md += '---\n\n## PROJECT\n';
+  md += line('Working title', f.title);
+  md += line('Author / pen name', f.author);
+  md += line('Genre', f.e_genre || f.genre);
+  md += line('Project status', f.status);
+  md += line('Source', p==='manuscript' ? 'Excavated from an existing manuscript' : 'Built from a raw idea');
+  md += line('Why this story', f.why);
+  md += '\n';
+
+  md += '## WHAT THE DIG FOUND\n';
+  if(p==='manuscript'){
+    md += line('Protagonist', f.m_who);
+    md += line('They want', f.m_want);
+    md += line('In the way', f.m_obstacle);
+    md += line('Deepest fear', f.m_fear);
+    md += block('The story under the plot', f.m_under);
+    md += block('The scene that still breathes — and why it works', f.m_favWhy);
+    if(f.m_openingType){
+      var flags = {telling:'telling/explaining', backstory:'backstory/remembering', ordinary:'a calm ordinary day', weather:'weather/scenery/lore'};
+      if(flags[f.m_openingType]){
+        md += '**Opening diagnosis:** current opening is '+flags[f.m_openingType]+' — it must be rebuilt to open on a hook.\n';
+        md += line('The real first moment of trouble (new opening)', f.m_realTrouble);
+      } else {
+        md += '**Opening diagnosis:** current opening already has something happening / something wrong — protect it in the rebuild.\n';
+      }
+    }
+    md += line('Where the draft stalled', f.m_stallWhere);
+    md += line('Why it stalled (author’s theory)', f.m_stallWhy);
+    md += block('KEEP pile (survives the rebuild)', f.m_keep);
+    md += block('RELEASE pile (let go)', f.m_kill);
+  } else {
+    md += line('Protagonist', f.i_who);
+    md += line('They want', f.i_want);
+    md += line('In the way', f.i_obstacle);
+    md += line('Failure state', f.i_failure);
+    md += line('Why now', f.i_whyNow);
+    md += line('The ending should feel', f.i_endFeel);
+    md += block('The scene already in my head', f.i_scene);
+    md += block('Why I need to write this one', f.i_whyThis);
+    md += block('Full brain dump (raw material)', f.i_dump);
+  }
+  md += '\n## THE 5 CORE ELEMENTS\n';
+  md += line('1. Genre', f.e_genre);
+  var allTropes = (P().tropes||[]);
+  md += line('2. Tropes ('+allTropes.length+')', allTropes.join(', '));
+  md += line('3. Hook / Concept', f.e_hook);
+  md += '**4. Stakes:**\n';
+  md += (f.e_stakesRoot?'   - Root-for: '+f.e_stakesRoot.trim()+'\n':'');
+  md += (f.e_stakesFail?'   - Failure state: '+f.e_stakesFail.trim()+'\n':'');
+  md += (f.e_stakesUrgency?'   - Urgency: '+f.e_stakesUrgency.trim()+'\n':'');
+  md += line('5. Emotional Core', f.e_emotion);
+  md += line('The Big Question readers need answered', f.e_bigQ);
+
+  md += '\n## THE STORY PROMISE\n';
+  var pt = promiseText();
+  md += pt ? '> '+pt+'\n' : '*(not completed yet)*\n';
+
+  md += '\n## VOICE PROFILE (this project)\n';
+  md += block('Sample of my natural voice', f.v_pass1);
+  md += line('What I notice about my voice', f.v_notice);
+  md += block('Comp voices (sound like home)', f.v_comps);
+  md += '**The dials:**\n';
+  md += '   - '+sliderWord(f.v_s1,'spare & clean','lush & lyrical')+'\n';
+  md += '   - '+sliderWord(f.v_s2,'serious','funny')+'\n';
+  md += '   - '+sliderWord(f.v_s3,'warm & cozy','sharp & edgy')+'\n';
+  md += '   - '+sliderWord(f.v_s4,'fast & punchy','slow & savoring')+'\n';
+  md += '   - '+sliderWord(f.v_s5,'plain-spoken','ornate')+'\n';
+  md += '   - '+sliderWord(f.v_s6,'intimate & close','sweeping & cinematic')+'\n';
+  md += line('POV', f.v_pov);
+  md += line('Tense', f.v_tense);
+  md += line('Heat level', f.v_heat);
+  md += line('Never sounds like', f.v_never);
+  md += line('Reader reaction target', f.v_react);
+  return md;
+}
+
+function handoffText(){
+  return 'You are my book-planning partner. I have finished the story DISCOVERY phase using The Story Archaeologist, and my complete Planner Brief is below. Your job is to guide me through the rest of the planning process, one phase at a time, asking me questions and waiting for my answers before moving on. Do NOT write any prose — planning only.\n\nWork these phases IN ORDER:\n\nPHASE 1 — CONFIRM THE FOUNDATION: Review my 5 Core Elements and Story Promise. Point out anything vague, generic, or contradictory and help me tighten it. If I have more than 5 tropes, help me cut to the load-bearing ones. My Story Promise must be ONE specific sentence.\n\nPHASE 2 — PREMISE: Draft a marketable 1-2 paragraph premise from my locked elements. It should match my genre’s reader expectations and my Voice Profile’s tone.\n\nPHASE 3 — CODEX (STORY BIBLE): Build my codex with: Tone & Voice (use my Voice Profile), Setting/World, Main Characters (each with internal conflict, external conflict, and goal/fear/desire), Supporting Cast, Rules & Boundaries, Tropes & Themes, and Continuity Notes. Then check it for emotional continuity, genre alignment, and internal contradictions.\n\nPHASE 4 — OUTLINE: Build a full chapter-by-chapter outline. Each chapter gets: POV, up to 5 beats, and a Goal / Conflict / Outcome. Rules: (a) Chapter 1 must open on a HOOK — action, a problem already in motion, a collision, or a felt wrongness. NEVER on telling, backstory, an ordinary day, or weather/scenery/lore. (b) Every chapter must keep a SPECIFIC open question alive. (c) Every twist must be set up in an earlier chapter — surprising yet inevitable, never a gotcha. (d) Each chapter’s outcome must open the next question, so no chapter ending is a clean stopping point. (e) The narrator never stamps the page with clock times, dates, or “three days later” markers — ground time in scene, season, and sensation instead (characters may say times in dialogue).\n\nPHASE 5 — PLOT HOLE CHECK: Interrogate your own outline for plot holes, timeline problems, pacing sags, and any chapter where the open question dies. Show me the issues, let me choose the fixes, then re-output the corrected outline.\n\nPHASE 6 — CHAPTER PROMPTS: Generate one SHORT drafting prompt per chapter: chapter number, POV, scene goal, the beats, the open question it sustains, continuity notes (what came before / what comes next), and a one-line voice reminder pulled from my Voice Profile.\n\nStart with Phase 1 now. Here is my Planner Brief:\n\n=====\n\n' + buildBriefText();
+}
+
+function buildBrief(){
+  document.getElementById('briefBox').textContent = buildBriefText();
+  var pct = overallScore();
+  document.getElementById('readyFill').style.width = pct+'%';
+  document.getElementById('readyPct').textContent = pct+'%';
+  var f = P().fields;
+  var gaps = [];
+  if(!(f.title||'').trim()) gaps.push(['Base Camp','No working title yet.',0]);
+  if(!P().path) gaps.push(['Base Camp','You haven’t picked a dig site (manuscript vs. idea).',0]);
+  var r = reqKeys();
+  var digMissing = r.dig.filter(function(k){return !(f[k]||'').trim();}).length;
+  if(P().path && digMissing) gaps.push(['The Dig', digMissing+' core question'+(digMissing>1?'s':'')+' still unanswered.',1]);
+  r.elements.forEach(function(k){
+    var names = {e_genre:'Sharpened genre', e_hook:'Hook / Concept', e_stakesRoot:'Stakes — root-for', e_stakesFail:'Stakes — failure state', e_stakesUrgency:'Stakes — urgency', e_emotion:'Emotional Core', e_bigQ:'The Big Question'};
+    if(!(f[k]||'').trim()) gaps.push(['5 Core Elements', names[k]+' is empty.',2]);
+  });
+  var tn = (P().tropes||[]).length;
+  if(tn<3) gaps.push(['5 Core Elements','Only '+tn+' trope'+(tn===1?'':'s')+' selected — pick 3–5.',2]);
+  if(tn>5) gaps.push(['5 Core Elements',tn+' tropes selected — cut to 5 before planning.',2]);
+  if(!promiseText()) gaps.push(['Story Promise','The promise sentence hasn’t been started.',3]);
+  else if(!promiseComplete()) gaps.push(['Story Promise','The promise sentence has blanks left.',3]);
+  if(!(f.v_pass1||'').trim()) gaps.push(['Voice','No writing sample pasted — the Voice Profile needs your own words.',4]);
+  if(!(f.v_comps||'').trim()) gaps.push(['Voice','No comp voices named.',4]);
+
+  var g = document.getElementById('gapReport');
+  if(!gaps.length){
+    g.innerHTML = '<div class="push good"><b>Full excavation.</b> Nothing missing — this brief is ready for the planning phase. Copy the start-planning prompt below and go build your book.</div>';
+  } else {
+    var html = '<div class="push warn" style="display:block"><b>'+gaps.length+' spot'+(gaps.length>1?'s':'')+' still buried.</b> You can hand off an incomplete brief — your planning partner will ask about the gaps — but the more you answer here, the better the plan.</div>';
+    gaps.forEach(function(gp){
+      html += '<div class="gapline"><span class="gi">🕳️</span><span><b>'+gp[0]+':</b> '+gp[1]+' <a href="#" onclick="go('+gp[2]+');return false">Go there →</a></span></div>';
+    });
+    g.innerHTML = html;
+  }
+}
+
+function copyBrief(){ copyText(buildBriefText(), 'Brief copied — paste it anywhere.'); }
+function copyHandoff(){ copyText(handoffText(), 'Start-planning prompt copied — paste it into a fresh Claude chat.'); }
+function copyText(txt, msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast(msg); }, function(){ fallbackCopy(txt, msg); });
+  } else fallbackCopy(txt, msg);
+}
+function fallbackCopy(txt, msg){
+  var ta = document.createElement('textarea');
+  ta.value = txt; document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  toast(msg);
+}
+function downloadBrief(){
+  var f = P().fields;
+  var name = ((f.title||'untitled').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()||'untitled');
+  var blob = new Blob([buildBriefText()], {type:'text/markdown'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'planner-brief-'+name+'.md';
+  a.click();
+  toast('Brief downloaded.');
+}
+
+/* ================= MISC ================= */
+var toastT;
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+
+/* ================= INIT ================= */
+load();
+buildSpine();
+bindFields();
+hydrate();
+go(0);
+</script>
+</body>
+</html>
