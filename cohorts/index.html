@@ -8,10 +8,13 @@
 
 <!-- ═══════════════════════════════════════════════════════════════════
      LAUNCH CHECKLIST (Jessica — before this page goes live)
-     1. BOOKING LINKS: scroll to the <script> at the bottom of this file.
-        Replace the four REPLACE_WITH_... values with your real Zoom
-        booking/registration URLs (this is where people pay for seats).
-        Until replaced, buttons show "Booking opens soon" and don't link out.
+     1. BOOKING LINKS: three tiers are wired to real Zoom booking pages
+        (2026-08-04). Only the free OPEN SESSION link is still a
+        REPLACE_WITH_... placeholder in the <script> at the bottom — its
+        button shows "Booking opens soon" until replaced.
+        NOTE: Conservatory price matched to Zoom checkout at $147 (spec said
+        $150) — if $150 was intended, change it in Zoom, then flip the two
+        $147 spots on this page back.
      2. DATES: September 2026 start is set (confirmed 2026-08-04). Search
         "JESSICA-DATE" (2 spots) to add exact session days/times per tier
         once you lock them.
@@ -343,7 +346,7 @@
     <div class="building" aria-label="The three cohort tiers, shown as floors of a building">
       <div class="roof" aria-hidden="true"></div>
       <a class="floor penthouse" href="#penthouse"><span class="fl-name">🔥 The Penthouse</span><span class="fl-price">$247/mo · 12 seats</span></a>
-      <a class="floor conservatory" href="#conservatory"><span class="fl-name">🌿 The Conservatory</span><span class="fl-price">$150/mo · 20 seats</span></a>
+      <a class="floor conservatory" href="#conservatory"><span class="fl-name">🌿 The Conservatory</span><span class="fl-price">$147/mo · 20 seats</span></a>
       <a class="floor lobby" href="#lobby"><span class="fl-name">🏛️ The Lobby</span><span class="fl-price">$97/mo · 25 seats</span></a>
       <a class="floor door" href="#open-session"><span class="fl-name">🎟️ The Open Session</span><span class="fl-price">Free · monthly</span></a>
     </div>
@@ -431,7 +434,7 @@
           <span class="t-emoji" aria-hidden="true">🌿</span>
           <h3 id="cons-h">The Conservatory</h3>
           <p class="t-tag">Where things grow.</p>
-          <div class="t-price"><span class="amt">$150</span><span class="per">/month · cancel anytime</span></div>
+          <div class="t-price"><span class="amt">$147</span><span class="per">/month · cancel anytime</span></div>
           <span class="seatpill">20 seats · real cap</span>
         </div>
         <div class="tier-body">
@@ -601,9 +604,9 @@
   // button shows "Booking opens soon" and stays unclickable.
   // ═══════════════════════════════════════════════════════════════
   var BOOKING = {
-    lobby:        "REPLACE_WITH_ZOOM_LOBBY_BOOKING_URL",
-    conservatory: "REPLACE_WITH_ZOOM_CONSERVATORY_BOOKING_URL",
-    penthouse:    "REPLACE_WITH_ZOOM_PENTHOUSE_BOOKING_URL",
+    lobby:        "https://scheduler.zoom.us/jessica-waldron-63crkl/new-author-group-coaching",
+    conservatory: "https://scheduler.zoom.us/jessica-waldron-63crkl/intermediate-author-group-coaching",
+    penthouse:    "https://scheduler.zoom.us/jessica-waldron-63crkl/advanced-author-cohort",
     open:         "REPLACE_WITH_ZOOM_OPEN_SESSION_URL"
   };
 
