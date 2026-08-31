@@ -7,14 +7,14 @@
 <title>My Master Library (Private) — The Invisible Pen</title>
 <style>
 :root {
-  --coral: #B76E79;        /* rose gold */
-  --rose-light: #E8C4C9;   /* pale rose gold */
-  --rose-deep: #9C5460;    /* deep rose gold */
-  --navy: #0F5E66;         /* deep teal */
-  --teal: #17909A;         /* bright teal */
-  --teal-pale: #E2F1F2;    /* pale teal wash */
-  --cream: #FDF6F4;        /* rosy cream */
-  --gold: #D4A0A8;         /* rose-gold shimmer */
+  --coral: #B76E79;
+  --rose-light: #E8C4C9;
+  --rose-deep: #9C5460;
+  --navy: #0F5E66;
+  --teal: #17909A;
+  --teal-pale: #E2F1F2;
+  --cream: #FDF6F4;
+  --gold: #D4A0A8;
   --sage: #17909A;
   --plum: #9C5460;
   --text: #2D2D2D;
@@ -42,7 +42,6 @@ body { font-family: 'Georgia', serif; background: var(--cream); color: var(--tex
 .container { max-width: 900px; margin: 0 auto; padding: 2.25rem 2rem 4rem; }
 .intro-box { background: #fff; border-left: 4px solid var(--plum); padding: 1.25rem 1.5rem; margin-bottom: 2.25rem; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 0.95rem; }
 .intro-box strong { color: var(--plum); }
-.intro-box .warn { display: block; margin-top: 0.6rem; font-size: 0.85rem; color: #8a5; color: #9a7b3c; font-style: italic; }
 .section { background: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-bottom: 1.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .section.paid { border: 1.5px solid var(--gold); }
 .section > h2 { color: var(--navy); font-size: 1.4rem; margin-bottom: 0.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--coral); }
@@ -78,175 +77,102 @@ ol.lessons, ul.lessons { list-style: none; }
   <div class="subtitle">Every tool, lesson &amp; link in one place — public and paid</div>
   <div class="brand">The Invisible Pen · Clark Publishing House</div>
 </div>
-
 <div class="container">
-
   <div class="intro-box">
     <strong>This is your private index — your single source of truth.</strong> It lists everything: the member-facing tools <em>and</em> the paid/hidden ones that don't appear on the public library.
-    Badges tell you what's what: <span class="badge paid">Paid</span> sold via Payhip · <span class="badge hidden">Hidden</span> off the public site · <span class="badge ext">tip-tools</span> <s>other repo</s> — retired, now the public website · <span class="badge new">New</span> just added.
-    <span class="warn" style="color:#9C5460;">⚠ Keep this URL to yourself. It's hidden from search engines (noindex), but anyone with the link can open it — don't post it where members can see.</span>
+    Badges: <span class="badge paid">Paid</span> · <span class="badge hidden">Hidden</span> · <span class="badge new">New</span>
+    <span class="warn" style="display:block;margin-top:0.6rem;font-size:0.85rem;color:#9C5460;font-style:italic;">Keep this URL to yourself. noindex, but anyone with the link can open it.</span>
   </div>
-
   <div class="toc">
-    <a href="#manage">Manage</a>
-    <a href="#student-questions">Student Questions</a>
-    <a href="#tools">Tools</a>
-    <a href="#voice">Make AI Sound Like You</a>
-    <a href="#foundations">Foundations</a>
-    <a href="#pen-launcher">Pen Name Launcher</a>
-    <a href="#story-clinic">Story Clinic</a>
-    <a href="#edit">Edit Like a Boss</a>
-    <a href="#ads">Amazon Ads</a>
-    <a href="#marketing">Book Marketing</a>
-    <a href="#beta">Beta Reads</a>
+    <a href="#manage">Manage</a><a href="#student-questions">Student Questions</a><a href="#tools">Tools</a><a href="#voice">Make AI Sound Like You</a><a href="#foundations">Foundations</a><a href="#pen-launcher">Pen Name Launcher</a><a href="#story-clinic">Story Clinic</a><a href="#edit">Edit Like a Boss</a><a href="#ads">Amazon Ads</a><a href="#marketing">Book Marketing</a><a href="#beta">Beta Reads</a>
   </div>
-
-  <!-- MANAGE -->
   <div class="section" id="manage">
     <h2>Manage &amp; Share</h2>
     <p class="section-note">The pages you hand out — and this private one.</p>
     <ul class="lessons">
       <li><a href="index.html"><span class="num">★</span><span class="title">Public Library</span> <span class="badge ext">Member-facing</span></a></li>
-      <li><a href="start-here.html"><span class="num">★</span><span class="title">Start Here — Plot Your Path quiz (onboarding / routing)</span></a></li>
-      <li><a href="writing-space.html"><span class="num">★</span><span class="title">The Writing Space — cohort signup (Skool Premium co-working)</span></a></li>
-      <li><a href="author-toolkit.html"><span class="num">★</span><span class="title">The Author Toolkit — sales page for the 7-tool bundle (drop your Payhip link into <code>PAYHIP_URL</code> + set the price, then share)</span> <span class="badge hidden">Unlinked until you share it</span> <span class="badge paid">Sales page</span></a></li>
+      <li><a href="start-here.html"><span class="num">★</span><span class="title">Start Here — Plot Your Path quiz</span></a></li>
+      <li><a href="writing-space.html"><span class="num">★</span><span class="title">The Writing Space — cohort signup</span></a></li>
+      <li><a href="author-toolkit.html"><span class="num">★</span><span class="title">The Author Toolkit — sales page</span> <span class="badge hidden">Unlinked until you share it</span></a></li>
       <li><a href="my-library.html"><span class="num">★</span><span class="title">My Master Library (this page)</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
   </div>
-
-  <!-- STUDENT QUESTIONS -->
   <div class="section" id="student-questions">
     <h2>Student Questions I've Answered</h2>
-    <p class="section-note">Full answers to great student questions. Not on the public library — share each link directly with whoever needs it.</p>
+    <p class="section-note">Not on the public library — share each link directly.</p>
     <ul class="lessons">
-      <li><a href="student-questions/index.html"><span class="num">★</span><span class="title">Student Questions — the list page (share this with students)</span> <span class="badge hidden">Unlisted</span></a></li>
-      <li><a href="student-questions/wounded-traveler-editorial-review.html"><span class="num">›</span><span class="title">Editorial Feedback: Chapter 1 — <em>The Wounded Traveler</em> (Leah Voss + Fiction Editing Workflow, ranked fix list)</span> <span class="badge hidden">Unlisted</span> <span class="badge new">New</span></a></li>
-      <li><a href="student-questions/internal-realization-vs-dramatized-reveal.html"><span class="num">›</span><span class="title">The Quiet Scene That Hits Harder Than the Confrontation — internal realization vs. dramatized reveal, planting clues so the payoff snaps</span> <span class="badge hidden">Unlisted</span></a></li>
-      <li><a href="student-questions/kdp-llc-transition.html"><span class="num">›</span><span class="title">KDP &rarr; Pro LLC Transition: Do This, Not That — account update, Author Central cleanup, 48-hour plan</span> <span class="badge hidden">Unlisted</span></a></li>
+      <li><a href="student-questions/index.html"><span class="num">★</span><span class="title">Student Questions — the list page</span> <span class="badge hidden">Unlisted</span></a></li>
+      <li><a href="student-questions/wounded-traveler-editorial-review.html"><span class="num">›</span><span class="title">Editorial Feedback: Chapter 1 — <em>The Wounded Traveler</em></span> <span class="badge hidden">Unlisted</span></a></li>
+      <li><a href="student-questions/internal-realization-vs-dramatized-reveal.html"><span class="num">›</span><span class="title">Internal realization vs. dramatized reveal</span> <span class="badge hidden">Unlisted</span></a></li>
+      <li><a href="student-questions/kdp-llc-transition.html"><span class="num">›</span><span class="title">KDP → Pro LLC Transition</span> <span class="badge hidden">Unlisted</span></a></li>
     </ul>
   </div>
-
-  <!-- TOOLS -->
   <div class="section" id="tools">
     <h2>Tools</h2>
     <p class="section-note">The interactive builders and dashboards.</p>
     <ul class="lessons">
-      <li><a href="tools/da-bot.html"><span class="num">★</span><span class="title">Da Bot — The Story Interrogator: the interrogation that refuses plot-instead-of-story. 10 gated stations (person → transformation → want → spine sentence → genre lock → reader → dilemma → drive-compatibility → five-year-old pitch) with live pushback on mission-statements, "everybody" as an audience, genre soup &amp; contradictory drives; Story Spine Card + Draft Duel A/B rubric + Prologue Test</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/character-deep-dive-romance.html"><span class="num">★</span><span class="title">Character Deep Dive: Romance — the two-hander: both leads excavated (wound → love lie → guard), <em>why it has to be these two</em>, the barrier with an enforcer, trope-to-wound justification, heat-aware intimacy ladder, 12-beat journey with closeness + two guard curves, black-moment stress test; 20 subgenre playbooks</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/character-deep-dive.html"><span class="num">★</span><span class="title">Character Deep Dive: Fantasy &amp; Sci-Fi — motivation &amp; journey engine: who they are, why the story starts today, and what the book does to them; 16 genre playbooks, wound→lie→want excavation with dig-deeper probes, 9-beat journey map + lie-grip curve, 16-check pressure test, dossier &amp; 4 Claude prompts</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/pen-name-website-blueprint.html"><span class="num">★</span><span class="title">The Pen Name Website Blueprint — interactive walkthrough: get a REAL website (own domain, email, database) for ~$11/yr with AI doing all the code; 8 stages, copy-paste prompts, you-vs-Claude checklists, receipts from the Beta Besties build</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="ember/index.html"><span class="num">★</span><span class="title">The Ember Lab — heat scenes that actually get written: the skill-audit case study, the Ember heat-writer skill (download &amp; install), and two heat-5 audition scenes behind an 18+ gate</span> <span class="badge hidden">Unlisted</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/book-marketing-engine.html"><span class="num">★</span><span class="title">Book Marketing Engine — paste your manuscript, get everything: trope detection, blurbs per format, keywords, Amazon/D2D/IngramSpark setup, social calendar &amp; launch checklist</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/series-architect.html"><span class="num">★</span><span class="title">Series Architect: Romance — map a whole 3–10 book series (rose gold): engine, world bible, tropes, threading, health check + Blueprint Dock (imports Identity Kits &amp; First Three Books, sends books to Story Studio)</span> <span class="badge hidden">Hidden</span> <span class="badge new">Beta</span></a></li>
-      <li><a href="tools/series-architect-fiction.html"><span class="num">★</span><span class="title">Series Architect: Genre Fiction — the teal edition for thriller, mystery, fantasy, sci-fi, horror &amp; more: 25 fiction lanes, darkness dial, fiction element bible + the same Blueprint Dock</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="https://payhip.com/theinvisiblepen"><span class="num">★</span><span class="title">The Romance Architect — AI-powered romance planning &amp; drafting studio: 9 subgenres, trope stacking, heat dial, 9-phase pipeline from vibe to exportable manuscript (single-file app, sold as download)</span> <span class="badge paid">Paid · Payhip</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/pen-name-identity-builder.html"><span class="num">★</span><span class="title">Pen Name Identity Builder — 26 romance-genre baselines: promise, tropes, naming vibe, brand look, comps &amp; release rhythm</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/fiction-pen-name-builder.html"><span class="num">★</span><span class="title">Fiction Pen Name Builder — 28 non-romance lanes (thriller, mystery, fantasy, sci-fi, horror, book club, western) with darkness &amp; romance-subplot dials</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/first-three-books.html"><span class="num">★</span><span class="title">First Three Books — series runway: imports your Identity Kit, rotates tropes across 3 blueprints, release calendar, sends all 3 to Story Studio</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/cover-brief-builder.html"><span class="num">★</span><span class="title">Cover Brief Builder — 53 lanes of cover conventions (palette swatches, imagery, typography, avoid-list) → designer-ready brief + AI concept-art prompt; imports Identity Kits</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/blurb-metadata-kit.html"><span class="num">★</span><span class="title">Blurb &amp; Metadata Kit — 15 shelf-specific blurb formulas with hook patterns, live preview &amp; word count, 7 KDP keyword slots with suggestions, category picks; imports Identity Kits</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/reader-magnet-builder.html"><span class="num">★</span><span class="title">Reader Magnet Builder — 6 magnet types, story seed from your signature tropes, the bridge to Book 1, funnel &amp; 3-email welcome sequence; sends the magnet to Story Studio</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/book-launch-runway.html"><span class="num">★</span><span class="title">Book Launch Runway — pick a launch date, get the whole plan backward-scheduled (T-8w → T+4w) with your marketing worksheets linked at every step; checkbox progress, attaches to Story Studio</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/story-spark.html"><span class="num">★</span><span class="title">Story Spark — Plan Your Book &amp; Pick Your Tropes</span> <span class="badge new">New</span></a></li>
-      <li><a href="tools/story-studio.html"><span class="num">★</span><span class="title">Story Studio — Your Book Dashboard</span></a></li>
+      <li><a href="https://cph-jessica.github.io/coaching/reverse-planner.html"><span class="num">★</span><span class="title">The Reverse Planner — six chapters, no map: mine a stalled draft back to Phase 1 and hand the packet to the CPH Fiction Planner</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
+      <li><a href="tools/da-bot.html"><span class="num">★</span><span class="title">Da Bot — The Story Interrogator</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/character-deep-dive-romance.html"><span class="num">★</span><span class="title">Character Deep Dive: Romance</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/character-deep-dive.html"><span class="num">★</span><span class="title">Character Deep Dive: Fantasy &amp; Sci-Fi</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/pen-name-website-blueprint.html"><span class="num">★</span><span class="title">The Pen Name Website Blueprint</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="ember/index.html"><span class="num">★</span><span class="title">The Ember Lab</span> <span class="badge hidden">Unlisted</span></a></li>
+      <li><a href="tools/book-marketing-engine.html"><span class="num">★</span><span class="title">Book Marketing Engine</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/series-architect.html"><span class="num">★</span><span class="title">Series Architect: Romance</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/series-architect-fiction.html"><span class="num">★</span><span class="title">Series Architect: Genre Fiction</span> <span class="badge hidden">Hidden</span> <span class="badge paid">For sale</span></a></li>
+      <li><a href="https://payhip.com/theinvisiblepen"><span class="num">★</span><span class="title">The Romance Architect</span> <span class="badge paid">Paid · Payhip</span></a></li>
+      <li><a href="tools/pen-name-identity-builder.html"><span class="num">★</span><span class="title">Pen Name Identity Builder</span></a></li>
+      <li><a href="tools/fiction-pen-name-builder.html"><span class="num">★</span><span class="title">Fiction Pen Name Builder</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/first-three-books.html"><span class="num">★</span><span class="title">First Three Books</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/cover-brief-builder.html"><span class="num">★</span><span class="title">Cover Brief Builder</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/blurb-metadata-kit.html"><span class="num">★</span><span class="title">Blurb &amp; Metadata Kit</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/reader-magnet-builder.html"><span class="num">★</span><span class="title">Reader Magnet Builder</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/book-launch-runway.html"><span class="num">★</span><span class="title">Book Launch Runway</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="tools/story-spark.html"><span class="num">★</span><span class="title">Story Spark</span></a></li>
+      <li><a href="tools/story-studio.html"><span class="num">★</span><span class="title">Story Studio</span></a></li>
       <li><a href="tools/series-read-through-calculator.html"><span class="num">★</span><span class="title">Series Read-Through Calculator</span></a></li>
-      <li><a href="tools/your-style-sheet.html"><span class="num">★</span><span class="title">Your Style Sheet — Make AI Sound Like You</span></a></li>
+      <li><a href="tools/your-style-sheet.html"><span class="num">★</span><span class="title">Your Style Sheet</span></a></li>
       <li><a href="tools/ai-banned-words.html"><span class="num">★</span><span class="title">The AI Banned Words Tool</span></a></li>
-      <li><a href="tools/quarterly-day-planner.html"><span class="num">★</span><span class="title">Author Day Planner</span> <span class="badge new">Re-hosted</span></a></li>
-      <li><a href="tools/prompt2publication.html"><span class="num">★</span><span class="title">Prompt 2 Publication — The Romance Author's Secret Weapon</span> <span class="badge new">Re-hosted</span></a></li>
+      <li><a href="tools/quarterly-day-planner.html"><span class="num">★</span><span class="title">Author Day Planner</span></a></li>
+      <li><a href="tools/prompt2publication.html"><span class="num">★</span><span class="title">Prompt 2 Publication</span></a></li>
       <li><a href="tools/copyright-page-template.html"><span class="num">★</span><span class="title">Copyright Page Template</span></a></li>
-      <li><a href="tools/trope-bible-builder.html"><span class="num">★</span><span class="title">Trope Bible &amp; Builder — 180 tropes, all genres incl. dark romance &amp; sci-fi</span> <span class="badge new">Re-hosted</span> <span class="badge new">Expanded</span></a></li>
-      <li><a href="tools/trope-compatibility-checker.html"><span class="num">★</span><span class="title">Trope Compatibility Checker</span> <span class="badge new">Re-hosted</span></a></li>
-      <li><a href="tools/blurb-builder.html"><span class="num">★</span><span class="title">Blurb Builder</span> <span class="badge new">Re-hosted</span></a></li>
-      <li><a href="tools/name-generator.html"><span class="num">★</span><span class="title">Character Name Generator</span> <span class="badge new">Re-hosted</span></a></li>
+      <li><a href="tools/trope-bible-builder.html"><span class="num">★</span><span class="title">Trope Bible &amp; Builder</span></a></li>
+      <li><a href="tools/trope-compatibility-checker.html"><span class="num">★</span><span class="title">Trope Compatibility Checker</span></a></li>
+      <li><a href="tools/blurb-builder.html"><span class="num">★</span><span class="title">Blurb Builder</span></a></li>
+      <li><a href="tools/name-generator.html"><span class="num">★</span><span class="title">Character Name Generator</span></a></li>
     </ul>
   </div>
-
-  <!-- MAKE AI SOUND LIKE YOU (funnel + paid) -->
   <div class="section paid" id="voice">
     <h2>Make AI Sound Like You</h2>
-    <p class="section-note">The voice funnel: free article → sales page → paid class &amp; Voice Kit (Payhip).</p>
     <ul class="lessons">
-      <li><a href="make-ai-sound-like-you/you-always-had-the-ideas.html"><span class="num">›</span><span class="title">“You Always Had the Ideas” — free companion article (funnel top)</span></a></li>
-      <li><a href="make-ai-sound-like-you/class.html"><span class="num">›</span><span class="title">Make AI Sound Like You — sales / enroll page</span> <span class="badge hidden">Public sales page</span></a></li>
-      <li><a href="make-ai-sound-like-you/class.html"><span class="num">🔒</span><span class="title">The Class itself + Voice Kit Builder — paid deliverable</span> <span class="badge paid">Paid · Payhip</span></a></li>
+      <li><a href="make-ai-sound-like-you/you-always-had-the-ideas.html"><span class="num">›</span><span class="title">“You Always Had the Ideas”</span></a></li>
+      <li><a href="make-ai-sound-like-you/class.html"><span class="num">›</span><span class="title">Make AI Sound Like You — sales page</span></a></li>
     </ul>
-    <p class="section-note" style="margin-top:0.8rem;">Note: the paid <strong>Class</strong> and <strong>Voice Kit Builder</strong> were moved out of this repo into the Payhip course, so there's no live page here — buyers get them through Payhip. Drop your Payhip product link into <code>make-ai-sound-like-you/class.html</code> (the <code>PAYHIP_URL</code> variable) to wire the buy buttons.</p>
   </div>
-
-  <!-- FOUNDATIONS -->
   <div class="section" id="foundations">
     <h2>Foundations of Claude</h2>
-    <p class="section-note"><strong>Re-opened 27 Jul 2026.</strong> Lessons 5, 9–16 and the companion tools were paywalled on 22 Jul, but no Payhip product ever went live behind them — so students hit dead ends. All 12 are now re-hosted here and live on the public library, free. When you're ready to sell the class, re-gate them and point the locks at the real product. The <a href="foundations/class.html">class sales page</a> is still here and untouched.</p>
-
-    <div class="part-label">Cowork Projects</div>
+    <p class="section-note">Lessons and companion tools. Public library still lists these.</p>
     <ul class="lessons">
-      <li><a href="foundations/cowork-projects-workbook.html"><span class="num">›</span><span class="title">Cowork Projects — Author Workbook (4-tab fill-in: understand, build, move, run)</span> <span class="badge new">New</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 1</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-1-teach-claude-who-you-are.html"><span class="num">›</span><span class="title">Teach Claude Who You Are — build your author profile for Claude</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 5</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-5-skill-anatomy-explorer.html"><span class="num">›</span><span class="title">Skill Anatomy Explorer</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 6</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-6-voice-skill-builder.html"><span class="num">›</span><span class="title">Voice Skill Builder</span></a></li>
-      <li><a href="foundations/lesson-6-skill-builder-beta-editor.html"><span class="num">›</span><span class="title">Skill Builder — Beta Reader &amp; Editor Edition</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 7</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-7-beta-reader-builder.html"><span class="num">›</span><span class="title">Beta Reader Builder</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 8</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-8-skill-testing-lab.html"><span class="num">›</span><span class="title">Skill Testing Lab</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 9</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-9-project-architecture-explorer.html"><span class="num">›</span><span class="title">Project Architecture Explorer</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 10</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-10-project-instructions-builder.html"><span class="num">›</span><span class="title">Project Instructions Builder</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 11</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-11-single-book-project-setup.html"><span class="num">›</span><span class="title">Single Book Project Setup</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 12</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-12-series-project-planner.html"><span class="num">›</span><span class="title">Series Project Planner</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 13</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-13-five-core-elements.html"><span class="num">›</span><span class="title">The 5 Core Elements &amp; Story Promise</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 14</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-14-premise-and-codex.html"><span class="num">›</span><span class="title">Premise &amp; Codex Builder</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 15</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-15-outline-builder.html"><span class="num">›</span><span class="title">Outline Builder</span></a></li>
-    </ul>
-    <div class="part-label">Lesson 16</div>
-    <ul class="lessons">
-      <li><a href="foundations/lesson-16-plot-hole-and-chapter-prompts.html"><span class="num">›</span><span class="title">Plot Hole Check &amp; Chapter Prompts</span></a></li>
-    </ul>
-    <div class="part-label">Companion Tools</div>
-    <ul class="lessons">
+      <li><a href="foundations/cowork-projects-workbook.html"><span class="num">›</span><span class="title">Cowork Projects Workbook</span></a></li>
+      <li><a href="foundations/lesson-1-teach-claude-who-you-are.html"><span class="num">›</span><span class="title">Lesson 1 — Teach Claude Who You Are</span></a></li>
+      <li><a href="foundations/lesson-5-skill-anatomy-explorer.html"><span class="num">›</span><span class="title">Lesson 5 — Skill Anatomy Explorer</span></a></li>
+      <li><a href="foundations/lesson-6-voice-skill-builder.html"><span class="num">›</span><span class="title">Lesson 6 — Voice Skill Builder</span></a></li>
+      <li><a href="foundations/lesson-7-beta-reader-builder.html"><span class="num">›</span><span class="title">Lesson 7 — Beta Reader Builder</span></a></li>
+      <li><a href="foundations/lesson-8-skill-testing-lab.html"><span class="num">›</span><span class="title">Lesson 8 — Skill Testing Lab</span></a></li>
+      <li><a href="foundations/lesson-9-project-architecture-explorer.html"><span class="num">›</span><span class="title">Lesson 9 — Project Architecture Explorer</span></a></li>
+      <li><a href="foundations/lesson-10-project-instructions-builder.html"><span class="num">›</span><span class="title">Lesson 10 — Project Instructions Builder</span></a></li>
+      <li><a href="foundations/lesson-11-single-book-project-setup.html"><span class="num">›</span><span class="title">Lesson 11 — Single Book Project Setup</span></a></li>
+      <li><a href="foundations/lesson-12-series-project-planner.html"><span class="num">›</span><span class="title">Lesson 12 — Series Project Planner</span></a></li>
+      <li><a href="foundations/lesson-13-five-core-elements.html"><span class="num">›</span><span class="title">Lesson 13 — 5 Core Elements &amp; Story Promise</span></a></li>
+      <li><a href="foundations/lesson-14-premise-and-codex.html"><span class="num">›</span><span class="title">Lesson 14 — Premise &amp; Codex</span></a></li>
+      <li><a href="foundations/lesson-15-outline-builder.html"><span class="num">›</span><span class="title">Lesson 15 — Outline Builder</span></a></li>
+      <li><a href="foundations/lesson-16-plot-hole-and-chapter-prompts.html"><span class="num">›</span><span class="title">Lesson 16 — Plot Hole Check &amp; Chapter Prompts</span></a></li>
       <li><a href="foundations/character-tracker.html"><span class="num">›</span><span class="title">Character Tracker</span></a></li>
       <li><a href="foundations/pen-name-skill-builder.html"><span class="num">›</span><span class="title">Pen Name Skill Builder</span></a></li>
     </ul>
   </div>
-
-  <!-- PEN NAME LAUNCHER -->
   <div class="section" id="pen-launcher">
     <h2>Pen Name Launcher</h2>
-    <p class="section-note">The self-paced class for launching a new pen name. All 6 worksheets were re-hosted here on 23 Jul 2026 (they 404'd after the <code>tip-tools</code> retirement) and are <strong>open to everyone</strong> — no gate. Note there is still a paid Pen Name Launcher product at <a href="https://payhip.com/b/VF04b">payhip.com/b/VF04b</a>.</p>
     <ol class="lessons">
       <li><a href="pen-name-launcher/lesson-1-worksheet.html"><span class="num">1</span><span class="title">Building Your Pen Name Identity</span></a></li>
       <li><a href="pen-name-launcher/lesson-2-worksheet.html"><span class="num">2</span><span class="title">Your Newsletter From Scratch</span></a></li>
@@ -256,126 +182,80 @@ ol.lessons, ul.lessons { list-style: none; }
       <li><a href="pen-name-launcher/lesson-6-worksheet.html"><span class="num">6</span><span class="title">Launch Week &amp; Beyond</span></a></li>
     </ol>
   </div>
-
-  <!-- EDIT LIKE A BOSS -->
   <div class="section" id="story-clinic">
     <h2>Story Clinic 🩺</h2>
-    <p class="section-note">The full manuscript checkup — every edition, its guide, and the feedback line. Pairs with Edit Like a Boss; stands completely on its own.</p>
-    <div class="part-label">🌱 The Editing Coach — start here if editing scares you</div>
+    <div class="part-label">🧭 Stalled draft — before you outline</div>
     <ul class="lessons">
-      <li><a href="edit-like-a-boss/editing-coach.html"><span class="num">★</span><span class="title">The Editing Coach — gentle 7-step first edit, one chapter at a time, never more than 3 fixes</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="edit-like-a-boss/editing-coach-guide.html"><span class="num">📖</span><span class="title">Step-by-step guide — the welcome, the seven steps, both paste-back doors, your downloads</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
+      <li><a href="https://cph-jessica.github.io/coaching/reverse-planner.html"><span class="num">★</span><span class="title">The Reverse Planner — six chapters written, no outline</span> <span class="badge hidden">Unlisted</span> <span class="badge new">New</span></a></li>
+    </ul>
+    <div class="part-label">🌱 The Editing Coach</div>
+    <ul class="lessons">
+      <li><a href="edit-like-a-boss/editing-coach.html"><span class="num">★</span><span class="title">The Editing Coach</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="edit-like-a-boss/editing-coach-guide.html"><span class="num">📖</span><span class="title">Editing Coach guide</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
     <div class="part-label">🌹 Romance Edition</div>
     <ul class="lessons">
-      <li><a href="edit-like-a-boss/manuscript-editing-cockpit.html"><span class="num">★</span><span class="title">Story Clinic — full manuscript checkup: 12 passes + 5 story lab reports (romance)</span> <span class="badge hidden">Hidden</span></a></li>
-      <li><a href="edit-like-a-boss/story-clinic-guide.html"><span class="num">📖</span><span class="title">Step-by-step guide — walkthrough video + every click in order</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="edit-like-a-boss/manuscript-editing-cockpit.html"><span class="num">★</span><span class="title">Story Clinic — romance</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="edit-like-a-boss/story-clinic-guide.html"><span class="num">📖</span><span class="title">Story Clinic guide</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
-    <div class="part-label">⚔️ Genre Fiction Edition — Fantasy · Sci-Fi · Mystery · Horror · Thriller</div>
+    <div class="part-label">⚔️ Genre Fiction Edition</div>
     <ul class="lessons">
-      <li><a href="edit-like-a-boss/story-clinic-sff-mystery.html"><span class="num">★</span><span class="title">Story Clinic: Genre Fiction — 14 passes incl. World Rules &amp; Clue Audit + 7 lab reports (dread curve, mystery engine)</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
-      <li><a href="edit-like-a-boss/story-clinic-genre-guide.html"><span class="num">📖</span><span class="title">Step-by-step guide — every click in order, incl. World Rules, Clue &amp; Fair-Play, Dread &amp; Mystery reports</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
+      <li><a href="edit-like-a-boss/story-clinic-sff-mystery.html"><span class="num">★</span><span class="title">Story Clinic: Genre Fiction</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="edit-like-a-boss/story-clinic-genre-guide.html"><span class="num">📖</span><span class="title">Genre Fiction guide</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
     <div class="part-label">🌍 Translation Clinic</div>
     <ul class="lessons">
-      <li><a href="edit-like-a-boss/translation-clinic.html"><span class="num">★</span><span class="title">Translation Clinic — EN → FR/IT/DE/ES/PT: parity scan, 6 translation passes, glossary grid, ship-ready verdict</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
+      <li><a href="edit-like-a-boss/translation-clinic.html"><span class="num">★</span><span class="title">Translation Clinic</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
     <div class="part-label">💬 Beta Feedback</div>
     <ul class="lessons">
-      <li><a href="edit-like-a-boss/story-clinic-feedback.html"><span class="num">💬</span><span class="title">Story Clinic feedback form — students tell us what to fix next (lands in Gmail tagged [STORY CLINIC FEEDBACK])</span> <span class="badge hidden">Hidden</span></a></li>
-      <li><a href="edit-like-a-boss/story-clinic-student-answers.html"><span class="num">🙋</span><span class="title">Student answers — real editing questions from the beta crew, answered straight</span> <span class="badge hidden">Hidden</span> <span class="badge new">New</span></a></li>
+      <li><a href="edit-like-a-boss/story-clinic-feedback.html"><span class="num">💬</span><span class="title">Story Clinic feedback form</span> <span class="badge hidden">Hidden</span></a></li>
+      <li><a href="edit-like-a-boss/story-clinic-student-answers.html"><span class="num">🙋</span><span class="title">Student answers</span> <span class="badge hidden">Hidden</span></a></li>
     </ul>
   </div>
-
   <div class="section" id="edit">
     <h2>Edit Like a Boss</h2>
-    <p class="section-note">The complete self-paced editing course. Its capstone tools — the Story Clinics — live in their own section above.</p>
-    <div class="part-label">Part 1 — The Editing System</div>
-    <ol class="lessons">
+    <p class="section-note">Full course. Clinics live in the section above.</p>
+    <ul class="lessons">
       <li><a href="edit-like-a-boss/part-1-editing-system/lesson-01-intro.html"><span class="num">1</span><span class="title">Editing Readiness Checklist</span></a></li>
       <li><a href="edit-like-a-boss/part-1-editing-system/lesson-02-quality-check.html"><span class="num">2</span><span class="title">Quality Check Worksheet</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-03-plot-holes.html"><span class="num">3</span><span class="title">Pass 2 — Plot Hole Checker</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-04-timeline.html"><span class="num">4</span><span class="title">Pass 3 — Timeline Consistency</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-03-plot-holes.html"><span class="num">3</span><span class="title">Plot Hole Checker</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-04-timeline.html"><span class="num">4</span><span class="title">Timeline Consistency</span></a></li>
       <li><a href="edit-like-a-boss/part-1-editing-system/lesson-05-line-edit.html"><span class="num">5</span><span class="title">Line Edit Worksheet</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-06-dialogue.html"><span class="num">6</span><span class="title">Dialogue Polish Worksheet</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-07-heat-scene.html"><span class="num">7</span><span class="title">Heat Scene Edit Worksheet</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-08-dev-edit.html"><span class="num">8</span><span class="title">Developmental Edit (Slash Editor) Worksheet</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-09-voice-audit.html"><span class="num">9</span><span class="title">Voice Audit Worksheet</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-06-dialogue.html"><span class="num">6</span><span class="title">Dialogue Polish</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-07-heat-scene.html"><span class="num">7</span><span class="title">Heat Scene Edit</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-08-dev-edit.html"><span class="num">8</span><span class="title">Developmental Edit</span></a></li>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-09-voice-audit.html"><span class="num">9</span><span class="title">Voice Audit</span></a></li>
       <li><a href="edit-like-a-boss/part-1-editing-system/lesson-10-conclusion.html"><span class="num">10</span><span class="title">Full Manuscript Audit Tracker</span></a></li>
-      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-11-human-pass.html"><span class="num">11</span><span class="title">Pass 9 — The Human Pass</span></a></li>
-    </ol>
-    <div class="part-label">Part 2 — Building Your Team</div>
-    <ol class="lessons">
-      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-01-beta-bestie.html"><span class="num">1</span><span class="title">Beta Bestie Builder</span></a></li>
-      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-02-creating-skills.html"><span class="num">2</span><span class="title">Creating Your Own Skills</span></a></li>
-      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-03-style-guide.html"><span class="num">3</span><span class="title">Pen Name Style Guide Builder</span></a></li>
-      <li><a href="edit-like-a-boss/part-2-building-your-team/lesson-04-writing-system.html"><span class="num">4</span><span class="title">Writing System Audit</span></a></li>
-    </ol>
-    <div class="part-label">Part 3 — Expanding Your Reach</div>
-    <ol class="lessons">
-      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-01-what-each-ai-does-best.html"><span class="num">1</span><span class="title">What Each AI Does Best</span></a></li>
-      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-02-setting-up-chatgpt-gpts.html"><span class="num">2</span><span class="title">Setting Up ChatGPT Custom GPTs</span></a></li>
-      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-03-setting-up-gemini-grok.html"><span class="num">3</span><span class="title">Setting Up Gemini Gems + Grok Agents</span></a></li>
-      <li><a href="edit-like-a-boss/part-3-expanding-your-reach/lesson-04-multi-tool-workflow.html"><span class="num">4</span><span class="title">The Multi-Tool Editing Workflow</span></a></li>
-    </ol>
+      <li><a href="edit-like-a-boss/part-1-editing-system/lesson-11-human-pass.html"><span class="num">11</span><span class="title">The Human Pass</span></a></li>
+    </ul>
   </div>
-
-  <!-- AMAZON ADS -->
   <div class="section" id="ads">
     <h2>Amazon Ads for Authors</h2>
     <ol class="lessons">
       <li><a href="amazon-ads/01-ads-readiness-checklist.html"><span class="num">1</span><span class="title">Ads Readiness Checklist</span></a></li>
       <li><a href="amazon-ads/02-keyword-research-workbook.html"><span class="num">2</span><span class="title">Keyword Research Workbook</span></a></li>
-      <li><a href="amazon-ads/03-campaign-builder.html"><span class="num">3</span><span class="title">Campaign Builder Worksheet</span></a></li>
+      <li><a href="amazon-ads/03-campaign-builder.html"><span class="num">3</span><span class="title">Campaign Builder</span></a></li>
       <li><a href="amazon-ads/04-ad-performance-tracker.html"><span class="num">4</span><span class="title">Ad Performance Tracker</span></a></li>
     </ol>
   </div>
-
-  <!-- TROPE-POWERED MARKETING -->
-  <div class="section" id="trope-marketing">
-    <h2>Trope-Powered Marketing</h2>
-    <p class="section-note">The live class — one week at a time. Student worksheets are public; teaching notes are yours.</p>
-    <ol class="lessons">
-      <li><a href="trope-marketing/week-1-trope-stack-worksheet.html"><span class="num">1</span><span class="title">Week 1 — Trope Stack &amp; Reader Intent Worksheet</span></a></li>
-      <li><a href="trope-marketing/week-1-teaching-notes.html"><span class="num">1</span><span class="title">Week 1 — Teaching Notes &amp; Script</span> <span class="badge hidden">Instructor only</span></a></li>
-    </ol>
-  </div>
-
-  <!-- Q4 HOLIDAY RELEASE WORKSHOP -->
-  <div class="section" id="q4-workshop">
-    <h2>Q4 Holiday Release Workshop</h2>
-    <p class="section-note">Late July 2026 live workshop &mdash; Halloween &rarr; Autumn &rarr; Christmas release planning. Signups feed the MailerLite &ldquo;Q4 Holiday Release Workshop&rdquo; group.</p>
-    <ol class="lessons">
-      <li><a href="q4-holiday-workshop/signup.html"><span class="num">1</span><span class="title">Sign-up Page (share this everywhere)</span></a></li>
-      <li><a href="q4-holiday-workshop/holiday-trope-workbook.html"><span class="num">2</span><span class="title">Holiday Trope Workbook</span> <span class="badge hidden">Premium tool</span></a></li>
-      <li><a href="q4-holiday-workshop/q4-marketing-planner.html"><span class="num">3</span><span class="title">Q4 Marketing Planner</span> <span class="badge hidden">Premium tool</span></a></li>
-      <li><a href="q4-holiday-workshop/instructor-workbook.html"><span class="num">4</span><span class="title">Instructor Command Center &mdash; Script, Timer &amp; Checklists</span> <span class="badge hidden">Instructor only</span></a></li>
-    </ol>
-  </div>
-
-  <!-- BOOK MARKETING -->
   <div class="section" id="marketing">
     <h2>Book Marketing</h2>
     <ol class="lessons">
       <li><a href="book-marketing/01-marketing-channel-audit.html"><span class="num">1</span><span class="title">Marketing Channel Audit</span></a></li>
       <li><a href="book-marketing/02-promo-site-planner.html"><span class="num">2</span><span class="title">Promo Site Planner</span></a></li>
       <li><a href="book-marketing/03-swap-strategy-builder.html"><span class="num">3</span><span class="title">Swap Strategy Builder</span></a></li>
-      <li><a href="book-marketing/04-review-launch-planner.html"><span class="num">4</span><span class="title">Review Launch Planner — Beyond BookBub</span></a></li>
+      <li><a href="book-marketing/04-review-launch-planner.html"><span class="num">4</span><span class="title">Review Launch Planner</span></a></li>
       <li><a href="book-marketing/05-content-marketing-calendar.html"><span class="num">5</span><span class="title">Content Marketing Calendar</span></a></li>
     </ol>
   </div>
-
-  <!-- BETA READS -->
   <div class="section" id="beta">
     <h2>Beta Reads</h2>
-    <p class="section-note">Reader reports from the beta-reader personas. <span class="badge hidden">noindex / hidden from search</span></p>
     <ul class="lessons">
       <li><a href="beta-reads/ninety-days-ch1-brinley.html"><span class="num">★</span><span class="title">Brinley Reads — Ninety Days, Ch. 1</span></a></li>
     </ul>
   </div>
-
 </div>
-
 <div class="footer">
   🦋 The Invisible Pen · Clark Publishing House LLC — private master index 🦋<br>
   Public library: <a href="index.html">index.html</a>
