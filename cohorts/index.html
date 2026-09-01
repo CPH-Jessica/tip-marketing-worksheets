@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The TIP Cohorts — Pick Your Floor | The Invisible Pen</title>
-<meta name="description" content="Three floors, three stages of your author life. One live session a month, a monthly tools drop, and a floor built for exactly where you are. The Invisible Pen Cohorts, starting September 2026.">
+<title>The TIP Cohorts — Building, Growing, Scaling | The Invisible Pen</title>
+<meta name="description" content="Three cohorts for three stages of your author life — Building Authors, Growing Authors, and Scaling Authors. One live session a month, a monthly tools drop, and a room built for exactly where you are. The Invisible Pen Cohorts, starting September 2026.">
 
 <!-- ═══════════════════════════════════════════════════════════════════
      LAUNCH CHECKLIST (Jessica — before this page goes live)
@@ -12,9 +12,9 @@
         (2026-08-04). Only the free OPEN SESSION link is still a
         REPLACE_WITH_... placeholder in the <script> at the bottom — its
         button shows "Booking opens soon" until replaced.
-        NOTE: Conservatory price matched to Zoom checkout at $147 (spec said
-        $150) — if $150 was intended, change it in Zoom, then flip the two
-        $147 spots on this page back.
+        NOTE: Growing Authors price matched to Zoom checkout at $147 (spec
+        said $150) — if $150 was intended, change it in Zoom, then flip the
+        two $147 spots on this page back.
      2. DATES: September 2026 start is set (confirmed 2026-08-04). Search
         "JESSICA-DATE" (2 spots) to add exact session days/times per tier
         once you lock them.
@@ -97,8 +97,8 @@
   .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
   .fineline{font-size:.92rem;color:var(--ink-soft)}
 
-  /* CSS building */
-  .building{display:flex;flex-direction:column;gap:7px;min-width:230px}
+  /* CSS tier stack */
+  .stack{display:flex;flex-direction:column;gap:7px;min-width:230px}
   .floor{
     border-radius:12px;padding:13px 18px;color:#fff;
     display:flex;align-items:baseline;justify-content:space-between;gap:10px;
@@ -110,19 +110,14 @@
   .floor:hover{transform:translateX(6px)}
   .floor .fl-name{font-weight:700;font-size:1.02rem}
   .floor .fl-price{font-size:.85rem;opacity:.92;white-space:nowrap}
-  .floor.penthouse{background:linear-gradient(135deg,#8a6a24,var(--gold-deep));}
-  .floor.conservatory{background:linear-gradient(135deg,#3c6c60,var(--sage));}
-  .floor.lobby{background:linear-gradient(135deg,var(--teal-deep),var(--teal));}
+  .floor.scaling{background:linear-gradient(135deg,#8a6a24,var(--gold-deep));}
+  .floor.growing{background:linear-gradient(135deg,#3c6c60,var(--sage));}
+  .floor.building{background:linear-gradient(135deg,var(--teal-deep),var(--teal));}
   .floor.door{
     background:var(--paper);color:var(--teal-deep);
     border:1.5px dashed var(--gold-deep);box-shadow:none;
   }
   .floor.door .fl-price{color:var(--gold-deep);font-weight:600}
-  .roof{
-    height:0;border-left:26px solid transparent;border-right:26px solid transparent;
-    border-bottom:16px solid var(--teal-deep);margin:0 auto 2px;width:60%;
-    border-bottom-left-radius:4px;border-bottom-right-radius:4px;
-  }
 
   /* ── Generic card/section ─────────────────────── */
   .card{
@@ -153,9 +148,9 @@
     background:#fff;display:flex;flex-direction:column;gap:0;
   }
   .place h3{font-family:"Fraunces",serif;font-weight:700;font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-  .place.lobby h3{color:var(--teal)}
-  .place.conservatory h3{color:var(--sage)}
-  .place.penthouse h3{color:var(--gold-deep)}
+  .place.building h3{color:var(--teal)}
+  .place.growing h3{color:var(--sage)}
+  .place.scaling h3{color:var(--gold-deep)}
   .place ul{margin:0 0 16px;padding:0;list-style:none;flex:1}
   .place li{
     font-size:.98rem;color:var(--ink-soft);font-style:italic;
@@ -175,9 +170,9 @@
     scroll-margin-top:24px;
   }
   .tier-head{padding:26px 24px 20px;color:#fff}
-  .tier.lobby .tier-head{background:linear-gradient(135deg,var(--teal-deep),var(--teal))}
-  .tier.conservatory .tier-head{background:linear-gradient(135deg,#3c6c60,var(--sage))}
-  .tier.penthouse .tier-head{background:linear-gradient(135deg,#8a6a24,var(--gold-deep))}
+  .tier.building .tier-head{background:linear-gradient(135deg,var(--teal-deep),var(--teal))}
+  .tier.growing .tier-head{background:linear-gradient(135deg,#3c6c60,var(--sage))}
+  .tier.scaling .tier-head{background:linear-gradient(135deg,#8a6a24,var(--gold-deep))}
   .tier-head .t-emoji{font-size:1.5rem}
   .tier-head h3{font-family:"Fraunces",serif;font-weight:700;font-size:1.5rem;margin:6px 0 2px}
   .tier-head .t-tag{font-style:italic;font-size:.98rem;opacity:.94}
@@ -312,7 +307,7 @@
     .place-grid{grid-template-columns:1fr}
     .includes{grid-template-columns:repeat(2,1fr)}
     .hero{grid-template-columns:1fr;padding:40px 26px}
-    .building{max-width:340px;margin:0 auto}
+    .stack{max-width:340px;margin:0 auto}
     .card{padding:34px 24px}
     .vip{padding:32px 26px}
     .open-grid{grid-template-columns:1fr}
@@ -336,69 +331,68 @@
   <header class="hero fade">
     <div>
       <p class="eyebrow">The TIP Cohorts</p>
-      <h1>Three floors. Three stages. One building.</h1>
-      <p class="lede">Every author is somewhere in this building. Some are in the <b>Lobby</b>, deciding which direction to walk. Some are in the <b>Conservatory</b>, getting the pieces to finally talk to each other. A few are in the <b>Penthouse</b>, running multiple pen names at scale. One live session a month, a tools drop you keep forever, and a room full of people at your stage.</p>
+      <h1>Three cohorts. Three stages. One of them is yours.</h1>
+      <p class="lede">Every author is at one of three stages. <b>Building Authors</b> are learning the craft and getting that first book ready to publish. <b>Growing Authors</b> have a book out and are building what comes next — the newsletter, the marketing, the machine. <b>Scaling Authors</b> are ten-plus books deep and folding AI into every part of the process. One live session a month, a tools drop you keep forever, and a room full of people at your stage.</p>
       <div class="hero-cta">
-        <a class="btn" href="#placement">Find your floor <span class="arrow">&rarr;</span></a>
+        <a class="btn" href="#placement">Find your cohort <span class="arrow">&rarr;</span></a>
         <span class="fineline"><b>Starts September 2026.</b> Monthly billing. Cancel anytime. No blocks, no contracts.</span>
       </div>
     </div>
-    <div class="building" aria-label="The three cohort tiers, shown as floors of a building">
-      <div class="roof" aria-hidden="true"></div>
-      <a class="floor penthouse" href="#penthouse"><span class="fl-name">🔥 The Penthouse</span><span class="fl-price">$247/mo · 12 seats</span></a>
-      <a class="floor conservatory" href="#conservatory"><span class="fl-name">🌿 The Conservatory</span><span class="fl-price">$147/mo · 20 seats</span></a>
-      <a class="floor lobby" href="#lobby"><span class="fl-name">🏛️ The Lobby</span><span class="fl-price">$97/mo · 25 seats</span></a>
+    <div class="stack" aria-label="The three cohort tiers">
+      <a class="floor scaling" href="#scaling"><span class="fl-name">🚀 Scaling Authors</span><span class="fl-price">$247/mo · 12 seats</span></a>
+      <a class="floor growing" href="#growing"><span class="fl-name">🌿 Growing Authors</span><span class="fl-price">$147/mo · 20 seats</span></a>
+      <a class="floor building" href="#building"><span class="fl-name">🧱 Building Authors</span><span class="fl-price">$97/mo · 25 seats</span></a>
       <a class="floor door" href="#open-session"><span class="fl-name">🎟️ The Open Session</span><span class="fl-price">Free · monthly</span></a>
     </div>
   </header>
 
   <!-- 2 · SELF-PLACEMENT -->
   <section class="card fade" id="placement" aria-labelledby="placement-h">
-    <h2 id="placement-h">Which floor are you on?</h2>
-    <p class="sub">Read the statements. The floor where you catch yourself nodding is the one built for you.</p>
+    <h2 id="placement-h">Which cohort fits you right now?</h2>
+    <p class="sub">Read the statements. The cohort where you catch yourself nodding is the one built for you.</p>
     <div class="place-grid">
-      <div class="place lobby">
-        <h3>🏛️ You're in the Lobby if...</h3>
+      <div class="place building">
+        <h3>🧱 You're a Building Author if...</h3>
         <ul>
           <li>I'm newer to publishing, or starting a fresh pen name, and everything feels like it's supposed to be done at once.</li>
           <li>People keep saying newsletter, reader magnet, Claude Project, and I don't actually have any of them set up.</li>
           <li>I don't need to go faster. I need to know I'm going in the right direction.</li>
         </ul>
-        <p class="verdict">That's the ground floor. <a href="#lobby">Start in the Lobby.</a></p>
+        <p class="verdict">That's your room. <a href="#building">Start with Building Authors.</a></p>
       </div>
-      <div class="place conservatory">
-        <h3>🌿 You're in the Conservatory if...</h3>
+      <div class="place growing">
+        <h3>🌿 You're a Growing Author if...</h3>
         <ul>
-          <li>I have books, a magnet, a BookFunnel account, a MailerLite login. None of it talks to each other.</li>
+          <li>My book is out — or up for pre-order — and I have a magnet, a BookFunnel account, a MailerLite login. None of it talks to each other.</li>
           <li>I can't tell which part is actually broken. I just know the numbers aren't moving.</li>
           <li>My AI drafts still sound like AI, and my newsletter signup count makes me want to close the tab.</li>
         </ul>
-        <p class="verdict">That's the middle floor. <a href="#conservatory">Grow in the Conservatory.</a></p>
+        <p class="verdict">That's your room. <a href="#growing">Join Growing Authors.</a></p>
       </div>
-      <div class="place penthouse">
-        <h3>🔥 You're in the Penthouse if...</h3>
+      <div class="place scaling">
+        <h3>🚀 You're a Scaling Author if...</h3>
         <ul>
-          <li>I run multiple pen names with real backlists, and my problem is scale, not setup.</li>
+          <li>I have ten or more books out — often across pen names — and my problem is scale, not setup.</li>
           <li>I want automation, architecture, and honest talk about what AI can and can't do yet.</li>
           <li>I'm done with classrooms. I want a peer room that keeps up with me.</li>
         </ul>
-        <p class="verdict">That's the top floor. <a href="#penthouse">Take the Penthouse.</a></p>
+        <p class="verdict">That's your room. <a href="#scaling">Step up to Scaling Authors.</a></p>
       </div>
     </div>
   </section>
 
   <!-- 3 · TIER CARDS -->
   <section class="card fade" aria-labelledby="tiers-h">
-    <h2 id="tiers-h">The three floors</h2>
-    <p class="sub">Same structure on every floor: one live 90-minute session a month, the monthly tools drop, a private classroom in Skool, and hot seats on real work. What changes is the altitude.</p>
+    <h2 id="tiers-h">The three cohorts</h2>
+    <p class="sub">Same structure in every cohort: one live 90-minute session a month, the monthly tools drop, a private classroom in Skool, and hot seats on real work. What changes is the altitude.</p>
 
     <div class="tiers">
 
-      <!-- Lobby -->
-      <article class="tier lobby" id="lobby" aria-labelledby="lobby-h">
+      <!-- Building Authors -->
+      <article class="tier building" id="building" aria-labelledby="building-h">
         <div class="tier-head">
-          <span class="t-emoji" aria-hidden="true">🏛️</span>
-          <h3 id="lobby-h">The Lobby</h3>
+          <span class="t-emoji" aria-hidden="true">🧱</span>
+          <h3 id="building-h">Building Authors</h3>
           <p class="t-tag">Where you start on purpose.</p>
           <div class="t-price"><span class="amt">$97</span><span class="per">/month · cancel anytime</span></div>
           <span class="seatpill">25 seats · real cap</span>
@@ -406,7 +400,7 @@
         <div class="tier-body">
           <div class="blk">
             <p class="k">Who belongs here</p>
-            <p>Authors newer to publishing, launching a fresh pen name, or buried under everything they are supposed to be doing. <b>You don't need to go faster. You need to go in the right direction.</b></p>
+            <p>Newer authors learning the craft and getting ready to publish — or launching a fresh pen name and buried under everything they are supposed to be doing. <b>You don't need to go faster. You need to go in the right direction.</b></p>
           </div>
           <div class="blk">
             <p class="k">What you work on</p>
@@ -420,27 +414,27 @@
               <li>MailerLite set up and connected</li>
             </ul>
           </div>
-          <div class="notfor"><b>Not for you if</b> you already have a working newsletter and a Claude setup you trust. You'll be bored. Start in the Conservatory.</div>
+          <div class="notfor"><b>Not for you if</b> you already have a working newsletter and a Claude setup you trust. You'll be bored. Join Growing Authors.</div>
           <div class="push">
-            <a class="btn wide" data-book="lobby" href="#">Book your Lobby seat <span class="arrow">&rarr;</span></a>
+            <a class="btn wide" data-book="building" href="#">Book your Building Authors seat <span class="arrow">&rarr;</span></a>
             <p class="btn-note">Payment is taken when you book your seat.</p>
           </div>
         </div>
       </article>
 
-      <!-- Conservatory -->
-      <article class="tier conservatory" id="conservatory" aria-labelledby="cons-h">
+      <!-- Growing Authors -->
+      <article class="tier growing" id="growing" aria-labelledby="cons-h">
         <div class="tier-head">
           <span class="t-emoji" aria-hidden="true">🌿</span>
-          <h3 id="cons-h">The Conservatory</h3>
-          <p class="t-tag">Where things grow.</p>
+          <h3 id="cons-h">Growing Authors</h3>
+          <p class="t-tag">Your book is out. Now build what comes next.</p>
           <div class="t-price"><span class="amt">$147</span><span class="per">/month · cancel anytime</span></div>
           <span class="seatpill">20 seats · real cap</span>
         </div>
         <div class="tier-body">
           <div class="blk">
             <p class="k">Who belongs here</p>
-            <p>Authors who have the pieces, but the pieces don't connect. Books, a magnet, the logins. <b>None of it is talking to each other, and you can't tell which part is broken.</b></p>
+            <p>Authors with at least one book published — or up for pre-order — who have the pieces, but the pieces don't connect. The book, a magnet, the logins. <b>None of it is talking to each other, and you can't tell which part is broken.</b></p>
           </div>
           <div class="blk">
             <p class="k">What you work on</p>
@@ -454,27 +448,27 @@
               <li>Welcome sequences, and branding across genres</li>
             </ul>
           </div>
-          <div class="notfor"><b>Not for you if</b> you're running four pen names and your problem is automation and scale. Go to the Penthouse.</div>
+          <div class="notfor"><b>Not for you if</b> you're ten books deep and your problem is automation and scale. Go to Scaling Authors.</div>
           <div class="push">
-            <a class="btn sage wide" data-book="conservatory" href="#">Book your Conservatory seat <span class="arrow">&rarr;</span></a>
+            <a class="btn sage wide" data-book="growing" href="#">Book your Growing Authors seat <span class="arrow">&rarr;</span></a>
             <p class="btn-note">Payment is taken when you book your seat.</p>
           </div>
         </div>
       </article>
 
-      <!-- Penthouse -->
-      <article class="tier penthouse" id="penthouse" aria-labelledby="pent-h">
+      <!-- Scaling Authors -->
+      <article class="tier scaling" id="scaling" aria-labelledby="pent-h">
         <div class="tier-head">
-          <span class="t-emoji" aria-hidden="true">🔥</span>
-          <h3 id="pent-h">The Penthouse</h3>
-          <p class="t-tag">The top floor.</p>
+          <span class="t-emoji" aria-hidden="true">🚀</span>
+          <h3 id="pent-h">Scaling Authors</h3>
+          <p class="t-tag">Ten books deep. Time to multiply.</p>
           <div class="t-price"><span class="amt">$247</span><span class="per">/month · cancel anytime</span></div>
           <span class="seatpill">12 seats · on purpose</span>
         </div>
         <div class="tier-body">
           <div class="blk">
             <p class="k">Who belongs here</p>
-            <p>Experienced, multi-pen-name authors with real backlists and high standards. <b>This is a peer room, not a classroom.</b> Twelve seats on purpose.</p>
+            <p>Authors with ten or more books out — often across multiple pen names — ready to fold AI into the whole operation: translations, ads, editing tools that actually work. <b>This is a peer room, not a classroom.</b> Twelve seats on purpose.</p>
           </div>
           <div class="blk">
             <p class="k">What you work on</p>
@@ -484,14 +478,15 @@
               <li>Advanced style sheets, custom instructions, and Skills</li>
               <li>Newsletter swap strategy and scaling</li>
               <li>Backlist audits: what's underperforming and why</li>
+              <li>Translations and ads: where AI actually earns its keep</li>
               <li>Launching a new pen name from zero while your established name runs</li>
               <li>AI story coherence across a full book</li>
               <li>Honest conversations about what AI can and can't automate yet</li>
             </ul>
           </div>
-          <div class="notfor"><b>Not for you if</b> you're still deciding which pen name to focus on. This room will move too fast. Start in the Conservatory.</div>
+          <div class="notfor"><b>Not for you if</b> you're still deciding which pen name to focus on. This room will move too fast. Join Growing Authors.</div>
           <div class="push">
-            <a class="btn gold wide" data-book="penthouse" href="#">Book your Penthouse seat <span class="arrow">&rarr;</span></a>
+            <a class="btn gold wide" data-book="scaling" href="#">Book your Scaling Authors seat <span class="arrow">&rarr;</span></a>
             <p class="btn-note">Payment is taken when you book your seat.</p>
           </div>
         </div>
@@ -502,10 +497,10 @@
 
   <!-- 4 · WHAT EVERY TIER INCLUDES -->
   <section class="card fade" aria-labelledby="inc-h">
-    <h2 id="inc-h">Every floor gets the full package</h2>
+    <h2 id="inc-h">Every cohort gets the full package</h2>
     <p class="sub">The tier sets the room. The package is the same everywhere.</p>
     <div class="includes">
-      <div class="inc"><div class="i-emoji" aria-hidden="true">🎥</div><div class="i-t">One live session a month</div><div class="i-d">90 minutes on Zoom, with your floor</div></div>
+      <div class="inc"><div class="i-emoji" aria-hidden="true">🎥</div><div class="i-t">One live session a month</div><div class="i-d">90 minutes on Zoom, with your cohort</div></div>
       <div class="inc"><div class="i-emoji" aria-hidden="true">⏪</div><div class="i-t">Replay in 24 hours</div><div class="i-d">Posted whether you attended or not</div></div>
       <div class="inc"><div class="i-emoji" aria-hidden="true">🧰</div><div class="i-t">Monthly tools drop</div><div class="i-d">The skill, prompt pack, or worksheet for that month's topic. Yours to keep.</div></div>
       <div class="inc"><div class="i-emoji" aria-hidden="true">💬</div><div class="i-t">Private tier classroom</div><div class="i-d">For questions between sessions, all month</div></div>
@@ -520,7 +515,7 @@
   <section class="vip fade" aria-labelledby="vip-h">
     <p class="v-eyebrow">Skool VIP members</p>
     <h2 id="vip-h">Your seat is already paid for.</h2>
-    <p><b>VIP membership ($499/month) includes one cohort seat</b> in the tier that fits you. If you're VIP, don't book below. Message Jessica in Skool and she'll place you on your floor.</p>
+    <p><b>VIP membership ($499/month) includes one cohort seat</b> in the tier that fits you. If you're VIP, don't book below. Message Jessica in Skool and she'll place you in your cohort.</p>
     <p class="v-small">Everyone else: you don't need Skool to join. The cohorts are open to Skool members, Substack subscribers, and Facebook followers alike. Skool Standard ($10/month) and Premium ($67/month) members pay regular cohort price; the included seat is a VIP perk only.</p>
   </section>
 
@@ -530,7 +525,7 @@
       <div>
         <span class="freechip">Free · once a month</span>
         <h2 id="open-h">🎟️ Not sure? Come stand in the doorway.</h2>
-        <p class="sub" style="margin-bottom:10px">One open session a month, free, for anyone still deciding. We walk through what each floor actually is, who belongs where, and you place yourself. No pitch pressure. Undecided is a fine place to start.</p>
+        <p class="sub" style="margin-bottom:10px">One open session a month, free, for anyone still deciding. We walk through what each cohort actually is, who belongs where, and you place yourself. No pitch pressure. Undecided is a fine place to start.</p>
         <p class="fineline"><!-- JESSICA-DATE: exact day/time still needed --><b>First open session: September 2026.</b> Exact date announced at the AI Talk, on the Substack, on Facebook, and in Skool.</p>
       </div>
       <div class="btncol">
@@ -553,10 +548,10 @@
     </details>
 
     <details>
-      <summary>Can I switch floors?</summary>
+      <summary>Can I switch cohorts?</summary>
       <div class="a">
         <!-- JESSICA-POLICY: confirm mid-month switching / proration, then tighten this -->
-        <p>Yes. Billing is monthly, so the natural moment to change floors is when a new month starts. If you're mid-month and certain you're on the wrong floor, email <a href="mailto:coach@theinvisiblepen.com">coach@theinvisiblepen.com</a> and we'll sort it out like adults.</p>
+        <p>Yes. Billing is monthly, so the natural moment to change cohorts is when a new month starts. If you're mid-month and certain you're in the wrong room, email <a href="mailto:coach@theinvisiblepen.com">coach@theinvisiblepen.com</a> and we'll sort it out like adults.</p>
       </div>
     </details>
 
@@ -568,9 +563,9 @@
     </details>
 
     <details>
-      <summary>What happens if my floor fills up?</summary>
+      <summary>What happens if my cohort fills up?</summary>
       <div class="a">
-        <p>The caps are real: 25, 20, and 12. When a floor is full, booking closes. Email <a href="mailto:coach@theinvisiblepen.com">coach@theinvisiblepen.com</a> to get on the waitlist and you'll be first to hear when a seat opens.</p>
+        <p>The caps are real: 25, 20, and 12. When a cohort is full, booking closes. Email <a href="mailto:coach@theinvisiblepen.com">coach@theinvisiblepen.com</a> to get on the waitlist and you'll be first to hear when a seat opens.</p>
       </div>
     </details>
 
@@ -586,7 +581,7 @@
       <summary>When do sessions happen?</summary>
       <div class="a">
         <!-- JESSICA-DATE: exact days/times per tier still needed -->
-        <p><b>The cohorts start in September 2026.</b> Each floor meets once a month for 90 minutes on Zoom. Exact days and times are announced at the AI Talk, on the Substack, on Facebook, and in Skool, and they're listed on the booking page when you grab your seat.</p>
+        <p><b>The cohorts start in September 2026.</b> Each cohort meets once a month for 90 minutes on Zoom. Exact days and times are announced at the AI Talk, on the Substack, on Facebook, and in Skool, and they're listed on the booking page when you grab your seat.</p>
       </div>
     </details>
   </section>
@@ -604,10 +599,10 @@
   // button shows "Booking opens soon" and stays unclickable.
   // ═══════════════════════════════════════════════════════════════
   var BOOKING = {
-    lobby:        "https://scheduler.zoom.us/jessica-waldron-63crkl/new-author-group-coaching",
-    conservatory: "https://scheduler.zoom.us/jessica-waldron-63crkl/intermediate-author-group-coaching",
-    penthouse:    "https://scheduler.zoom.us/jessica-waldron-63crkl/advanced-author-cohort",
-    open:         "REPLACE_WITH_ZOOM_OPEN_SESSION_URL"
+    building: "https://scheduler.zoom.us/jessica-waldron-63crkl/new-author-group-coaching",
+    growing:  "https://scheduler.zoom.us/jessica-waldron-63crkl/intermediate-author-group-coaching",
+    scaling:  "https://scheduler.zoom.us/jessica-waldron-63crkl/advanced-author-cohort",
+    open:     "REPLACE_WITH_ZOOM_OPEN_SESSION_URL"
   };
 
   document.querySelectorAll("[data-book]").forEach(function(a){
