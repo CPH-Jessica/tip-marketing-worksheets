@@ -1,99 +1,15 @@
-# TIP Marketing Class Worksheets
+# The Invisible Pen — Workshop Library
 
-Interactive HTML worksheets for The Invisible Pen (TIP) course modules taught by Jessica Waldron.
+**This repository is an internal source of truth. The public GitHub Pages catalog is locked.**
 
-Each worksheet is a self-contained HTML file with inline CSS and JavaScript — no build step, no dependencies. Open in any browser to use. All worksheets include print-friendly styling and TIP branding (coral, navy, cream, gold).
+Student-facing worksheets, Edit Like a Boss, Pen Name Launcher, and the skills library now live in Skool:
 
-## Class 1: Beyond BookBub — Every Way to Market Your Book
+**https://www.skool.com/the-invisible-pen**
 
-Located in `/book-marketing/`
+Premium → Classroom → Workshop Library.
 
-| # | Worksheet | What It Does |
-|---|---|---|
-| 1 | Marketing Channel Audit | Assess which channels you're using, rate effectiveness, get prioritized recommendations |
-| 2 | Promo Site Planner | Build a customized paid promo stack based on genre, budget, and launch date |
-| 3 | Swap Strategy Builder | Generate a newsletter swap plan with platform recommendations and growth projections |
-| 4 | Review Launch Planner | Visual timeline from beta readers to launch reviews with email templates |
-| 5 | Content Marketing Calendar | Pick 2 channels, generate a 4-week content calendar tailored to your genre |
+Do not share raw `*.html` paths from this repo. Do not treat `cph-jessica.github.io/tip-marketing-worksheets` as a public home base. The Pages index and `my-library.html` are stubs that point to Skool.
 
-## Class 2: Amazon Ads for Authors (AMS Demystified)
+To finish the lock: GitHub → this repo → Settings → General → Danger Zone → Change repository visibility → **Private**. That stops clones, GitHub code search, and (on a free plan) Pages itself.
 
-Located in `/amazon-ads/`
-
-| # | Worksheet | What It Does |
-|---|---|---|
-| 1 | Ads Readiness Checklist | Scored assessment of whether you're ready to run Amazon ads + action plan for gaps |
-| 2 | Keyword Research Workbook | Build a 100-200 keyword list with match-type recommendations and negative keywords |
-| 3 | Campaign Builder | Step-by-step wizard to set up 3 campaigns (keyword, ASIN, auto) with breakeven math |
-| 4 | Ad Performance Tracker | Weekly data tracker with auto-calculated ACOS, breakeven, and scale/pause recommendations |
-
-## Class 3: Edit Like a Boss — The 9-Pass AI Editing System
-
-Located in `/edit-like-a-boss/`, organized into Parts.
-
-### Part 1: The Editing System
-
-Located in `/edit-like-a-boss/part-1-editing-system/`
-
-| # | Worksheet | Topic |
-|---|---|---|
-| 1 | Lesson 1: Why One Editing Pass Will Never Be Enough | Intro to the 9-pass system |
-| 2 | Lesson 2: Pass 1 — Quality Check | First-pass evaluation |
-| 3 | Lesson 3: Pass 2 — Plot Hole Checker | Logic gaps & continuity |
-| 4 | Lesson 4: Pass 3 — Timeline Consistency | Chronology & sequence |
-| 5 | Lesson 5: Pass 4 — Line Edit | Sentence-level polish |
-| 6 | Lesson 6: Pass 5 — Dialogue Polish | Voice & rhythm in dialogue |
-| 7 | Lesson 7: Pass 6 — Heat Scene Edit | Intimate scene craft |
-| 8 | Lesson 8: Pass 7 — Developmental Edit | Structure & arc |
-| 9 | Lesson 9: Pass 8 — Voice Audit | Author voice consistency |
-| 10 | Lesson 10: Putting It All Together | Workflow integration |
-| 11 | Lesson 11: Pass 9 — YOU, The Human Pass | Final human review before publishing |
-
-### Part 2: Building Your Team
-
-Located in `/edit-like-a-boss/part-2-building-your-team/`
-
-| # | Worksheet | Topic |
-|---|---|---|
-| 1 | Lesson 1: Beta Bestie Builder | Design your ideal AI beta reader persona |
-| 2 | Lesson 2: Creating Your Own Skills | Build reusable AI skills for your editing workflow |
-| 3 | Lesson 3: Pen Name Style Guide Builder | Lock in voice consistency per pen name |
-| 4 | Lesson 4: Writing System Audit | Evaluate and tune your end-to-end writing system |
-
-### Part 3: Expanding Your Reach
-
-Located in `/edit-like-a-boss/part-3-expanding-your-reach/`
-
-| # | Worksheet | Topic |
-|---|---|---|
-| 1 | Lesson 1: What Each AI Does Best | Match the right AI tool to each editing task |
-| 2 | Lesson 2: Setting Up ChatGPT Custom GPTs | Build your own Custom GPTs for editing workflows |
-| 3 | Lesson 3: Setting Up Gemini Gems + Grok Agents | Create reusable AI agents in Gemini and Grok |
-| 4 | Lesson 4: The Multi-Tool Editing Workflow | Combine ChatGPT, Gemini, and Grok into one workflow |
-
-## Standalone Tools
-
-Located in `/tools/`
-
-| Tool | What It Does |
-|---|---|
-| Series Read-Through Calculator | Model series read-through rates and revenue projections across books in a series |
-
-## How to Use
-
-Open any `.html` file in a web browser. Fill in the inputs, click the generate buttons, print or save your results. Nothing is stored on a server — all calculations happen in your browser.
-
-## Internal: YouTube Launch Kit
-
-Located in `/youtube/` — **not linked from the student-facing library.** Complete channel launch package for The Invisible Pen YouTube channel: channel setup copy (About, keywords, links, art specs, upload defaults), fully scripted trailer + 6 launch videos with titles/descriptions/tags/thumbnails/pinned comments, playlist structure, 12-week calendar, SEO keyword bank, and Shorts strategy. Start at `youtube/index.html` for the launch checklist. Nothing is published to YouTube — everything is staged for Jessica's review and manual posting.
-
-## Course Info
-
-These worksheets accompany The Invisible Pen (TIP) classes taught by Jessica Waldron. Classes are available individually or bundled. Worksheets are provided as companion materials for enrolled live and self-paced students.
-
-- **The Invisible Pen:** https://www.theinvisiblepen.com
-- **Instructor:** Jessica Waldron (Clark Publishing House)
-
----
-
-© Clark Publishing House LLC. For use by TIP students. Not for redistribution.
+© Clark Publishing House LLC. Not for redistribution.
