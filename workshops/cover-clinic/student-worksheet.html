@@ -5,8 +5,199 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Cover Clinic — The 1-Second Test · Worksheet</title>
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --navy-2: #243656;
+    --cream: #F7F1E5;
+    --paper: #FDFBF7;
+    --gold: #C4A35A;
+    --gold-2: #A8873E;
+    --ink: #1C1914;
+    --muted: #5C564C;
+    --line: #E4D9C5;
+    --purple: #6C5CE7;
+    --ok: #2F5D50;
+    --warn: #8B3A2F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 20px;
+  }
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 40px 36px 48px;
+    border-radius: 6px;
+    box-shadow: 0 2px 18px rgba(27,42,74,.08);
+  }
+  header {
+    border-bottom: 4px solid var(--navy);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  .kicker {
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--gold-2);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1 { font-family: Georgia, "Iowan Old Style", serif; font-size: 30px; color: var(--navy); line-height: 1.15; margin-bottom: 6px; }
+  .subtitle { color: var(--muted); font-size: 15px; }
+  .save-controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .btn-save { background: var(--navy); color: var(--cream); }
+  .btn-print { background: var(--gold); color: var(--navy); }
+  .btn-copy { background: var(--ok); color: white; }
+  .btn-clear { background: #C65D4A; color: white; }
+  .auto-save-indicator { min-height: 18px; font-size: 12px; color: var(--ok); font-style: italic; margin-top: 8px; }
+  .promise {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 16px 18px;
+    border-radius: 4px;
+    margin: 0 0 28px;
+    font-size: 15px;
+  }
+  .promise strong { color: var(--gold); }
+  .section {
+    margin: 28px 0;
+    padding: 24px 22px 20px;
+    background: #FFFcf6;
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--navy);
+    border-radius: 4px;
+  }
+  h2 {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 21px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .when { font-size: 12px; color: var(--gold-2); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; }
+  h3 { font-size: 14.5px; color: var(--navy-2); margin: 16px 0 8px; }
+  p.hint { font-size: 13.5px; color: var(--muted); margin: 0 0 12px; }
+  .form-group { margin-bottom: 14px; }
+  label { display: block; font-size: 13px; font-weight: 650; margin-bottom: 6px; color: var(--navy); }
+  input[type="text"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #D9CDB6;
+    border-radius: 4px;
+    font: inherit;
+    font-size: 14px;
+    background: white;
+    color: var(--ink);
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(27,42,74,.12);
+  }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item, .checkbox-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
+  input[type="radio"], input[type="checkbox"] { width: 16px; height: 16px; margin-top: 3px; accent-color: var(--navy); flex-shrink: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 13px; }
+  th { background: var(--navy); color: var(--cream); text-align: left; padding: 8px; font-weight: 650; }
+  td { border-bottom: 1px solid var(--line); padding: 6px; background: white; }
+  table input[type="text"] { padding: 6px 7px; font-size: 13px; }
+  .principles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0 16px;
+  }
+  .prin {
+    background: var(--cream);
+    border-top: 3px solid var(--gold);
+    padding: 12px;
+    font-size: 13px;
+  }
+  .prin b { display: block; color: var(--navy); margin-bottom: 4px; font-size: 13.5px; }
+  #assembled {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: #1B2A4A;
+    color: #F7F1E5;
+    padding: 14px;
+    border-radius: 4px;
+    min-height: 110px;
+    white-space: pre-wrap;
+  }
+  .gate {
+    background: #F8EBE7;
+    border-left: 4px solid var(--warn);
+    padding: 14px 16px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .next {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 18px 18px 8px;
+    border-radius: 4px;
+  }
+  .next h2 { color: var(--gold); }
+  .next p, .next li, .next label { color: var(--cream); }
+  .next a { color: var(--gold); }
+  .links { font-size: 14px; margin: 8px 0 0; }
+  .links a { display: inline-block; margin: 0 14px 8px 0; color: var(--navy); }
+  footer {
+    text-align: center;
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    .container { padding: 22px 16px; }
+    .pair, .triple, .principles { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+  }
+  @media print {
+    body { background: white; padding: 0; }
+    .save-controls, .auto-save-indicator { display: none; }
+    .section { break-inside: avoid; }
+    .container { box-shadow: none; }
+  }
+</style>
 </head>
 <body>
-<p>placeholder — replaced next</p>
+<div class="container">
+  <header>
+    <p class="kicker">The Invisible Pen · Live class worksheet</p>
+    <h1>Cover Clinic — The 1-Second Test</h1>
+    <p class="subtitle">Wednesday, September 2, 2026 · Fill this during class. Generate tonight.</p>
+    <div class="save-controls">
+      <button class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button class="btn-print" onclick="window.print()">Print</button>
+      <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    </div>
+    <div class="auto-save-indicator" id="autoSaveIndicator"></div>
+  </header>
+  <div class="promise">
+    <strong>Done when you can hold three things:</strong> a Cover Direction Brief a designer could work from, one paste-ready image prompt, and a yes/no on KDP disclosure. A finished cover is homework, not the exit ticket.
+  </div>
+  <p>Full interactive worksheet loading. If you still see this line, refresh in 30 seconds.</p>
+</div>
 </body>
 </html>
