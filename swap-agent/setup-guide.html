@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swap Agent Setup — Step-by-Step Walkthrough</title>
+<style>
+  :root {
+    --coral: #E8735A; --navy: #1a1a2e; --cream: #faf8f5; --gold: #c9a84c;
+    --light-coral: #fdf0ed; --light-gold: #fdf8ec; --mid-gray: #e8e4df;
+    --text-secondary: #555; --green: #2d8a4e; --light-green: #e8f5e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--navy); line-height: 1.65; }
+  .container { max-width: 860px; margin: 0 auto; padding: 24px 24px 80px; }
+  header { text-align: center; border-bottom: 3px solid var(--coral); padding-bottom: 20px; margin-bottom: 10px; }
+  header .brand { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-family: sans-serif; }
+  header h1 { font-size: 30px; margin: 8px 0 4px; }
+  header .sub { font-size: 15px; color: var(--text-secondary); font-style: italic; }
+  .progress { position: sticky; top: 0; background: var(--cream); padding: 12px 0; z-index: 5; border-bottom: 1px solid var(--mid-gray); margin-bottom: 24px; }
+  .progress .bar { height: 10px; background: var(--mid-gray); border-radius: 6px; overflow: hidden; }
+  .progress .fill { height: 100%; width: 0%; background: var(--coral); transition: width .3s; }
+  .progress .label { font-family: sans-serif; font-size: 12px; color: var(--text-secondary); margin-top: 4px; text-align: right; }
+  .intro { background: var(--light-gold); border: 1px solid var(--gold); border-radius: 8px; padding: 16px 20px; margin-bottom: 26px; font-size: 15px; }
+  .step { background: #fff; border: 1px solid var(--mid-gray); border-radius: 10px; padding: 22px 24px; margin-bottom: 22px; position: relative; }
+  .step.done { background: var(--light-green); border-color: var(--green); }
+  .step h2 { font-size: 20px; color: var(--coral); margin-bottom: 4px; padding-right: 120px; }
+  .step .time { font-family: sans-serif; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+  .step .donebox { position: absolute; top: 20px; right: 20px; font-family: sans-serif; font-size: 13px; display: flex; gap: 6px; align-items: center; cursor: pointer; user-select: none; background: var(--light-coral); padding: 6px 12px; border-radius: 20px; }
+  .step.done .donebox { background: #fff; }
+  .step .donebox input { width: 17px; height: 17px; accent-color: var(--green); cursor: pointer; }
+  .step ol { margin: 10px 0 10px 22px; }
+  .step ol li { margin-bottom: 10px; }
+  .step ul { margin: 8px 0 8px 22px; }
+  .cmd { display: flex; align-items: stretch; margin: 10px 0; }
+  .cmd code { flex: 1; background: var(--navy); color: #7ee787; font-family: Consolas, monospace; font-size: 14px; padding: 12px 14px; border-radius: 8px 0 0 8px; overflow-x: auto; white-space: nowrap; }
+  .cmd button { border: none; background: var(--coral); color: #fff; font-family: sans-serif; font-weight: bold; font-size: 12px; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; }
+  .cmd button:hover { background: #d4624a; }
+  .see { background: var(--light-coral); border-left: 4px solid var(--coral); padding: 10px 14px; border-radius: 4px; margin: 10px 0; font-size: 14px; }
+  .see b { color: var(--coral); font-family: sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 2px; }
+  .tip { background: var(--light-gold); border-left: 4px solid var(--gold); padding: 10px 14px; border-radius: 4px; margin: 10px 0; font-size: 14px; }
+  kbd { background: #eee; border: 1px solid #ccc; border-bottom-width: 3px; border-radius: 4px; padding: 1px 7px; font-family: Consolas, monospace; font-size: 13px; }
+  .path { font-family: Consolas, monospace; font-size: 13.5px; background: #f1ede8; padding: 1px 6px; border-radius: 4px; }
+  details { background: #fff; border: 1px solid var(--mid-gray); border-radius: 10px; padding: 16px 22px; margin-bottom: 14px; }
+  summary { cursor: pointer; font-weight: bold; font-size: 16px; color: var(--coral); }
+  details .body { padding-top: 10px; font-size: 14.5px; }
+  h3.sect { font-size: 22px; margin: 34px 0 14px; border-bottom: 2px solid var(--mid-gray); padding-bottom: 6px; }
+  footer { text-align: center; color: var(--text-secondary); font-size: 13px; margin-top: 40px; font-style: italic; }
+  .badge { display: inline-block; font-family: sans-serif; font-size: 11px; font-weight: bold; letter-spacing: .5px; text-transform: uppercase; padding: 3px 9px; border-radius: 12px; background: var(--light-coral); color: var(--coral); margin-left: 8px; vertical-align: middle; }
+  .badge.optional { background: var(--light-gold); color: #8a6a1a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">The Invisible Pen · Clark Publishing House</div>
+    <h1>Set Up Your PC Swap Agent</h1>
+    <div class="sub">A click-by-click walkthrough — no tech knowledge assumed. About 15 minutes, one time.</div>
+  </header>
+
+  <div class="progress"><div class="bar"><div class="fill" id="fill"></div></div><div class="label" id="plabel">0 of 8 steps done</div></div>
+
+  <div class="intro">
+    <b>What you're setting up:</b> a little robot that lives on your PC. When you run it, a Chrome
+    window opens, logs into <b>BookClicker, BookSwappy, and BookFunnel</b>, collects every swap
+    you've signed up for, and hands you a file that loads straight into the Newsletter Composer.
+    There's a second robot that <i>books</i> new swaps for each pen name. You set it up once
+    (steps 1–5), then week-to-week it's one command.
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step" data-step="1">
+    <h2>Step 1 · Get the swap-agent folder onto your PC</h2>
+    <div class="time">⏱ ~3 minutes</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <ol>
+      <li>In your web browser, go to your repo: <span class="path">github.com/CPH-Jessica/tip-marketing-worksheets</span> (log in to GitHub if it asks).</li>
+      <li>Click the green <b>&lt;&gt; Code</b> button near the top right → click <b>Download ZIP</b>.</li>
+      <li>Open your <b>Downloads</b> folder, right-click the ZIP file → <b>Extract All…</b> → <b>Extract</b>.</li>
+      <li>Open the extracted folder. Inside you'll see a folder called <span class="path">swap-agent</span>.</li>
+      <li>Open <b>File Explorer</b>, go to your <b>C:</b> drive, right-click empty space → <b>New → Folder</b>, name it <b>CPH</b>.</li>
+      <li>Drag (or copy-paste) the <span class="path">swap-agent</span> folder into <span class="path">C:\CPH</span>.</li>
+    </ol>
+    <div class="see"><b>You should now have</b> a folder at <span class="path">C:\CPH\swap-agent</span> containing files like <span class="path">login.js</span>, <span class="path">pull-swaps.js</span>, and <span class="path">README.md</span>.</div>
+    <div class="tip">💡 Heads-up: the ZIP downloads whatever branch GitHub shows. If you don't see <span class="path">swap-agent</span> inside, switch the branch dropdown (top-left of the repo page) to <b>claude/miller-life-sage-marjorie-emails-4jtdf6</b> before downloading — or merge PR #8 first and use <b>main</b>.</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" data-step="2">
+    <h2>Step 2 · Install Node.js <span style="font-size:13px;color:var(--text-secondary);font-family:sans-serif;">(the engine that runs the robot)</span></h2>
+    <div class="time">⏱ ~3 minutes</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <ol>
+      <li>Go to <span class="path">nodejs.org</span> in your browser.</li>
+      <li>Click the big green button that says <b>LTS</b> (it will say something like "Download Node.js (LTS)"). Don't pick "Current."</li>
+      <li>Open the downloaded installer. Click <b>Next</b> on every screen — the default choices are all correct. Accept the license, click <b>Install</b>, let it finish, click <b>Finish</b>.</li>
+    </ol>
+    <div class="see"><b>How to know it worked</b> — you'll prove it in the next step. If a screen mentioned "Tools for Native Modules" with a checkbox, you can leave it unchecked.</div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" data-step="3">
+    <h2>Step 3 · Open PowerShell inside the swap-agent folder</h2>
+    <div class="time">⏱ ~1 minute — you'll do this little move every time you use the robot</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <ol>
+      <li>In <b>File Explorer</b>, open <span class="path">C:\CPH\swap-agent</span> so you can see the files.</li>
+      <li>Click once in the <b>address bar</b> at the top (where it shows the folder path). The path text highlights.</li>
+      <li>Type <kbd>powershell</kbd> over it and press <kbd>Enter</kbd>.</li>
+    </ol>
+    <div class="see"><b>You should see</b> a blue or black window appear with a line ending in <span class="path">C:\CPH\swap-agent&gt;</span> and a blinking cursor. That's PowerShell, sitting in the right folder. Leave it open.</div>
+    <div class="tip">💡 That address-bar trick is the whole secret. Any time these instructions say "open PowerShell in the folder," it's those three clicks.</div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" data-step="4">
+    <h2>Step 4 · Install the robot's two dependencies</h2>
+    <div class="time">⏱ ~3 minutes (mostly waiting)</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <p>Copy each command below (use the <b>Copy</b> button), click into the PowerShell window, right-click to paste, press <kbd>Enter</kbd>, and wait for it to finish before doing the next one.</p>
+    <div class="cmd"><code>npm install</code><button onclick="cp(this,'npm install')">Copy</button></div>
+    <div class="see"><b>You should see</b> a progress spinner, then something like "added 3 packages". Yellow "npm notice" lines are fine — ignore them.</div>
+    <div class="cmd"><code>npx playwright install chromium</code><button onclick="cp(this,'npx playwright install chromium')">Copy</button></div>
+    <div class="see"><b>You should see</b> a download progress bar for "Chromium". This installs the robot's own private Chrome. When the cursor comes back, it's done.</div>
+    <div class="tip">⚠️ If PowerShell says <b>"npm is not recognized"</b>: close the PowerShell window, redo Step 3 (the fresh window picks up Node). Still stuck? Restart the PC once and try again.</div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" data-step="5">
+    <h2>Step 5 · Log in once (the robot remembers forever)</h2>
+    <div class="time">⏱ ~3 minutes, one time</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <div class="cmd"><code>node login.js</code><button onclick="cp(this,'node login.js')">Copy</button></div>
+    <ol>
+      <li>A Chrome window opens with <b>three tabs</b>: BookClicker, BookSwappy, BookFunnel.</li>
+      <li>In each tab, log in with your usual account (the Jessica logins you use on the Mac).</li>
+      <li>When all three show your dashboard, just <b>close the browser window</b>.</li>
+    </ol>
+    <div class="see"><b>What just happened:</b> your logins were saved into a private browser profile inside the folder. Every future run reuses them — no passwords are stored in any file, it's exactly like Chrome staying signed in.</div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" data-step="6">
+    <h2>Step 6 · Run the crawler! 🎉</h2>
+    <div class="time">⏱ ~2 minutes per run — this is your weekly command</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <div class="cmd"><code>node pull-swaps.js</code><button onclick="cp(this,'node pull-swaps.js')">Copy</button></div>
+    <div class="see"><b>You should see</b> a Chrome window open and visit each platform while PowerShell narrates: <i>"bookclicker: found 12 candidate swap entries…"</i>. When it says <b>DONE</b>, look in the new <span class="path">output</span> folder inside swap-agent:
+      <ul>
+        <li><span class="path">report-(date).html</span> — double-click to review everything it found</li>
+        <li><span class="path">composer-import.json</span> — this is the file the Newsletter Composer eats</li>
+        <li><span class="path">agent.log</span> — running history of every run</li>
+      </ul>
+    </div>
+    <div class="tip">🔎 <b>First run = calibration run.</b> If any platform reports <b>0 swaps</b>, that's expected the first time — the sites' layouts vary. A <span class="path">snapshots</span> folder will appear; send Claude the files inside it and say "calibrate the swap crawler," and the extractor gets tuned to the exact page layout. After that it's routine.</div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step" data-step="7">
+    <h2>Step 7 · Plug the swaps into the Newsletter Composer</h2>
+    <div class="time">⏱ ~1 minute</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <ol>
+      <li>Open the <b>CPH Newsletter Composer</b> (<span class="path">book-marketing\cph-swap-module-builder.html</span> — double-click it, it opens in your browser).</li>
+      <li>On the left, click <b>"Import swaps JSON (from the PC swap crawler)"</b> to expand it.</li>
+      <li>Click <b>Choose File</b> → pick <span class="path">C:\CPH\swap-agent\output\composer-import.json</span> → click <b>Import file</b>.</li>
+      <li>Switch between pen names (dropdown, top right) — each one's swaps are waiting in her preview. Trim, generate the opening note, export to MailerLite.</li>
+    </ol>
+    <div class="see"><b>You should see</b> "Imported N swap module(s)" and covers appearing in the preview. Anything the crawler couldn't confidently assign lands under whichever pen name is currently selected — move or delete those by eye.</div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step" data-step="8">
+    <h2>Step 8 · The harvester (books new swaps) <span class="badge optional">optional</span></h2>
+    <div class="time">⏱ whenever a pen name needs more swaps</div>
+    <label class="donebox"><input type="checkbox"> Done</label>
+    <p>Same PowerShell-in-the-folder move (Step 3), then:</p>
+    <div class="cmd"><code>node book-swaps.js --pen sage</code><button onclick="cp(this,'node book-swaps.js --pen sage')">Copy</button></div>
+    <div class="see"><b>Safe look-only mode:</b> it lists every free, genre-matched partner it found for Sage — books nothing. Swap <span class="path">sage</span> for <span class="path">connie</span>, <span class="path">ruthie</span>, <span class="path">marjorie</span>, <span class="path">kelsey</span>, or <span class="path">nora</span>.</div>
+    <div class="cmd"><code>node book-swaps.js --pen sage --book</code><button onclick="cp(this,'node book-swaps.js --pen sage --book')">Copy</button></div>
+    <div class="see"><b>Booking mode:</b> it opens each match, fills in the magnet + list, and asks you <b>y/n in PowerShell before every submission</b>. (Type <kbd>stop</kbd> to quit.) Once you trust it, add <span class="path">--yes</span> to go fully automatic.</div>
+    <div class="tip">🛡️ Rules it always follows (from your swap playbooks): free mention swaps only · never anything with a price · no erotica/LGBTQ lists · one swap per author · genre &amp; heat must match the pen name. Edit rules in <span class="path">config.js</span>.</div>
+  </div>
+
+  <h3 class="sect">Make it run by itself <span class="badge optional">optional</span></h3>
+  <details>
+    <summary>Schedule the crawler with Windows Task Scheduler (so it's "already doing the work")</summary>
+    <div class="body">
+      <ol>
+        <li>Press the <kbd>Windows</kbd> key, type <b>Task Scheduler</b>, open it.</li>
+        <li>Right side: click <b>Create Basic Task…</b></li>
+        <li><b>Name:</b> <span class="path">CPH swap pull</span> → Next.</li>
+        <li><b>Trigger:</b> Weekly → Next → tick <b>Mon</b>, <b>Tue</b>, <b>Wed</b> (the mornings before your send days), time <b>7:00 AM</b> → Next.</li>
+        <li><b>Action:</b> Start a program → Next, then fill in:
+          <ul>
+            <li>Program/script: <span class="path">C:\Program Files\nodejs\node.exe</span></li>
+            <li>Add arguments: <span class="path">pull-swaps.js --headless</span></li>
+            <li>Start in: <span class="path">C:\CPH\swap-agent</span></li>
+          </ul>
+        </li>
+        <li>Next → Finish. Done — each run quietly appends to <span class="path">output\agent.log</span> and drops a fresh dated report you can check any morning.</li>
+      </ol>
+    </div>
+  </details>
+
+  <h3 class="sect">If something goes wrong</h3>
+  <details><summary>"npm is not recognized" / "node is not recognized"</summary>
+    <div class="body">PowerShell was open before Node finished installing. Close the PowerShell window, redo Step 3. If it persists, restart the PC — that always fixes it.</div>
+  </details>
+  <details><summary>A platform says "NOT LOGGED IN — run node login.js"</summary>
+    <div class="body">That site expired your session (they do this every few weeks). Run <span class="path">node login.js</span>, log in to whichever tab asks, close the window, rerun the crawler.</div>
+  </details>
+  <details><summary>The crawler found 0 swaps on a platform (but you know there are some)</summary>
+    <div class="body">Expected on the very first run — the extractor is deliberately cautious with unfamiliar page layouts. Look in the <span class="path">snapshots</span> folder for files named like <span class="path">2026-07-09-bookclicker-empty.html/.png</span>, send them to Claude with "calibrate the swap crawler," and you'll get back a tuned version.</div>
+  </details>
+  <details><summary>Windows pops a blue "protected your PC" / firewall box</summary>
+    <div class="body">For SmartScreen on the Node installer: click <b>More info → Run anyway</b> (it's the official installer from nodejs.org). For a firewall prompt about Node or Chromium: click <b>Allow</b> — the robot needs internet to reach the swap sites.</div>
+  </details>
+  <details><summary>Red error text you don't understand</summary>
+    <div class="body">Don't fight it — select the text in PowerShell (drag over it), press <kbd>Enter</kbd> to copy, and paste it to Claude. Include which step you were on. Nine times out of ten it's a one-line fix.</div>
+  </details>
+
+  <footer>Clark Publishing House · swap-agent setup guide · your progress checkboxes are saved on this computer automatically</footer>
+</div>
+
+<script>
+  function cp(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.textContent; btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = old, 1400);
+    });
+  }
+  const boxes = document.querySelectorAll('.step .donebox input');
+  const saved = JSON.parse(localStorage.getItem('cph_setup_steps') || '{}');
+  boxes.forEach(b => {
+    const step = b.closest('.step').dataset.step;
+    b.checked = !!saved[step];
+    b.closest('.step').classList.toggle('done', b.checked);
+    b.addEventListener('change', () => {
+      saved[step] = b.checked;
+      localStorage.setItem('cph_setup_steps', JSON.stringify(saved));
+      b.closest('.step').classList.toggle('done', b.checked);
+      update();
+    });
+  });
+  function update() {
+    const done = [...boxes].filter(b => b.checked).length;
+    document.getElementById('fill').style.width = (done / boxes.length * 100) + '%';
+    document.getElementById('plabel').textContent = done + ' of ' + boxes.length + ' steps done' + (done === boxes.length ? ' — you did it! 🎉' : '');
+  }
+  update();
+</script>
+</body>
+</html>
