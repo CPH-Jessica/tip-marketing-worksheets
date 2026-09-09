@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Studio — Your Book Dashboard · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 20px 24px 70px; }
+h1, h2, .book-title { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+h1 { font-size: 26px; }
+.summary { color: #8a7560; font-size: 14px; }
+.tagline { color: #9a8674; font-size: 12.5px; margin-bottom: 12px; }
+.legend { font-size: 11.5px; color: #9a8674; margin-bottom: 14px; line-height: 1.5; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; padding: 10px 14px; background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 10px; }
+.toolbar label { font-size: 12px; color: #8a7560; font-weight: 600; }
+select, input[type=text], textarea { font: inherit; font-size: 13px; color: #3a3a3a; background: #fff; border: 1px solid #ddcdba; border-radius: 6px; padding: 5px 8px; }
+select:focus, input:focus, textarea:focus { outline: 2px solid #c79a4b55; border-color: #c79a4b; }
+button { font: inherit; cursor: pointer; border-radius: 8px; border: none; }
+.btn-primary { background: #6d2b4e; color: #fff; padding: 8px 16px; font-weight: 600; font-size: 13px; }
+.btn-primary:hover { background: #58213f; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 7px 13px; font-weight: 600; font-size: 12.5px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.savestamp { font-size: 12px; color: #9a8674; margin-left: auto; }
+h2 { font-size: 18px; margin: 24px 0 12px; border-bottom: 2px solid #ecdfd0; padding-bottom: 5px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.card { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 12px; padding: 14px 16px 12px; box-shadow: 0 1px 3px rgba(109,43,78,.06); transition: transform .12s, box-shadow .12s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(109,43,78,.12); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.book-title { font-size: 17px; line-height: 1.25; }
+.btn-resume { background: #c79a4b; color: #fff; padding: 6px 13px; font-weight: 700; font-size: 12.5px; white-space: nowrap; flex-shrink: 0; }
+.btn-resume:hover { background: #b08538; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 9px; }
+.row label { font-size: 11px; font-weight: 700; color: #9a8674; text-transform: uppercase; letter-spacing: .04em; }
+.row select, .row input { font-size: 12.5px; padding: 3px 6px; }
+.fmt { font-size: 12px; color: #8a7560; font-style: italic; margin-top: 7px; }
+.stepper { display: flex; gap: 3px; margin-top: 10px; }
+.stepper span { flex: 1; height: 7px; border-radius: 3px; background: #eee3d4; }
+.stepper span.done { background: #d6b3c4; }
+.stepper span.cur { background: #6d2b4e; }
+.stage-label { font-size: 12px; font-weight: 700; color: #6d2b4e; margin-top: 5px; }
+.na-wrap { border-left: 3px solid #c79a4b; background: #fcf8ef; border-radius: 0 6px 6px 0; margin-top: 9px; padding: 6px 8px; }
+.na-wrap label { font-size: 10.5px; font-weight: 700; color: #a07c2e; text-transform: uppercase; letter-spacing: .05em; }
+.na-wrap textarea { width: 100%; border: none; background: transparent; resize: vertical; min-height: 34px; font-size: 12.5px; padding: 2px 0; }
+.meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #b0a08e; margin-top: 8px; }
+.btn-del { background: none; color: #c2a; border: none; font-size: 11px; cursor: pointer; color: #b56; opacity: .6; }
+.btn-del:hover { opacity: 1; text-decoration: underline; }
+.rowline { display: flex; align-items: center; gap: 10px; background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 8px; padding: 8px 14px; margin-bottom: 6px; font-size: 13.5px; }
+.rowline .book-title { font-size: 14.5px; }
+.empty { color: #b0a08e; font-style: italic; font-size: 13px; padding: 8px 2px; line-height:1.5; }
+footer { margin-top: 34px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; border-top:1px solid #ecdfd0; padding-top:12px; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 10px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align:center; }
+#toast.show { opacity: 1; }
+#newform { display: none; background: #fffdf9; border: 1.5px dashed #c79a4b; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+#newform.show { display: block; }
+#newform .frow { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+#newform input[type=text] { width: 100%; }
+.hint { font-size:11px; color:#a89; }
+.brand { font-family: Georgia, "Times New Roman", serif; color:#c79a4b; font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; margin-bottom:8px; }
+.brand-foot { margin-top:12px; font-family: Georgia, "Times New Roman", serif; color:#6d2b4e; font-weight:700; font-size:12px; letter-spacing:.05em; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header>
+    <h1>📚 Story Studio</h1>
+    <span class="summary" id="summary"></span>
+  </header>
+  <div class="tagline">Every book you're writing, in one place — drag each from idea to published.</div>
+  <div class="legend">Stages: 1 Setup · 2 Concept &amp; Tropes · 3 Characters · 4 Story Bible · 5 Outline · 6 Chapter Plan · 7 Draft · 8 Edit · 9 Beta &amp; Publish</div>
+
+  <div class="toolbar">
+    <label>Author/Pen name</label>
+    <select id="penFilter"><option value="">All</option></select>
+    <label>Sort</label>
+    <select id="sortSel">
+      <option value="stage-desc">Furthest along first</option>
+      <option value="stage-asc">Earliest first</option>
+      <option value="title">Title A–Z</option>
+      <option value="updated">Recently updated</option>
+    </select>
+    <button class="btn-primary" id="btnNew">+ New book</button>
+    <button class="btn-ghost" id="btnExport">⬇ Backup</button>
+    <button class="btn-ghost" id="btnImport">⬆ Restore</button>
+    <button class="btn-ghost" id="btnCopy">📋 Copy shelf for Claude</button>
+    <input type="file" id="fileInput" accept="application/json,.json" style="display:none">
+    <span class="savestamp" id="savestamp"></span>
+  </div>
+
+  <div id="newform">
+    <div style="font-family:Georgia,serif;color:#6d2b4e;font-weight:700;font-size:15px;">✨ New book</div>
+    <div class="frow">
+      <input type="text" id="nfTitle" placeholder="Title (a working title is fine)">
+      <input type="text" id="nfPen" list="penList" placeholder="Author / pen name">
+      <input type="text" id="nfFormat" placeholder="Format — e.g. standalone, or Series Name (Book 2)">
+      <input type="text" id="nfProject" placeholder="Where it lives — chat name, folder, Google Doc… (optional)">
+    </div>
+    <div class="row">
+      <label>Stage</label><select id="nfStage"></select>
+      <button class="btn-primary" id="nfAdd" style="padding:6px 14px;">Add book</button>
+      <button class="btn-ghost" id="nfCancel" style="padding:5px 12px;">Cancel</button>
+    </div>
+  </div>
+  <datalist id="penList"></datalist>
+
+  <h2>✍️ In Progress</h2>
+  <div class="grid" id="prodGrid"></div>
+  <h2>⏸️ Parked</h2>
+  <div id="parkedList"></div>
+  <h2>✅ Published</h2>
+  <div id="pubList"></div>
+
+  <footer>
+    Your shelf saves automatically in this page. Use <b>⬇ Backup</b> to download a copy you can keep or move to another computer, and <b>⬆ Restore</b> to load it back.<br>
+    <b>▶ Resume</b> sends the book to your Claude chat (or copies it to paste) so you can pick up right where you left off.
+    <div class="brand-foot">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+<script>
+const LS_KEY = 'story-studio-student-v1';
+const STAGES = ['Setup','Concept & Tropes','Characters','Story Bible','Outline','Chapter Plan','Draft','Edit','Beta & Publish'];
+const STATUSES = [['production','In progress'],['parked','Parked'],['published','Published']];
+
+let state = null;
+
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); document.getElementById('savestamp').textContent='Saved '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){} }
+
+function seed(){
+  return { version:1, books:[ {
+    id:'demo-'+Date.now().toString(36),
+    title:'My First Book (demo — edit or delete me)',
+    penName:'Your Pen Name',
+    format:'Standalone',
+    stage:2, status:'production',
+    nextAction:'Click into any field to edit it. Change my stage with the dropdown, write your real next step here, then hit ▶ Resume to take me to Claude. Delete me when you add your own book.',
+    project:'(wherever you keep your notes)',
+    updated: todayStr()
+  } ] };
+}
+
+function init(){
+  try { state = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e){ state=null; }
+  if (!state || !state.books) { state = seed(); save(); }
+  buildToolbar(); render();
+}
+
+function buildToolbar(){
+  document.getElementById('sortSel').onchange = render;
+  document.getElementById('penFilter').onchange = render;
+  document.getElementById('btnNew').onclick = ()=>document.getElementById('newform').classList.toggle('show');
+  document.getElementById('nfCancel').onclick = ()=>document.getElementById('newform').classList.remove('show');
+  document.getElementById('nfAdd').onclick = addBook;
+  document.getElementById('btnExport').onclick = doExport;
+  document.getElementById('btnImport').onclick = ()=>document.getElementById('fileInput').click();
+  document.getElementById('fileInput').onchange = doImport;
+  document.getElementById('btnCopy').onclick = copyShelf;
+  const stSel=document.getElementById('nfStage');
+  STAGES.forEach((s,i)=>{ const o=document.createElement('option'); o.value=i+1; o.textContent=(i+1)+' — '+s; stSel.appendChild(o); });
+  stSel.value=1;
+}
+
+function pens(){ return [...new Set(state.books.map(b=>b.penName).filter(Boolean))].sort(); }
+function refreshPenLists(){
+  const list=pens();
+  const dl=document.getElementById('penList'); dl.innerHTML=''; list.forEach(p=>{ const o=document.createElement('option'); o.value=p; dl.appendChild(o); });
+  const pf=document.getElementById('penFilter'); const cur=pf.value; pf.innerHTML='<option value="">All</option>';
+  list.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; pf.appendChild(o); }); pf.value=cur;
+}
+
+function addBook(){
+  const title=document.getElementById('nfTitle').value.trim();
+  if(!title){ toast('Give it a title first.'); return; }
+  state.books.unshift({
+    id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Date.now().toString(36),
+    title,
+    penName:document.getElementById('nfPen').value.trim()||'Unassigned',
+    format:document.getElementById('nfFormat').value.trim()||'',
+    stage:parseInt(document.getElementById('nfStage').value,10),
+    status:'production',
+    nextAction:'',
+    project:document.getElementById('nfProject').value.trim()||'',
+    updated:todayStr()
+  });
+  ['nfTitle','nfPen','nfFormat','nfProject'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('nfStage').value=1;
+  document.getElementById('newform').classList.remove('show');
+  save(); render(); toast('Added “'+title+'”.');
+}
+
+function delBook(b){
+  if(!confirm('Remove “'+b.title+'” from your shelf? (Tip: ⬇ Backup first if unsure.)')) return;
+  state.books=state.books.filter(x=>x!==b); save(); render(); toast('Removed.');
+}
+
+function sortBooks(arr){
+  const m=document.getElementById('sortSel').value, a=arr.slice();
+  if(m==='stage-desc') a.sort((x,y)=>y.stage-x.stage||x.title.localeCompare(y.title));
+  if(m==='stage-asc') a.sort((x,y)=>x.stage-y.stage||x.title.localeCompare(y.title));
+  if(m==='title') a.sort((x,y)=>x.title.localeCompare(y.title));
+  if(m==='updated') a.sort((x,y)=>(y.updated||'').localeCompare(x.updated||''));
+  return a;
+}
+
+function render(){
+  refreshPenLists();
+  const pen=document.getElementById('penFilter').value;
+  const books=state.books.filter(b=>!pen||b.penName===pen);
+  const prod=sortBooks(books.filter(b=>b.status==='production'));
+  const parked=books.filter(b=>b.status==='parked');
+  const pub=books.filter(b=>b.status==='published');
+  const waiting=prod.filter(b=>b.nextAction&&b.nextAction.trim()).length;
+  document.getElementById('summary').textContent=prod.length+' in progress · '+waiting+' next actions set'+(pen?' · '+pen:'');
+
+  const grid=document.getElementById('prodGrid'); grid.innerHTML='';
+  if(!prod.length) grid.innerHTML='<div class="empty">Nothing in progress yet. Hit <b>+ New book</b> to add your first one.</div>';
+  prod.forEach(b=>grid.appendChild(card(b)));
+  rows('parkedList',parked,'Nothing parked. Park a book when you pause it.');
+  rows('pubList',pub,'No published books yet — they\'ll appear here when you set a book\'s status to Published.');
+  save();
+}
+
+function rows(id,arr,empty){
+  const el=document.getElementById(id); el.innerHTML='';
+  if(!arr.length){ el.innerHTML='<div class="empty">'+empty+'</div>'; return; }
+  arr.forEach(b=>{
+    const r=document.createElement('div'); r.className='rowline';
+    const t=document.createElement('span'); t.className='book-title'; t.textContent=b.title;
+    const p=document.createElement('span'); p.style.cssText='color:#8a7560;font-size:12px;'; p.textContent=b.penName+(b.format?' · '+b.format:'');
+    const sel=statusSel(b); sel.style.marginLeft='auto';
+    r.append(t,p,sel); el.appendChild(r);
+  });
+}
+
+function statusSel(b){
+  const s=document.createElement('select');
+  STATUSES.forEach(([v,l])=>{ const o=document.createElement('option'); o.value=v; o.textContent=l; if(b.status===v)o.selected=true; s.appendChild(o); });
+  s.onchange=()=>{ b.status=s.value; b.updated=todayStr(); save(); render(); };
+  return s;
+}
+function lab(t){ const l=document.createElement('label'); l.textContent=t; return l; }
+
+function card(b){
+  const c=document.createElement('div'); c.className='card';
+  const top=document.createElement('div'); top.className='card-top';
+  const title=document.createElement('div'); title.className='book-title'; title.textContent=b.title; title.title='Click to rename'; title.style.cursor='text';
+  title.onclick=()=>{ const n=prompt('Rename this book:', b.title); if(n&&n.trim()){ b.title=n.trim(); b.updated=todayStr(); save(); render(); } };
+  const btn=document.createElement('button'); btn.className='btn-resume'; btn.textContent='▶ Resume'; btn.onclick=()=>resume(b);
+  top.append(title,btn); c.appendChild(top);
+
+  const row1=document.createElement('div'); row1.className='row';
+  const penIn=document.createElement('input'); penIn.type='text'; penIn.setAttribute('list','penList'); penIn.value=b.penName; penIn.style.maxWidth='150px';
+  penIn.onchange=()=>{ b.penName=penIn.value.trim()||'Unassigned'; b.updated=todayStr(); save(); render(); };
+  row1.append(lab('Pen'),penIn,lab('Status'),statusSel(b)); c.appendChild(row1);
+
+  const row2=document.createElement('div'); row2.className='row';
+  const stSel=document.createElement('select');
+  STAGES.forEach((s,i)=>{ const o=document.createElement('option'); o.value=i+1; o.textContent=(i+1)+' — '+s; if(b.stage===i+1)o.selected=true; stSel.appendChild(o); });
+  stSel.onchange=()=>{ b.stage=parseInt(stSel.value,10); b.updated=todayStr(); save(); render(); };
+  row2.append(lab('Stage'),stSel); c.appendChild(row2);
+
+  const fmt=document.createElement('input'); fmt.type='text'; fmt.className='fmt'; fmt.value=b.format; fmt.placeholder='format / series…'; fmt.style.cssText='border:none;background:transparent;width:100%;margin-top:7px;font-style:italic;color:#8a7560;';
+  fmt.onchange=()=>{ b.format=fmt.value; b.updated=todayStr(); save(); }; c.appendChild(fmt);
+
+  const stepper=document.createElement('div'); stepper.className='stepper';
+  for(let i=1;i<=9;i++){ const s=document.createElement('span'); if(i<b.stage)s.className='done'; if(i===b.stage)s.className='cur'; stepper.appendChild(s); }
+  c.appendChild(stepper);
+  const sl=document.createElement('div'); sl.className='stage-label'; sl.textContent='Stage '+b.stage+' — '+STAGES[b.stage-1]; c.appendChild(sl);
+
+  const na=document.createElement('div'); na.className='na-wrap';
+  const ta=document.createElement('textarea'); ta.value=b.nextAction||''; ta.placeholder='What\'s the very next step on this book?';
+  ta.onchange=()=>{ b.nextAction=ta.value; b.updated=todayStr(); save(); };
+  na.append(Object.assign(document.createElement('label'),{textContent:'▶ Next action'}),ta); c.appendChild(na);
+
+  const meta=document.createElement('div'); meta.className='meta';
+  const proj=document.createElement('span'); proj.textContent=b.project?('📁 '+b.project):'';
+  const right=document.createElement('span'); right.style.cssText='display:flex;gap:10px;align-items:center;';
+  const upd=document.createElement('span'); upd.textContent='updated '+(b.updated||'—');
+  const del=document.createElement('button'); del.className='btn-del'; del.textContent='remove'; del.onclick=()=>delBook(b);
+  right.append(upd,del); meta.append(proj,right); c.appendChild(meta);
+  return c;
+}
+
+function resume(b){
+  const msg='Let\'s work on my book "'+b.title+'" ('+b.penName+'). It\'s at Stage '+b.stage+' — '+STAGES[b.stage-1]+
+    (b.project?(', kept in "'+b.project+'"'):'')+'. Next step: '+(b.nextAction||'pick up where we left off')+'.';
+  const sp=(window.cowork&&window.cowork.sendPrompt)||window.sendPrompt;
+  if(typeof sp==='function'){ try{ sp(msg); toast('Sent to chat — picking up '+b.title); return; }catch(e){} }
+  navigator.clipboard.writeText(msg).then(
+    ()=>toast('Copied! Paste it into your Claude chat to continue '+b.title),
+    ()=>toast('Tell Claude: resume "'+b.title+'"')
+  );
+}
+
+function doExport(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='story-studio-backup-'+todayStr()+'.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Backup downloaded.');
+}
+function doImport(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d.books) throw 0; state=d; save(); render(); toast('Restored from backup.'); }
+    catch(err){ toast('That file didn\'t look like a Story Studio backup.',4000); } };
+  r.readAsText(f); e.target.value='';
+}
+function copyShelf(){
+  const lines=state.books.map(b=>'• '+b.title+' — '+b.penName+' · Stage '+b.stage+' ('+STAGES[b.stage-1]+') · '+b.status+(b.nextAction?(' · next: '+b.nextAction):''));
+  const txt='Here\'s my current book shelf from Story Studio:\n'+lines.join('\n');
+  navigator.clipboard.writeText(txt).then(()=>toast('Shelf copied — paste it to Claude.'),()=>toast('Couldn\'t copy.'));
+}
+
+init();
+</script>
+</body>
+</html>
