@@ -252,6 +252,8 @@
   .dim .ds{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
   .dim.strong .ds{color:var(--ok)}.dim.watch .ds{color:var(--warn)}.dim.fix .ds{color:var(--bad)}.dim.todo .ds{color:var(--muted)}
   .dim .dn{font-size:12.5px;color:#475569;margin-top:3px}
+  .msbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:14px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.55)}
+  .msbar .mst{display:flex;flex-direction:column;gap:2px;font-size:14px}.msbar .mss{font-size:12.5px;color:var(--muted)}.msbar .msrev{color:var(--ok);font-weight:600}
 </style>
 </head>
 <body>
@@ -263,6 +265,7 @@
     <button onclick="clearAll()" title="Wipe everything and start a new manuscript">↺ Start over</button>
     <button onclick="exportState()">Save file</button>
     <button onclick="document.getElementById('importFile').click()">Open file</button>
+    <button onclick="downloadManuscriptDocx()" title="Download your whole manuscript with every revision you’ve applied — as a Word file">⬇ Manuscript</button>
     <button class="gold" onclick="downloadReportHtml()">Export report</button>
     <input type="file" id="importFile" accept="application/json" class="hidden" onchange="importState(event)">
   </div>
@@ -283,7 +286,7 @@
 
       <div class="panel intro">
         <h2>Welcome to the Story Clinic <span class="pill">Sci-Fi · Fantasy · Mystery · Horror · Thriller</span></h2>
-        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>, built for <b>science fiction, fantasy, mystery, horror, and psychological-thriller</b> writers — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 14 editing passes (including World &amp; Rules Consistency and the Clue &amp; Fair-Play Audit), seven <b>story lab reports</b> (plot, character, pacing, conflict, timeline, dread, mystery engine), a reader-satisfaction tracker, and one exportable Manuscript report with before &amp; after edits. <i>Writing romance? Use the original Story Clinic instead — this edition is calibrated for plot-first genres.</i></p>
+        <p class="sub">This is the capstone companion to <b>Edit Like a Boss</b>, built for <b>science fiction, fantasy, mystery, horror, and psychological-thriller</b> writers — bring your manuscript in for its full checkup. On one screen: instant offline scans against the AI banned-word list, ready-to-paste prompts for all 14 editing passes (including World &amp; Rules Consistency and the Clue &amp; Fair-Play Audit), seven <b>story lab reports</b> (plot, character, pacing, conflict, timeline, dread, mystery engine), a reader-satisfaction tracker, and one exportable Manuscript report with before &amp; after edits. When the work is done, <b>download your edited manuscript</b> as a Word file — every chapter, every revision, one document. <i>Writing romance? Use the original Story Clinic instead — this edition is calibrated for plot-first genres.</i></p>
         <div class="howto">
           <div class="howto-card best">
             <div class="hk">★ Pro tip: where to paste the prompts</div>
@@ -383,6 +386,7 @@ Then press Go. *** or --- scene breaks stay inside the chapter." oninput="onManu
           <div style="display:flex;align-items:flex-end"><div class="note" style="margin:0">Voice &amp; heat are pulled from the Manuscript tab. Change them there to recalibrate.</div></div>
         </div>
         <div id="passList" style="margin-top:16px"></div>
+        <div class="toolbar" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line);align-items:center"><span style="font-size:13px;color:var(--muted);margin-right:4px">Pasted your revisions back? Take the whole book with you:</span><button class="btn primary" onclick="downloadManuscriptDocx()">⬇ Download edited manuscript (.docx)</button><button class="btn" onclick="downloadManuscriptTxt()">Plain text (.txt)</button></div>
       </div>
     </div>
 
@@ -468,6 +472,15 @@ Then press Go. *** or --- scene breaks stay inside the chapter." oninput="onManu
         </div>
         <label class="fld">Paste your AI's overall assessment — the Editor's Letter <span style="font-weight:400;color:var(--muted)">(it becomes the opening of your Manuscript report)</span></label>
         <textarea id="overallNotes" rows="5" placeholder="Paste the OVERALL ASSESSMENT your AI returned…" oninput="state.analysisNotes.overall=this.value;persist()"></textarea>
+      </div>
+
+      <div class="panel">
+        <h2>Your edited manuscript <span class="pill">take it with you</span></h2>
+        <p class="sub">Every revision you paste back on the Manuscript or Editing Passes tabs replaces that chapter right here in the clinic. This button gathers all your chapters, in order, with those revisions applied, into one file — a Word document in standard manuscript format (Times New Roman 12, double-spaced, a new page for each chapter), ready for Vellum, Atticus, Google Docs, or your editor.</p>
+        <div class="toolbar">
+          <button class="btn primary" onclick="downloadManuscriptDocx()">⬇ Download edited manuscript (.docx)</button>
+          <button class="btn" onclick="downloadManuscriptTxt()">Plain text (.txt)</button>
+        </div>
       </div>
 
       <div class="panel">
@@ -597,7 +610,7 @@ function save(){
 function val(id){const e=document.getElementById(id);return e?e.value:'';}
 function load(){
   try{const raw=localStorage.getItem(STORE);if(raw)state=JSON.parse(raw);}catch(e){}
-  state.chapters=state.chapters||[];state.beats=state.beats||[];state.passNotes=state.passNotes||{};state.analysisNotes=state.analysisNotes||{};
+  state.chapters=state.chapters||[];msStamp(state.chapters);state.beats=state.beats||[];state.passNotes=state.passNotes||{};state.analysisNotes=state.analysisNotes||{};
   // pen-name dropdown
   const sel=document.getElementById('penName');
   sel.innerHTML=Object.entries(PENS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
@@ -676,7 +689,7 @@ function warnGiantChapters(chaps){
 }
 function splitNow(){try{RV_UNDO=null;RVMSG=null;}catch(e){}
   save();
-  state.chapters=splitManuscript(state.manuscript);
+  state.chapters=msStamp(splitManuscript(state.manuscript));
   save(); renderSetupStats(); renderChapList(); refreshScanBadge(); renderPassScope();
   const sPS=document.getElementById('passScope');if(sPS)sPS.value='ms';
   warnGiantChapters(state.chapters);
@@ -685,7 +698,7 @@ function splitNow(){try{RV_UNDO=null;RVMSG=null;}catch(e){}
 }
 function addChapters(){try{RV_UNDO=null;RVMSG=null;}catch(e){}
   save();
-  const added=splitManuscript(state.manuscript);
+  const added=msStamp(splitManuscript(state.manuscript));
   if(!added.length){alert('Paste a chapter into the box first, then hit “Add next chapter.”');return;}
   state.chapters=(state.chapters||[]).concat(added);
   // renumber any generic "Chapter N" titles so they stay sequential
@@ -728,7 +741,7 @@ function renderSetupStats(){
 function renderChapList(){
   const el=document.getElementById('chapList');
   if(!state.chapters.length){el.innerHTML='';return;}
-  el.innerHTML=`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, remove with ✕, or open one to paste its revised version</span></h3>`+
+  el.innerHTML=manuscriptBarHtml()+`<h3 style="font-family:Georgia,serif;color:var(--plum-2);font-size:15px;margin:14px 0 8px">Your chapters <span style="font-weight:400;color:var(--muted);font-size:13px">— rename inline, remove with ✕, or open one to paste its revised version</span></h3>`+
     state.chapters.map((c,i)=>`<details class="chap"><summary><input type="text" value="${esc(c.title)}" style="border:none;background:transparent;font-weight:600;flex:1" onclick="event.stopPropagation()" onchange="renameChap(${i},this.value)"><span class="cw">${wc(c.text)} words</span>${wc(c.text)>6000?'<span class="cw" style="color:#B0483F" title="Long chapters can overrun your AI’s reply limit in EDIT mode — the prompt now delivers in parts, but splitting the chapter is safer.">⚠ long</span>':''}<button class="del" title="Remove this chapter" onclick="event.preventDefault();event.stopPropagation();removeChap(${i})" style="border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px">✕</button></summary><div class="cbody">${esc(c.text.slice(0,600))}${c.text.length>600?'…':''}
       <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="toggleRepl(${i})">🔁 Paste revised text</button></div>
       <div id="repl-${i}" class="hidden">
@@ -2352,6 +2365,92 @@ function copyMasterRevision(btn){
 }
 
 /* ============================================================
+   EDITED MANUSCRIPT EXPORT — assembles every chapter, with all the
+   revisions you've pasted back, into a Word .docx or plain .txt.
+   Standard manuscript format: Times New Roman 12, double-spaced,
+   each chapter on a new page. Fully offline — nothing uploaded.
+   ============================================================ */
+function msHash(s){s=String(s||'');let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16);}
+function msStamp(list){(list||[]).forEach(c=>{if(c&&c.oh==null)c.oh=msHash(c.text||'');});return list;}
+function msChapters(){return (state.chapters||[]).filter(c=>c&&(c.text||'').trim());}
+function msRevisedCount(){return msChapters().filter(c=>c.oh!=null&&c.oh!==msHash(c.text||'')).length;}
+function msReady(){
+  if(msChapters().length)return true;
+  alert('Nothing to download yet — paste your manuscript on the Manuscript tab and hit Go first. The download gathers every chapter (with any revisions you’ve pasted back) into one file.');
+  return false;
+}
+function msFileBase(){return (state.title||'manuscript').replace(/[^\w-]+/g,'_').replace(/^_+|_+$/g,'')||'manuscript';}
+function msParas(t){return String(t||'').replace(/\r\n?/g,'\n').split('\n').map(s=>s.replace(/\s+$/,'')).filter(s=>s.trim());}
+function msIsBreak(s){return /^\s*(?:[*#~\-–—]\s*){1,7}$/.test(s);}
+function msSave(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+function manuscriptBarHtml(){
+  const ch=msChapters();if(!ch.length)return'';
+  const rev=msRevisedCount(),tw=ch.reduce((a,c)=>a+wc(c.text),0);
+  return `<div class="msbar" id="msbar"><div class="mst"><b>Your edited manuscript</b><span class="mss">${ch.length} chapter${ch.length===1?'':'s'} · ${tw.toLocaleString()} words · <span class="${rev?'msrev':''}">${rev} revised</span></span></div>`+
+    `<div class="toolbar" style="margin:0"><button class="btn primary" onclick="downloadManuscriptDocx()" title="Every chapter, with all the revisions you've applied, in standard manuscript format">⬇ Download edited manuscript (.docx)</button><button class="btn" onclick="downloadManuscriptTxt()">Plain text (.txt)</button></div></div>`;
+}
+function buildManuscriptTxt(){
+  const ch=msChapters();
+  let out=(state.title||'Untitled').trim()+'\n\n';
+  ch.forEach((c,i)=>{out+=(i?'\n\n\n':'\n')+(c.title||('Chapter '+(i+1))).trim()+'\n\n'+msParas(c.text).join('\n\n')+'\n';});
+  return out;
+}
+function downloadManuscriptTxt(){if(!msReady())return;msSave(new Blob([buildManuscriptTxt()],{type:'text/plain;charset=utf-8'}),msFileBase()+'_edited-manuscript.txt');}
+/* --- tiny zip writer (store only) so the .docx needs no library --- */
+const MS_CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
+function msCrc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=MS_CRC[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function msZip(files,mime){
+  const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+  const d=new Date(),dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF,dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+  files.forEach(f=>{
+    const name=enc.encode(f.name),data=enc.encode(f.data),crc=msCrc32(data);
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint16(10,dt,true);h.setUint16(12,dd,true);
+    h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,name.length,true);h.setUint16(28,0,true);
+    parts.push(new Uint8Array(h.buffer),name,data);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,0,true);c.setUint16(12,dt,true);c.setUint16(14,dd,true);
+    c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,name.length,true);c.setUint16(30,0,true);c.setUint16(32,0,true);
+    c.setUint16(34,0,true);c.setUint16(36,0,true);c.setUint32(38,0,true);c.setUint32(42,off,true);
+    cd.push(new Uint8Array(c.buffer),name);
+    off+=30+name.length+data.length;
+  });
+  const cdLen=cd.reduce((a,p)=>a+p.length,0);
+  const e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true);e.setUint16(4,0,true);e.setUint16(6,0,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cdLen,true);e.setUint32(16,off,true);e.setUint16(20,0,true);
+  return new Blob(parts.concat(cd,[new Uint8Array(e.buffer)]),{type:mime});
+}
+function msXml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+/* *italics* and _italics_ from AI replies become real italics in Word */
+function msRuns(s){
+  const re=/(\*(?=\S)[^*\n]+?(?<=\S)\*|(?:^|(?<=\s))_(?=\S)[^_\n]+?(?<=\S)_(?=[\s.,!?;:)]|$))/g;let out='',last=0,m;
+  const run=(t,i)=>t?`<w:r>${i?'<w:rPr><w:i/></w:rPr>':''}<w:t xml:space="preserve">${msXml(t)}</w:t></w:r>`:'';
+  while((m=re.exec(s))){out+=run(s.slice(last,m.index),false);out+=run(m[0].slice(1,-1),true);last=m.index+m[0].length;}
+  return out+run(s.slice(last),false);
+}
+function buildManuscriptDocx(){
+  const ch=msChapters(),title=(state.title||'Untitled').trim(),tw=ch.reduce((a,c)=>a+wc(c.text),0);
+  const P=(inner,ppr)=>`<w:p>${ppr?`<w:pPr>${ppr}</w:pPr>`:''}${inner}</w:p>`;
+  const C='<w:ind w:firstLine="0"/><w:jc w:val="center"/>';
+  let body=P(msRuns(title),'<w:pStyle w:val="Title"/>')+P(msRuns('approximately '+(tw>=1000?Math.round(tw/100)*100:tw).toLocaleString()+' words'),C);
+  ch.forEach((c,i)=>{
+    body+=P(msRuns((c.title||('Chapter '+(i+1))).trim()),'<w:pStyle w:val="Heading1"/>');
+    msParas(c.text).forEach(p=>{
+      if(msIsBreak(p))body+=P('<w:r><w:t xml:space="preserve">* * *</w:t></w:r>',C);
+      else if(/^#{1,3}\s+/.test(p))body+=P(msRuns(p.replace(/^#{1,3}\s+/,'')),'<w:pStyle w:val="Heading2"/>');
+      else body+=P(msRuns(p));
+    });
+  });
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman" w:eastAsia="Times New Roman"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="en-US"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="480" w:lineRule="auto"/><w:ind w:firstLine="720"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:before="4320" w:after="240"/><w:ind w:firstLine="0"/><w:jc w:val="center"/></w:pPr><w:rPr><w:b/><w:sz w:val="40"/><w:szCs w:val="40"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:pageBreakBefore/><w:spacing w:before="2880" w:after="480"/><w:ind w:firstLine="0"/><w:jc w:val="center"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="480" w:after="240"/><w:ind w:firstLine="0"/><w:jc w:val="center"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:b/></w:rPr></w:style></w:styles>`;
+  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+  const drels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`;
+  return msZip([{name:'[Content_Types].xml',data:ct},{name:'_rels/.rels',data:rels},{name:'word/_rels/document.xml.rels',data:drels},{name:'word/document.xml',data:doc},{name:'word/styles.xml',data:styles}],'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
+function downloadManuscriptDocx(){if(!msReady())return;msSave(buildManuscriptDocx(),msFileBase()+'_edited-manuscript.docx');}
+
+/* ============================================================
    IMPORT / EXPORT / DEMO
    ============================================================ */
 function exportState(){save();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.title||'editing-cockpit').replace(/[^\w-]+/g,'_')+'.json';a.click();}
@@ -2392,7 +2491,7 @@ function renderAll(){renderSetupStats();renderChapList();refreshScanBadge();rend
 (function init(){
   document.getElementById('brandTag').textContent=CONFIG.cphMode?CONFIG.brand:CONFIG.brandGeneric;
   load();
-  if(state.manuscript&&!state.chapters.length)state.chapters=splitManuscript(state.manuscript);
+  if(state.manuscript&&!state.chapters.length)state.chapters=msStamp(splitManuscript(state.manuscript));
   renderAll();
 })();
 </script>
