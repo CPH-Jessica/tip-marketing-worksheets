@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea &amp; Tattle — Swap Module Builder (Marjorie Adams)</title>
+<!--
+  Clark Publishing House, LLC — internal newsletter tool.
+  Builds Marjorie Adams' "Tea & Tattle" swap modules: each promo is a cover
+  image on top, linked to its tracking URL. Add swaps (paste cover + tracking
+  link), preview them in Marjorie's exact newsletter style, then export the
+  MailerLite-ready HTML block. FREE swaps only — do not add paid slots.
+  Reusable every week. Same header graphic + styling as the live newsletter.
+-->
+<style>
+  :root{
+    --tt-text:#2e2a3a;
+    --tt-purple:#6b4e8e;
+    --tt-purple-dk:#553f73;
+    --tt-box:#f1eef7;
+    --tt-cream:#faf8f5;
+    --tt-line:#e3ddec;
+    --tt-gold:#b9932f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#efe9f2;color:var(--tt-text);font-family:'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.55;}
+  header.appbar{background:var(--tt-purple-dk);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  header.appbar img{height:40px;border-radius:4px;}
+  header.appbar h1{font-family:Georgia,serif;font-size:19px;margin:0;font-weight:600;}
+  header.appbar .tag{font-size:12px;opacity:.8;margin-left:auto;}
+  .wrap{display:grid;grid-template-columns:minmax(340px,430px) 1fr;gap:0;min-height:calc(100vh - 68px);}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr;}}
+  .panel{padding:20px 22px;overflow-y:auto;}
+  .controls{background:#fff;border-right:1px solid var(--tt-line);}
+  .previewpane{background:var(--tt-cream);}
+  h2.sec{font-family:Georgia,serif;color:var(--tt-purple-dk);font-size:16px;margin:22px 0 10px;border-bottom:2px solid var(--tt-line);padding-bottom:6px;}
+  h2.sec:first-child{margin-top:0;}
+  label{display:block;font-size:12px;font-weight:600;color:#4a4356;margin:10px 0 3px;text-transform:uppercase;letter-spacing:.4px;}
+  input[type=text],textarea,select{width:100%;padding:8px 10px;border:1px solid #cdc4da;border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+  textarea{resize:vertical;min-height:60px;}
+  .row{display:flex;gap:8px;}
+  .row>div{flex:1;}
+  .btn{display:inline-block;border:none;border-radius:6px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn-primary{background:var(--tt-purple);color:#fff;}
+  .btn-primary:hover{background:var(--tt-purple-dk);}
+  .btn-ghost{background:#fff;color:var(--tt-purple-dk);border:1px solid var(--tt-purple);}
+  .btn-ghost:hover{background:var(--tt-box);}
+  .btn-sm{padding:5px 10px;font-size:12px;}
+  .btnbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .hint{font-size:12px;color:#7a7286;margin:4px 0 0;}
+  .cand{border:1px solid var(--tt-line);border-radius:8px;padding:10px;margin:8px 0;background:#fbf9fd;font-size:13px;}
+  .cand .t{font-weight:600;color:var(--tt-purple-dk);}
+  .cand .m{font-size:11.5px;color:#7a7286;margin:2px 0 6px;}
+  .cand .needcover{color:#b5411f;font-weight:600;}
+  .cand.excluded{opacity:.72;background:#f6f2f2;border-style:dashed;}
+  .cand.excluded .why{color:#9a5b2c;font-size:11.5px;font-style:italic;}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-right:6px;vertical-align:middle;}
+  .pill.free{background:#e4f4e8;color:#1f7a3d;}
+  .pill.paid{background:#fbe4e4;color:#a32020;}
+  .pill.banner{background:#eee3f6;color:#6b4e8e;}
+  .pill.tile{background:#e3eef6;color:#295a7a;}
+  .pill.featured{background:#f6efe0;color:#8a6a1a;}
+  details{margin:10px 0;}
+  summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--tt-purple-dk);}
+  .warn{background:#fef7e6;border:1px solid #e6d59a;border-radius:8px;padding:10px 12px;font-size:12.5px;color:#7a5c12;margin:10px 0;}
+  .empty{color:#9a92a6;font-style:italic;text-align:center;padding:40px 10px;}
+  /* ------- export textarea ------- */
+  #exportBox{width:100%;min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;}
+  /* ================= NEWSLETTER PREVIEW (matches live Tea & Tattle email) ============= */
+  .nl{max-width:600px;margin:0 auto;background:#fff;padding:22px;border-radius:8px;box-shadow:0 2px 14px rgba(85,63,115,.12);font-family:Georgia,serif;color:var(--tt-text);}
+  .nl .banner img{width:100%;max-width:600px;display:block;margin:0 auto 10px;border-radius:6px;}
+  .nl .secttl{font-size:21px;font-weight:bold;color:var(--tt-purple-dk);text-align:center;margin:4px 0 2px;}
+  .nl .secsub{text-align:center;font-style:italic;color:#888;margin:0 0 20px;font-size:13px;}
+  .nl .subttl{font-weight:bold;color:var(--tt-purple-dk);text-align:center;margin:22px 0 4px;font-size:17px;}
+  .nl .toprule{border-top:2px solid var(--tt-purple);margin:22px 0 0;padding-top:16px;}
+  .mod{position:relative;margin:0 0 26px;}
+  .mod .del{position:absolute;top:-6px;right:-6px;background:#a32020;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:1;z-index:2;font-family:sans-serif;}
+  .mod.featured{ }
+  .mod.featured .cov{display:block;margin:0 auto 14px;width:170px;max-width:55%;border-radius:6px;}
+  .mod .box{background:var(--tt-box);border-left:4px solid var(--tt-purple);padding:16px 20px;border-radius:4px;}
+  .mod .box .dr{margin:0 0 8px;font-weight:bold;color:var(--tt-purple-dk);}
+  .mod .box p{margin:0 0 10px;font-size:15px;}
+  .mod .box p:last-child{margin-bottom:0;}
+  .mod .cta{margin:12px 0 0;font-size:14px;}
+  .mod .cta a{color:var(--tt-purple-dk);font-weight:bold;}
+  .tilewrap{display:flex;flex-wrap:wrap;gap:2%;}
+  .tile{width:32%;text-align:center;margin-bottom:12px;position:relative;}
+  .tile img{width:160px;max-width:100%;border-radius:4px;display:block;margin:0 auto;}
+  .tile .del{top:-4px;right:8px;}
+  .banners .bmod{text-align:center;margin:0 0 16px;position:relative;}
+  .banners .bmod img{width:100%;max-width:540px;border-radius:6px;display:block;margin:0 auto;}
+  .nl .sign{font-size:13px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:14px;margin-top:24px;}
+  .placeholder-cover{background:repeating-linear-gradient(45deg,#efe7f7,#efe7f7 8px,#e4d8f2 8px,#e4d8f2 16px);display:flex;align-items:center;justify-content:center;color:#8a6aad;font-family:sans-serif;font-size:10px;text-align:center;border-radius:6px;}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <img src="https://storage.mlcdn.com/account_image/1362400/d27ed843309700993f119737354ebefe51ed3600.jpeg" alt="Tea & Tattle">
+  <h1>Tea &amp; Tattle — Swap Module Builder</h1>
+  <span class="tag">Marjorie Adams · Clark Publishing House · free swaps only</span>
+</header>
+
+<div class="wrap">
+  <!-- ============ LEFT: CONTROLS ============ -->
+  <div class="panel controls">
+
+    <div class="warn">
+      <strong>Free swaps only.</strong> Don't add paid slots (Solo/Feature that cost money). Each module = the promo's <em>cover image on top</em>, linked to its tracking URL. Data saves in this browser automatically.
+    </div>
+
+    <h2 class="sec">1 · Add a swap module</h2>
+    <label>Cover image URL <span style="text-transform:none;color:#9a92a6;">(the "top of the promo" graphic / book cover)</span></label>
+    <input type="text" id="fCover" placeholder="https://bookfunnelimages.com/images/covers/…/cover_md.jpg">
+    <label>Tracking / promo link <span style="text-transform:none;color:#9a92a6;">(where the cover clicks through)</span></label>
+    <input type="text" id="fLink" placeholder="https://dl.bookfunnel.com/… or https://books.bookfunnel.com/…">
+    <div class="row">
+      <div>
+        <label>Layout</label>
+        <select id="fType">
+          <option value="tile">Cover tile (grid — for mentions)</option>
+          <option value="banner">Banner (full-width — group promos)</option>
+          <option value="featured">Featured (cover + gossip blurb)</option>
+        </select>
+      </div>
+      <div>
+        <label>Title <span style="text-transform:none;color:#9a92a6;">(alt/label)</span></label>
+        <input type="text" id="fTitle" placeholder="e.g. Romance Reader Magnets">
+      </div>
+    </div>
+    <label>Gossip blurb <span style="text-transform:none;color:#9a92a6;">(only for "Featured" layout — Regency voice)</span></label>
+    <textarea id="fBlurb" placeholder="Dear Reader, you'll never guess who…"></textarea>
+    <div class="btnbar">
+      <button class="btn btn-primary" onclick="addFromForm()">+ Add module</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearForm()">Clear fields</button>
+    </div>
+
+    <h2 class="sec">2 · This week's free candidates</h2>
+    <p class="hint">Pulled from your BookFunnel calendar feed and filtered to Marjorie's clean / sweet / Regency lane. Tick and add. Ones marked <span class="needcover">needs cover</span> need the banner image pasted (I can't reach BookFunnel's page from here to grab it).</p>
+    <div id="candList"></div>
+    <button class="btn btn-ghost btn-sm" onclick="addChecked()">+ Add ticked candidates</button>
+
+    <details>
+      <summary>Auto-excluded (off-genre for Marjorie) — <span id="exCount"></span></summary>
+      <div id="exList"></div>
+    </details>
+
+    <details>
+      <summary>Add your BookClicker / BookSwappy mention swaps</summary>
+      <p class="hint">These live on platforms I can't see from here. Grab each partner's cover + tracking link from the platform and paste them into the form above as a <em>Cover tile</em>. (In a Cowork/browser session, your booking-retriever skill can auto-pull these.)</p>
+    </details>
+
+    <h2 class="sec">3 · Export to MailerLite</h2>
+    <div class="btnbar">
+      <button class="btn btn-primary" onclick="doExport()">Generate newsletter HTML</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyExport()">Copy</button>
+      <button class="btn btn-ghost btn-sm" onclick="downloadExport()">Download .html</button>
+      <button class="btn btn-ghost btn-sm" onclick="wipeAll()">Clear all modules</button>
+    </div>
+    <p class="hint">Paste into a MailerLite <strong>Custom HTML</strong> block in Marjorie's Tea &amp; Tattle template, in the "And Now — the Tattle" section.</p>
+    <textarea id="exportBox" placeholder="Click &quot;Generate newsletter HTML&quot;…"></textarea>
+  </div>
+
+  <!-- ============ RIGHT: LIVE PREVIEW ============ -->
+  <div class="panel previewpane">
+    <div class="nl">
+      <div class="banner">
+        <img src="https://storage.mlcdn.com/account_image/1362400/9df97961fe039785c6bd447be8df52ed18aa9c2f.png" alt="This week's reads">
+      </div>
+      <div class="toprule">
+        <div class="secttl">And Now — the Tattle</div>
+        <div class="secsub">A few morsels of gossip I simply must share before the season is out.</div>
+        <div id="pFeatured"></div>
+        <div id="pTilesWrap" style="display:none;">
+          <div class="subttl">More to Tempt You</div>
+          <div class="secsub">A little stack of clean and sweet reads. Do help yourself to any that catch your eye.</div>
+          <div class="tilewrap" id="pTiles"></div>
+        </div>
+        <div id="pBannersWrap" style="display:none;">
+          <div class="subttl">Collections Worth Perusing</div>
+          <div class="secsub">Whole tables of complimentary reads, gathered for your pleasure.</div>
+          <div class="banners" id="pBanners"></div>
+        </div>
+        <div id="pEmpty" class="empty">No modules yet — add swaps on the left and they'll appear here in Marjorie's voice.</div>
+      </div>
+      <div class="sign">
+        May your tea be warm and your scandals fictional.<br>
+        Yours most sincerely, Marjorie Adams<br>
+        Clark Publishing House, LLC
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- candidate data: free, genre-matched to Marjorie (sweet/Regency/all-romance) ---------- */
+const CANDIDATES = [
+  {title:"Romance Reader Magnets", type:"banner", link:"https://books.bookfunnel.com/romancereadermagnets/3zie3g4iw5",
+   cover:"https://storage.mlcdn.com/account_image/1362400/uaEKCo5k0egunL9F_8aca1b57-e74b-4408-9833-e8039b9d101f.jpg",
+   note:"Reader-magnet promo — accepts clean. You used this last send.", checked:true},
+  {title:"All Romance — No rep requirement (July)", type:"banner", link:"https://books.bookfunnel.com/bf_allromnl/klgq5gyuqw",
+   cover:"https://images.bookfunnel.com/headers/82ce40fb5b4ee099f663a64005aaa83bd40657d92186ba1c44a8e139ef429087.png",
+   note:"All-genre newsletter builder. You used this last send.", checked:true},
+  {title:"Summer Romance Freebie Collection", type:"banner", link:"https://books.bookfunnel.com/summerromancefreebiecollection/v3r1xluz6p",
+   cover:"", note:"All-romance freebie collection.", checked:false},
+  {title:"One More Chapter Romance: Reads You Won't Want to Put Down", type:"banner", link:"https://books.bookfunnel.com/readsyouwontwanttoputdown/bexp7t8mro",
+   cover:"", note:"General romance reads.", checked:false},
+  {title:"Christmas in July Romance Reads", type:"banner", link:"https://books.bookfunnel.com/christmas-in-july-romance-reads/km02zhuie5",
+   cover:"", note:"Clean holiday romance — good Marjorie fit.", checked:false}
+];
+/* off-genre for Marjorie (steamy / dark / PNR / billionaire) — shown so you can see what was filtered */
+const EXCLUDED = [
+  {title:"June/July Hot & Steamy Romance", why:"steamy — off-genre"},
+  {title:"Free Steamy Hot Romance", why:"steamy — off-genre"},
+  {title:"FREE JULY Steamy Romance List Builder", why:"steamy — off-genre"},
+  {title:"Too Hot To Put Down (July)", why:"steamy — off-genre"},
+  {title:"FREE & SPICY Contemporary Romance", why:"spicy — off-genre"},
+  {title:"Dark and Extra Spicy Romance", why:"dark/explicit — off-genre"},
+  {title:"Paranormal & Fantasy Romance Free Reads", why:"paranormal — off-genre"},
+  {title:"Hot and Spicy Paranormal Reads", why:"paranormal — off-genre"},
+  {title:"Paranormal/Fantasy Romance Sales", why:"paranormal — off-genre"},
+  {title:"Billionaire Bliss", why:"billionaire/steamy — that's Sage's lane"}
+];
+
+/* ---------- state ---------- */
+let modules = JSON.parse(localStorage.getItem('tt_modules')||'[]');
+function save(){localStorage.setItem('tt_modules',JSON.stringify(modules));}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ---------- add / remove ---------- */
+function addModule(m){
+  if(!m.link){alert('A tracking / promo link is required.');return;}
+  modules.push({cover:m.cover||'',link:m.link,type:m.type||'tile',title:m.title||'',blurb:m.blurb||''});
+  save();render();
+}
+function addFromForm(){
+  addModule({cover:val('fCover'),link:val('fLink'),type:val('fType'),title:val('fTitle'),blurb:val('fBlurb')});
+  clearForm();
+}
+function clearForm(){['fCover','fLink','fTitle','fBlurb'].forEach(id=>document.getElementById(id).value='');}
+function val(id){return document.getElementById(id).value.trim();}
+function delMod(i){modules.splice(i,1);save();render();}
+function wipeAll(){if(confirm('Remove all modules?')){modules=[];save();render();}}
+
+/* ---------- candidates ---------- */
+function renderCandidates(){
+  document.getElementById('candList').innerHTML = CANDIDATES.map((c,i)=>`
+    <div class="cand">
+      <label style="text-transform:none;font-weight:400;margin:0;display:flex;gap:8px;align-items:flex-start;cursor:pointer;">
+        <input type="checkbox" data-ci="${i}" ${c.checked?'checked':''} style="margin-top:3px;">
+        <span>
+          <span class="pill free">Free</span><span class="pill banner">${c.type}</span>
+          <span class="t">${esc(c.title)}</span>
+          <span class="m">${esc(c.note)} ${c.cover?'':'<span class="needcover">· needs cover image</span>'}</span>
+        </span>
+      </label>
+    </div>`).join('');
+  const ex=document.getElementById('exList');
+  ex.innerHTML = EXCLUDED.map(e=>`<div class="cand excluded"><span class="t">${esc(e.title)}</span><div class="why">${esc(e.why)}</div></div>`).join('');
+  document.getElementById('exCount').textContent = EXCLUDED.length+' hidden';
+}
+function addChecked(){
+  document.querySelectorAll('#candList input[type=checkbox]:checked').forEach(cb=>{
+    const c=CANDIDATES[+cb.dataset.ci];
+    addModule({cover:c.cover,link:c.link,type:c.type,title:c.title,blurb:''});
+    cb.checked=false;
+  });
+}
+
+/* ---------- cover cell (with placeholder if missing) ---------- */
+function coverImg(m,w){
+  if(m.cover) return `<img class="cov" src="${esc(m.cover)}" alt="${esc(m.title||'Featured read')}">`;
+  return `<div class="placeholder-cover cov" style="width:${w}px;height:${Math.round(w*1.5)}px;max-width:100%;">paste cover URL</div>`;
+}
+
+/* ---------- live preview ---------- */
+function render(){
+  renderCandidates();
+  const feat=[],tiles=[],banners=[];
+  modules.forEach((m,i)=>{(m.type==='featured'?feat:m.type==='banner'?banners:tiles).push({m,i});});
+
+  document.getElementById('pFeatured').innerHTML = feat.map(({m,i})=>`
+    <div class="mod featured">
+      <button class="del" onclick="delMod(${i})">×</button>
+      <a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,170)}</a>
+      <div class="box"><p class="dr">Dear Reader,</p><p>${esc(m.blurb)||'<em style=\"color:#a08fb8;\">(add a gossip blurb in the form)</em>'}</p></div>
+      <p class="cta">👉 <a href="${esc(m.link)}" target="_blank" rel="noopener">${esc(m.title)||'Read it before the ton finds out'}</a></p>
+    </div>`).join('');
+
+  const tw=document.getElementById('pTilesWrap');
+  tw.style.display = tiles.length?'block':'none';
+  document.getElementById('pTiles').innerHTML = tiles.map(({m,i})=>`
+    <div class="tile"><button class="del" onclick="delMod(${i})">×</button>
+      <a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,160)}</a></div>`).join('');
+
+  const bw=document.getElementById('pBannersWrap');
+  bw.style.display = banners.length?'block':'none';
+  document.getElementById('pBanners').innerHTML = banners.map(({m,i})=>`
+    <div class="bmod"><button class="del" onclick="delMod(${i})">×</button>
+      <a href="${esc(m.link)}" target="_blank" rel="noopener">${coverImg(m,540)}</a></div>`).join('');
+
+  document.getElementById('pEmpty').style.display = modules.length?'none':'block';
+}
+
+/* ---------- export: MailerLite-ready HTML matching the live email markup ---------- */
+function exportHTML(){
+  const feat=modules.filter(m=>m.type==='featured');
+  const tiles=modules.filter(m=>m.type==='tile');
+  const banners=modules.filter(m=>m.type==='banner');
+  let h='';
+  h+=`<!-- ===== And Now — the Tattle (generated by Tea & Tattle Swap Module Builder) ===== -->\n`;
+  h+=`<div style="border-top:2px solid #6b4e8e;margin:26px 0 0;padding-top:18px;">\n`;
+  h+=`  <p style="font-size:21px;font-weight:bold;color:#553f73;text-align:center;margin:0 0 4px;">And Now — the Tattle</p>\n`;
+  h+=`  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 24px;font-size:13px;">A few morsels of gossip I simply must share before the season is out.</p>\n`;
+
+  feat.forEach(m=>{
+    h+=`  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">\n`;
+    h+=`    <tr><td align="center" style="padding-bottom:14px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)}" width="170" style="width:170px;max-width:55%;border-radius:6px;display:block;"></a></td></tr>\n`;
+    h+=`    <tr><td><div style="background:#f1eef7;border-left:4px solid #6b4e8e;padding:16px 20px;border-radius:4px;">\n`;
+    h+=`      <p style="margin:0 0 8px;font-weight:bold;color:#553f73;">Dear Reader,</p>\n`;
+    h+=`      <p style="margin:0;">${esc(m.blurb)}</p></div>\n`;
+    h+=`      <p style="margin:12px 0 0;font-size:14px;">&#128073; <a href="${esc(m.link)}" style="color:#553f73;font-weight:bold;text-decoration:underline;">${esc(m.title)||'Read it before the ton finds out'}</a></p>\n`;
+    h+=`    </td></tr></table>\n`;
+  });
+
+  if(tiles.length){
+    h+=`  <p style="font-weight:bold;color:#553f73;text-align:center;margin:0 0 4px;font-size:17px;">More to Tempt You</p>\n`;
+    h+=`  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 16px;font-size:13px;">A little stack of clean and sweet reads. Do help yourself to any that catch your eye.</p>\n`;
+    h+=`  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>\n`;
+    tiles.forEach((m,i)=>{
+      h+=`    <td width="33%" align="center" valign="top" style="padding:6px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)||'Featured read'}" width="160" style="width:160px;max-width:100%;border-radius:4px;display:block;"></a></td>\n`;
+      if(i%3===2 && i!==tiles.length-1) h+=`  </tr><tr>\n`;
+    });
+    const rem=tiles.length%3; if(rem){for(let k=rem;k<3;k++) h+=`    <td width="33%" align="center" valign="top" style="padding:6px;"></td>\n`;}
+    h+=`  </tr></table>\n`;
+  }
+
+  if(banners.length){
+    h+=`  <p style="font-weight:bold;color:#553f73;text-align:center;margin:26px 0 4px;font-size:17px;">Collections Worth Perusing</p>\n`;
+    h+=`  <p style="text-align:center;font-style:italic;color:#888;margin:0 0 16px;font-size:13px;">Whole tables of complimentary reads, gathered for your pleasure.</p>\n`;
+    banners.forEach(m=>{
+      h+=`  <p align="center" style="margin:0 0 16px;"><a href="${esc(m.link)}"><img src="${esc(m.cover)}" alt="${esc(m.title)||'Group promo'}" width="540" style="width:100%;max-width:540px;border-radius:6px;display:block;margin:0 auto;"></a></p>\n`;
+    });
+  }
+  h+=`</div>\n<!-- ===== end Tattle ===== -->\n`;
+  return h;
+}
+function doExport(){
+  if(!modules.length){alert('Add some modules first.');return;}
+  const miss=modules.filter(m=>!m.cover).length;
+  const box=document.getElementById('exportBox');
+  box.value=exportHTML();
+  if(miss) box.value=`<!-- NOTE: ${miss} module(s) still missing a cover image URL — paste them before sending. -->\n`+box.value;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyExport(){const b=document.getElementById('exportBox');if(!b.value)doExport();b.select();document.execCommand('copy');}
+function downloadExport(){
+  if(!document.getElementById('exportBox').value)doExport();
+  const blob=new Blob([document.getElementById('exportBox').value],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='marjorie-tattle-swaps.html';a.click();
+}
+
+render();
+</script>
+</body>
+</html>
