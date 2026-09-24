@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series Read-Through Calculator | The Invisible Pen</title>
+<style>
+  :root {
+    --coral: #E8735A;
+    --coral-light: #f4a393;
+    --coral-dark: #c45a44;
+    --navy: #1a1a2e;
+    --navy-light: #2a2a4a;
+    --cream: #faf8f5;
+    --cream-dark: #f0ece4;
+    --gold: #c9a84c;
+    --gold-light: #e8d9a0;
+    --green: #4a9e6e;
+    --green-bg: rgba(74,158,110,0.10);
+    --yellow: #d4a017;
+    --yellow-bg: rgba(212,160,23,0.10);
+    --red: #c0392b;
+    --red-bg: rgba(192,57,43,0.10);
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  .header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 32px 24px;
+    text-align: center;
+    border-bottom: 4px solid var(--coral);
+  }
+  .header .brand {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 15px;
+    color: var(--coral-light);
+    font-style: italic;
+  }
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+  .intro {
+    background: var(--white);
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .intro p { margin-bottom: 10px; }
+  .intro p:last-child { margin-bottom: 0; }
+  .intro strong { color: var(--coral-dark); }
+
+  .section {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .section h2 {
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section h2 .num {
+    background: var(--coral);
+    color: var(--white);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .section .hint {
+    color: var(--gray);
+    font-size: 14px;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field input, .field select {
+    padding: 10px 12px;
+    border: 1px solid var(--gray-light);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 15px;
+    background: var(--cream);
+    color: var(--navy);
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--coral);
+    background: var(--white);
+  }
+  .field .help {
+    font-size: 12px;
+    color: var(--gray);
+    font-style: italic;
+  }
+
+  .books-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  .books-table th {
+    background: var(--navy);
+    color: var(--white);
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: normal;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .books-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+  }
+  .books-table tr:nth-child(even) td {
+    background: var(--cream-dark);
+  }
+  .books-table input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--gray-light);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--white);
+  }
+  .books-table input:focus {
+    outline: none;
+    border-color: var(--coral);
+  }
+  .books-table .book-num {
+    font-weight: bold;
+    color: var(--coral-dark);
+    white-space: nowrap;
+  }
+  .books-table .book-title-input {
+    min-width: 140px;
+  }
+  .books-table .num-input {
+    width: 90px;
+  }
+
+  .ku-section {
+    background: var(--cream-dark);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 14px;
+    border: 1px dashed var(--gold);
+  }
+  .ku-section h3 {
+    font-size: 15px;
+    color: var(--coral-dark);
+    margin-bottom: 8px;
+  }
+  .ku-section .help {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-weight: bold;
+  }
+  .btn-primary {
+    background: var(--coral);
+    color: var(--white);
+  }
+  .btn-primary:hover { background: var(--coral-dark); }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--navy);
+    border: 1px solid var(--gray-light);
+  }
+  .btn-secondary:hover { background: var(--cream-dark); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gray);
+    text-decoration: underline;
+    padding: 8px 14px;
+  }
+  .btn-ghost:hover { color: var(--coral-dark); }
+
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  .results-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--white);
+    padding: 24px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+  }
+  .results-header h2 {
+    font-size: 24px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .results-header p {
+    font-size: 14px;
+    color: var(--coral-light);
+  }
+
+  .results-body {
+    background: var(--white);
+    padding: 28px 24px;
+    border-radius: 0 0 10px 10px;
+    margin-bottom: 24px;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .metric-card {
+    background: var(--cream);
+    padding: 18px;
+    border-radius: 8px;
+    border-left: 4px solid var(--coral);
+  }
+  .metric-card.green { border-left-color: var(--green); }
+  .metric-card.yellow { border-left-color: var(--yellow); }
+  .metric-card.gold { border-left-color: var(--gold); }
+  .metric-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray);
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  .metric-card .value {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .metric-card .sub {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  .readthrough-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .readthrough-table th {
+    background: var(--coral);
+    color: var(--white);
+    padding: 10px;
+    text-align: left;
+    font-weight: normal;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .readthrough-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  .readthrough-table tr:nth-child(even) td {
+    background: var(--cream);
+  }
+  .pct {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .pct.good { color: var(--green); }
+  .pct.ok { color: var(--gold); }
+  .pct.bad { color: var(--red); }
+
+  .interpretation {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 4px;
+  }
+  .interpretation h3 {
+    color: var(--coral-dark);
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .interpretation p {
+    margin-bottom: 10px;
+  }
+  .interpretation p:last-child {
+    margin-bottom: 0;
+  }
+  .interpretation strong { color: var(--navy); }
+
+  .verdict {
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 17px;
+    font-weight: bold;
+  }
+  .verdict.green {
+    background: var(--green-bg);
+    border: 2px solid var(--green);
+    color: var(--green);
+  }
+  .verdict.yellow {
+    background: var(--yellow-bg);
+    border: 2px solid var(--yellow);
+    color: #8a6a0a;
+  }
+  .verdict.red {
+    background: var(--red-bg);
+    border: 2px solid var(--red);
+    color: var(--red);
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 13px;
+  }
+  .benchmark-table th, .benchmark-table td {
+    padding: 8px 10px;
+    border: 1px solid var(--gray-light);
+    text-align: left;
+  }
+  .benchmark-table th {
+    background: var(--cream-dark);
+    font-weight: bold;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-light);
+  }
+  .footer strong { color: var(--coral-dark); }
+
+  details {
+    background: var(--cream-dark);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--navy);
+  }
+  details[open] summary {
+    margin-bottom: 10px;
+  }
+
+  @media print {
+    body { background: white; }
+    .header { background: white; color: var(--navy); border-bottom: 2px solid var(--coral); }
+    .header .brand { color: var(--coral-dark); }
+    .header h1, .header .subtitle { color: var(--navy); }
+    .section { box-shadow: none; border: 1px solid var(--gray-light); page-break-inside: avoid; }
+    .button-row, .btn-ghost { display: none; }
+    .results-header { background: var(--cream-dark); color: var(--navy); }
+    .results-header h2 { color: var(--coral-dark); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">The Invisible Pen</div>
+  <h1>Series Read-Through Calculator</h1>
+  <div class="subtitle">Know what a Book 1 reader is actually worth</div>
+</div>
+
+<div class="container">
+
+  <div class="intro">
+    <p>Series read-through is the single most important metric for series authors. It tells you what percentage of readers who finish Book 1 go on to buy Book 2, Book 3, and beyond.</p>
+    <p><strong>Why this matters:</strong> If you only look at Book 1 sales, you'll think your ads are losing money. Factor in read-through, and a "losing" campaign on Book 1 might actually be your biggest profit center. This calculator does the math for you.</p>
+  </div>
+
+  <!-- SECTION 1: SETUP -->
+  <div class="section">
+    <h2><span class="num">1</span> Series Setup</h2>
+    <p class="hint">Tell me about your series. We'll build the table in the next step.</p>
+
+    <div class="setup-grid">
+      <div class="field">
+        <label>Series Name</label>
+        <input type="text" id="seriesName" placeholder="e.g., Wild Series">
+      </div>
+      <div class="field">
+        <label>Pen Name (optional)</label>
+        <input type="text" id="penName" placeholder="e.g., Constance Ruth Clark">
+      </div>
+      <div class="field">
+        <label>Number of Books in Series</label>
+        <select id="bookCount" onchange="buildBookTable()">
+          <option value="2">2 books</option>
+          <option value="3" selected>3 books</option>
+          <option value="4">4 books</option>
+          <option value="5">5 books</option>
+          <option value="6">6 books</option>
+          <option value="7">7 books</option>
+          <option value="8">8 books</option>
+          <option value="9">9 books</option>
+          <option value="10">10 books</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Enrolled in KU?</label>
+        <select id="kuEnrolled" onchange="toggleKU()">
+          <option value="no">No (wide / sales only)</option>
+          <option value="yes" selected>Yes (KU + sales)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="kuFields" class="ku-section">
+      <h3>Kindle Unlimited Setup</h3>
+      <p class="help">KENP rate fluctuates monthly. Use the latest rate from your KDP dashboard, or use the default of $0.0045 per page.</p>
+      <div class="setup-grid">
+        <div class="field">
+          <label>KENP Rate (per page)</label>
+          <input type="number" id="kenpRate" value="0.0045" step="0.0001" min="0">
+          <span class="help">Default: $0.0045</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: BOOK DATA -->
+  <div class="section">
+    <h2><span class="num">2</span> Per-Book Data</h2>
+    <p class="hint">Enter sales and KENP reads for each book over the same time period (last 30 days, last 90 days, or lifetime — your call, just be consistent).</p>
+
+    <div style="overflow-x: auto;">
+      <table class="books-table" id="booksTable">
+        <!-- Populated by JS -->
+      </table>
+    </div>
+
+    <details>
+      <summary>Where do I find these numbers?</summary>
+      <p style="margin-top: 10px; font-size: 14px;"><strong>Sales:</strong> KDP Reports → Royalties Report → filter by book and date range. The "Net Units Sold" column.</p>
+      <p style="margin-top: 8px; font-size: 14px;"><strong>KENP Reads:</strong> KDP Reports → KENP Read Report. Pages read for the same period.</p>
+      <p style="margin-top: 8px; font-size: 14px;"><strong>Tip:</strong> Use the same time window for every book in the series. If you can, pick a 90-day window where all books were already released and selling — that gives the cleanest read-through math.</p>
+    </details>
+  </div>
+
+  <!-- BUTTON ROW -->
+  <div class="button-row">
+    <button class="btn-primary" onclick="calculate()">Calculate My Read-Through</button>
+    <button class="btn-secondary" onclick="window.print()">Print Results</button>
+    <button class="btn-ghost" onclick="resetForm()">Reset</button>
+  </div>
+
+  <!-- SECTION 3: RESULTS -->
+  <div id="results">
+    <div class="results-header">
+      <h2>Your Series Read-Through Report</h2>
+      <p id="resultsSubtitle">—</p>
+    </div>
+
+    <div class="results-body">
+
+      <!-- Headline metrics -->
+      <div class="metric-grid" id="headlineMetrics"></div>
+
+      <!-- Verdict -->
+      <div id="verdictBox"></div>
+
+      <!-- Read-through table -->
+      <h3 style="font-size: 18px; color: var(--navy); margin: 24px 0 8px;">Book-to-Book Read-Through</h3>
+      <table class="readthrough-table" id="readthroughTable"></table>
+
+      <!-- Revenue breakdown -->
+      <h3 style="font-size: 18px; color: var(--navy); margin: 28px 0 8px;">Revenue Breakdown Per Book</h3>
+      <table class="readthrough-table" id="revenueTable"></table>
+
+      <!-- Interpretation -->
+      <div class="interpretation" id="interpretation"></div>
+
+      <!-- Ad spend math -->
+      <h3 style="font-size: 18px; color: var(--navy); margin: 28px 0 8px;">What This Means For Your Ads</h3>
+      <div class="interpretation" id="adInterpretation"></div>
+
+      <!-- Benchmarks -->
+      <h3 style="font-size: 18px; color: var(--navy); margin: 28px 0 8px;">Romance Industry Benchmarks</h3>
+      <p class="hint" style="margin-bottom: 8px;">Rough benchmarks for romance series. Other genres vary — thriller and fantasy series often see lower B1 to B2 conversion but stronger retention once readers commit.</p>
+      <table class="benchmark-table">
+        <thead>
+          <tr><th>Read-Through (B1 → B2)</th><th>What It Means</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong style="color: var(--green);">70%+</strong></td><td>Excellent. You can run aggressive Book 1 ads and stay profitable.</td></tr>
+          <tr><td><strong style="color: var(--gold);">50–69%</strong></td><td>Solid. Most successful romance series live here. Ads work with good targeting.</td></tr>
+          <tr><td><strong style="color: var(--yellow);">30–49%</strong></td><td>Concerning. Either Book 1 isn't hooking readers or the series isn't being marketed as a series.</td></tr>
+          <tr><td><strong style="color: var(--red);">Under 30%</strong></td><td>Problem. Book 1 ending or Book 2 cover/blurb may be losing readers. Investigate before scaling ads.</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Built for <strong>The Invisible Pen</strong> students by Jessica Waldron · Clark Publishing House
+  </div>
+
+</div>
+
+<script>
+  // Build initial table
+  function buildBookTable() {
+    const count = parseInt(document.getElementById('bookCount').value);
+    const kuEnrolled = document.getElementById('kuEnrolled').value === 'yes';
+
+    let html = `
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Title (optional)</th>
+          <th>Price ($)</th>
+          <th>Royalty %</th>
+          <th>Sales (units)</th>
+          ${kuEnrolled ? '<th>KENP Pages Read</th>' : ''}
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+    for (let i = 1; i <= count; i++) {
+      html += `
+        <tr>
+          <td class="book-num">Book ${i}</td>
+          <td><input type="text" class="book-title-input" id="title_${i}" placeholder="Book ${i} title"></td>
+          <td><input type="number" class="num-input" id="price_${i}" step="0.01" min="0" value="${i === 1 ? '0.99' : '4.99'}"></td>
+          <td><input type="number" class="num-input" id="royalty_${i}" min="0" max="100" value="70"></td>
+          <td><input type="number" class="num-input" id="sales_${i}" min="0" value="0"></td>
+          ${kuEnrolled ? `<td><input type="number" class="num-input" id="kenp_${i}" min="0" value="0"></td>` : ''}
+        </tr>
+      `;
+    }
+    html += '</tbody>';
+    document.getElementById('booksTable').innerHTML = html;
+  }
+
+  function toggleKU() {
+    const kuEnrolled = document.getElementById('kuEnrolled').value === 'yes';
+    document.getElementById('kuFields').style.display = kuEnrolled ? 'block' : 'none';
+    buildBookTable();
+  }
+
+  function resetForm() {
+    document.getElementById('seriesName').value = '';
+    document.getElementById('penName').value = '';
+    document.getElementById('bookCount').value = '3';
+    document.getElementById('kuEnrolled').value = 'yes';
+    document.getElementById('kenpRate').value = '0.0045';
+    toggleKU();
+    document.getElementById('results').classList.remove('visible');
+  }
+
+  function pctColor(pct) {
+    if (pct >= 60) return 'good';
+    if (pct >= 40) return 'ok';
+    return 'bad';
+  }
+
+  function calculate() {
+    const count = parseInt(document.getElementById('bookCount').value);
+    const kuEnrolled = document.getElementById('kuEnrolled').value === 'yes';
+    const kenpRate = parseFloat(document.getElementById('kenpRate').value) || 0.0045;
+    const seriesName = document.getElementById('seriesName').value || 'Your Series';
+    const penName = document.getElementById('penName').value;
+
+    const books = [];
+    for (let i = 1; i <= count; i++) {
+      const title = document.getElementById('title_' + i).value || ('Book ' + i);
+      const price = parseFloat(document.getElementById('price_' + i).value) || 0;
+      const royaltyPct = parseFloat(document.getElementById('royalty_' + i).value) || 70;
+      const sales = parseFloat(document.getElementById('sales_' + i).value) || 0;
+      const kenp = kuEnrolled ? (parseFloat(document.getElementById('kenp_' + i).value) || 0) : 0;
+
+      const royaltyPerSale = price * (royaltyPct / 100);
+      const salesRevenue = sales * royaltyPerSale;
+      const kenpRevenue = kenp * kenpRate;
+      const totalRevenue = salesRevenue + kenpRevenue;
+
+      // Estimate KU "reader-equivalent" using avg book length proxy: assume avg romance is 350 pages
+      // KENP "readers" = pages / 350 (rough)
+      const avgPages = 350;
+      const kuReaders = kenp / avgPages;
+      const totalReaders = sales + kuReaders;
+
+      books.push({
+        num: i,
+        title,
+        price,
+        royaltyPct,
+        sales,
+        kenp,
+        royaltyPerSale,
+        salesRevenue,
+        kenpRevenue,
+        totalRevenue,
+        kuReaders,
+        totalReaders
+      });
+    }
+
+    if (books[0].totalReaders === 0) {
+      alert('Book 1 has zero readers. Enter some sales or KENP numbers first.');
+      return;
+    }
+
+    // Headline metrics
+    const b1Readers = books[0].totalReaders;
+    const totalSeriesRevenue = books.reduce((s, b) => s + b.totalRevenue, 0);
+    const ltvPerB1Reader = totalSeriesRevenue / b1Readers;
+    const lastBook = books[books.length - 1];
+    const finalRT = (lastBook.totalReaders / b1Readers) * 100;
+    const b2rt = books.length >= 2 ? (books[1].totalReaders / books[0].totalReaders) * 100 : 0;
+
+    // Subtitle
+    const subtitle = seriesName + (penName ? ' · ' + penName : '');
+    document.getElementById('resultsSubtitle').textContent = subtitle;
+
+    // Headline metric cards
+    document.getElementById('headlineMetrics').innerHTML = `
+      <div class="metric-card gold">
+        <div class="label">LTV per Book 1 Reader</div>
+        <div class="value">$${ltvPerB1Reader.toFixed(2)}</div>
+        <div class="sub">Total royalty earned per reader who picks up Book 1</div>
+      </div>
+      <div class="metric-card ${pctColor(b2rt) === 'good' ? 'green' : pctColor(b2rt) === 'ok' ? 'gold' : 'yellow'}">
+        <div class="label">Book 1 → Book 2 Read-Through</div>
+        <div class="value">${b2rt.toFixed(1)}%</div>
+        <div class="sub">The single most important number on this page</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Final Book Retention</div>
+        <div class="value">${finalRT.toFixed(1)}%</div>
+        <div class="sub">Of Book 1 readers who reach Book ${books.length}</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Total Series Revenue</div>
+        <div class="value">$${totalSeriesRevenue.toFixed(0)}</div>
+        <div class="sub">For the time period you entered</div>
+      </div>
+    `;
+
+    // Verdict
+    let verdictClass, verdictText;
+    if (b2rt >= 60) {
+      verdictClass = 'green';
+      verdictText = 'STRONG SERIES — You can scale Book 1 ads aggressively. The math is on your side.';
+    } else if (b2rt >= 40) {
+      verdictClass = 'yellow';
+      verdictText = 'WORKING SERIES — Solid foundation. Optimize Book 1 ads, push read-through up.';
+    } else if (b2rt > 0) {
+      verdictClass = 'red';
+      verdictText = 'LEAKY FUNNEL — Readers are dropping off between Book 1 and Book 2. Fix this before spending more on ads.';
+    } else {
+      verdictClass = 'yellow';
+      verdictText = 'NEED MORE DATA — Book 2 has no readers yet. Come back when you have at least 30 days of post-launch data.';
+    }
+    document.getElementById('verdictBox').innerHTML = `<div class="verdict ${verdictClass}">${verdictText}</div>`;
+
+    // Read-through table
+    let rtHtml = `
+      <thead>
+        <tr>
+          <th>Transition</th>
+          <th>Readers In</th>
+          <th>Readers Out</th>
+          <th>Read-Through %</th>
+          <th>Cumulative from Book 1</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+    for (let i = 1; i < books.length; i++) {
+      const inReaders = books[i - 1].totalReaders;
+      const outReaders = books[i].totalReaders;
+      const rt = inReaders > 0 ? (outReaders / inReaders) * 100 : 0;
+      const cumulative = b1Readers > 0 ? (outReaders / b1Readers) * 100 : 0;
+      rtHtml += `
+        <tr>
+          <td><strong>Book ${i} → Book ${i + 1}</strong></td>
+          <td>${inReaders.toFixed(0)}</td>
+          <td>${outReaders.toFixed(0)}</td>
+          <td><span class="pct ${pctColor(rt)}">${rt.toFixed(1)}%</span></td>
+          <td><span class="pct ${pctColor(cumulative)}">${cumulative.toFixed(1)}%</span></td>
+        </tr>
+      `;
+    }
+    rtHtml += '</tbody>';
+    document.getElementById('readthroughTable').innerHTML = rtHtml;
+
+    // Revenue table
+    let revHtml = `
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Title</th>
+          <th>Readers</th>
+          <th>Sales Revenue</th>
+          ${kuEnrolled ? '<th>KU Revenue</th>' : ''}
+          <th>Total Revenue</th>
+          <th>Revenue per Book 1 Reader</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+    books.forEach(b => {
+      const revPerB1 = b1Readers > 0 ? (b.totalRevenue / b1Readers) : 0;
+      revHtml += `
+        <tr>
+          <td><strong>Book ${b.num}</strong></td>
+          <td>${b.title}</td>
+          <td>${b.totalReaders.toFixed(0)}</td>
+          <td>$${b.salesRevenue.toFixed(2)}</td>
+          ${kuEnrolled ? `<td>$${b.kenpRevenue.toFixed(2)}</td>` : ''}
+          <td><strong>$${b.totalRevenue.toFixed(2)}</strong></td>
+          <td>$${revPerB1.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+    revHtml += '</tbody>';
+    document.getElementById('revenueTable').innerHTML = revHtml;
+
+    // Interpretation
+    let interp = '<h3>What These Numbers Mean</h3>';
+    interp += `<p>For every reader who picks up <strong>${books[0].title}</strong>, you earn an average of <strong>$${ltvPerB1Reader.toFixed(2)}</strong> across the full series.</p>`;
+
+    if (b2rt >= 60) {
+      interp += `<p>Your Book 1 to Book 2 read-through of <strong>${b2rt.toFixed(1)}%</strong> is excellent. Readers who finish Book 1 are clearly hooked enough to continue. This is the sign of a series that's working at the craft level.</p>`;
+    } else if (b2rt >= 40) {
+      interp += `<p>Your Book 1 to Book 2 read-through of <strong>${b2rt.toFixed(1)}%</strong> is solid for romance. Most successful series live in this range. There's room to push it higher with a stronger Book 1 ending, better Book 2 cover/blurb consistency, or back-matter teaser improvements.</p>`;
+    } else if (b2rt > 0) {
+      interp += `<p>Your Book 1 to Book 2 read-through of <strong>${b2rt.toFixed(1)}%</strong> is lower than ideal. Common causes: Book 1 ends in a way that feels too complete (readers don't feel pulled to continue), Book 2's cover or blurb don't signal that it's the same series, or there's no back-matter call to action driving readers to Book 2. Fix the leak before you scale ads.</p>`;
+    }
+
+    if (books.length > 2) {
+      const lastRT = (lastBook.totalReaders / b1Readers) * 100;
+      if (lastRT >= 30) {
+        interp += `<p><strong>${lastRT.toFixed(1)}% of Book 1 readers make it to Book ${books.length}.</strong> That's a committed reader base that will follow you forward.</p>`;
+      } else if (lastRT >= 15) {
+        interp += `<p><strong>${lastRT.toFixed(1)}% of Book 1 readers reach Book ${books.length}.</strong> Typical retention curve. The readers who go this far are your superfans.</p>`;
+      } else {
+        interp += `<p><strong>${lastRT.toFixed(1)}% of Book 1 readers reach Book ${books.length}.</strong> Steep drop-off. Worth investigating whether series length is right for this audience.</p>`;
+      }
+    }
+
+    document.getElementById('interpretation').innerHTML = interp;
+
+    // Ad math interpretation
+    const maxCPA = ltvPerB1Reader; // breakeven cost per Book 1 reader acquisition
+    const profitableCPA = ltvPerB1Reader * 0.75; // 25% margin
+    const acceptableACOS = books[0].royaltyPerSale > 0 ? (ltvPerB1Reader / books[0].royaltyPerSale) * 100 : 0;
+
+    let adInterp = `
+      <h3>The Ad Math That Most Authors Get Wrong</h3>
+      <p>If you only judge your Book 1 ads by Book 1 sales, you're missing the point. Here's what the real numbers look like:</p>
+      <p><strong>Your breakeven cost-per-Book-1-reader:</strong> $${maxCPA.toFixed(2)}<br>
+      That's the maximum you can spend to acquire a Book 1 reader and still recoup your money across the full series.</p>
+      <p><strong>Your profitable target cost-per-Book-1-reader (25% margin):</strong> $${profitableCPA.toFixed(2)}<br>
+      Spend less than this per Book 1 reader and you're net profitable across the series.</p>
+      <p><strong>Book 1 ACOS you can tolerate:</strong> Up to ${acceptableACOS.toFixed(0)}%<br>
+      Yes, you read that right. If your Book 1 royalty is $${books[0].royaltyPerSale.toFixed(2)} and your LTV is $${ltvPerB1Reader.toFixed(2)}, you can run ${acceptableACOS.toFixed(0)}% ACOS on Book 1 ads and still break even on the series. The "good ACOS is under 70%" rule is for standalones. You're not running a standalone.</p>
+      <p><em>Caveat: this assumes new readers behave like your existing readers. Optimize cautiously and watch the actual read-through over time.</em></p>
+    `;
+    document.getElementById('adInterpretation').innerHTML = adInterp;
+
+    // Show results
+    document.getElementById('results').classList.add('visible');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Init on page load
+  buildBookTable();
+</script>
+
+</body>
+</html>
