@@ -30,7 +30,7 @@ peeves in the heat-map template; Ember honors both lists.
 ### Crutch physical actions
 - arms crossed / folded arms
 - rolled his/her eyes
-- heart hammered / heart pounded
+- heart hammered
 - smirked / smirk
 - tangled (sheets or otherwise)
 - hitched (breath)
@@ -59,6 +59,12 @@ Ground time through scene instead: light, weather, season, the state of a room (
 on, the bar nearly empty, the first hard frost). **Dialogue exception:** a character may SAY a
 time the way people talk ("I told Mama we'd be there by six"); the narrator never stamps it.
 
+## TIER 2B — watch before delivery
+
+- **Crutch modifier:** quietly, deeply. Run the delete-the-word test; keep only when the word changes the meaning.
+- **Stock body reactions:** heart pounding/racing, eyes widened, jaw dropped, breath caught. Replace with this character's specific behavior or cut it.
+- **Filter verbs in narration only:** noticed, saw, felt, realized, seemed, could see/hear/feel. State the perception directly unless the act of perceiving is itself the point. Do not flag dialogue.
+
 ## TIER 3 — structural AI tells (run the Cluster Test)
 
 Word bans are not enough. Scan the whole scene for these shapes:
@@ -72,9 +78,19 @@ Word bans are not enough. Scan the whole scene for these shapes:
 7. **Professionalized sameness** — uniformly polished diction that erases character, class, region, mood, or pen-name voice.
 8. **Even sentence architecture** — paragraph after paragraph with the same length, cadence, and opening shape.
 9. **Prompt shadow** — prose that marches through the brief like a checklist or echoes the brief's wording.
-10. **Empty transition glue** — "with that," "in that moment," "as if on cue," and similar connectors doing no story work.
+**Empty-transition guard** — "with that," "in that moment," "as if on cue," and similar connectors doing no story work.
+10. **Stating the meaning** — the prose names the lesson, theme, or emotion the action already showed.
+11. **Specificity gap** — a category noun stands where this POV would use a canon-grounded name or concrete thing. Never invent canon to fake specificity.
+12. **Fractal summary** — a paragraph, section, or scene recaps what the reader just read.
+13. **Emotional echo at a break** — reflective lines repeat or explain the beat before a scene break or ending.
+14. **Polite ping-pong dialogue** — complete, orderly lines answer each other too neatly instead of carrying friction.
+15. **Filter buffers and stock body reactions** — perception middlemen and generic heart/breath/eyes/jaw reactions distance the reader from this character.
 
-**Cluster Test:** if three or more structural tells appear in a short passage, rewrite that passage at the structure level. An isolated stray is a note, not an automatic rewrite; do not sand away deliberate voice while chasing mechanical purity.
+**Scope guard:** these are drafting rules. On the author's accepted prose, flag the pattern; do not structurally rewrite it without permission.
+
+**Revision rule:** cut recap, buffers, and trailing modifiers before adding language. A longer, more adjective-heavy "polish" failed.
+
+**Cluster Test:** if three or more structural tells appear in a short passage, rewrite that passage at the structure level during drafting. An isolated stray is a note, not an automatic rewrite; do not sand away deliberate voice while chasing mechanical purity.
 
 ## Why this matters double in heat scenes
 
