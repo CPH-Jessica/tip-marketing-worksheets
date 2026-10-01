@@ -173,6 +173,17 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 function save(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(state)); document.getElementById('savestamp').textContent='Saved '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}); }catch(e){} }
 function bookLabel(b){ return b.meta.title || 'Untitled book'; }
 
+const GHOSTWRITER_GATE = `GHOSTWRITING GUARD — apply whenever this workflow drafts or revises prose:
+• Name the real thing from canon. If canon does not supply it, use a concrete detail that creates no new fact or flag the gap; never invent specificity.
+• Do not state the meaning, recap the paragraph/scene, or add a reflective emotional echo before a break. Test-delete the last one or two sentences.
+• Dialogue needs friction: interruptions, dodges, talking past each other, and competing wants — not polite ping-pong.
+• Strip filter buffers (noticed, saw, felt, realized, seemed, could see/hear/feel) unless perceiving is the point. Replace stock heart/breath/eyes/jaw reactions with character-specific behavior or cut them.
+• Run the full structural Cluster Test. Three or more stacked tells require a structure-level rewrite during drafting.
+• These are drafting rules. On my accepted prose, flag the pattern and do not structurally rewrite it without permission.
+• Revision cuts before it adds: remove recap, buffers, and trailing modifiers first. A longer, more adjective-heavy "polish" failed.
+
+`;
+
 /* ---- helper: describe the book for a prompt header ---- */
 function bookCtx(b){
   const m=b.meta, L=[];
@@ -379,12 +390,12 @@ Number them in order. Keep each prompt tight enough to paste straight into a dra
     <li><b>Interiority is the romance.</b> What the POV character notices, fears, and won't say is where readers fall in love. Push for it.</li>
     <li><b>Earn it.</b> No insta-love, no conflict a single honest sentence would end. Make them work.</li>
     <li><b>Kill the AI tells</b> as you go ("a testament to," "couldn't help but," "little did they know," over-tidy endings).</li>
-    <li><b>Run the structural Cluster Test.</b> Watch for prestige-word inflation, balanced contrast frames, rhetorical question/answer pairs, tidy triads, agentless lines, flattened emotion, professionalized sameness, even sentence architecture, prompt shadow, and empty transition glue. Three or more in a short passage means rewrite the structure, not just the vocabulary.</li>
+    <li><b>Run the structural Cluster Test.</b> Also catch stated meaning, specificity gaps, fractal summary, emotional echoes before breaks, polite ping-pong dialogue, filter buffers, and stock body reactions. Three or more in a short passage means rewrite the structure during drafting. On accepted prose, flag rather than rewrite without permission; revision cuts before it adds.</li>
   </ul>
   <h3>Pick the drafting prompt you need</h3>`,
   prompts:[
     { label:'Scene brief', hint:'Plan a scene before drafting it',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Before we draft, help me build a tight SCENE BRIEF for the next scene/chapter. Ask me anything you need, then give me:
 
 • POV character (and why this POV serves the scene)
@@ -397,7 +408,7 @@ Number them in order. Keep each prompt tight enough to paste straight into a dra
 
 Keep it to a half page. We'll draft from this brief next.` },
     { label:'Draft a chapter', hint:'The main drafting prompt',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Act as my ghostwriter for this romance. Draft ONE chapter, using the chapter drafting prompt / scene brief I paste in.
 
 Before writing, confirm you have: the beat, the POV character, the scene goal, and the emotional shift.
@@ -417,7 +428,7 @@ Here's the chapter brief:
 
 Draft the chapter, then stop and wait for my notes.` },
     { label:'Continue from here', hint:'Keep drafting in the same voice',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Continue drafting this scene from exactly where it stops, in the same voice and tense, without recapping or restarting.
 
 What's written so far:
@@ -428,7 +439,7 @@ Where it needs to go next:
 
 Keep the POV consistent, keep the interiority going, and carry the scene toward its hook. Don't wrap the chapter early unless I say so.` },
     { label:'Deepen interiority', hint:'Add inner life & emotion',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `This scene is too external — it reads like stage directions. Revise it to deepen the POV character's INTERIORITY without changing what happens.
 
 The scene:
@@ -436,7 +447,7 @@ The scene:
 
 Layer in: what the POV character notices and why, the feeling under the action, the thing they want but won't say, and one telling physical reaction. Keep my voice, keep the length similar, don't add new plot. Return the revised scene.` },
     { label:'Raise the tension', hint:'Inject conflict & stakes',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `This scene is flat — the tension sags. Revise it to RAISE THE TENSION while keeping the same events and my voice.
 
 The scene:
@@ -444,7 +455,7 @@ The scene:
 
 Tools to use: sharpen the conflicting goals, add subtext to the dialogue, raise the personal stakes, slow the key beat, and end on a stronger hook. Tell me in one line what you changed and why, then give me the revised scene.` },
     { label:'Punch up dialogue', hint:'Distinct voices + subtext',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Polish the DIALOGUE in this passage so each character sounds distinct and the lines carry subtext (people rarely say exactly what they mean).
 
 The passage:
@@ -452,7 +463,7 @@ The passage:
 
 Use each character's voice cheat sheet from the Character Bible. Cut on-the-nose lines and filler tags, vary rhythm, and let some beats land in action or silence instead of speech. Keep my voice. Return the revised passage.` },
     { label:'Write a heat scene', hint:'Intimacy at the promised level',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Draft an intimate scene at MY promised heat level (see heat level above — do not exceed or undercut it).
 
 Scene brief:
@@ -460,7 +471,7 @@ Scene brief:
 
 Requirements: clear, ongoing enthusiastic consent; emotional escalation that mirrors the physical; stay in deep POV; keep both characters' voices and wounds present; end on an emotional beat, not just a physical one. Match my voice and vocabulary preferences. If "behind closed doors," fade at the right moment and carry the intimacy through implication.` },
     { label:'Bridge / transition', hint:'Connect scenes, pass time',
-      prompt:b=>bookCtx(b)+
+      prompt:b=>bookCtx(b)+GHOSTWRITER_GATE+
 `Write a short BRIDGE between these two scenes so the chapter flows and time passes cleanly.
 
 End of scene A:
