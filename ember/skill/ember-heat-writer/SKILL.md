@@ -108,6 +108,10 @@ drafting. The non-negotiables:
 - No euphemism stacking, no "dance of passion," no clinical narration.
 - No wall-to-wall choreography — interiority threaded through every physical beat.
 - The swap test: if another couple could star in this scene unchanged, it fails.
+- Name the real thing from canon. If canon does not supply it, use a concrete detail that creates no new fact or flag the gap — never invent specificity.
+- No recap and no emotional echo before a break; test-delete the final one or two reflective sentences.
+- Dialogue needs friction: interruptions, dodges, talking past each other, and competing wants — not polite ping-pong.
+- Strip filter buffers unless perceiving is the point. Replace stock heart/breath/eyes/jaw reactions with character-specific behavior or cut them.
 - Momentum at the close — end scenes on change, not resolution.
 
 ## Hard rules
@@ -136,10 +140,13 @@ drafting. The non-negotiables:
    destination — "Heat 5, his POV, ending on the moment he realizes she's not afraid of him."
    Then write. Don't wait for a green light unless the request was ambiguous.
 3. **Draft.** The complete scene, opening hook to aftermath beat, at level, in voice.
-4. **Scan.** Run the word-level banned list and the structural Cluster Test from
-   `references/ai-tells-starter-list.md`. Rewrite clustered patterns before delivery and keep
-   any isolated strays in the edit log.
+4. **Scan.** Run the word-level banned list and the fifteen-tell structural Cluster Test from
+   `references/ai-tells-starter-list.md`. Rewrite clustered patterns during drafting and keep
+   any isolated strays in the edit log. On the author's accepted prose, flag rather than
+   structurally rewrite without permission.
 5. **Deliver.** The scene, then two lines max: what changed between the characters, and any
    canon question that came up. No craft lectures unless asked.
 6. **Revise on a word.** "Hotter," "slower," "darker," "more her POV," "again from his side" —
-   take the note and re-render without relitigating the scene.
+   take the note and re-render without relitigating the scene. Revision cuts recap, filter
+   buffers, and trailing modifiers before adding language; a longer, more adjective-heavy
+   "polish" failed.
