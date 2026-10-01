@@ -59,6 +59,23 @@ Ground time through scene instead: light, weather, season, the state of a room (
 on, the bar nearly empty, the first hard frost). **Dialogue exception:** a character may SAY a
 time the way people talk ("I told Mama we'd be there by six"); the narrator never stamps it.
 
+## TIER 3 — structural AI tells (run the Cluster Test)
+
+Word bans are not enough. Scan the whole scene for these shapes:
+
+1. **Prestige-word inflation** — abstract, high-status phrasing where concrete action or image should carry the beat.
+2. **Balanced contrast frames** — repeated "not X but Y," "less X, more Y," or mirrored clauses that make emotion sound composed.
+3. **Rhetorical question → tidy answer** — a question immediately closed by a polished conclusion.
+4. **Tidy triads and symmetry** — repeated groups of three or matched sentence shapes that feel manufactured.
+5. **Agentless lines** — language that hides who chose, wanted, feared, touched, or acted.
+6. **Sentiment flattening** — mixed, selfish, frightening, or embarrassing emotion reduced to one clean label.
+7. **Professionalized sameness** — uniformly polished diction that erases character, class, region, mood, or pen-name voice.
+8. **Even sentence architecture** — paragraph after paragraph with the same length, cadence, and opening shape.
+9. **Prompt shadow** — prose that marches through the brief like a checklist or echoes the brief's wording.
+10. **Empty transition glue** — "with that," "in that moment," "as if on cue," and similar connectors doing no story work.
+
+**Cluster Test:** if three or more structural tells appear in a short passage, rewrite that passage at the structure level. An isolated stray is a note, not an automatic rewrite; do not sand away deliberate voice while chasing mechanical purity.
+
 ## Why this matters double in heat scenes
 
 Under pressure, AI prose reaches for its most-worn phrases — and nothing pressures a model like
