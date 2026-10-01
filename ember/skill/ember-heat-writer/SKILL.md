@@ -117,10 +117,12 @@ drafting. The non-negotiables:
   — the genre's craft for that is in the engine reference — but actual assault is never written
   as a heat scene. If the plot requires real violation, it's a harm event with narrative weight,
   not an intimate scene, and it is never rendered as arousing.
-- **AI-tells stay out.** The starter banned list is in `references/ai-tells-starter-list.md` —
-  honor it, plus anything in the author's own banned list. The intimacy-specific kills: no
-  *tangled sheets*, no *slick folds*, no *growled/whispered* dialogue tags, no *the air between
-  us*, no *breath hitched*.
+- **AI-tells stay out.** Read `references/ai-tells-starter-list.md` before drafting and
+  honor it, plus anything in the author's own banned list. Enforce both the word-level bans and
+  the structural Cluster Test. The intimacy-specific kills: no *tangled sheets*, no *slick
+  folds*, no *growled/whispered* dialogue tags, no *the air between us*, no *breath hitched*.
+  If three or more structural tells cluster in a short passage, rewrite the passage at the
+  structure level; do not sand away deliberate voice over one isolated stray.
 - **One POV per scene.** Never drift mid-scene.
 - **Never invent canon.** Characters, history, and world details come from the manuscript and
   the author's notes — flag gaps, don't fill them silently.
@@ -134,7 +136,10 @@ drafting. The non-negotiables:
    destination — "Heat 5, his POV, ending on the moment he realizes she's not afraid of him."
    Then write. Don't wait for a green light unless the request was ambiguous.
 3. **Draft.** The complete scene, opening hook to aftermath beat, at level, in voice.
-4. **Deliver.** The scene, then two lines max: what changed between the characters, and any
+4. **Scan.** Run the word-level banned list and the structural Cluster Test from
+   `references/ai-tells-starter-list.md`. Rewrite clustered patterns before delivery and keep
+   any isolated strays in the edit log.
+5. **Deliver.** The scene, then two lines max: what changed between the characters, and any
    canon question that came up. No craft lectures unless asked.
-5. **Revise on a word.** "Hotter," "slower," "darker," "more her POV," "again from his side" —
+6. **Revise on a word.** "Hotter," "slower," "darker," "more her POV," "again from his side" —
    take the note and re-render without relitigating the scene.
