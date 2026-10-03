@@ -216,7 +216,7 @@
   <!-- THIS WEEK -->
   <div class="section">
     <h2>This Week</h2>
-    <p class="helptext">The whole point of planning in July: knowing what today asks of you. This is the next seven days only.</p>
+    <p class="helptext">The whole point of planning in October: knowing what today asks of you. This is the next seven days only.</p>
     <div id="weekOut"></div>
   </div>
 
@@ -248,8 +248,8 @@
 var WAVES = {
   none:      { label: "Pick a wave…",       emoji: "📘", cls:"none",      releaseBy: null,     hardEnd: null,     opens: null },
   spooky:    { label: "Spooky Season",      emoji: "🎃", cls:"spooky",    releaseBy: "-10-01", hardEnd: "-10-31", opens: "-08-15" },
-  autumn:    { label: "Cozy Autumn",        emoji: "🍂", cls:"autumn",    releaseBy: "-10-20", hardEnd: "-11-25", opens: "-09-01" },
-  christmas: { label: "Christmas & Holiday",emoji: "🎄", cls:"christmas", releaseBy: "-11-15", hardEnd: "-12-20", opens: "-09-15" }
+  autumn:    { label: "Cozy Autumn",        emoji: "🍂", cls:"autumn",    releaseBy: "-10-20", hardEnd: "-11-25", opens: "-09-15" },
+  christmas: { label: "Christmas &amp; Holiday",emoji: "🎄", cls:"christmas", releaseBy: "-11-15", hardEnd: "-12-20", opens: "-10-01" }
 };
 
 /* Book length drives the runway. A novella and a novel should never
@@ -265,7 +265,7 @@ function milestones(scopeKey) {
   return [
     [s.draft, "Draft finished", "Full manuscript done — everything after this is polish and promo."],
     [s.edits, "Edits complete", "Self-edits + editor/proof pass wrapped."],
-    [s.cover, "Cover & blurb final", "Seasonal cover, trope-forward blurb, keywords set."],
+    [s.cover, "Cover &amp; blurb final", "Seasonal cover, trope-forward blurb, keywords set."],
     [s.arc,   "ARC copies out", "Review team gets the book — four weeks is the courtesy window."],
     [-21, "Preorder live + swaps booked", "Store page up; newsletter swaps and promo slots locked in."],
     [-14, "Countdown begins", "Newsletter tease + first social countdown posts."],
@@ -281,7 +281,7 @@ function milestones(scopeKey) {
 var CHANNELS = [
   ["Newsletter", "Your list is the launch engine — tease, blast, re-send.",
     [[-14,"Newsletter: tease the cover + preorder"],[0,"Newsletter: launch blast"],[7,"Newsletter: re-send to non-openers"]]],
-  ["Newsletter swaps", "BookClicker & co. — book slots 3+ weeks out.",
+  ["Newsletter swaps", "BookClicker &amp; co. — book slots 3+ weeks out.",
     [[-35,"Book swap slots for launch week"],[-7,"Deliver swap creatives + links"]]],
   ["Facebook group / page", "Countdown posts, cover reveal, launch-day party.",
     [[-21,"Cover reveal post"],[0,"Launch-day party post"]]],
@@ -333,7 +333,7 @@ function clearAll() {
 
 function esc(s) {
   return String(s == null ? "" : s)
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,""");
 }
 function toast(msg) {
   var t = document.getElementById('toast');
