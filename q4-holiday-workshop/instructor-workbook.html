@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>INSTRUCTOR — Q4 Holiday Release Workshop Command Center | The Invisible Pen</title>
+<title>INSTRUCTOR — Q4 Holiday Workshop & Five-Week Write-Along | The Invisible Pen</title>
 <style>
   :root {
     /* The Invisible Pen brand — teal & gold, matched to the community banner */
@@ -118,10 +118,39 @@
   footer { text-align: center; padding: 24px; color: var(--gray); font-size: 0.85em; border-top: 2px solid var(--gold-light); margin-top: 30px; }
   .print-wrap { text-align:center; margin: 26px 0; }
 
+  /* Teaching worksheets and responsive agendas */
+  select, textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:5px; font:inherit; background:var(--cream); color:var(--text); }
+  textarea { resize:vertical; min-height:72px; }
+  select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--navy); outline-offset:3px; }
+  .callout-box strong { color:var(--gold-light); }
+  .table-scroll { overflow-x:auto; }
+  caption { text-align:left; color:var(--gray); margin:8px 0; }
+  tbody th { background:var(--cream); color:var(--navy); min-width:115px; }
+  .section { scroll-margin-top:110px; }
+  .print-only { display:none; }
+  .reset-link { background:none; border:0; color:var(--coral-dark); text-decoration:underline; font:inherit; cursor:pointer; padding:4px; }
+  .timerbox .btn-ghost { color:var(--gold-light); }
+  @media (max-width:600px) {
+    .container { padding:10px; }
+    .section { padding:20px 16px; }
+    header h1 { font-size:1.6em; }
+    nav.toc { position:static; padding:10px; }
+    .section { scroll-margin-top:12px; }
+    .form-row > div { min-width:0; flex-basis:100%; }
+    .beat { padding:12px; }
+    #course table { min-width:680px; }
+  }
   @media print {
     nav.toc, .print-wrap, .no-print, .btn, .savebar, .timerbox { display:none !important; }
     body { background:white; font-size:10.5pt; }
-    .section { box-shadow:none; border:1px solid #ccc; page-break-inside: avoid; }
+    .section { box-shadow:none; border:1px solid #ccc; page-break-inside:auto; }
+    #beats, #sessionSummary { display:none; }
+    .print-only { display:block; }
+    .print-agenda { break-before:page; }
+    .table-scroll { overflow:visible; }
+    input, textarea, select { background:white; }
+    .section h2, h3 { break-after:avoid; }
+    tr { break-inside:avoid; }
     header { background:white; color:var(--navy); border-bottom:3px solid var(--gold); }
     header .brand, header .subtitle { color:var(--navy); }
     .callout-box { background:white; color:var(--navy); border:2px solid var(--navy); }
@@ -134,16 +163,20 @@
 <header>
   <div class="brand">The Invisible Pen</div>
   <div class="kicker">Instructor Command Center &mdash; Not for Students</div>
-  <h1>Q4 Holiday Release Workshop</h1>
-  <div class="subtitle">Thursday, October 8, 1 to 2:30pm ET &middot; Live in the community</div>
+  <h1>Q4 Holiday Workshop &amp; Write-Along</h1>
+  <div class="subtitle">October 8 introduction &middot; Five writing classes: October 9 &ndash; November 4, 2026</div>
   <div class="teach-badge">Your Script, Timer &amp; Checklists</div>
 </header>
 
 <nav class="toc">
   <div class="inner">
     <a href="#setup">Setup</a>
+    <a href="#course">Five-Week Plan</a>
+    <a href="#project">Project Choice</a>
     <a href="#prechecks">Pre-flight</a>
     <a href="#runofshow">Run of Show</a>
+    <a href="#coaching">Screen Coaching</a>
+    <a href="#progress">Progress</a>
     <a href="#chat">Chat Prompts</a>
     <a href="#qa">Q&amp;A Cheat Sheet</a>
     <a href="#after">After-Show</a>
@@ -157,16 +190,65 @@
   <!-- SETUP -->
   <div class="section" id="setup">
     <h2>&#128197; Session Setup</h2>
-    <p class="helptext">Fill this in once you've picked the date &mdash; it saves in this browser.</p>
+    <p class="helptext">Choose the agenda below, then check the date, Eastern start time, and teaching location. Notes and checkmarks save in this browser.</p>
     <div class="form-row">
-      <div><label>Workshop date</label><input type="date" id="sDate"></div>
-      <div><label>Start time</label><input type="time" id="sTime"></div>
-      <div><label>Where you're going live</label><input type="text" id="sWhere" placeholder="Skool live / Zoom link"></div>
+      <div><label for="sDate">Session date</label><input type="date" id="sDate"></div>
+      <div><label for="sTime">Start time (Eastern)</label><input type="time" id="sTime"></div>
+      <div><label for="sWhere">Where you're going live</label><input type="text" id="sWhere" placeholder="Skool live / Zoom link"></div>
     </div>
     <div class="callout-box">
       <h3>The one-sentence promise</h3>
-      <p>&ldquo;By the end of this workshop you will know exactly which holiday books you're releasing this fall, what tropes go on their covers, and what you're doing every week between now and launch.&rdquo; Say it at the top; deliver it at the end.</p>
+      <p>&ldquo;Choose your Christmas novella. Across five 90-minute classes, we will write or revise together toward a November 4 draft, work through sticking points, and leave each time with progress on the page and one clear next step.&rdquo;</p>
     </div>
+  </div>
+
+  <!-- COURSE MAP -->
+  <div class="section" id="course">
+    <h2>Five Weeks, One Christmas Novella</h2>
+    <p><strong>Separate introduction:</strong> Thursday, October 8, 2026, 1:00&ndash;2:30pm Eastern. Introduce holiday positioning, choose a Christmas novella idea or existing draft, and test its scope. The five write-along classes start the next day.</p>
+    <p class="helptext"><strong>Confirmed class length:</strong> all five write-along sessions are 90 minutes, 1:00&ndash;2:30pm Eastern. Keep times in Eastern across the November clock change.</p>
+    <div class="table-scroll" role="region" aria-label="Five-week course schedule" tabindex="0">
+      <table>
+        <caption>Class dates &middot; 2026 &middot; 1:00&ndash;2:30pm Eastern</caption>
+        <thead><tr><th scope="col">Class</th><th scope="col">Focus &amp; in-class work</th><th scope="col">Leave with</th><th scope="col">Between classes</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1 &middot; Fri Oct 9</th><td>Choose and scope a Christmas novella; start drafting or revising.</td><td>A novella brief, personal drafting plan, and a new or revised scene segment.</td><td>By Oct 14: complete two small work blocks; bring one passage or question. This first gap is only five days.</td></tr>
+          <tr><th scope="row">2 &middot; Wed Oct 14</th><td>Make the holiday affect a character's choices; build the next scene.</td><td>A drafted or revised scene with a clear want, obstacle, and turn.</td><td>By Oct 21: repeat the pace that actually worked; draft the next scene or repair one chosen issue.</td></tr>
+          <tr><th scope="row">3 &middot; Wed Oct 21</th><td>Work through the middle, missing connections, or a revision bottleneck.</td><td>A repaired story link, new or revised pages, and a realistic remaining-work list.</td><td>By Oct 28: tackle the highest-priority gap; adjust scope if needed. Do not double homework to catch up.</td></tr>
+          <tr><th scope="row">4 &middot; Wed Oct 28</th><td>Move toward an ending or finish a focused revision pass.</td><td>Progress on an ending or priority scene, plus a short quality-check list.</td><td>By Nov 4: aim to finish the novella draft; review one passage aloud and list remaining editing and production work.</td></tr>
+          <tr><th scope="row">5 &middot; Wed Nov 4</th><td>Review the novella draft; finish or revise the most useful passage and plan the next stage.</td><td>A Christmas novella draft to review, a stronger passage, and an individual editing and release plan.</td><td>After class: follow the individual completion, editing, or release plan; no further class is assumed.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="do"><span class="lbl">Protect the work time</span>Every write-along includes two quiet 25- and 20-minute writing/revision blocks, a five-minute break, and a separate 15-minute coaching window. Keep announcements and demonstrations short. If discussion runs long, park questions so the writing time survives.</div>
+    <div class="ask"><span class="lbl">Shared draft target, individual release dates</span>Our goal is a <strong>Christmas novella draft by November 4</strong>, including the final class's writing time. A draft is the start of editing, not an upload-ready book. <strong>Each author chooses their own release date</strong>, allowing time for revision, editing, proofreading, formatting, cover work, and platform review. There is no shared upload or release deadline. Help anyone who falls behind make a specific completion plan without rushing quality.</div>
+    <p><strong>Project choice within the course:</strong> writers choose their Christmas novella's premise, audience, tone, seasonal hook, and tropes. They may start a new novella, continue a partial draft, or revise an existing Christmas novella. Early finishers use class time for revision. Keep other seasonal projects on a future-project list so this course has one clear focus.</p>
+  </div>
+
+  <!-- PROJECT CHOICE -->
+  <div class="section" id="project">
+    <h2>Project Choice &amp; Scope Worksheet</h2>
+    <p class="helptext">Read these prompts aloud; writers answer in their own document or notebook. These fields are Jessica's demonstration copy, not a shared student submission form. One Christmas novella per person; premise, voice, and release date stay with the author.</p>
+    <div class="form-row">
+      <div><label for="projectTitle">Working title / project</label><input type="text" id="projectTitle" data-save placeholder="Example: Snowed In at the Bookshop"></div>
+      <div><label for="projectTrack">My track</label><select id="projectTrack" data-save><option value="">Choose a starting point</option><option>Draft a new Christmas novella</option><option>Continue a Christmas novella draft</option><option>Revise an existing Christmas novella</option></select></div>
+    </div>
+    <label for="projectPromise">Who is it for, and what experience am I promising?</label>
+    <textarea id="projectPromise" data-save rows="2" placeholder="Reader, tone, one seasonal hook, and up to three core tropes. How does the season change a choice?"></textarea>
+    <label for="projectStarting">What exists now, and what will I work on in class?</label>
+    <textarea id="projectStarting" data-save rows="2" placeholder="Current word count or scenes; one passage, scene, outline section, or blurb to work on."></textarea>
+    <label for="projectFinish">My Christmas novella draft target: November 4</label>
+    <textarea id="projectFinish" data-save rows="2" placeholder="Intended novella length, words already drafted, and words/scenes still needed by November 4. If the draft is complete, name your revision goal."></textarea>
+    <div class="form-row">
+      <div><label for="projectPace">My realistic weekly capacity</label><textarea id="projectPace" data-save rows="3" placeholder="Class writing time + number and length of outside work blocks; words, scenes, revision tasks, or minutes."></textarea></div>
+      <div><label for="projectCut">If life gets busy, I will narrow this to...</label><textarea id="projectCut" data-save rows="3" placeholder="Reduce subplots or scene count; simplify the novella premise; ask Jessica for a completion plan if the remaining draft does not fit."></textarea></div>
+    </div>
+    <label for="projectRelease">My release date (my choice; leave blank until ready to plan)</label>
+    <input type="date" id="projectRelease" data-save>
+    <label for="projectProduction">Work to allow for between draft and release</label>
+    <textarea id="projectProduction" data-save rows="2" placeholder="Revision, editing, proofreading, formatting, cover, and platform review; realistic time for each before my chosen release date."></textarea>
+    <div class="do"><span class="lbl">Calibrate after the first sprint</span>Subtract words already drafted from the intended novella length, then divide the remaining words by the work blocks available through November 4. Example only: an 18,000-word remainder over 24 work blocks means about 750 words per block. Compare this with actual sprint output and leave room for interruptions. Five classes provide 225 protected work minutes; plan the outside work needed too. If the pace does not fit, simplify the novella and work out a realistic completion plan with Jessica. Revision goals can use scenes or specific fixes; word count may go down.</div>
+    <div class="ask"><span class="lbl">Facilitator prompt</span>&ldquo;What could you finish with the time you really have? What will you leave out? What should still sound unmistakably like you?&rdquo; If the drafting pace does not fit, help the writer narrow the novella or plan the remaining work. The release date remains their choice.</div>
   </div>
 
   <!-- PREFLIGHT -->
@@ -179,8 +261,14 @@
 
   <!-- RUN OF SHOW -->
   <div class="section" id="runofshow">
-    <h2>&#127908; Run of Show &mdash; 75 Minutes</h2>
-    <p class="helptext">Hit <strong>Start Session</strong> when you go live. The timer highlights the beat you should be in; check off beats as you finish them.</p>
+    <h2>&#127908; Run of Show &mdash; Select a Session</h2>
+    <div class="no-print">
+      <label for="sessionSelect">Teaching agenda</label>
+      <select id="sessionSelect" aria-describedby="sessionHelp"></select>
+      <p class="helptext" id="sessionHelp">The introduction and all five write-along classes run 1:00&ndash;2:30pm Eastern (90 minutes). Changing agendas resets the timer; each session keeps its own checkmarks. Print / Save as PDF includes all six agendas.</p>
+    </div>
+    <div id="sessionSummary" aria-live="polite"></div>
+    <p class="helptext no-print">Hit <strong>Start Session</strong> when you go live. The timer highlights the current beat; check off beats as you finish.</p>
     <div class="timerbox">
       <div class="elapsed" id="bigClock">00:00</div>
       <div class="cue" id="timerCue">Timer not running</div>
@@ -188,6 +276,48 @@
       <button class="btn btn-ghost" onclick="resetTimer()">Reset</button>
     </div>
     <div id="beats"></div>
+    <div id="printAgendas" class="print-only"></div>
+    <noscript><p>Enable JavaScript to view the detailed teaching agendas, use the timer, and save notes. The five-week overview and worksheets remain available above and below.</p></noscript>
+  </div>
+
+  <!-- COACHING -->
+  <div class="section" id="coaching">
+    <h2>Voluntary Screen-Sharing Coaching</h2>
+    <p><strong>Offer, do not require:</strong> &ldquo;Would you like to share one relevant window and one question? You can also read a short passage, paste an excerpt you are comfortable sharing in chat, describe the problem, or keep writing while I use my example.&rdquo; Participation, cameras, and word-count sharing are optional.</p>
+    <h3>Before a writer shares</h3>
+    <label class="check"><input type="checkbox" id="shareWindow" data-save><span class="ct"><b>Share only the relevant window</b><span class="sub">Close other tabs; hide notifications, passwords, private messages, client details, and unrelated manuscript material.</span></span></label>
+    <label class="check"><input type="checkbox" id="sharePassage" data-save><span class="ct"><b>Prepare a short passage and one question</b><span class="sub">Use readable zoom; choose material the writer is comfortable letting this group see. Jessica reads the relevant text aloud and describes on-screen edits.</span></span></label>
+    <label class="check"><input type="checkbox" id="shareRecording" data-save><span class="ct"><b>Explain recording before showing student work</b><span class="sub">Ask whether this passage may appear in the replay. If not, pause recording for coaching or use Jessica's example; check the recording before distribution.</span></span></label>
+    <h3>Three five-minute turns in the 15-minute coaching window</h3>
+    <ol>
+      <li><strong>1 minute:</strong> the writer states the intended effect and one obstacle.</li>
+      <li><strong>3 minutes:</strong> Jessica asks one diagnostic question, offers one or two possible moves, and demonstrates a small change with permission.</li>
+      <li><strong>1 minute:</strong> the writer chooses the move to try and names the next action. Keep their voice and choices intact.</li>
+    </ol>
+    <p>Invite volunteers at check-in. Prioritize people who have not had a turn, rotate across the five weeks, and limit each person to one turn per class. If more than three volunteer, keep an optional carry-over queue; do not promise everyone an individual turn each week. Others can keep writing. No volunteers? Use the prepared example. Park complex questions for the next relevant lesson.</p>
+    <label for="coachQueue">Optional coaching queue</label>
+    <textarea id="coachQueue" data-save rows="3" placeholder="Use initials or an alias, one question, preferred format, and last turn date. Avoid private student details or manuscript text."></textarea>
+    <div class="say"><span class="lbl">Useful coaching language</span>&ldquo;What do you want the reader to feel here? Which sentence is already doing that? Would you like to try one small change, then read it back?&rdquo; Ask permission before rewriting; the author decides what to keep.</div>
+    <p class="helptext">No AI account is required. If a writer chooses AI suggestions, use only material they are comfortable sharing with that tool; the author checks accuracy, fit, and voice and can reject any suggestion.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="section" id="progress">
+    <h2>Weekly Progress &amp; Next-Step Commitments</h2>
+    <p>At the start: &ldquo;What moved, what got in the way, and what will you work on today?&rdquo; At the end: &ldquo;I worked on __. I changed or wrote __. My next small step is __, during __.&rdquo; Writers may keep answers private or share in chat. Minutes worked and revision decisions count.</p>
+    <p class="helptext">Use this as a demonstration or Jessica's brief teaching log. Students keep their own copy. Notes stay in this browser, so keep a separate copy of anything you need; avoid confidential student material.</p>
+    <div id="progressFields"></div>
+    <label for="nextLesson">Jessica's adjustment for the next class</label>
+    <textarea id="nextLesson" data-save rows="2" placeholder="One pattern to teach, one question to revisit, and whether the next goal needs narrowing."></textarea>
+    <h3>When someone is stuck or behind</h3>
+    <ul>
+      <li><strong>Blank-page start (5 minutes):</strong> write &ldquo;My character wants __, but __, so they choose __.&rdquo; Draft only the next exchange; use a placeholder for research.</li>
+      <li><strong>Middle-of-story reset (5 minutes):</strong> list three possible consequences of the last choice; pick one and write its first paragraph.</li>
+      <li><strong>Revision alternative (10 minutes):</strong> read one paragraph aloud, mark where the meaning or emotion blurs, and revise that passage. Keep a copy of the original.</li>
+      <li><strong>Low-energy option:</strong> outline three scene beats, dictate a paragraph in an already available tool, or work for five minutes and reassess. No new software is needed.</li>
+      <li><strong>Missed class:</strong> read the session's outcome, do one 20-minute work block, and bring one question next time. Use a class recording if Jessica has made one available; only the October 8 replay is currently promised on signup.</li>
+    </ul>
+    <div class="do"><span class="lbl">Emergency interruption plan</span>If a technical problem leaves only 60 minutes: 5 minutes check-in, 5 minutes teaching, 20 minutes writing, 10 minutes coaching (two volunteers), 15 minutes applying the feedback, 5 minutes commitments. The scheduled class remains 90 minutes; use this only for an unexpected interruption, keeping the outcome small and protecting both work blocks.</div>
   </div>
 
   <!-- CHAT PROMPTS -->
@@ -195,29 +325,30 @@
     <h2>&#128172; Chat Engagement Prompts</h2>
     <p class="helptext">Drop one in whenever energy dips. Copy-paste ready.</p>
     <ul>
-      <li>&ldquo;Type &#127875;, &#127810;, or &#127876; for the wave you're most excited about!&rdquo;</li>
-      <li>&ldquo;What's the coziest holiday book you read LAST year? Drop the title &mdash; that's market research.&rdquo;</li>
-      <li>&ldquo;Scale of 1&ndash;10: how done is your Q4 draft right now? No judgment, this room is a judgment-free pumpkin patch.&rdquo;</li>
-      <li>&ldquo;Drop your wrapper + trope stack in the chat and I'll react to a few live.&rdquo;</li>
-      <li>&ldquo;Who's team ONE great book and who's team FULL Q4 RUN? Defend yourself. &#128517;&rdquo;</li>
-      <li>&ldquo;If you had to release a Christmas book November 10, what's today's date minus 8 weeks? Look at your calendar. Feel that? That's why we're here in July.&rdquo;</li>
+      <li>&ldquo;Are you starting, continuing, or revising your Christmas novella? One novella is our focus.&rdquo;</li>
+      <li>&ldquo;What does the holiday make your character do that they would otherwise avoid?&rdquo;</li>
+      <li>&ldquo;Name one small thing you can finish in this writing block.&rdquo;</li>
+      <li>&ldquo;Would a screen share, a read-aloud, or a general example help? Passing is fine.&rdquo;</li>
+      <li>&ldquo;What changed on the page today? Words, decisions, and cuts all count.&rdquo;</li>
+      <li>&ldquo;What is your next step, and when does it fit in your actual week?&rdquo;</li>
     </ul>
   </div>
 
   <!-- QA -->
   <div class="section" id="qa">
     <h2>&#10067; Q&amp;A Cheat Sheet</h2>
-    <div class="qa"><p class="q">&ldquo;Is it too late to write a Christmas book?&rdquo;</p><p class="a">No &mdash; it's July. A 25&ndash;30k novella drafted in August, edited in September, released November 1&ndash;10 is comfortably on schedule. It's too late in <em>October</em>. That's the whole point of tonight.</p></div>
-    <div class="qa"><p class="q">&ldquo;Do holiday books die after the holiday?&rdquo;</p><p class="a">They hibernate, they don't die. They come back every single year with zero extra work &mdash; a holiday book is an annuity. Plus KU readers binge them all season.</p></div>
-    <div class="qa"><p class="q">&ldquo;Can I just put a wreath on the cover of a regular book?&rdquo;</p><p class="a">Readers can smell it. The wrapper has to do plot work &mdash; if you can delete the holiday and the story survives, seasonal readers will one-star the costume.</p></div>
-    <div class="qa"><p class="q">&ldquo;Which wave sells best?&rdquo;</p><p class="a">Christmas, by a mile &mdash; but it's also the most crowded. Spooky and cozy autumn have thinner shelves, so a well-positioned book stands out faster. Best answer: the wave that fits your existing catalog and voice.</p></div>
-    <div class="qa"><p class="q">&ldquo;What if I miss my window?&rdquo;</p><p class="a">Decide on purpose: either compress scope (novella, not novel) or slide to next year and be the first preorder of NEXT season. The only wrong move is releasing December 23rd to silence.</p></div>
-    <div class="qa"><p class="q">&ldquo;Do I need all three books?&rdquo;</p><p class="a">Absolutely not. One well-marketed holiday release with a real runway beats three rushed ones. The 3-book run is for authors with a novella pipeline already humming.</p></div>
+    <div class="qa"><p class="q">&ldquo;Is October too late to start?&rdquo;</p><p class="a">We are working toward a Christmas novella draft by November 4. Start with the material you have, scope the novella to your available time, and check your pace after a sprint. Each author chooses a release date that allows for editing, proofreading, formatting, and the remaining production work.</p></div>
+    <div class="qa"><p class="q">&ldquo;What is the draft target?&rdquo;</p><p class="a">November 4, including our final class. Aim for a complete Christmas novella draft; early finishers can revise. If you are behind, bring the draft you have and a clear list of remaining scenes so Jessica can help you make a completion plan. Your release date is your own choice.</p></div>
+    <div class="qa"><p class="q">&ldquo;Do I need all three seasonal books?&rdquo;</p><p class="a">No. These five weeks focus on one Christmas novella. Keep additional seasonal projects for another plan.</p></div>
+    <div class="qa"><p class="q">&ldquo;Can I just put a wreath on a regular book?&rdquo;</p><p class="a">Look for a real story connection: a holiday deadline, tradition, obligation, or weather event that changes a choice. Try removing the season and ask what would need to change in the plot.</p></div>
+    <div class="qa"><p class="q">&ldquo;Do we all release on the same date?&rdquo;</p><p class="a">No. Each author chooses their own release date after allowing time for revision, editing, proofreading, formatting, cover work, and platform review. The shared course target is a Christmas novella draft by November 4; there is no shared upload deadline.</p></div>
+    <div class="qa"><p class="q">&ldquo;What if I cannot share my screen or use the toolkit?&rdquo;</p><p class="a">Use a document or paper for every writing task. You can describe the issue, read aloud, share a short excerpt voluntarily, or work privately while Jessica demonstrates. Follow the published access terms for the premium interactive toolkit.</p></div>
+    <div class="qa"><p class="q">&ldquo;Who gets the replay?&rdquo;</p><p class="a">Everyone who signs up gets the full October 8 replay, as promised. Premium members also get the interactive toolkit. Do not announce additional recording or access promises for the five write-along classes until Jessica confirms them.</p></div>
   </div>
 
   <!-- AFTER -->
   <div class="section" id="after">
-    <h2>&#127873; After-Show &amp; Premium Delivery</h2>
+    <h2>&#127873; After Each Session &amp; Replay Delivery</h2>
     <div class="progress"><div class="bar" id="postBar"></div></div>
     <div class="progress-label" id="postLabel"></div>
     <div id="postList"></div>
@@ -225,8 +356,9 @@
 
   <!-- LINKS -->
   <div class="section" id="links">
-    <h2>&#128279; Everything You'll Share</h2>
-    <h3>Student-facing pages</h3>
+    <h2>&#128279; Instructor Reference Links</h2>
+    <p class="helptext">Open these links for instructor preparation. Share student resources through the approved workshop or Skool access route; the repository README directs the workshop library to Skool. Keep the published premium toolkit access terms.</p>
+    <h3>Workshop resources</h3>
     <a class="linkbtn" href="signup.html" target="_blank" rel="noopener">Sign-up Page</a>
     <a class="linkbtn" href="holiday-trope-workbook.html" target="_blank" rel="noopener">Holiday Trope Workbook</a>
     <a class="linkbtn" href="q4-marketing-planner.html" target="_blank" rel="noopener">Q4 Marketing Planner</a>
@@ -244,7 +376,7 @@
 
   <div class="print-wrap">
     <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
-    <div class="savebar">Checkboxes, dates &amp; timer state autosave in this browser. <a onclick="clearAll()">Reset everything</a></div>
+    <div class="savebar">Notes, per-session checkmarks, dates &amp; timer state autosave in this browser. <button type="button" class="reset-link" onclick="clearAll()">Reset everything</button></div>
   </div>
 
 </div>
@@ -255,208 +387,341 @@
 
 <script>
 var PRE = [
-  ["Announce + pin the workshop post in the community", "Include the signup link and 'everyone welcome live, premium gets replay + tools'."],
-  ["Send the date announcement email to the workshop signups", "🎓 Workshop Newsletter Hub (Desktop shortcut) → the 📅 date-announcement draft is canned and waiting."],
-  ["Click-test all three student links in an incognito window", "Signup form, trope workbook, marketing planner — submit a test signup."],
-  ["Click every button in the Links section below", "Two of these used to 404 (the retired tip-tools site). Thirty seconds now beats a dead link on screen."],
-  ["Do one full dry run of the workbook → planner handoff", "Build a stack, then open the planner and hit Import. Do it in the browser you'll teach from, so the demo data is already there."],
-  ["Confirm your test signup arrived in your inbox", "Look for the [Q4 WORKSHOP] subject tag at coach@theinvisiblepen.com."],
-  ["Prep your own example book for the live play", "Pick a real (or realistic) premise so the demo has stakes."],
-  ["Set up replay recording", "Hit record BEFORE the welcome — premium replay depends on it."],
-  ["Screen-share dry run", "Workbook + planner open in separate tabs, font zoomed to 125%."],
-  ["Water, notes, do-not-disturb on", "You know the drill."]
+  ["Check the session date, duration, and teaching goal", "Introduction: Oct 8, 1-2:30pm Eastern. Five classes: Oct 9, 14, 21, 28 and Nov 4, all 1-2:30pm Eastern (90 minutes)."],
+  ["Check the joining instructions and published commitments", "Use the approved workshop/community channel. Explain the Christmas novella focus, November 4 draft target, and author-chosen release dates with time for editing, proofreading, and formatting."],
+  ["Open the student resources with the appropriate access", "Check signup, trope workbook, and planner. Keep a plain-document or paper version ready; do not require a paid tool for writing."],
+  ["Click-test the reference links", "Open the pages you will demonstrate. If a tool fails, use your prepared example and handwritten planning steps."],
+  ["Rehearse the workbook-to-planner handoff", "Check the actual import behavior. Treat calculated dates as planning suggestions; never turn a past milestone into a new promise."],
+  ["Check that participants have the joining information", "For Oct 8, everyone who signs up is promised the join link and full replay. Keep toolkit access consistent with signup."],
+  ["Prepare one short example and one revision alternative", "Use your own or a clearly fictional passage. Open a blank writing document and a timer; no student must use AI."],
+  ["Prepare recording and student-work permissions", "Record the Oct 8 teaching for everyone's replay. Explain whether this class is recorded before student sharing; pause or use your own example if consent is absent."],
+  ["Prepare readable screen sharing and the coaching queue", "Share one window, hide notifications and private details, use readable zoom, and invite up to three volunteers. Have a read-aloud/chat alternative."],
+  ["Protect writing time and the break", "Water, notes, do-not-disturb on. Park long discussions so both quiet work blocks happen."]
 ];
 
 var POST = [
-  ["Stop recording + upload the replay to the premium space", "Same-day if possible — momentum is the product."],
-  ["Post the replay + toolkit links for premium members", "Trope Workbook + Q4 Planner links, framed as 'yours to reuse every year'."],
-  ["Email the workshop group: thank-you + replay info", "🎓 Workshop Newsletter Hub → the 💛 thank-you draft. Everyone gets the replay; premium framing for the tools."],
-  ["Paste the replay link into the Workshop Hub + workshops page", "Hub Home tab → replay field (fills the 🎬 draft), and tell Claude — the student workshops page flips itself to 'Replay available'."],
-  ["Follow up with 'Not sure yet' signups", "Workshop Hub → Send → audience '🤔 Not sure yet' → the canned nudge draft."],
-  ["Post an accountability thread: 'Drop your Q4 lineup'", "Turns the workshop into an ongoing community thread through December."],
-  ["Note what to improve for the next workshop", "While it's fresh — two sentences is enough."]
+  ["Stop and review any recording before sharing", "For Oct 8, prepare the full replay for everyone who signed up. Check student-work permissions; exclude any material shown without permission."],
+  ["Deliver the promised replay and approved resource links", "October 8 replay: all signups. Interactive toolkit: premium members, as published. Confirm the delivery route and access; do not promise next-day delivery unless ready."],
+  ["Prepare the recap and one manageable next step", "Name the next class date, the chosen work block, and the question to bring. Use minutes or revision tasks as alternatives to word counts."],
+  ["Update the Workshop Hub/replay location if applicable", "Verify the actual link and recipient access. Additional class recordings depend on Jessica's confirmed plan; do not assume an automatic page update."],
+  ["Check the carry-over coaching queue", "Prioritize unserved volunteers next time. Note the topic briefly without storing private manuscript material."],
+  ["Offer the daily progress thread", "Invite words, revised scenes, minutes, or one decision. Sharing is optional; celebrate workable adjustments as well as finished pages."],
+  ["Record one teaching adjustment", "What moved on the page? What needs a shorter explanation, different example, or smaller next milestone?"]
 ];
 
-var BEATS = [
-  { at: 0, dur: 5, title: "Welcome & the Q4 Promise",
-    say: "It is July. Somewhere out there an author is going to start her Christmas book on November 1st and wonder why nobody bought it. That will not be you. By the end of tonight you'll know exactly what you're releasing this fall, what goes on the cover, and what you're doing every week until launch.",
-    doo: "Welcome people by name as they arrive. State the one-sentence promise. Mention: everyone gets the live session; premium members get the replay plus the two interactive tools to keep.",
-    ask: "Type 🎃, 🍂, or 🎄 for the wave you're most drawn to right now." },
-  { at: 5, dur: 10, title: "The Q4 Map — Three Waves & Buy Windows",
-    say: "Holiday readers are the most punctual buyers in publishing. Spooky readers show up September 1st and vanish November 1st. Christmas readers start shopping October 1st — yes, October — and buy through December 20th. The window is the strategy. Everything else is details.",
-    doo: "Walk the three waves: Spooky (buy Sept 1–Oct 31, release by Oct 1), Cozy Autumn (Sept 15–Nov 25, release by Oct 20), Christmas (Oct 1–Dec 20, release by Nov 15, sweet spot Nov 1–10). Then work one backward on screen: Nov 10 release means draft done Sept 15 — which means August is a writing month.",
-    ask: "Look at your actual calendar. Which of these windows can your writing pace really hit? Be honest in the chat." },
-  { at: 15, dur: 10, title: "Anatomy of a Holiday Book — Wrapper + Stack",
-    say: "A holiday book is a normal trope stack wearing a seasonal costume. The wrapper — snowed in, haunted inn, pumpkin patch — puts you on the seasonal shelf. The core tropes underneath — grumpy/sunshine, second chance — are why the reader stays. Wreath-on-the-cover books fail because the costume has no body inside.",
-    doo: "Show 2–3 real bestseller examples from this year's holiday charts and name their wrapper + stack out loud. The formula clicks fastest through examples. Then set up the Costume Test they're about to run in the workbook: if you can delete the holiday and the story survives, it's a costume.",
-    ask: "Name a holiday romance you loved — what was its wrapper, and what was the real trope underneath?" },
-  { at: 25, dur: 15, title: "LIVE PLAY — Build a Stack + Run the Costume Test",
-    say: "Open the Holiday Trope Workbook — link's in the chat. We're building one together right now, then you build yours.",
-    doo: "Share your screen. Build YOUR example book: title it, pick the wave, one wrapper, up to three core tropes. Read the generated positioning line and the 7 KDP keyword slots out loud — that's the moment the room gets quiet. Then run the Costume Test live and let it score you; answer the 'what does the season MAKE happen' box on screen. Give everyone 5 quiet minutes to build their own while you react to stacks in chat.",
-    ask: "Drop your wrapper + stack in the chat — and tell me your Costume Test score out of 5." },
-  { at: 40, dur: 15, title: "LIVE PLAY — Backward-Plan a Launch",
-    say: "A release date isn't a plan — it's a deadline with a costume on. Watch what happens when I give this book a real date.",
-    doo: "Open the Q4 Marketing Planner and hit 'Import into my plan' — it picks the book straight up from the workbook. Set the book length and a release date, then walk the timeline out loud, especially draft-done. Point at the words-per-day pace meter: that's the honesty machine. Show a Christmas book set to Dec 28 (past the window) and one set to a novel length on a short runway (pace goes red). Then have everyone enter their own book and date, tick their channels, and download the .ics.",
-    ask: "What's YOUR words-per-day number? Post it. That number is the whole workshop." },
-  { at: 55, dur: 10, title: "Pick Your Plan — 1, 2, or 3 Books",
-    say: "You do not need three books. You need the right number for your pace. One great holiday book with a real runway beats three rushed ones — and a holiday book comes back every year like an annuity.",
-    doo: "Lay out the three commitment levels: 1 book (pick your best-fit wave), 2 books (usually Autumn + Christmas), full run (for authors with a novella pipeline). Have each person post their commitment in the chat — public commitment is the retention hook.",
-    ask: "Type your commitment: ONE, TWO, or FULL RUN — and which waves." },
-  { at: 65, dur: 10, title: "Q&A + Replay & Tools",
-    say: "Questions — anything Q4. And before you go: premium members, the replay of tonight plus both interactive tools land in the premium space tomorrow. They're yours to reuse every single year — this workshop is an annuity too.",
-    doo: "Work the Q&A cheat sheet below for the common ones. Close with the accountability thread announcement: 'Drop your Q4 lineup' thread opens tonight.",
-    ask: "What's the ONE thing that could stop your Q4 plan? Let's solve a few live." }
+function classBeats(spec) {
+  return [
+    { at:0, dur:10, title:"Check in & choose today's small goal", say:spec.open,
+      doo:"Ask for a brief progress check; private notes count. Invite volunteers for the later coaching queue. Each writer opens the exact passage or blank page they will work on.", ask:spec.check },
+    { at:10, dur:10, title:spec.lesson, say:spec.teach, doo:spec.demo, ask:spec.question },
+    { at:20, dur:25, title:"Protected writing / revision block 1", say:"Choose one small outcome. We are working quietly for 25 minutes; rough words and thoughtful revisions both count.",
+      doo:spec.work1+" Keep instruction and screen coaching out of this block. Give a two-minute warning; allow a stretch or low-energy alternative as needed.", ask:"Write your target privately before starting. What will you put on the page?" },
+    { at:45, dur:5, title:"Break", say:"Save your work, look away from the screen, and take five minutes.",
+      doo:"Pause teaching and sharing. Put the return time in chat. Leave the coaching queue ready for your return.", ask:"No response needed; take your break." },
+    { at:50, dur:15, title:"Optional screen-sharing coaching with Jessica", say:"Who would like help with one specific question? Sharing is voluntary. You can read aloud, describe it, or keep writing.",
+      doo:"Use up to three five-minute turns: 1 minute for the writer's goal, 3 for coaching, 1 for their chosen next step. Check sharing/recording permission. Prioritize unserved volunteers. "+spec.coach,
+      ask:spec.coachQuestion },
+    { at:65, dur:20, title:"Protected writing / revision block 2", say:"Try the move you chose, or keep working on your own passage. Make one useful change before we close.",
+      doo:spec.work2+" Keep the room quiet; other questions go in the parking lot. Writers save a copy before a substantial rewrite.", ask:"Which change serves your story and still sounds like you?" },
+    { at:85, dur:5, title:"Save, record progress & commit", say:"Notice what changed today. Pick one next step that fits your actual week.",
+      doo:"Ask writers to save their work and record words, minutes, scenes, or a revision decision. Confirm the deliverable and between-class work below. Invite private or chat commitments; do not require a public word count.", ask:"I worked on __. My next small step is __, during __. What help would make that possible?" }
+  ];
+}
+
+var SESSIONS = [
+  {
+    id:"intro", date:"2026-10-08", label:"Introduction - Thu Oct 8, 1:00-2:30pm Eastern", duration:90,
+    goal:"Choose a feasible Christmas novella, understand its seasonal hook, and prepare for the five-week write-along toward a November 4 draft.",
+    deliverable:"A Christmas novella choice, a holiday hook/trope stack, and a scope-and-timing note. A plain document or notebook works.",
+    between:"Before tomorrow's kickoff: bring the idea or current draft and identify one passage to work on. No overnight manuscript assignment.",
+    beats:[
+      {at:0,dur:10,title:"Welcome, October context & expectations",say:"It is October, and we will plan from where your project is today. Choose something you can move forward without rushing the work that makes it ready for readers.",doo:"State the promise, the separate Oct 8 introduction, and the five class dates. Explain that everyone who signs up gets the Oct 8 replay; premium members also get the toolkit. State the confirmed 90-minute class length, November 4 draft target, and individual author-chosen release dates.",ask:"What do you have now: an idea, a partial draft, a finished draft, or an existing book?"},
+      {at:10,dur:10,title:"Choose your Christmas novella",say:"One Christmas novella is our goal. Choose a new idea, a partial draft to continue, or a completed draft to revise.",doo:"Use the project-choice worksheet to choose the premise, audience, tone, Christmas hook, and intended novella length. Compare remaining words with work time through November 4. Keep other seasonal projects for later.",ask:"Which choice fits your available time and the reader you want to reach?"},
+      {at:20,dur:10,title:"Seasonal hook + core tropes",say:"The holiday should change a choice, a problem, or a deadline in the story. The relationship and your voice still carry the book.",doo:"Use a clearly fictional example: snow closes a bookshop just as two rivals must finish a community gift drive. Identify the seasonal pressure and core tropes. Run the Costume Test: what changes if the holiday disappears?",ask:"What does the season make your character do?"},
+      {at:30,dur:15,title:"Build a stack, then write the premise",say:"Watch one short example, then build your own version in the workbook or your notes.",doo:"Demonstrate for five minutes; protect ten minutes for writers to choose a hook and up to three tropes, then write a premise paragraph. Toolkit users can follow along; everyone can use the same prompts in a document.",ask:"What is the character's want, what gets in the way, and why does it have to happen now?"},
+      {at:45,dur:5,title:"Break",say:"Save your notes and take five minutes.",doo:"Stop teaching; post the return time.",ask:"No response needed."},
+      {at:50,dur:15,title:"Work backward from readiness",say:"A proposed release date must allow the work your book still needs. A planner cannot decide that for you.",doo:"Demonstrate one project in the Q4 Marketing Planner, including draft status, editing, cover, formatting, proofreading, and release preparation. Verify import before relying on it. If suggested dates are already past, reduce scope or choose a later release. Compare with a plain written task list. Do not create calendar events or invitations.",ask:"What work has to happen after the draft, and where will that time come from?"},
+      {at:65,dur:15,title:"Scope check & voluntary coaching preview",say:"Let's find a goal you can actually keep. Bring one question, not your whole book.",doo:"Use the project worksheet and the coaching protocol below. Offer up to three voluntary five-minute turns, with a read-aloud or general-example alternative. Check the November 4 novella draft plan. Explain that each author chooses a release date after allowing for editing, proofreading, formatting, and other production work.",ask:"What would you need to leave out or move later for this plan to fit?"},
+      {at:80,dur:10,title:"Questions, replay & tomorrow's kickoff",say:"Tomorrow we start working on the page together. Bring your project and one small place to begin. Everyone who signed up will receive this introduction's replay.",doo:"Use the Q&A notes. Confirm Oct 9, 1-2:30pm Eastern, and the remaining 90-minute class dates. Do not invent replay promises for later classes. Close with a private or shared next-step commitment.",ask:"What will you open first tomorrow?"}
+    ]
+  },
+  {
+    id:"week1", date:"2026-10-09", label:"Week 1 - Fri Oct 9, 1:00-2:30pm Eastern", duration:90,
+    goal:"Choose a Christmas novella and a realistic plan for the November 4 draft target, then begin actual drafting or revision.",
+    deliverable:"Completed Christmas novella brief, personal drafting plan through November 4, and a new or revised scene segment. The sprint supplies evidence for the goal; there is no class word quota.",
+    between:"By Oct 14 (five days): try two manageable 20-minute work blocks or a smaller agreed alternative. Note actual output; bring one passage or question.",
+    beats:classBeats({
+      open:"Today we choose what you are doing and start. You do not need to arrive with a perfect plan.",
+      check:"What exists already, and what would count as a useful change today?",
+      lesson:"Choose the project, scope & starting passage",
+      teach:"Your Christmas novella plan should fit your life. Choose the premise and scope, count the words or scenes still needed, and plan the work blocks through November 4.",
+      demo:"Give a two-minute model of the project worksheet, then eight minutes for writers to choose their Christmas novella track, audience, scope, and personal work goals toward a November 4 draft. Name one task for today's first block. Returning writers can revise their earlier choice.",
+      question:"What can you finish with the time you really have, and what can wait?",
+      work1:"Draft the opening interaction or revise one existing passage for a clearer character want. Start writing promptly; if stuck, use the five-minute want/obstacle/choice exercise, then draft the next exchange.",
+      coach:"Help narrow an oversized plan or locate a workable starting point. Use Jessica's prepared example if nobody volunteers.",
+      coachQuestion:"Show or describe the one place you want help starting. What are you trying to make happen?",
+      work2:"Continue the scene or apply one chosen revision. After the block, use actual words, minutes, or completed revision work to set a modest personal goal."
+    })
+  },
+  {
+    id:"week2", date:"2026-10-14", label:"Week 2 - Wed Oct 14, 1:00-2:30pm Eastern", duration:90,
+    goal:"Build a scene in which the season changes the pressure, choice, or consequence.",
+    deliverable:"One drafted or revised scene, or a substantial scene segment, with a clear want, obstacle, and turn; a revised personal pace estimate.",
+    between:"By Oct 21: repeat the work blocks that proved feasible. Draft the next connected scene or repair one chosen issue; bring the transition or question that feels weakest.",
+    beats:classBeats({
+      open:"What did the first five days teach you about your time? We can adjust the plan using what actually happened.",
+      check:"What moved on the page, and what is the next useful scene?",
+      lesson:"Make the seasonal pressure do story work",
+      teach:"A scene changes something. Give the character a want, put something in the way, and let their choice create the next problem.",
+      demo:"Show a short before/after in Jessica's example: decorating becomes a difficult conversation because the gift-drive deadline forces the rivals to stay. Name the want, obstacle, and turn. Allow two minutes for writers to choose their own scene turn.",
+      question:"If the holiday disappeared, what choice or obstacle would change?",
+      work1:"Draft the next scene toward one meaningful turn. Revision track: strengthen the motivation or seasonal pressure in an existing scene; avoid adding decorations without story purpose.",
+      coach:"Diagnose one unclear choice or flat scene turn. Ask what the writer intends before suggesting a change.",
+      coachQuestion:"Where does the scene change, and what does your character choose?",
+      work2:"Apply one useful insight or continue drafting. Read the final paragraph and note what it makes the reader expect next."
+    })
+  },
+  {
+    id:"week3", date:"2026-10-21", label:"Week 3 - Wed Oct 21, 1:00-2:30pm Eastern", duration:90,
+    goal:"Repair a story connection or revision bottleneck and check whether the remaining scope still fits.",
+    deliverable:"A new or revised connection between scenes, progress on the chosen passage, and a short remaining-work list ordered by importance.",
+    between:"By Oct 28: address the highest-priority gap using the agreed work blocks. Simplify the novella if needed; bring the ending plan or one scene that needs review.",
+    beats:classBeats({
+      open:"This is a midpoint check, not a verdict. We will use the time left for the work that matters most.",
+      check:"What is now clearer, and which obstacle is costing you the most time?",
+      lesson:"Connect choices to consequences",
+      teach:"When the middle stalls, look at the last choice. What consequence makes the next scene necessary?",
+      demo:"Map three beats from the example: because this happened, the character chooses this, so the next problem follows. Give writers a few minutes to name a missing link and reduce their remaining-work list to three priorities.",
+      question:"Are these scenes connected by a consequence, or do they only happen one after another?",
+      work1:"Write the missing consequence or transition. Revision track: fix one repeated scene purpose, motivation gap, or continuity problem instead of polishing every sentence.",
+      coach:"Offer one diagnostic question about the missing link. If scope is the obstacle, help narrow the novella and plan the work remaining through Nov 4 without automatically doubling homework.",
+      coachQuestion:"What is the reader missing between these two moments?",
+      work2:"Apply the chosen fix or draft the next connected beat. Mark unresolved questions briefly and keep moving; finish with a realistic remaining-work list."
+    })
+  },
+  {
+    id:"week4", date:"2026-10-28", label:"Week 4 - Wed Oct 28, 1:00-2:30pm Eastern", duration:90,
+    goal:"Move toward a complete Christmas novella draft by November 4; early finishers complete a focused revision pass.",
+    deliverable:"An ending or priority scene moved forward, a short revision checklist, and a clear plan to finish the draft by Nov 4. Early finishers can prepare a full-draft review.",
+    between:"By Nov 4: aim to complete the Christmas novella draft, read a selected passage aloud, and list the next editing/production tasks. Bring any unfinished scenes and a specific completion question if the draft still needs work.",
+    beats:classBeats({
+      open:"There is one more class after today. Choose the scenes needed to complete your Christmas novella draft. If your draft is already complete, choose one revision priority.",
+      check:"What can you realistically bring to our November 4 review?",
+      lesson:"Pay off the promise & choose a revision priority",
+      teach:"An ending answers the story's central promise. A revision pass works best when you know which problem you are solving.",
+      demo:"Connect the example's final choice to its opening want. Show a three-item checklist: character motivation, cause-and-effect, and emotional/seasonal payoff. Distinguish structural revision from sentence polish.",
+      question:"What must the reader understand or feel by the end of this piece?",
+      work1:"Draft the ending or a scene needed to reach it. Revision track: work on the highest-priority structural or emotional issue in a chosen passage.",
+      coach:"Review one payoff, unclear motivation, or revision priority. Remind early finishers that drafting, editing, and release readiness are separate milestones.",
+      coachQuestion:"What promise does this passage pay off, and what is still missing?",
+      work2:"Continue the ending or apply the chosen revision. Leave a short checklist for the remaining work instead of trying to solve every issue today."
+    })
+  },
+  {
+    id:"week5", date:"2026-11-04", label:"Week 5 - Wed Nov 4, 1:00-2:30pm Eastern", duration:90,
+    goal:"Review the Christmas novella draft, use the final writing blocks to finish or revise a passage, and plan editing and an individual release date.",
+    deliverable:"The target is a complete Christmas novella draft, a stronger passage, and a dated editing and release plan. Writers with remaining scenes leave with a specific completion plan and an achievable next work block.",
+    between:"After the course: each author chooses their own release date. Plan remaining revision, editing, proofreading, cover, formatting, and platform review first. There is no shared upload or release deadline; leave enough time for the work your novella needs.",
+    beats:classBeats({
+      open:"Look at what you brought on October 9 and what exists now. Today we improve the most useful part and decide what comes next.",
+      check:"Is your novella draft complete, and which final scene or revision would help most today?",
+      lesson:"Read for clarity, then check readiness",
+      teach:"Readiness is a list of work completed and work still needed. A date alone cannot tell you whether a book is ready.",
+      demo:"Read a short example aloud, identify one unclear moment, and revise it. Then model a next-step list with a task, date, and definition of done; include production tasks only where appropriate to the writer's stage.",
+      question:"What needs your attention first: finishing, revising, or preparing an already-ready manuscript?",
+      work1:"Revise a chosen passage for clarity, motivation, or voice; writers still drafting work on scenes needed to finish the novella. Work on the actual manuscript, not just the plan.",
+      coach:"Help with one passage or readiness question. Check the writer's intended effect and remaining tasks; help the author choose their own release date with time for editing and production; do not guarantee a sales outcome.",
+      coachQuestion:"What one change would help this piece, and what evidence tells you the next step is ready?",
+      work2:"Apply the chosen change and save the revised work. Use this block for the manuscript; name the next task, realistic date, and definition of done during the five-minute closing commitment."
+    })
+  }
 ];
 
-var state = { sDate:"", sTime:"", sWhere:"", pre:[], post:[], beatsDone:[], startedAt:null };
+var state = { schemaVersion:2, session:"intro", sDate:"2026-10-08", sTime:"13:00", sWhere:"", sessions:{}, notes:{}, startedAt:null };
 var KEY = "tip-q4-instructor";
 var tick = null;
+var BEATS = [];
 
+function currentSession() { return SESSIONS.find(function(s){ return s.id === state.session; }) || SESSIONS[0]; }
+function checks() {
+  if (!state.sessions[state.session]) state.sessions[state.session] = { pre:[], post:[], beatsDone:[] };
+  return state.sessions[state.session];
+}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
 function saveAll() {
-  state.sDate = document.getElementById('sDate').value;
-  state.sTime = document.getElementById('sTime').value;
-  state.sWhere = document.getElementById('sWhere').value;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+  ['sDate','sTime','sWhere'].forEach(function(id){ state[id] = document.getElementById(id).value; });
+  document.querySelectorAll('[data-save]').forEach(function(el){ state.notes[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
+  persist();
 }
 function loadAll() {
   try {
     var raw = localStorage.getItem(KEY);
-    if (raw) { var s = JSON.parse(raw); if (s) state = Object.assign(state, s); }
+    var saved = raw ? JSON.parse(raw) : null;
+    if (saved && saved.schemaVersion === 2) state = Object.assign(state, saved);
+    else if (saved) {
+      // Keep old notes/checkmarks for recovery; old beat indices do not map to the new agendas.
+      state.legacyWorkshop = saved;
+      ['sDate','sTime','sWhere'].forEach(function(id){ if (saved[id]) state[id] = saved[id]; });
+    }
   } catch(e) {}
-  document.getElementById('sDate').value = state.sDate || "";
-  document.getElementById('sTime').value = state.sTime || "";
-  document.getElementById('sWhere').value = state.sWhere || "";
+  state.sessions = state.sessions || {};
+  state.notes = state.notes || {};
+  state.session = currentSession().id;
+  ['sDate','sTime','sWhere'].forEach(function(id){ document.getElementById(id).value = state[id] || ''; });
+  document.querySelectorAll('[data-save]').forEach(function(el){
+    if (el.type === 'checkbox') el.checked = !!state.notes[el.id];
+    else el.value = state.notes[el.id] || '';
+  });
 }
 function clearAll() {
-  if (!confirm("Reset all checkboxes, session info, and the timer?")) return;
+  if (!confirm("Reset all saved notes, checkboxes, session info, and the timer in this browser?")) return;
   try { localStorage.removeItem(KEY); } catch(e) {}
   location.reload();
 }
 
-function renderChecklist(items, doneArr, listId, barId, labelId, arrName) {
+function renderChecklist(items, doneArr, listId, barId, labelId) {
   var wrap = document.getElementById(listId);
-  wrap.innerHTML = "";
-  items.forEach(function(it, i){
+  wrap.innerHTML = '';
+  items.forEach(function(it,i){
+    var label = document.createElement('label');
     var done = doneArr.indexOf(i) >= 0;
-    var div = document.createElement('div');
-    div.className = "check" + (done ? " done" : "");
-    div.innerHTML = '<input type="checkbox"' + (done ? ' checked' : '') + '><div class="ct"><b>' + it[0] + '</b><span class="sub">' + it[1] + '</span></div>';
-    div.onclick = function(e){
-      e.preventDefault();
+    label.className = 'check' + (done ? ' done' : '');
+    label.innerHTML = '<input type="checkbox"' + (done ? ' checked' : '') + '><span class="ct"><b>' + it[0] + '</b><span class="sub">' + it[1] + '</span></span>';
+    label.querySelector('input').addEventListener('change',function(event){
       var idx = doneArr.indexOf(i);
-      if (idx >= 0) doneArr.splice(idx,1); else doneArr.push(i);
+      if (event.target.checked && idx < 0) doneArr.push(i);
+      if (!event.target.checked && idx >= 0) doneArr.splice(idx,1);
+      label.classList.toggle('done',event.target.checked);
       saveAll();
-      renderChecklist(items, doneArr, listId, barId, labelId, arrName);
-    };
-    wrap.appendChild(div);
+      updateProgress();
+    });
+    wrap.appendChild(label);
   });
-  var pct = Math.round(100 * doneArr.length / items.length);
-  document.getElementById(barId).style.width = pct + "%";
-  document.getElementById(labelId).textContent = doneArr.length + " of " + items.length + " done";
+  function updateProgress() {
+    document.getElementById(barId).style.width = Math.round(100*doneArr.length/items.length) + '%';
+    document.getElementById(labelId).textContent = doneArr.length + ' of ' + items.length + ' done';
+  }
+  updateProgress();
 }
-
-function renderBeats(elapsedMin) {
+function summaryMarkup(session) {
+  return '<h3>' + session.label + '</h3><p class="helptext">' + '90 minutes: 1:00-2:30pm Eastern.' + '</p><p><strong>Goal:</strong> ' + session.goal + '</p><p><strong>Leave with:</strong> ' + session.deliverable + '</p><p><strong>Next work:</strong> ' + session.between + '</p>';
+}
+function beatMarkup(b,i,interactive) {
+  var done = interactive && checks().beatsDone.indexOf(i) >= 0;
+  return '<div class="beat' + (done ? ' donebeat' : '') + '"' + (interactive ? ' data-beat="' + i + '"' : '') + '>' +
+    '<div class="beathead"><span class="time">' + fmtClock(b.at) + ' &middot; ' + b.dur + ' min</span><h3>' + b.title + '</h3>' +
+    (interactive ? '<label class="donechk"><input type="checkbox" data-i="' + i + '"' + (done ? ' checked' : '') + '> done</label>' : '') + '</div>' +
+    '<div class="say"><span class="lbl">Say</span><span class="quote">&ldquo;' + b.say + '&rdquo;</span></div>' +
+    '<div class="do"><span class="lbl">Do</span>' + b.doo + '</div>' +
+    '<div class="ask"><span class="lbl">Ask the room</span>' + b.ask + '</div></div>';
+}
+function renderBeats() {
   var wrap = document.getElementById('beats');
-  wrap.innerHTML = "";
-  BEATS.forEach(function(b, i){
-    var done = state.beatsDone.indexOf(i) >= 0;
-    var isNow = elapsedMin !== null && !done && elapsedMin >= b.at && elapsedMin < b.at + b.dur;
-    var div = document.createElement('div');
-    div.className = "beat" + (isNow ? " now" : "") + (done ? " donebeat" : "");
-    var mm = String(Math.floor(b.at/60)) + ":" + String(b.at%60).padStart(2,"0");
-    div.innerHTML =
-      '<div class="beathead"><span class="time">' + mm + ' · ' + b.dur + ' min</span><h3>' + b.title + '</h3>' +
-      '<label class="donechk"><input type="checkbox" data-i="' + i + '"' + (done ? ' checked' : '') + '> done</label></div>' +
-      '<div class="say"><span class="lbl">Say</span><span class="quote">&ldquo;' + b.say + '&rdquo;</span></div>' +
-      '<div class="do"><span class="lbl">Do</span>' + b.doo + '</div>' +
-      '<div class="ask"><span class="lbl">Ask the room</span>' + b.ask + '</div>';
-    wrap.appendChild(div);
-  });
+  wrap.innerHTML = BEATS.map(function(b,i){ return beatMarkup(b,i,true); }).join('');
   wrap.querySelectorAll('.donechk input').forEach(function(cb){
-    cb.addEventListener('change', function(){
-      var i = +cb.dataset.i;
-      var idx = state.beatsDone.indexOf(i);
-      if (idx >= 0) state.beatsDone.splice(idx,1); else state.beatsDone.push(i);
+    cb.addEventListener('change',function(){
+      var done = checks().beatsDone, i = +cb.dataset.i, idx = done.indexOf(i);
+      if (cb.checked && idx < 0) done.push(i);
+      if (!cb.checked && idx >= 0) done.splice(idx,1);
       saveAll();
-      renderBeats(currentElapsedMin());
+      highlightBeats(currentElapsedMin());
     });
   });
+  highlightBeats(currentElapsedMin());
 }
-
-function currentElapsedMin() {
-  if (!state.startedAt) return null;
-  return (Date.now() - state.startedAt) / 60000;
+function highlightBeats(elapsed) {
+  document.querySelectorAll('#beats .beat').forEach(function(el,i){
+    var b = BEATS[i], done = checks().beatsDone.indexOf(i) >= 0;
+    el.classList.toggle('donebeat',done);
+    el.classList.toggle('now',elapsed !== null && !done && elapsed >= b.at && elapsed < b.at+b.dur);
+  });
 }
-
-function fmtClock(min) {
-  var total = Math.max(0, Math.floor(min * 60));
-  var m = Math.floor(total / 60), s = total % 60;
-  return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
-}
-
-function updateClock() {
-  var el = currentElapsedMin();
-  if (el === null) return;
-  var t = fmtClock(el);
-  document.getElementById('bigClock').textContent = t;
-  var nav = document.getElementById('navClock');
-  nav.style.display = "inline";
-  nav.textContent = t;
-  var cur = null, next = null;
-  for (var i = 0; i < BEATS.length; i++) {
-    if (el >= BEATS[i].at && el < BEATS[i].at + BEATS[i].dur) cur = BEATS[i];
-    if (BEATS[i].at > el && !next) next = BEATS[i];
-  }
-  var cue = cur ? "Now: <b>" + cur.title + "</b>" : (el >= 75 ? "<b>Past 75 minutes — land the plane 🛬</b>" : "");
-  if (next && cur) cue += " · next: " + next.title + " at " + fmtClock(next.at) ;
-  document.getElementById('timerCue').innerHTML = cue || "Session running";
-  if (Math.floor(el * 60) % 15 === 0) renderBeats(el);
-}
-
-function toggleTimer() {
-  if (state.startedAt) {
-    if (!confirm("Stop the session timer?")) return;
-    state.startedAt = null;
-    clearInterval(tick); tick = null;
-    document.getElementById('bigClock').textContent = "00:00";
-    document.getElementById('timerCue').textContent = "Timer not running";
-    document.getElementById('navClock').style.display = "none";
-    document.getElementById('startBtn').innerHTML = "&#9654; Start Session";
-  } else {
-    state.startedAt = Date.now();
-    document.getElementById('startBtn').innerHTML = "&#9632; Stop";
-    tick = setInterval(updateClock, 1000);
-    updateClock();
-  }
-  saveAll();
-  renderBeats(currentElapsedMin());
-}
-
-function resetTimer() {
-  if (!confirm("Reset the timer to 00:00?")) return;
-  state.startedAt = null;
-  clearInterval(tick); tick = null;
-  document.getElementById('bigClock').textContent = "00:00";
-  document.getElementById('timerCue').textContent = "Timer not running";
-  document.getElementById('navClock').style.display = "none";
-  document.getElementById('startBtn').innerHTML = "&#9654; Start Session";
-  saveAll();
-  renderBeats(null);
-}
-
-['sDate','sTime','sWhere'].forEach(function(id){
-  document.getElementById(id).addEventListener('change', saveAll);
-});
-
-loadAll();
-renderChecklist(PRE, state.pre, 'preList', 'preBar', 'preLabel', 'pre');
-renderChecklist(POST, state.post, 'postList', 'postBar', 'postLabel', 'post');
-if (state.startedAt) {
-  document.getElementById('startBtn').innerHTML = "&#9632; Stop";
-  tick = setInterval(updateClock, 1000);
+function renderSession() {
+  var session = currentSession();
+  BEATS = session.beats;
+  document.getElementById('sessionSelect').value = session.id;
+  document.getElementById('sessionSummary').innerHTML = summaryMarkup(session);
+  var saved = checks();
+  renderChecklist(PRE,saved.pre,'preList','preBar','preLabel');
+  renderChecklist(POST,saved.post,'postList','postBar','postLabel');
+  renderBeats();
   updateClock();
 }
-renderBeats(currentElapsedMin());
+function currentElapsedMin() { return state.startedAt === null ? null : Math.max(0,(Date.now()-state.startedAt)/60000); }
+function fmtClock(min) {
+  var total = Math.max(0,Math.floor(min*60));
+  return String(Math.floor(total/60)).padStart(2,'0') + ':' + String(total%60).padStart(2,'0');
+}
+function updateClock() {
+  var elapsed = currentElapsedMin();
+  var nav = document.getElementById('navClock');
+  document.getElementById('bigClock').textContent = elapsed === null ? '00:00' : fmtClock(elapsed);
+  nav.style.display = elapsed === null ? 'none' : 'inline';
+  nav.textContent = elapsed === null ? '00:00' : fmtClock(elapsed);
+  document.getElementById('startBtn').textContent = elapsed === null ? '\u25b6 Start Session' : '\u25a0 Stop';
+  var cue = 'Timer not running';
+  if (elapsed !== null) {
+    var current = BEATS.find(function(b){ return elapsed >= b.at && elapsed < b.at+b.dur; });
+    var next = BEATS.find(function(b){ return b.at > elapsed; });
+    cue = current ? 'Now: ' + current.title : '90 minutes complete - save work and close with next steps.';
+    if (current && next) cue += ' | Next: ' + next.title + ' at ' + fmtClock(next.at);
+  }
+  document.getElementById('timerCue').textContent = cue;
+  highlightBeats(elapsed);
+}
+function stopTimer() { state.startedAt = null; clearInterval(tick); tick = null; }
+function toggleTimer() {
+  if (state.startedAt !== null) {
+    if (!confirm('Stop the session timer?')) return;
+    stopTimer();
+  } else {
+    state.startedAt = Date.now();
+    tick = setInterval(updateClock,1000);
+  }
+  saveAll();
+  updateClock();
+}
+function resetTimer() {
+  if (!confirm('Reset the timer to 00:00?')) return;
+  stopTimer();
+  saveAll();
+  updateClock();
+}
+
+document.getElementById('sessionSelect').innerHTML = SESSIONS.map(function(s){ return '<option value="' + s.id + '">' + s.label + '</option>'; }).join('');
+document.getElementById('progressFields').innerHTML = SESSIONS.slice(1).map(function(s,i){
+  return '<label for="progress' + (i+1) + '">' + s.label + '</label><textarea id="progress' + (i+1) + '" data-save rows="2" placeholder="Starting goal; actual progress; obstacle or adjustment; next task + when."></textarea>';
+}).join('');
+document.getElementById('printAgendas').innerHTML = SESSIONS.map(function(s){
+  return '<div class="print-agenda">' + summaryMarkup(s) + s.beats.map(function(b,i){ return beatMarkup(b,i,false); }).join('') + '</div>';
+}).join('');
+
+loadAll();
+renderSession();
+if (state.startedAt !== null) tick = setInterval(updateClock,1000);
+['sDate','sTime','sWhere'].forEach(function(id){ document.getElementById(id).addEventListener('change',saveAll); });
+document.querySelectorAll('[data-save]').forEach(function(el){ el.addEventListener('input',saveAll); el.addEventListener('change',saveAll); });
+document.getElementById('sessionSelect').addEventListener('change',function(event){
+  saveAll();
+  stopTimer();
+  state.session = event.target.value;
+  document.getElementById('sDate').value = currentSession().date;
+  document.getElementById('sTime').value = '13:00';
+  saveAll();
+  renderSession();
+});
+
+// Expand notes in print so longer saved entries are not clipped by textarea scrolling.
+var printHeights = [];
+window.addEventListener('beforeprint',function(){
+  printHeights = Array.from(document.querySelectorAll('textarea')).map(function(el){
+    var original = el.style.height;
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 4 + 'px';
+    return [el,original];
+  });
+});
+window.addEventListener('afterprint',function(){ printHeights.forEach(function(item){ item[0].style.height = item[1]; }); });
 </script>
 </body>
 </html>
