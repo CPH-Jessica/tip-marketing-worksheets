@@ -163,7 +163,10 @@
   function download(raw,filename) {const url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));const a=node('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);}
   function exportBackup() {
     const backup=clone(state);for(const t of backup.templates)pause(t);backup.savedAt=new Date().toISOString();
-    download(JSON.stringify(backup,null,2),'zoom-template-desk-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json');message('Full backup download started. It includes private notes and meeting links. Keep it somewhere safe.');
+    const raw=JSON.stringify(backup);
+    try { parse(raw); }
+    catch(error) { message('Backup not downloaded: '+error.message+' Keep this tab open. Copy any text you need elsewhere before reducing the desk or correcting its fields. Your visible desk is unchanged.'); return; }
+    download(raw,'zoom-template-desk-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json');message('Full backup download started. It includes private notes and meeting links. Keep it somewhere safe.');
   }
   try {
     lastRaw=localStorage.getItem(KEY);
