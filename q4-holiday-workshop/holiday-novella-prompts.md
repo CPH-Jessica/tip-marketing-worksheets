@@ -16,6 +16,7 @@
 - These prompts work in a plain chat with no skills installed. If you have a planner, ghostwriter, or editing skill (one you built in Foundations, or one from the Workshop Library if you have access to it), say so in your first message of each chat and Claude will use it alongside the prompt.
 - The order never changes: plan, then draft, then connect and check, then edit. Compress the phases to fit a novella and five weeks rather than skipping them.
 - The Holiday Trope Workbook's wrapper list, core trope list, and five-point Costume Test are reproduced in the trope stack section below the house rules, so the whole class shares the same season-speak whether or not they use the interactive tool.
+- In the web version, the trope stack section is clickable: choose your genre shelf and heat band, click one wrapper and up to three core tropes, write the season-does line, and tick the Costume Test points. Those choices fill [GENRE SHELF], [HEAT BAND], [WRAPPER], [WRAPPER SEARCH], [CORE TROPES], [SEASON DOES], and [COSTUME SCORE] into every prompt that uses them. On paper or in the Markdown copy, write them in.
 - Short on time, or new to working with Claude? Start with the fast lane below the trope stack: three prompts that get you from idea to opening scene in one class. Use only the prompts that help. A prompt you never run, like a blank worksheet field, is fine.
 
 ## The five-class path and the prompts
@@ -82,7 +83,7 @@ Holiday readers search in season-speak. They do not look for "a romance in Octob
 
 Heat bands: clean or closed door (1–2) · warm, on the page but soft (3) · spicy, open door (4–5) · no romance thread.
 
-**Step 2 — Pick exactly one seasonal wrapper.** The wrapper is the holiday hook that puts the book on the seasonal shelf. The right-hand column is the search phrase that goes into your keywords.
+**Step 2 — Pick exactly one seasonal wrapper.** The wrapper is the holiday hook that puts the book on the seasonal shelf. Each wrapper carries the search phrase that goes into your keywords, shown beside it.
 
 | Wrapper | Search phrase |
 | --- | --- |
@@ -99,7 +100,30 @@ Heat bands: clean or closed door (1–2) · warm, on the page but soft (3) · sp
 | Holiday market | holiday market |
 | New Year's Eve countdown | new years eve |
 
-**Step 3 — Stack up to three core tropes.** The engine underneath the costume. These carry the emotional promise; the wrapper sets the stage. Grumpy / Sunshine · Enemies to Lovers · Second Chance · Fake Dating · Forced Proximity · Small Town · Single Dad / Mom · Friends to Lovers · Fated Mates · Brother's Best Friend · Marriage of Convenience · Opposites Attract · Secret Identity · Age Gap · Bodyguard / Protector · Boss & Employee · Childhood Sweethearts · Return to Hometown · Amateur Sleuth · Found Family. Forced Proximity, Small Town, Single Dad / Mom, Secret Identity, Return to Hometown, Amateur Sleuth, and Found Family also work when there is no romance thread. With the wrapper, that is four at most, which leaves room under the planner's five-trope ceiling for one personality dynamic.
+**Step 3 — Stack up to three core tropes.** The engine underneath the costume. These carry the emotional promise; the wrapper sets the stage. Click up to three in the web version, or circle them on paper.
+
+- Grumpy / Sunshine
+- Enemies to Lovers
+- Second Chance
+- Fake Dating
+- Forced Proximity
+- Small Town
+- Single Dad / Mom
+- Friends to Lovers
+- Fated Mates
+- Brother's Best Friend
+- Marriage of Convenience
+- Opposites Attract
+- Secret Identity
+- Age Gap
+- Bodyguard / Protector
+- Boss & Employee
+- Childhood Sweethearts
+- Return to Hometown
+- Amateur Sleuth
+- Found Family
+
+Forced Proximity, Small Town, Single Dad / Mom, Secret Identity, Return to Hometown, Amateur Sleuth, and Found Family also work when there is no romance thread. With the wrapper, that is four at most, which leaves room under the planner's five-trope ceiling for one personality dynamic.
 
 **Step 4 — The Costume Test, five points.** The single biggest reason holiday books flop: the season is decoration, not plot. Readers can smell a wreath glued onto a regular book. Score one point for each:
 
@@ -120,13 +144,24 @@ A score of 0 or 1 means this is a costume right now: change one structural thing
 ```text
 Build my holiday trope stack from the Holiday Trope Workbook lists. House rules apply. Do not write a premise or prose.
 
-Home base: pen name [PEN NAME]; genre shelf [one of the ten genres]; heat band [clean 1–2 / warm 3 / spicy 4–5 / no romance thread]; working title [WORKING TITLE]. Wave: Christmas & Holiday.
-What I am leaning toward: wrapper [one from the list, or "help me choose between ___ and ___"]; core tropes [up to three from the list]; what the season makes happen that could not happen in June: [one line, or "not sure yet"].
+Home base: pen name [PEN NAME]; genre shelf [GENRE SHELF]; heat band [HEAT BAND]; working title [WORKING TITLE]. Wave: Christmas & Holiday.
+What I am leaning toward: wrapper [WRAPPER]; core tropes [CORE TROPES]; what the season makes happen that could not happen in June: [SEASON DOES]. My own Costume Test score so far: [COSTUME SCORE]. If I am torn between two wrappers, I will say so and you help me choose.
 
 1. Lock the stack: exactly one seasonal wrapper and up to three core tropes, from the lists only. If I named more than three, tell me which to cut and why. If my wrapper and my genre pull in different directions (a paranormal wrapper on a contemporary shelf, for example), say so in one line and let me decide which shelf I want.
 2. Run the five-point Costume Test on what I have told you. Give me the score out of 5, the verdict (costume / halfway / real holiday book), and the weakest unchecked point. If the score is 3 or below, propose one structural change that makes the season cause something, usually a deadline.
 3. Write my "season does" line in my words, sharpened to one sentence.
 4. Give me the stack entry to paste into Worksheet 04 and into Prompt 04: Wrapper (with its search phrase) · Core tropes · Season does · Costume Test score. Then stop. The translation into keywords and copy happens in Prompt 17 once the book exists.
+```
+
+**Your stack entry (fills itself in the web version; paste into Worksheet 04)**
+
+```text
+Holiday trope stack — [WORKING TITLE] by [PEN NAME]
+Genre shelf: [GENRE SHELF] · Heat band: [HEAT BAND]
+Wrapper: [WRAPPER] (search phrase: [WRAPPER SEARCH])
+Core tropes: [CORE TROPES]
+Season does: [SEASON DOES]
+Costume Test self-score: [COSTUME SCORE]
 ```
 
 ## The fast lane
@@ -143,6 +178,7 @@ The full Prompts 03 to 07 run the whole planning pipeline in gated steps. That i
 Fast lane. Build my novella Brief in one pass. House rules apply.
 
 My Worksheet 03 and 04 answers, rough is fine: [paste what you have; blank lines are allowed].
+My trope stack so far: wrapper [WRAPPER]; core tropes [CORE TROPES]; season does: [SEASON DOES].
 About [TARGET LENGTH] words, heat [HEAT]/5, [POV], draft by November 4. Starting point: [new idea / partial draft / revising a complete draft].
 
 If something essential is missing (my voice source, whether I am continuing an existing draft, or my heat level), ask for it in one short message first. Otherwise go.
@@ -284,7 +320,7 @@ My Worksheet 04 answers:
 - Premise sentence (When ___, these two people must ___, but ___): [paste]
 - Seasonal hook (what Christmas makes someone do or decide): [paste]
 - Core romance tropes: [paste]
-- My holiday trope stack, if I built one (wrapper · core tropes · season does · Costume Test score): [paste]
+- My holiday trope stack: wrapper [WRAPPER]; core tropes [CORE TROPES]; season does: [SEASON DOES]; my Costume Test score so far: [COSTUME SCORE]
 - The emotional experience I am promising the reader: [paste]
 - Remove Christmas: what choice, pressure, or outcome would change: [paste]
 
@@ -694,7 +730,7 @@ This is the Holiday Trope Workbook's "Your Seasonal Stack, Translated" step, run
 ```text
 Translate my holiday trope stack into reader-facing copy for [WORKING TITLE], the way the Holiday Trope Workbook does it. Use the Brief (Story Promise, stack, emotional core), my trope stack entry, and the drafted manuscript in the Project. Use only what is actually in the book. If a scene or trope is not on the page, do not promise it. If you are unsure, ask.
 
-Home base: genre shelf [one of the ten genres and its shelf word]; heat band [clean 1–2 / warm 3 / spicy 4–5 / no romance thread]; wrapper [___] with its search phrase [___]; core tropes [up to three].
+Home base: genre shelf [GENRE SHELF]; heat band [HEAT BAND]; wrapper [WRAPPER] with its search phrase [WRAPPER SEARCH]; core tropes [CORE TROPES].
 
 Give me, in this order:
 1. Search phrases readers type: four short phrases built from the wrapper's search phrase, my core tropes in lowercase, the word christmas, and my shelf word (for example "snowed in small town romance," "grumpy sunshine christmas romance"). Put "clean" in front of one if my heat band is clean.
