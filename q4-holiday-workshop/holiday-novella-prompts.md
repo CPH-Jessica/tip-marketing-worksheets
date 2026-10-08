@@ -6,6 +6,7 @@
 
 ## How to use this pack
 
+- The web version is split into pages: Start here, one page per class (Class 1 to Class 5), and an Any time toolkit. Use the tabs at the top to move between days; your details and trope stack carry across all of them. This Markdown copy is the same material in one document, in prompt-number order.
 - Each prompt carries the same number as its worksheet. Fill the worksheet first, even roughly, then paste your answers where the prompt asks for them. The worksheet is where you decide. The prompt is where Claude builds.
 - Claude is the writer. You are the editor. Every prompt keeps the decisions with you: Claude confirms before it writes, stops where you told it to stop, and asks instead of inventing.
 - Work inside one Claude Project per book if your plan has Projects (Prompt 01). The planning prompts create the files that the drafting and editing prompts read, so the later prompts expect the earlier files to exist.
