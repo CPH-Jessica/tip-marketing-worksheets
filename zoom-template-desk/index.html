@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>Zoom Template Desk | The Invisible Pen</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="seed.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#desk">Skip to the desk</a>
+<div id="instructor-view" hidden>
+  <header><div class="header-inner"><div><div class="eyebrow">The Invisible Pen · Instructor workspace</div><h1>Zoom Template Desk</h1><p>A familiar place to plan, teach, and make the next class your own.</p></div><a href="../q4-holiday-workshop/instructor-workbook.html">Holiday Novella instructor workbook ↗</a></div></header>
+  <main id="desk" class="container">
+    <section class="storage-card" aria-label="Saving and backups">
+      <p><strong>Your desk stays in this browser on this device.</strong> Notes, meeting links, and templates are not sent anywhere or synced to other devices. Anyone using this browser profile may see them. Clearing site data or using private browsing can remove your work. This is a browser teaching desk; it does not connect to Zoom or create meetings.</p>
+      <div class="toolbar"><button id="export" class="secondary">Download full backup</button><button id="import" class="secondary">Import backup</button><input id="import-file" type="file" accept=".json,application/json" hidden><span class="small">Back up before class and after important edits. Backups include private notes and links; keep them safe.</span></div>
+      <p id="save-status" class="status" role="status" aria-live="polite">Opening your desk…</p>
+      <div id="storage-warning" class="warning" hidden><p id="storage-message"></p><div class="toolbar"><button id="download-stored">Download stored data</button><button id="reload-stored" class="secondary">Reload saved desk</button><button id="keep-current" class="secondary">Keep this desk instead</button></div></div>
+    </section>
+    <section class="class-bar" aria-label="Your class templates"><div><label for="class-select">Your saved classes &amp; templates</label><select id="class-select"></select></div><div class="toolbar"><button id="new-class" class="secondary">New class</button><button id="duplicate">Duplicate this class</button><button id="delete-class" class="text-button">Delete</button></div></section>
+    <div class="desk-grid">
+      <div class="editor-column">
+        <section class="card" aria-labelledby="class-heading"><div class="section-heading"><div><div class="eyebrow">Make it reusable</div><h2 id="class-heading">Class setup</h2></div><span id="agenda-total" class="pill"></span></div>
+          <label for="class-name">Class / template name <span class="hint">Rename it here</span></label><input id="class-name" data-class="name" maxlength="140">
+          <div class="form-grid"><div><label for="class-date">Date <span class="hint">Optional</span></label><input id="class-date" data-class="date" type="date"></div><div><label for="class-time">Start time</label><input id="class-time" data-class="startTime" type="time"></div><div><label for="class-zone">Time zone</label><input id="class-zone" data-class="timeZone" maxlength="80" placeholder="America/New_York"><p class="hint">Use an IANA name, such as America/New_York.</p></div></div>
+          <label for="student-intro">Student-facing overview</label><textarea id="student-intro" data-class="studentIntro" rows="4" maxlength="6000"></textarea><p class="hint">Included in student view, copied agenda, and printing. Keep private information out of this field.</p>
+        </section>
+        <section class="card" aria-labelledby="agenda-heading"><div class="section-heading"><div><div class="eyebrow">One step at a time</div><h2 id="agenda-heading">Editable timed agenda</h2></div><button id="add-segment" class="secondary">+ Add segment</button></div><p class="hint">Open a segment to edit its student prompt and teaching notes. Select “Use this segment” to put it on the timer. Nothing advances automatically.</p><div id="agenda-editor"></div></section>
+        <section class="card private-card" aria-labelledby="private-heading"><div class="eyebrow">Private · excluded from student view and copied agenda</div><h2 id="private-heading">Facilitator notes &amp; meeting link</h2><label for="private-notes">Your teaching notes</label><textarea id="private-notes" data-class="facilitatorNotes" rows="7" maxlength="16000"></textarea><label for="meeting-url">Meeting URL <span class="hint">Saved only on this device</span></label><input id="meeting-url" data-class="meetingUrl" type="url" maxlength="2000" placeholder="Paste your meeting link here"><p class="hint">Use an https:// or http:// link. Link and time-zone edits save when you leave the field.</p><a id="open-meeting" class="button-link secondary" target="_blank" rel="noopener noreferrer" hidden>Open meeting ↗</a></section>
+        <section class="card" aria-labelledby="resource-heading"><div class="section-heading"><div><div class="eyebrow">Keep the right pages handy</div><h2 id="resource-heading">Resource links</h2></div><button id="add-resource" class="secondary">+ Add link</button></div><p class="hint">New links are private by default. Only links you mark for students appear in student view, copied agendas, or print.</p><div id="resources-editor"></div></section>
+      </div>
+      <aside class="live-column" aria-label="Live teaching controls">
+        <section class="timer-card"><div class="eyebrow">Current segment</div><h2 id="current-title"></h2><div id="timer-display" class="clock" role="timer" aria-live="off">00:00</div><p id="timer-state" class="timer-state" role="status" aria-live="polite">Ready</p><div class="toolbar"><button id="timer-toggle">Start</button><button id="timer-reset" class="secondary">Reset segment</button></div><p class="next-label">Up next</p><p id="next-title"></p><button id="timer-next" class="secondary">Next segment →</button><p class="hint">Pause when you need to. The clock stops at zero and waits for you. Switching classes pauses the clock; refreshing keeps a running clock on time.</p></section>
+        <section class="card sharing-card"><h2>Ready to share?</h2><button id="student-view">Open student view</button><button id="copy-agenda" class="secondary">Copy clean agenda</button><button id="print-agenda" class="secondary">Print student agenda</button><p class="hint">Enter student view <strong>before</strong> sharing this browser tab. It hides facilitator notes, editing controls, private resources, and the meeting URL. Exiting returns to your private desk; stop sharing first.</p><p id="action-status" role="status" aria-live="polite"></p></section>
+      </aside>
+    </div>
+  </main>
+  <footer>The Invisible Pen · Your classes, your notes, your pace.</footer>
+</div>
+<section id="student-view-panel" hidden aria-label="Student presentation view">
+  <div class="student-controls no-print"><span>Student view · private desk hidden</span><button id="student-pause" class="secondary">Start timer</button><button id="student-next-button" class="secondary">Next segment</button><button id="exit-student" class="secondary">Exit student view</button></div>
+  <div class="student-page"><div class="eyebrow">The Invisible Pen · Class agenda</div><h1 id="student-title"></h1><p id="student-schedule"></p><p id="student-overview" class="preserve-lines"></p><section class="student-timer no-print"><div class="eyebrow">Now</div><h2 id="student-current"></h2><div id="student-clock" class="clock" role="timer" aria-live="off"></div><p id="student-prompt" class="preserve-lines"></p><p id="student-next"></p></section><h2>Our agenda</h2><ol id="student-agenda"></ol><section id="student-resources-section"><h2>Class resources</h2><ul id="student-resources"></ul></section></div>
+</section>
+<noscript><p class="warning">Enable JavaScript to use this desk. Saving, timers, and backups need JavaScript.</p></noscript>
+<dialog id="import-dialog" aria-labelledby="import-title"><h2 id="import-title">Review the backup</h2><p id="import-summary"></p><p>This replaces <strong>all saved classes, notes, links, and timers</strong> in this desk. It does not merge classes. Imported timers start paused. Download your current desk first if you need to keep it.</p><button id="backup-before-import">Download current backup</button><label class="check"><input id="confirm-import" type="checkbox"><span>I understand that importing replaces this browser’s current desk.</span></label><div class="toolbar"><button id="apply-import" disabled>Replace desk with backup</button><button id="cancel-import" class="secondary">Cancel</button></div></dialog>
+<dialog id="copy-dialog" aria-labelledby="copy-title"><h2 id="copy-title">Your student agenda</h2><p>Select and copy this text into Zoom chat or your class post. Private fields are excluded.</p><textarea id="copy-text" readonly rows="14" aria-label="Clean student agenda"></textarea><button id="close-copy" class="secondary">Close</button></dialog>
+</body>
+</html>
