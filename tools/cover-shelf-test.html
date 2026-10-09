@@ -326,7 +326,7 @@ const QUESTIONS=[
 const PLACEHOLDER_PALETTES=[['#1b2a4a','#3d5a80'],['#4a1f2e','#8a3b55'],['#1f3d2e','#3f7a56'],['#2b2b2b','#5a5a5a'],['#5a3a1e','#a0703d'],['#2e2a4a','#5e5490'],['#0f4a52','#1d8a96'],['#5c1f1f','#a33a3a'],['#3a3a2a','#7a7a4e'],['#2a1f3d','#6a4a8a'],['#4a3a2e','#8a7560'],['#1e2e3a','#3f6a86']];
 const MAX_CELLS=12;
 
-let state=null, coverEl=null, analysis=null, placeholders=[];
+let state=null, coverEl=null, analysis=null, placeholders=[], session=0; /* session bumps on reset so late uploads are dropped */
 
 /* ============ state ============ */
 function blank(){ return {v:1, cover:null, fields:{}, zone:'Top', comps:[], order:[], shelfSize:110, gray:false, blur:false, dark:false, mine:false, wallDark:false, view:'grid', check:{}}; }
@@ -381,9 +381,11 @@ function shrink(img, maxH, q){
   return c.toDataURL('image/jpeg', q||0.85);
 }
 async function loadCover(file){
+  const gen=session;
   try{
     const url=await readAsDataURL(file); const img=await loadImage(url);
     const small=shrink(img, 1000, 0.85); const el=await loadImage(small);
+    if(gen!==session) return; /* reset happened while decoding */
     state.cover={data:small, w:img.naturalWidth, h:img.naturalHeight, bytes:file.size, type:file.type||'image', name:file.name||'cover'};
     coverEl=el; analysis=analyze(el);
     if(!save()){ /* still usable in memory */ }
@@ -458,12 +460,19 @@ function makePlaceholders(){
   });
 }
 async function addComps(files){
-  let added=0;
+  const gen=session; let added=0, full=false;
   for(const f of files){
-    if(state.comps.length>=MAX_CELLS-1){ toast('The shelf holds '+(MAX_CELLS-1)+' competitors. Remove one to add another.'); break; }
-    try{ const url=await readAsDataURL(f); const img=await loadImage(url); const small=shrink(img, 360, 0.8); state.comps.push({id:'c'+Date.now()+'_'+Math.random().toString(36).slice(2,7), data:small}); added++; }catch(e){}
+    try{
+      const url=await readAsDataURL(f); const img=await loadImage(url);
+      if(gen!==session) return; /* reset happened while decoding */
+      if(state.comps.length>=MAX_CELLS-1){ full=true; break; } /* re-check after the awaits: drops can overlap */
+      const small=shrink(img, 360, 0.8); state.comps.push({id:'c'+Date.now()+'_'+Math.random().toString(36).slice(2,7), data:small}); added++;
+    }catch(e){}
   }
-  if(added){ save(); renderShelf(); toast(added+' competitor cover'+(added===1?'':'s')+' added.'); }
+  if(added){ save(); renderShelf(); }
+  if(full) toast(added ? added+' added — the shelf is now full at '+(MAX_CELLS-1)+' competitors.' : 'The shelf holds '+(MAX_CELLS-1)+' competitors. Remove one to add another.', 3500);
+  else if(added) toast(added+' competitor cover'+(added===1?'':'s')+' added.');
+  else toast('Couldn\'t read those files. Try JPG or PNG.');
 }
 function removeComp(id){ state.comps=state.comps.filter(c=>c.id!==id); state.order=state.order.filter(x=>x!==id); save(); renderShelf(); }
 function shelfCells(){
@@ -692,12 +701,21 @@ function copyText(txt, okMsg){
 }
 function fallbackCopy(txt,okMsg){
   const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
-  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  ta.select(); let ok=false; try{ ok=document.execCommand('copy')===true; }catch(e){ ok=false; }
   document.body.removeChild(ta);
+  if(ok){ toast(okMsg||'Copied.'); return; }
+  showManualCopy(txt);
+}
+function showManualCopy(txt){
+  let box=$('manualCopy');
+  if(!box){ box=document.createElement('textarea'); box.id='manualCopy'; box.readOnly=true; box.setAttribute('aria-label','Text to copy manually'); box.style.cssText='margin-top:12px;min-height:170px;font-size:12.5px;'; $('p_verdict').querySelector('.btn-row').insertAdjacentElement('afterend', box); }
+  box.value=txt; box.focus(); box.select();
+  toast('Couldn\'t copy automatically — the text is selected below. Press Ctrl/Cmd + C.', 4500);
 }
 function resetAll(){
   if(!confirm('Start over? This clears the cover, the competitors, and your scores.')) return;
-  state=blank(); save(); coverEl=null; analysis=null;
+  session++; state=blank(); save(); coverEl=null; analysis=null;
+  const mc=$('manualCopy'); if(mc) mc.remove();
   ['f_title','f_pen','f_lane','f_notes'].forEach(id=>$(id).value='');
   $('coverDrop').style.display='block'; $('coverLoaded').style.display='none';
   document.querySelectorAll('.gated').forEach(p=>p.classList.remove('show'));
