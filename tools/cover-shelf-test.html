@@ -400,7 +400,7 @@ function ratioText(w,h){ return '1 : '+(h/w).toFixed(2)+' (width : height)'; }
 function specFlags(){
   const c=state.cover; if(!c) return []; const out=[]; const r=c.h/c.w;
   if(c.w<625||c.h<1000) out.push({k:'fail',t:'Below KDP\'s ebook minimum of 1,000 × 625 px. Fine for a thumbnail test; not the file to upload.'});
-  else if(c.h<1600) out.push({k:'warn',t:'Smaller than KDP\'s recommended 2,560 × 1,600 px. Fine for testing — upload the full-size export for the real listing.'});
+  else if(c.h<2560||c.w<1600) out.push({k:'warn',t:'Smaller than KDP\'s recommended 2,560 × 1,600 px. Fine for testing — upload the full-size export for the real listing.'});
   else out.push({k:'pass',t:'Meets KDP\'s recommended 2,560 × 1,600 px ebook size.'});
   if(r<1.45) out.push({k:'warn',t:'Wider than a book: ebook stores expect roughly 1 : 1.6 (height 1.6× width). A squat cover shows up small with wasted space around it.'});
   else if(r>1.72) out.push({k:'warn',t:'Taller than usual: ebook stores expect roughly 1 : 1.6. Very tall covers get cropped or shrunk in grids.'});
@@ -537,13 +537,12 @@ function analyze(img){
   const scores=blocks.map(b=>b.score).sort((a,b)=>a-b); const max=scores[scores.length-1], med=scores[Math.floor(scores.length/2)];
   const focal=blocks.find(b=>b.score===max);
   const vert=focal.r<2?'upper':(focal.r<4?'middle':'lower'), horiz=focal.c===0?'left':(focal.c===3?'right':'center');
-  const zoneRows={Top:[0,1],Middle:[2,3],Bottom:[4,5]}[state.zone]||[0,1,2,3,4,5];
-  const zb=blocks.filter(b=>zoneRows.includes(b.r)); const zoneBusy=zb.reduce((a,b)=>a+b.busy,0)/zb.length;
+  const rowBusy=[]; for(let r=0;r<rows;r++){ const rb=blocks.filter(b=>b.r===r); rowBusy.push(rb.reduce((a,b)=>a+b.busy,0)/rb.length); }
   const top=[...bins.values()].sort((a,b)=>b.n-a.n);
   let acc=0, cover80=0; for(const e of top){ acc+=e.n; cover80++; if(acc>=N*0.8) break; }
   const hex=v=>('0'+Math.round(v).toString(16)).slice(-2);
   const swatches=top.slice(0,6).map(e=>({hex:'#'+hex(e.r/e.n)+hex(e.g/e.n)+hex(e.b/e.n), pct:Math.round(e.n/N*100)}));
-  return {p5:p(.05), p95:p(.95), span:p(.95)-p(.05), mean:sum/N, darkFrac:darkN/N, lightFrac:lightN/N, edgeLum:bsum/bn, busyFrac, focalRatio:max/Math.max(med,1.5), focalLoc:vert+' '+horiz, zoneBusy, cover80, swatches, satMean:sat/N};
+  return {p5:p(.05), p95:p(.95), span:p(.95)-p(.05), mean:sum/N, darkFrac:darkN/N, lightFrac:lightN/N, edgeLum:bsum/bn, busyFrac, focalRatio:max/Math.max(med,1.5), focalLoc:vert+' '+horiz, rowBusy, cover80, swatches, satMean:sat/N};
 }
 function signals(){
   const a=analysis; if(!a) return {items:[], score:null};
@@ -571,9 +570,11 @@ function signals(){
   else if(a.focalRatio>=1.4) add('warn','Focal point','A soft focal point around the '+a.focalLoc+', with competition from elsewhere.','Dim or simplify whatever is fighting it. One hero, everything else supporting.', focTxt);
   else add('fail','Focal point','No single focal point. Interest is spread evenly, so the eye has nowhere to land.','Decide what the cover is about — a face, an object, the title — and make it the only loud thing.', focTxt);
   /* title zone */
-  const zTxt='edge density behind the title: '+Math.round(a.zoneBusy*100)+'%';
+  const zoneRows={Top:[0,1],Middle:[2,3],Bottom:[4,5]}[state.zone]||[0,1,2,3,4,5];
+  const zoneBusy=zoneRows.reduce((s,r)=>s+a.rowBusy[r],0)/zoneRows.length;
+  const zTxt='edge density behind the title: '+Math.round(zoneBusy*100)+'%';
   if(state.zone==='Across the whole cover') add('info','Behind the title','Title runs across the whole cover, so it has to fight every busy area at once.','Make sure the lettering sits on the calmest band, or give it a plate or glow it can live on.', zTxt);
-  else if(a.zoneBusy>=0.35) add('warn','Behind the title','Busy behind the '+state.zone.toLowerCase()+' third, where you said the title sits. Text over detail is the number-one homemade tell and the number-one legibility killer at small size.','Calm that band: blur or darken it, add a plate, or move the title to the quietest third.', zTxt);
+  else if(zoneBusy>=0.35) add('warn','Behind the title','Busy behind the '+state.zone.toLowerCase()+' third, where you said the title sits. Text over detail is the number-one homemade tell and the number-one legibility killer at small size.','Calm that band: blur or darken it, add a plate, or move the title to the quietest third.', zTxt);
   else add('pass','Behind the title','Calm behind the '+state.zone.toLowerCase()+' third. The lettering has room to read.', null, zTxt);
   /* palette */
   const palTxt='colors needed to cover 80% of the image: '+a.cover80+' · saturation '+(a.satMean<0.18?'muted':(a.satMean>0.5?'saturated':'moderate'));
@@ -606,7 +607,7 @@ function renderSignals(){
 function verdictData(){
   const m=signals(), r=readerScore(); const f=state.fields;
   let head, line;
-  if(r.score==null){ head='Half a verdict'; line='The pixels have spoken (measured '+m.score+'/10). Score the reader checklist above to get the other half — the half that actually decides the click.'; }
+  if(r.score==null||r.n<QUESTIONS.length){ head='Half a verdict'; line='The pixels have spoken (measured '+m.score+'/10). '+(r.n?'You have scored '+r.n+' of '+QUESTIONS.length+' reader lines (running '+r.score+'/10). Finish the checklist to get the other half — the half that actually decides the click.':'Score the reader checklist above to get the other half — the half that actually decides the click.'); }
   else if(m.score>=8&&r.score>=8){ head='Shelf-ready'; line='Measured '+m.score+'/10, reader '+r.score+'/10. Put it beside the twelve real competitors one last time, then ship it.'; }
   else if(m.score>=6||r.score>=6){ head='Fixable'; line='Measured '+m.score+'/10, reader '+r.score+'/10. This is a revision, not a restart. The cards marked Fix and Watch, plus your lowest checklist lines, are the designer\'s to-do list.'; }
   else { head='Back to the brief'; line='Measured '+m.score+'/10, reader '+r.score+'/10. Patching this will cost more than re-briefing it. Open the Cover Brief Builder, tighten the brief, and go again.'; }
