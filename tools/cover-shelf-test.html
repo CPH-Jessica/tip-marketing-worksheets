@@ -591,9 +591,10 @@ function signals(){
   else if(a.cover80<=20) add('pass','Palette','Controlled palette. Enough variety to feel rich, not enough to feel noisy. (Photographic covers naturally run higher here.)', null, palTxt);
   else add('warn','Palette','Wide palette. Thumbnails reward two or three colors plus one accent; this has many pulling in different directions.','Unify with a color grade or tint so the cover reads as one object, and save the accent for the title or the hero.', palTxt);
   /* specs */
-  const flags=specFlags(); const bad=flags.find(f=>f.k==='fail'), warnf=flags.find(f=>f.k==='warn'&&/ratio|Wider|Taller/i.test(f.t));
+  const flags=specFlags(); const bad=flags.find(f=>f.k==='fail'), ratioW=flags.find(f=>f.k==='warn'&&/Wider|Taller/.test(f.t)), sizeW=flags.find(f=>f.k==='warn'&&/Smaller/.test(f.t));
   if(bad) add('warn','File specs',bad.t,'Export the full-size file before you upload anywhere.');
-  else if(warnf) add('warn','File specs',warnf.t,'Re-export at the store ratio so the thumbnail fills its slot.');
+  else if(ratioW) add('warn','File specs',ratioW.t+(sizeW?' '+sizeW.t:''),'Re-export at the store ratio so the thumbnail fills its slot.');
+  else if(sizeW) add('info','File specs',sizeW.t,'Export the full-size file before you upload anywhere.'); /* a small test file is fine for the thumbnail test itself */
   else add('pass','File specs','Size and ratio are store-ready.');
   return {items, score:Math.max(0,Math.min(10,score))};
 }
@@ -677,23 +678,35 @@ function buildClaudePrompt(){
   'Be direct. Do not be polite about a cover that will cost me sales.'].filter(l=>l!==undefined).join('\n');
 }
 function copyClaude(){ copyText(buildClaudePrompt(),'Prompt copied — paste it into Claude and attach the cover image.'); }
-function downloadShelf(){
-  const cells=shelfCells(); const cw=180, ch=270, pad=18, cols=4, rows=Math.ceil(cells.length/cols);
-  const c=document.createElement('canvas'); c.width=cols*cw+(cols+1)*pad; c.height=rows*(ch+44)+(rows+1)*pad; const x=c.getContext('2d');
-  x.fillStyle=state.dark?'#141414':'#ffffff'; x.fillRect(0,0,c.width,c.height);
-  let loaded=0; const imgs=cells.map(()=>null);
+function shelfExportCanvas(done){
+  const cells=shelfCells(); const list=state.view==='list', dark=!!state.dark;
+  const cw=list?120:180, ch=list?180:270, pad=18, cols=list?1:4, rows=Math.ceil(cells.length/cols), rowH=list?ch:ch+48, textW=list?420:0;
+  const c=document.createElement('canvas'); c.width=cols*cw+(cols+1)*pad+textW; c.height=rows*rowH+(rows+1)*pad; const x=c.getContext('2d');
+  x.fillStyle=dark?'#141414':'#ffffff'; x.fillRect(0,0,c.width,c.height);
+  const title=(state.fields.f_title||'').trim(), pen=(state.fields.f_pen||'').trim();
+  const imgs=cells.map(()=>null); let loaded=0;
   const draw=()=>{
     cells.forEach((cell,i)=>{
-      const col=i%cols, row=Math.floor(i/cols); const px=pad+col*(cw+pad), py=pad+row*(ch+44+pad);
+      const col=i%cols, row=Math.floor(i/cols); const px=pad+col*(cw+pad), py=pad+row*(rowH+pad);
       const img=imgs[i]; if(img){ const s=Math.min(cw/img.naturalWidth, ch/img.naturalHeight); const w=img.naturalWidth*s, h=img.naturalHeight*s;
-        try{ x.filter=(state.gray?'grayscale(1) ':'')+(state.blur?'blur('+(cw/55).toFixed(1)+'px)':'')||'none'; }catch(e){}
+        try{ x.filter=((state.gray?'grayscale(1) ':'')+(state.blur?'blur('+(cw/55).toFixed(1)+'px)':''))||'none'; }catch(e){}
         x.drawImage(img, px+(cw-w)/2, py+(ch-h), w, h); try{ x.filter='none'; }catch(e){} }
-      x.fillStyle=state.dark?'#3a3a3a':'#dddddd'; x.fillRect(px, py+ch+10, cw*0.85, 8); x.fillRect(px, py+ch+24, cw*0.5, 8);
+      const tx=list?px+cw+16:px, ty=list?py+8:py+ch+8, barW=list?360:cw;
+      if(cell.mine&&(title||pen)){
+        x.fillStyle=dark?'#eeeeee':'#222222'; x.font=(list?'bold 18px':'bold 12px')+' sans-serif'; x.fillText(title||'Your title', tx, ty+(list?18:12), barW);
+        x.fillStyle=dark?'#aaaaaa':'#666666'; x.font=(list?'14px':'11px')+' sans-serif'; x.fillText(pen, tx, ty+(list?40:26), barW);
+      } else {
+        x.fillStyle=dark?'#3a3a3a':'#dddddd'; x.fillRect(tx, ty+(list?6:4), barW*0.85, list?12:8); x.fillRect(tx, ty+(list?28:18), barW*0.5, list?12:8);
+      }
+      x.fillStyle='#e3a008'; x.font=(list?'14px':'10px')+' sans-serif'; x.fillText('★★★★☆', tx, ty+(list?66:40));
       if(cell.mine&&state.mine){ x.fillStyle='#c79a4b'; x.font='bold 12px sans-serif'; x.fillText('YOURS', px+4, py+14); }
     });
-    const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download=slug()+'-shelf.png'; a.click(); toast('Shelf image saved.');
+    done(c);
   };
   cells.forEach((cell,i)=>{ const im=new Image(); im.onload=()=>{ imgs[i]=im; if(++loaded===cells.length) draw(); }; im.onerror=()=>{ if(++loaded===cells.length) draw(); }; im.src=cell.src; });
+}
+function downloadShelf(){
+  shelfExportCanvas(c=>{ const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download=slug()+'-shelf'+(state.view==='list'?'-list':'')+'.png'; a.click(); toast('Shelf image saved.'); });
 }
 function copyText(txt, okMsg){
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
