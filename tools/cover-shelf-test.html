@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Cover Shelf Test — See Your Cover the Way a Reader Scrolls Past It · The Invisible Pen</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #faf6f0; color: #3a3a3a; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 22px 18px 90px; line-height: 1.55; }
+.wrap { max-width: 920px; margin: 0 auto; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: #6d2b4e; }
+.brand { font-family: Georgia, serif; color: #c79a4b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 6px; }
+header { text-align: center; margin-bottom: 8px; }
+h1 { font-size: 27px; margin-bottom: 4px; }
+.tagline { color: #8a7560; font-size: 14px; font-style: italic; margin-bottom: 14px; text-align: center; }
+.privacy { background: #f6ecf1; border: 1px solid #e3c9d6; border-radius: 10px; padding: 9px 14px; font-size: 13px; color: #6d2b4e; text-align: center; margin-bottom: 18px; }
+
+.panel { background: #fffdf9; border: 1px solid #ecdfd0; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(109,43,78,.06); margin-bottom: 18px; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel .lead { color: #8a7560; font-size: 13.5px; margin-bottom: 14px; }
+.stepnum { display: inline-block; background: #6d2b4e; color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px; font-family: Georgia, serif; }
+.gated { display: none; }
+.gated.show { display: block; }
+
+/* drop zones */
+.drop { border: 2px dashed #d9c4ad; background: #fff; border-radius: 14px; padding: 30px 20px; text-align: center; color: #5a4636; cursor: pointer; transition: all .15s; font-size: 14px; }
+.drop:hover, .drop.over { border-color: #c79a4b; background: #fffaf0; }
+.drop .drop-icon { font-size: 34px; margin-bottom: 6px; }
+.drop.small { padding: 16px 18px; }
+.drop .opt { color: #b0a08e; font-size: 12.5px; }
+
+/* cover + specs */
+.cover-row { display: grid; grid-template-columns: 220px 1fr; gap: 20px; margin-top: 16px; align-items: start; }
+@media (max-width: 640px){ .cover-row { grid-template-columns: 1fr; } }
+.cover-preview { background: #fff; border: 1px solid #ecdfd0; border-radius: 10px; padding: 12px; text-align: center; }
+.cover-preview img { max-width: 100%; max-height: 300px; box-shadow: 0 3px 10px rgba(0,0,0,.18); }
+.specs h3 { font-size: 15px; margin-bottom: 6px; }
+.specs table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.specs td { padding: 4px 0; border-bottom: 1px dashed #ecdfd0; vertical-align: top; }
+.specs td:first-child { color: #8a7560; width: 38%; }
+.flag { display: block; margin-top: 8px; font-size: 12.5px; padding: 7px 10px; border-radius: 8px; border-left: 3px solid; }
+.flag.pass { background: #eef6ee; border-color: #4e8d5a; color: #2f5a37; }
+.flag.warn { background: #fcf8ef; border-color: #c79a4b; color: #7a5e2e; }
+.flag.fail { background: #fbeeee; border-color: #b85c5c; color: #7a2e2e; }
+.flag.info { background: #eef3f6; border-color: #5b8aa6; color: #2e4e62; }
+
+label { display: block; font-weight: 700; font-size: 13.5px; color: #5a4636; margin: 14px 0 4px; }
+label .opt { font-weight: 400; color: #b0a08e; font-size: 12px; }
+.hint { font-size: 12.5px; color: #9a8674; font-style: italic; margin: 6px 0; }
+input[type=text], textarea {
+  width: 100%; font: inherit; font-size: 14px; color: #3a3a3a; background: #fff;
+  border: 1.5px solid #ddcdba; border-radius: 8px; padding: 9px 11px; transition: border-color .2s;
+}
+input:focus, textarea:focus { outline: none; border-color: #c79a4b; box-shadow: 0 0 0 3px #c79a4b22; }
+textarea { resize: vertical; min-height: 64px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.chip { border: 1.5px solid #ddcdba; background: #fff; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; transition: all .15s; user-select: none; }
+.chip:hover { border-color: #c79a4b; }
+.chip.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+.import-bar { background: #fcf8ef; border: 1px solid #ecdcbf; border-left: 3px solid #c79a4b; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 14px; font-size: 13px; color: #7a5e2e; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+button { font: inherit; cursor: pointer; border-radius: 9px; border: none; }
+.btn-gold { background: #c79a4b; color: #fff; padding: 11px 22px; font-weight: 700; font-size: 14px; }
+.btn-gold:hover { background: #b08538; }
+.btn-ghost { background: #fff; color: #6d2b4e; border: 1.5px solid #6d2b4e; padding: 9px 16px; font-weight: 700; font-size: 13px; }
+.btn-ghost:hover { background: #f6ecf1; }
+.btn-ghost.small { padding: 6px 12px; font-size: 12.5px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.tog { background: #fff; border: 1.5px solid #ddcdba; color: #5a4636; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-weight: 700; }
+.tog:hover { border-color: #c79a4b; }
+.tog.on { background: #6d2b4e; border-color: #6d2b4e; color: #fff; }
+.toggles { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+
+/* thumbnail wall */
+.wall { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; justify-content: center; background: #fff; border: 1px solid #ecdfd0; border-radius: 12px; padding: 22px 16px 14px; }
+.wall.dark { background: #141414; border-color: #333; }
+.wall figure { text-align: center; }
+@media (max-width: 640px){ .wall { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 12px; } .wall figure { flex: none; } }
+.wall figure img { display: block; margin: 0 auto; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.wall figcaption { font-size: 11px; color: #8a7560; margin-top: 7px; max-width: 130px; line-height: 1.35; }
+.wall.dark figcaption { color: #bbb; }
+.wall figcaption b { display: block; color: #5a4636; }
+.wall.dark figcaption b { color: #eee; }
+.ask { background: #f6ecf1; border-left: 3px solid #6d2b4e; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 14px; font-size: 13.5px; color: #4a3a2c; }
+
+/* shelf */
+.compstrip { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+.compstrip .cmp { position: relative; width: 44px; height: 66px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.compstrip .cmp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.compstrip .cmp button { position: absolute; top: 1px; right: 1px; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; font-size: 11px; line-height: 16px; padding: 0; }
+.shelf-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.shelf-controls .inline { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12.5px; }
+.shelf-controls input[type=range] { width: 120px; }
+.viewmodes { margin-left: auto; display: flex; gap: 6px; }
+.shelf { background: #fff; border: 1px solid #ecdfd0; border-radius: 12px; padding: 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--cell, 110px), 1fr)); gap: 18px 14px; --textbar: #ddd; --textbar2: #eee; --txt: #333; --dim: #777; }
+.shelf.dark { background: #141414; border-color: #333; --textbar: #3a3a3a; --textbar2: #2c2c2c; --txt: #eee; --dim: #999; }
+.shelf.list { grid-template-columns: 1fr; gap: 10px; }
+.cell { position: relative; font-size: 11px; color: var(--txt); }
+.cell img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; display: block; box-shadow: 0 2px 6px rgba(0,0,0,.25); background: #ccc; }
+.cell .bar { height: 7px; border-radius: 3px; background: var(--textbar); margin-top: 6px; }
+.cell .bar.short { width: 55%; background: var(--textbar2); }
+.cell .ttl { margin-top: 6px; font-weight: 700; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.cell .auth { color: var(--dim); }
+.cell .stars { color: #e3a008; letter-spacing: -1px; margin-top: 3px; font-size: 10px; }
+.cell .stars span { color: var(--dim); letter-spacing: 0; margin-left: 4px; }
+.cell .price { margin-top: 2px; font-weight: 700; }
+.cell .mine-tag { position: absolute; top: -8px; left: -8px; background: #c79a4b; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; box-shadow: 0 1px 3px rgba(0,0,0,.3); z-index: 2; }
+.cell .standin { position: absolute; left: 0; right: 0; top: 42%; text-align: center; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.55); pointer-events: none; }
+.shelf.list .cell { display: grid; grid-template-columns: var(--cell, 110px) 1fr; gap: 14px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--textbar2); }
+.shelf.list .cell:last-child { border-bottom: none; }
+.shelf.list .cell .meta { padding-top: 4px; font-size: 13px; }
+.shelf.list .cell .bar { height: 9px; max-width: 420px; }
+.shelf.list .cell .bar.short { width: 40%; }
+.shelf.list .cell .ttl { font-size: 15px; -webkit-line-clamp: 2; }
+.shelf.list .cell .stars { font-size: 12px; }
+.shelf.list .cell .standin { top: 40%; }
+.shelf img.fx-gray { filter: grayscale(1); }
+.shelf img.fx-blur { filter: blur(var(--blur, 1.5px)); }
+.shelf img.fx-gray.fx-blur { filter: grayscale(1) blur(var(--blur, 1.5px)); }
+
+/* squint */
+.squint-row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; background: #fff; border: 1px solid #ecdfd0; border-radius: 12px; padding: 18px; }
+.squint-row figure { text-align: center; width: 180px; }
+.squint-row img { width: 160px; aspect-ratio: 2 / 3; object-fit: cover; display: block; margin: 0 auto; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.squint-row figcaption { font-size: 11.5px; color: #8a7560; margin-top: 8px; line-height: 1.35; }
+.squint-row figcaption b { display: block; color: #5a4636; }
+.eink { display: inline-block; background: #2b2b2b; border-radius: 10px; padding: 14px 10px 26px; }
+.eink img { width: 136px; filter: grayscale(1) contrast(.92) brightness(1.04); box-shadow: none; outline: 1px solid #555; }
+.eink .bezel { width: 26px; height: 4px; background: #444; border-radius: 2px; margin: 10px auto -18px; }
+img.gray { filter: grayscale(1); }
+img.blur1 { filter: blur(2.2px); }
+img.blur2 { filter: blur(4.5px); }
+
+/* signals */
+.scorebar { display: flex; gap: 16px; align-items: center; background: #fff; border: 1px solid #ecdfd0; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+.ring { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 24px; font-weight: 700; color: #fff; background: #9a8674; flex: none; }
+.ring.good { background: #4e8d5a; } .ring.mid { background: #c79a4b; } .ring.low { background: #b85c5c; }
+.scorebar b { color: #6d2b4e; font-family: Georgia, serif; font-size: 16px; }
+.sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px){ .sig-grid { grid-template-columns: 1fr; } }
+.sig { background: #fff; border: 1px solid #ecdfd0; border-left: 3px solid #9a8674; border-radius: 0 10px 10px 0; padding: 11px 14px; }
+.sig.pass { border-left-color: #4e8d5a; } .sig.warn { border-left-color: #c79a4b; } .sig.fail { border-left-color: #b85c5c; } .sig.info { border-left-color: #5b8aa6; }
+.sig h4 { font-size: 11.5px; color: #a07c2e; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; display: flex; justify-content: space-between; gap: 8px; }
+.sig h4 .st { font-size: 10px; padding: 1px 7px; border-radius: 999px; color: #fff; background: #9a8674; }
+.sig.pass h4 .st { background: #4e8d5a; } .sig.warn h4 .st { background: #c79a4b; } .sig.fail h4 .st { background: #b85c5c; } .sig.info h4 .st { background: #5b8aa6; }
+.sig p { font-size: 13px; color: #4a3a2c; }
+.sig p.do { margin-top: 5px; color: #6d2b4e; font-size: 12.5px; }
+.sig .num { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: #9a8674; margin-top: 4px; }
+.swatches { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.swatch { width: 34px; }
+.swatch .box { height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,.12); }
+.swatch .pct { font-size: 9.5px; color: #9a8674; text-align: center; margin-top: 2px; }
+
+/* checklist */
+.q { background: #fff; border: 1px solid #ecdfd0; border-radius: 10px; padding: 11px 14px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; }
+@media (max-width: 640px){ .q { grid-template-columns: 1fr; } }
+.q .qt { font-weight: 700; font-size: 13.5px; color: #5a4636; }
+.q .qh { font-size: 12.5px; color: #9a8674; }
+.q .scale { display: flex; gap: 5px; }
+.q .scale .chip { width: 34px; text-align: center; padding: 6px 0; }
+
+/* verdict */
+.verdict { background: #2d2620; color: #efe7da; border-radius: 12px; padding: 18px 20px; font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+.verdict h3 { color: #f3d9a4; font-size: 18px; margin-bottom: 6px; }
+.verdict ul { margin: 6px 0 0 18px; }
+.verdict li { margin-bottom: 3px; }
+
+footer { text-align: center; margin-top: 26px; font-size: 11.5px; color: #b0a08e; line-height: 1.6; }
+footer a { color: #6d2b4e; }
+.brand-foot { font-family: Georgia, serif; color: #6d2b4e; font-weight: 700; font-size: 12px; letter-spacing: .05em; }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #6d2b4e; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .25s; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 50; }
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">The Invisible Pen · Clark Publishing House</div>
+  <header><h1>🔍 Cover Shelf Test</h1></header>
+  <div class="tagline">Drop in your cover and see it the way a reader does: postage-stamp small, in a grid of competitors, in one second. Score it honestly, then take the critique to Claude.</div>
+  <div class="privacy">🔒 Everything runs in your browser. Your cover and your competitor screenshots never leave this device — nothing is uploaded anywhere.</div>
+
+  <!-- STEP 1: cover -->
+  <div class="panel">
+    <h2><span class="stepnum">1</span>Drop in your cover</h2>
+    <p class="lead">JPG or PNG, front cover only. The ebook file you would upload to KDP is the right one to test.</p>
+    <div class="drop" id="coverDrop" tabindex="0" role="button" aria-label="Choose your cover image">
+      <div class="drop-icon">🖼️</div>
+      <div><b>Drag your cover here</b>, click to choose a file, or paste it from your clipboard.</div>
+      <input type="file" id="coverFile" accept="image/*" hidden>
+    </div>
+    <div id="coverLoaded" style="display:none;">
+      <div class="cover-row">
+        <div class="cover-preview"><img id="coverImg" alt="Your cover at full size"></div>
+        <div class="specs">
+          <h3>Specs</h3>
+          <table id="specTable"></table>
+          <div id="specFlags"></div>
+          <div style="margin-top:10px;"><button class="btn-ghost small" onclick="pickCover()">↺ Swap cover</button></div>
+        </div>
+      </div>
+      <div class="import-bar" id="importBar" style="display:none;">📥 Found your <b>Cover Brief</b> on this device. <button class="btn-ghost small" onclick="importBrief()">Import title, pen name &amp; shelf</button></div>
+      <div class="two">
+        <div><label for="f_title">Title <span class="opt">(as it reads on the cover)</span></label><input type="text" id="f_title" placeholder="The title"></div>
+        <div><label for="f_pen">Pen name on cover</label><input type="text" id="f_pen" placeholder="Pen name"></div>
+      </div>
+      <div class="two">
+        <div><label for="f_lane">Genre shelf <span class="opt">(the Amazon subcategory it competes in)</span></label><input type="text" id="f_lane" list="laneList" placeholder="e.g. Steamy Small Town"><datalist id="laneList"></datalist></div>
+        <div><label>Where does the title sit?</label><div class="chips" id="zoneChips"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: wall -->
+  <div class="panel gated" id="p_wall">
+    <h2><span class="stepnum">2</span>The thumbnail wall</h2>
+    <p class="lead">These are the sizes readers actually meet your cover at. Store layouts shift, so treat the pixel counts as close enough, not gospel.</p>
+    <div class="toggles"><button class="tog" id="tg_wallDark" onclick="toggle('wallDark')">🌙 Dark page</button><span class="hint" style="margin:0;">The Kindle app and many phones show the store on a dark background.</span></div>
+    <div class="wall" id="wall"></div>
+    <div class="ask"><b>Half-close your eyes.</b> At the two smallest sizes: can you read the title? Could a stranger name the genre? If not, nothing else on this page will save it — fix that first.</div>
+  </div>
+
+  <!-- STEP 3: shelf -->
+  <div class="panel gated" id="p_shelf">
+    <h2><span class="stepnum">3</span>The shelf</h2>
+    <p class="lead">Readers never see your cover alone. Drop in the covers it will sit beside — screenshot the top twelve in your subcategory — and see whether yours belongs there <i>and</i> still gets the click.</p>
+    <div class="drop small" id="compDrop" tabindex="0" role="button" aria-label="Add competitor covers">
+      <div><b>Drop competitor covers here</b> (several at once is fine) or click to choose. <span class="opt">They stay on this device.</span></div>
+      <input type="file" id="compFile" accept="image/*" multiple hidden>
+    </div>
+    <div class="compstrip" id="compStrip"></div>
+    <div class="shelf-controls">
+      <label class="inline">Size <input type="range" id="shelfSize" min="60" max="170" step="5"></label>
+      <button class="tog" id="tg_gray" onclick="toggle('gray')">◐ Grayscale</button>
+      <button class="tog" id="tg_blur" onclick="toggle('blur')">👓 Squint</button>
+      <button class="tog" id="tg_dark" onclick="toggle('dark')">🌙 Dark page</button>
+      <button class="tog" id="tg_mine" onclick="toggle('mine')">📍 Show mine</button>
+      <button class="btn-ghost small" onclick="shuffleShelf()">🔀 Shuffle</button>
+      <div class="viewmodes"><button class="tog" id="vm_grid" onclick="setView('grid')">Store grid</button><button class="tog" id="vm_list" onclick="setView('list')">Search list</button></div>
+    </div>
+    <div class="shelf" id="shelf"></div>
+    <div class="hint" id="shelfNote"></div>
+  </div>
+
+  <!-- STEP 4: squint -->
+  <div class="panel gated" id="p_squint">
+    <h2><span class="stepnum">4</span>Squint, grayscale, e-ink</h2>
+    <p class="lead">Blur strips the detail and leaves the shapes; grayscale strips the color and leaves the contrast. If the focal point and the title survive both, the cover will survive a thumbnail.</p>
+    <div class="squint-row">
+      <figure><img class="sq gray" alt="Your cover in grayscale"><figcaption><b>Grayscale</b>Contrast only. Does the title still separate from the background?</figcaption></figure>
+      <figure><img class="sq blur1" alt="Your cover blurred"><figcaption><b>Squint</b>What shapes survive? That is all a thumbnail is.</figcaption></figure>
+      <figure><img class="sq blur2" alt="Your cover heavily blurred"><figcaption><b>Hard squint</b>Is there still ONE thing? Or a smear?</figcaption></figure>
+      <figure><div class="eink"><img class="sq" alt="Your cover on an e-ink reader"><div class="bezel"></div></div><figcaption><b>E-ink Kindle</b>No color at all, ever. Still a book you would open?</figcaption></figure>
+    </div>
+  </div>
+
+  <!-- STEP 5: measured -->
+  <div class="panel gated" id="p_signals">
+    <h2><span class="stepnum">5</span>What the pixels say</h2>
+    <p class="lead">Counted from the image itself: contrast, clutter, color, and whether one thing dominates. Numbers, not taste — this cannot tell you if the cover is beautiful or on-genre. That is step 6.</p>
+    <div class="scorebar"><div class="ring" id="mRing">–</div><div><b>Measured readiness</b><div class="hint" id="mSummary" style="margin:2px 0 0;"></div></div></div>
+    <div class="sig-grid" id="signals"></div>
+  </div>
+
+  <!-- STEP 6: checklist -->
+  <div class="panel gated" id="p_check">
+    <h2><span class="stepnum">6</span>The reader checklist</h2>
+    <p class="lead">Now you score it. Be the stranger scrolling at 11 p.m. with a thumb on the screen, not the author who knows what the symbols mean. 1 = no, 5 = absolutely.</p>
+    <div id="checklist"></div>
+    <div class="scorebar" style="margin-top:14px;"><div class="ring" id="rRing">–</div><div><b>Reader score</b><div class="hint" id="rSummary" style="margin:2px 0 0;"></div></div></div>
+    <label for="f_notes">What would you change? <span class="opt">(optional — this goes into the critique prompt)</span></label>
+    <textarea id="f_notes" placeholder="e.g. title font too thin; the couple vanishes at small size; background competes with the text"></textarea>
+  </div>
+
+  <!-- STEP 7: verdict -->
+  <div class="panel gated" id="p_verdict">
+    <h2><span class="stepnum">7</span>Verdict &amp; next step</h2>
+    <div class="verdict" id="verdict"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="copyClaude()">💬 Copy critique prompt for Claude</button>
+      <button class="btn-ghost" onclick="downloadReport()">⬇ Download report (.md)</button>
+      <button class="btn-ghost" onclick="downloadShelf()">🖼 Save the shelf as an image</button>
+      <button class="btn-ghost" onclick="resetAll()">↻ Start over</button>
+    </div>
+    <div class="hint">Paste the prompt into Claude and <b>attach the cover image</b> — Claude cannot see the picture from the words alone. Drag the shelf image in too if you want the comp check grounded in what you actually saw.</div>
+  </div>
+
+  <footer>
+    Autosaves in this page (a shrunken copy of your cover, so it survives a refresh). The chain: <a href="cover-brief-builder.html">Cover Brief Builder</a> → designer → <b>Cover Shelf Test</b> → launch. Pairs with <a href="../pen-name-launcher/lesson-4-worksheet.html">Lesson 4: Cover Creation on a Budget</a>.
+    <div class="brand-foot" style="margin-top:10px;">The Invisible Pen · Clark Publishing House LLC</div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const LS_KEY='cover-shelf-test-v1';
+const BRIEF_KEY='cover-brief-v1';
+/* Lane keys match the Cover Brief Builder so a saved brief can be imported. */
+const LANE_NAMES={romcom:'Romantic Comedy','steamy-smalltown':'Steamy Small Town',billionaire:'Steamy Billionaire',hockey:'Hockey / Athlete Romance','cowboy-steamy':'Cowboy — Steamy',mountain:'Mountain Man',military:'Military / Protector',seasoned:'Later-in-Life / Seasoned','smalltown-sweet':'Small Town Sweet','cowboy-sweet':'Cowboy — Sweet',holiday:'Holiday Romance',inspirational:'Christian / Inspirational',dark:'Dark Romance',mafia:'Mafia Romance',mc:'MC Romance',whychoose:'Why Choose / Reverse Harem','cozy-mys':'Cozy Mystery',suspense:'Romantic Suspense',regency:'Regency Romance',medieval:'Medieval Romance','western-hist':'Historical Western Romance',paranormal:'Paranormal Romance',romantasy:'Romantasy',monster:'Monster Romance',alien:'Alien / Sci-Fi Romance',shortreads:'90-Minute Author (Short Reads)',psych:'Psychological Thriller',domestic:'Domestic Thriller',procedural:'Detective / Procedural',legal:'Legal Thriller',action:'Action / Vigilante',darkcrime:'Serial Killer / Dark Crime',caper:'Comic Caper / Cozy Crime',hardboiled:'Hardboiled / PI',histmystery:'Historical Mystery',epic:'Epic Fantasy',urban:'Urban Fantasy',cozyfantasy:'Cozy Fantasy',grimdark:'Grimdark Fantasy',litrpg:'LitRPG / Progression',yafantasy:'YA Fantasy',spaceopera:'Space Opera',milsf:'Military Sci-Fi',hardsf:'Hard SF / Techno-Thriller',postapoc:'Dystopian / Post-Apocalyptic',supernatural:'Supernatural Horror',gothic:'Gothic Horror',cosmic:'Cosmic / Folk Horror',bookclub:"Book Club / Women's Fiction",literary:'Literary / Upmarket',histfic:'Historical Fiction','western-trad':'Traditional Western',adventure:'Action-Adventure / Treasure Hunt'};
+
+/* Heights are approximate CSS pixels for common storefront slots. Width follows the cover's own ratio. */
+const SIZES=[
+  {h:75,  n:'Smallest you will ever be seen', s:'browse stamp, email promo'},
+  {h:120, n:'Store grid on a phone', s:'Kindle app, mobile search'},
+  {h:147, n:'Goodreads list', s:'shelf & list view'},
+  {h:160, n:'Also-bought carousel', s:'product page row'},
+  {h:200, n:'Search results, desktop', s:'the main shelf'},
+  {h:300, n:'Product page tile / ad', s:'the biggest most readers see'}
+];
+const ZONES=['Top','Middle','Bottom','Across the whole cover'];
+const QUESTIONS=[
+  ['Genre in one second','A stranger could name the genre (and the heat level) before reading a word.'],
+  ['One focal point','Your eye lands on one thing first — and that thing is on purpose.'],
+  ['Title readable at the smallest size','At postage-stamp size the title is still a word, not a smudge.'],
+  ['Author name earns its space','Readable, or deliberately small. Not fighting the title.'],
+  ['Belongs on today\'s shelf','Would sit beside this year\'s top 20 in the subcategory without looking like 2012.'],
+  ['Still stands out on that shelf','Follows the shelf\'s rules and still gets the eye first.'],
+  ['Promise matches the book','Mood, heat, and tone on the cover match the blurb inside.'],
+  ['No homemade tells','No stretched images, clip-art, default fonts, drop-shadow on everything, or text laid over busy detail.'],
+  ['Series-ready','The look can carry across a series (same lockup, shifting palette). Score 5 if it is a standalone.'],
+  ['The click','Gut answer: out of the twelve on the shelf, would you tap this one?']
+];
+const PLACEHOLDER_PALETTES=[['#1b2a4a','#3d5a80'],['#4a1f2e','#8a3b55'],['#1f3d2e','#3f7a56'],['#2b2b2b','#5a5a5a'],['#5a3a1e','#a0703d'],['#2e2a4a','#5e5490'],['#0f4a52','#1d8a96'],['#5c1f1f','#a33a3a'],['#3a3a2a','#7a7a4e'],['#2a1f3d','#6a4a8a'],['#4a3a2e','#8a7560'],['#1e2e3a','#3f6a86']];
+const MAX_CELLS=12;
+
+let state=null, coverEl=null, analysis=null, placeholders=[];
+
+/* ============ state ============ */
+function blank(){ return {v:1, cover:null, fields:{}, zone:'Top', comps:[], order:[], shelfSize:110, gray:false, blur:false, dark:false, mine:false, wallDark:false, view:'grid', check:{}}; }
+function load(){ try{ state=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ state=null; } if(!state||!state.fields) state=blank(); if(!Array.isArray(state.comps)) state.comps=[]; if(!Array.isArray(state.order)) state.order=[]; if(!state.check) state.check={}; }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); return true; }catch(e){ toast('Couldn\'t autosave (browser storage is full). The page still works — you\'ll just need to re-drop the cover after a refresh.', 5000); return false; } }
+function toast(m,ms){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'), ms||2600); }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return (''+s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============ init ============ */
+function init(){
+  load();
+  const dl=$('laneList'); Object.values(LANE_NAMES).sort().forEach(n=>{ const o=document.createElement('option'); o.value=n; dl.appendChild(o); });
+  buildZoneChips(); buildChecklist(); makePlaceholders();
+  ['f_title','f_pen','f_lane','f_notes'].forEach(id=>{ const el=$(id); el.value=state.fields[id]||''; el.addEventListener('input',()=>{ state.fields[id]=el.value; save(); if(id!=='f_notes'){ renderShelf(); renderSignals(); } renderVerdict(); }); });
+  $('shelfSize').value=state.shelfSize; $('shelfSize').addEventListener('input',e=>{ state.shelfSize=+e.target.value; save(); applyShelfStyle(); });
+  wireDrop($('coverDrop'), $('coverFile'), files=>{ if(files[0]) loadCover(files[0]); });
+  wireDrop($('compDrop'), $('compFile'), files=>addComps(files));
+  document.addEventListener('paste', e=>{ const fs=[...((e.clipboardData&&e.clipboardData.files)||[])].filter(f=>f.type.startsWith('image/')); if(!fs.length) return; e.preventDefault(); if(!state.cover) loadCover(fs[0]); else addComps(fs); });
+  syncToggles();
+  if(state.cover&&state.cover.data){ const img=new Image(); img.onload=()=>{ coverEl=img; analysis=analyze(img); showCover(); }; img.src=state.cover.data; }
+  checkBriefImport();
+}
+function wireDrop(zone, input, onFiles){
+  zone.addEventListener('click', ()=>input.click());
+  zone.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); input.click(); } });
+  input.addEventListener('change', ()=>{ const fs=[...input.files]; input.value=''; if(fs.length) onFiles(fs); });
+  ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev, e=>{ e.preventDefault(); zone.classList.add('over'); }));
+  ['dragleave','drop'].forEach(ev=>zone.addEventListener(ev, e=>{ e.preventDefault(); zone.classList.remove('over'); }));
+  zone.addEventListener('drop', e=>{ const fs=[...(e.dataTransfer.files||[])].filter(f=>f.type.startsWith('image/')); if(fs.length) onFiles(fs); else toast('That wasn\'t an image file.'); });
+}
+function pickCover(){ $('coverFile').click(); }
+function checkBriefImport(){
+  let b=null; try{ b=JSON.parse(localStorage.getItem(BRIEF_KEY)); }catch(e){}
+  const has=b&&b.fields&&((b.fields.f_title&&b.fields.f_title.trim())||(b.fields.f_pen&&b.fields.f_pen.trim())||b.lane);
+  $('importBar').style.display=has?'flex':'none';
+}
+function importBrief(){
+  let b=null; try{ b=JSON.parse(localStorage.getItem(BRIEF_KEY)); }catch(e){}
+  if(!b||!b.fields){ toast('No Cover Brief found on this device.'); return; }
+  const set=(id,v)=>{ if(v&&(''+v).trim()){ state.fields[id]=(''+v).trim(); $(id).value=state.fields[id]; } };
+  set('f_title', b.fields.f_title); set('f_pen', b.fields.f_pen); set('f_lane', LANE_NAMES[b.lane]||'');
+  save(); renderShelf(); renderSignals(); renderVerdict(); toast('Imported from your Cover Brief.');
+}
+
+/* ============ cover ============ */
+function readAsDataURL(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(file); }); }
+function loadImage(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error('bad image')); i.src=src; }); }
+function shrink(img, maxH, q){
+  const s=Math.min(1, maxH/img.naturalHeight); const w=Math.max(1,Math.round(img.naturalWidth*s)), h=Math.max(1,Math.round(img.naturalHeight*s));
+  const c=document.createElement('canvas'); c.width=w; c.height=h; const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h);
+  return c.toDataURL('image/jpeg', q||0.85);
+}
+async function loadCover(file){
+  try{
+    const url=await readAsDataURL(file); const img=await loadImage(url);
+    const small=shrink(img, 1000, 0.85); const el=await loadImage(small);
+    state.cover={data:small, w:img.naturalWidth, h:img.naturalHeight, bytes:file.size, type:file.type||'image', name:file.name||'cover'};
+    coverEl=el; analysis=analyze(el);
+    if(!save()){ /* still usable in memory */ }
+    showCover(); toast('Cover loaded. Scroll — the tests run as you go.');
+  }catch(e){ toast('Couldn\'t read that file. Try a JPG or PNG.'); }
+}
+function showCover(){
+  $('coverDrop').style.display='none'; $('coverLoaded').style.display='block';
+  $('coverImg').src=state.cover.data;
+  document.querySelectorAll('.gated').forEach(p=>p.classList.add('show'));
+  renderSpecs(); renderWall(); renderShelf(); renderSquint(); renderSignals(); renderCheckScore(); renderVerdict();
+}
+function ratioText(w,h){ return '1 : '+(h/w).toFixed(2)+' (width : height)'; }
+function specFlags(){
+  const c=state.cover; if(!c) return []; const out=[]; const r=c.h/c.w;
+  if(c.w<625||c.h<1000) out.push({k:'fail',t:'Below KDP\'s ebook minimum of 1,000 × 625 px. Fine for a thumbnail test; not the file to upload.'});
+  else if(c.h<1600) out.push({k:'warn',t:'Smaller than KDP\'s recommended 2,560 × 1,600 px. Fine for testing — upload the full-size export for the real listing.'});
+  else out.push({k:'pass',t:'Meets KDP\'s recommended 2,560 × 1,600 px ebook size.'});
+  if(r<1.45) out.push({k:'warn',t:'Wider than a book: ebook stores expect roughly 1 : 1.6 (height 1.6× width). A squat cover shows up small with wasted space around it.'});
+  else if(r>1.72) out.push({k:'warn',t:'Taller than usual: ebook stores expect roughly 1 : 1.6. Very tall covers get cropped or shrunk in grids.'});
+  else out.push({k:'pass',t:'Ratio sits in the 1 : 1.5 – 1 : 1.7 range stores are built for (1 : 1.6 is KDP\'s ideal).'});
+  if(c.h>=1600&&!/jpe?g|tiff?/i.test(c.type)) out.push({k:'info',t:'KDP accepts JPEG or TIFF for the ebook cover. A PNG tests fine here; export a JPEG for upload.'});
+  return out;
+}
+function renderSpecs(){
+  const c=state.cover; const t=$('specTable');
+  const kb=c.bytes>1048576?(c.bytes/1048576).toFixed(1)+' MB':Math.round(c.bytes/1024)+' KB';
+  t.innerHTML=[['File',esc(c.name)],['Type',esc((c.type||'').replace('image/','').toUpperCase()||'image')],['Size on disk',kb],['Pixels',c.w.toLocaleString()+' × '+c.h.toLocaleString()],['Ratio',ratioText(c.w,c.h)]].map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('');
+  $('specFlags').innerHTML=specFlags().map(f=>'<span class="flag '+f.k+'">'+f.t+'</span>').join('');
+}
+
+/* ============ zone chips & checklist ============ */
+function buildZoneChips(){
+  const c=$('zoneChips'); c.innerHTML='';
+  ZONES.forEach(z=>{ const ch=document.createElement('div'); ch.className='chip'+(state.zone===z?' on':''); ch.textContent=z; ch.onclick=()=>{ state.zone=z; save(); buildZoneChips(); renderSignals(); renderVerdict(); }; c.appendChild(ch); });
+}
+function buildChecklist(){
+  const c=$('checklist'); c.innerHTML='';
+  QUESTIONS.forEach((q,i)=>{
+    const row=document.createElement('div'); row.className='q';
+    const left=document.createElement('div'); left.innerHTML='<div class="qt">'+(i+1)+'. '+esc(q[0])+'</div><div class="qh">'+esc(q[1])+'</div>';
+    const sc=document.createElement('div'); sc.className='scale';
+    for(let v=1;v<=5;v++){ const ch=document.createElement('div'); ch.className='chip'+(state.check[i]===v?' on':''); ch.textContent=v; ch.onclick=()=>{ state.check[i]=(state.check[i]===v?undefined:v); save(); buildChecklist(); renderCheckScore(); renderVerdict(); }; sc.appendChild(ch); }
+    row.appendChild(left); row.appendChild(sc); c.appendChild(row);
+  });
+}
+function readerScore(){ const vals=QUESTIONS.map((q,i)=>state.check[i]).filter(v=>v>=1); if(!vals.length) return {n:0,score:null}; const avg=vals.reduce((a,b)=>a+b,0)/vals.length; return {n:vals.length, score:Math.round(avg*2*10)/10}; }
+function ringClass(s){ return s==null?'':(s>=8?'good':(s>=6?'mid':'low')); }
+function renderCheckScore(){
+  const r=readerScore(); const ring=$('rRing'); ring.className='ring '+ringClass(r.score); ring.textContent=r.score==null?'–':r.score;
+  $('rSummary').textContent=r.n?(r.n<QUESTIONS.length?r.n+' of '+QUESTIONS.length+' answered — keep going for the full picture.':'All ten answered. Below 6 means the shelf will not forgive it; 8 and up is a cover that earns clicks.'):'Score each line to get your reader number.';
+}
+
+/* ============ wall ============ */
+function renderWall(){
+  const w=$('wall'); w.innerHTML=''; w.classList.toggle('dark', !!state.wallDark);
+  SIZES.forEach(sz=>{ const f=document.createElement('figure'); const img=document.createElement('img'); img.src=state.cover.data; img.height=sz.h; img.alt='Your cover at about '+sz.h+' pixels tall'; const cap=document.createElement('figcaption'); cap.innerHTML='<b>'+esc(sz.n)+'</b>'+esc(sz.s)+' · ~'+sz.h+'px tall'; f.appendChild(img); f.appendChild(cap); w.appendChild(f); });
+}
+
+/* ============ shelf ============ */
+function makePlaceholders(){
+  placeholders=PLACEHOLDER_PALETTES.map((p,i)=>{
+    const c=document.createElement('canvas'); c.width=200; c.height=300; const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,i%2?200:0,300); g.addColorStop(0,p[0]); g.addColorStop(1,p[1]); x.fillStyle=g; x.fillRect(0,0,200,300);
+    x.fillStyle='rgba(255,255,255,.10)';
+    if(i%3===0){ x.beginPath(); x.arc(100,170,62,0,Math.PI*2); x.fill(); }
+    else if(i%3===1){ x.fillRect(40,120,120,110); }
+    else { x.beginPath(); x.moveTo(100,100); x.lineTo(170,210); x.lineTo(30,210); x.closePath(); x.fill(); }
+    x.fillStyle='rgba(255,255,255,.82)'; x.fillRect(30,40,140,18); x.fillRect(50,66,100,12);
+    x.fillStyle='rgba(255,255,255,.55)'; x.fillRect(60,262,80,8);
+    return {id:'ph'+i, src:c.toDataURL('image/png'), ph:true};
+  });
+}
+async function addComps(files){
+  let added=0;
+  for(const f of files){
+    if(state.comps.length>=MAX_CELLS-1){ toast('The shelf holds '+(MAX_CELLS-1)+' competitors. Remove one to add another.'); break; }
+    try{ const url=await readAsDataURL(f); const img=await loadImage(url); const small=shrink(img, 360, 0.8); state.comps.push({id:'c'+Date.now()+'_'+Math.random().toString(36).slice(2,7), data:small}); added++; }catch(e){}
+  }
+  if(added){ save(); renderShelf(); toast(added+' competitor cover'+(added===1?'':'s')+' added.'); }
+}
+function removeComp(id){ state.comps=state.comps.filter(c=>c.id!==id); state.order=state.order.filter(x=>x!==id); save(); renderShelf(); }
+function shelfCells(){
+  const cells=[{id:'mine', src:state.cover.data, mine:true}];
+  state.comps.forEach(c=>cells.push({id:c.id, src:c.data}));
+  for(let i=0; cells.length<MAX_CELLS && i<placeholders.length; i++) cells.push(placeholders[i]);
+  const ids=cells.map(c=>c.id);
+  let order=state.order.filter(id=>ids.includes(id)); ids.forEach(id=>{ if(!order.includes(id)) order.push(id); });
+  if(order.join()!==state.order.join()){ state.order=order; save(); }
+  return order.map(id=>cells.find(c=>c.id===id));
+}
+function shuffleShelf(){ const o=[...state.order]; for(let i=o.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [o[i],o[j]]=[o[j],o[i]]; } state.order=o; save(); renderShelf(); }
+function setView(v){ state.view=v; save(); renderShelf(); }
+function toggle(k){ state[k]=!state[k]; save(); syncToggles(); if(k==='wallDark') renderWall(); else applyShelfStyle(); }
+function syncToggles(){ [['tg_gray','gray'],['tg_blur','blur'],['tg_dark','dark'],['tg_mine','mine'],['tg_wallDark','wallDark']].forEach(([id,k])=>{ const b=$(id); b.classList.toggle('on',!!state[k]); b.setAttribute('aria-pressed', state[k]?'true':'false'); }); $('vm_grid').classList.toggle('on', state.view!=='list'); $('vm_list').classList.toggle('on', state.view==='list'); }
+function applyShelfStyle(){
+  const s=$('shelf'); s.style.setProperty('--cell', state.shelfSize+'px'); s.style.setProperty('--blur', (state.shelfSize/55).toFixed(2)+'px');
+  s.classList.toggle('dark', !!state.dark); s.classList.toggle('list', state.view==='list');
+  s.querySelectorAll('img').forEach(i=>{ i.classList.toggle('fx-gray', !!state.gray); i.classList.toggle('fx-blur', !!state.blur); });
+  s.querySelectorAll('.mine-tag').forEach(t=>t.style.display=state.mine?'block':'none');
+}
+function renderShelf(){
+  if(!state.cover) return;
+  const strip=$('compStrip'); strip.innerHTML='';
+  state.comps.forEach(c=>{ const d=document.createElement('div'); d.className='cmp'; d.innerHTML='<img src="'+c.data+'" alt="Competitor cover"><button title="Remove" aria-label="Remove this competitor">×</button>'; d.querySelector('button').onclick=()=>removeComp(c.id); strip.appendChild(d); });
+  const shelf=$('shelf'); shelf.innerHTML='';
+  const title=(state.fields.f_title||'').trim(), pen=(state.fields.f_pen||'').trim();
+  shelfCells().forEach(cell=>{
+    const d=document.createElement('div'); d.className='cell';
+    const img='<img src="'+cell.src+'" alt="'+(cell.mine?'Your cover':(cell.ph?'Stand-in cover':'Competitor cover'))+'">'+(cell.ph?'<div class="standin">stand-in</div>':'')+(cell.mine?'<div class="mine-tag">YOURS</div>':'');
+    const text=cell.mine&&(title||pen)
+      ? '<div class="ttl">'+esc(title||'Your title')+'</div><div class="auth">'+esc(pen||'')+'</div><div class="stars">★★★★★<span>1,204</span></div><div class="price">$4.99</div>'
+      : '<div class="bar"></div><div class="bar short"></div><div class="stars">★★★★☆<span>'+(300+((cell.id.length*97)%1800))+'</span></div><div class="price">$'+(cell.ph?'3.99':'4.99')+'</div>';
+    d.innerHTML = state.view==='list' ? '<div style="position:relative;">'+img+'</div><div class="meta">'+text+'</div>' : img+text;
+    shelf.appendChild(d);
+  });
+  applyShelfStyle(); syncToggles();
+  const n=state.comps.length;
+  $('shelfNote').textContent = n ? (n<MAX_CELLS-1 ? n+' real competitor'+(n===1?'':'s')+' on the shelf; the rest are stand-ins. Twelve real ones is the honest test.' : 'A full shelf of real competitors. This is what your reader sees.') : 'The covers marked stand-in are placeholders so the grid is never empty. For the real test, screenshot the top twelve covers in your subcategory and drop them above — they never leave your device.';
+}
+
+/* ============ squint ============ */
+function renderSquint(){ document.querySelectorAll('#p_squint img.sq').forEach(i=>i.src=state.cover.data); }
+
+/* ============ analysis ============ */
+function analyze(img){
+  const W=160, H=Math.max(8, Math.round(W*img.naturalHeight/img.naturalWidth));
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d',{willReadFrequently:true});
+  x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.drawImage(img,0,0,W,H);
+  const d=x.getImageData(0,0,W,H).data, N=W*H, lum=new Float32Array(N), bins=new Map(); let sat=0;
+  for(let i=0;i<N;i++){
+    const r=d[i*4], g=d[i*4+1], b=d[i*4+2]; lum[i]=0.2126*r+0.7152*g+0.0722*b;
+    const mx=Math.max(r,g,b), mn=Math.min(r,g,b); sat+= mx?(mx-mn)/mx:0;
+    const key=((r>>5)<<6)|((g>>5)<<3)|(b>>5); let e=bins.get(key); if(!e){ e={n:0,r:0,g:0,b:0}; bins.set(key,e); } e.n++; e.r+=r; e.g+=g; e.b+=b;
+  }
+  const sorted=Float32Array.from(lum).sort(); const p=q=>sorted[Math.min(N-1,Math.floor(q*N))];
+  let sum=0, darkN=0, lightN=0; for(let i=0;i<N;i++){ sum+=lum[i]; if(lum[i]<50) darkN++; if(lum[i]>205) lightN++; }
+  const bw=Math.max(2,Math.round(W*.05)), bh=Math.max(2,Math.round(H*.05)); let bsum=0, bn=0;
+  for(let y=0;y<H;y++) for(let xx=0;xx<W;xx++){ if(xx<bw||xx>=W-bw||y<bh||y>=H-bh){ bsum+=lum[y*W+xx]; bn++; } }
+  const grad=new Float32Array(N); let busy=0;
+  for(let y=1;y<H-1;y++) for(let xx=1;xx<W-1;xx++){ const i=y*W+xx; const g=Math.hypot(lum[i+1]-lum[i-1], lum[i+W]-lum[i-W]); grad[i]=g; if(g>24) busy++; }
+  const busyFrac=busy/((W-2)*(H-2));
+  const cols=4, rows=6, blocks=[];
+  for(let r=0;r<rows;r++) for(let cc=0;cc<cols;cc++){
+    const x0=Math.floor(cc*W/cols), x1=Math.floor((cc+1)*W/cols), y0=Math.floor(r*H/rows), y1=Math.floor((r+1)*H/rows);
+    let s=0, s2=0, gs=0, bz=0, n=0;
+    for(let y=y0;y<y1;y++) for(let xx=x0;xx<x1;xx++){ const i=y*W+xx; s+=lum[i]; s2+=lum[i]*lum[i]; gs+=grad[i]; if(grad[i]>24) bz++; n++; }
+    const mean=s/n, sd=Math.sqrt(Math.max(0,s2/n-mean*mean));
+    blocks.push({r,c:cc, score:gs/n*0.6+sd*0.4, busy:bz/n});
+  }
+  const scores=blocks.map(b=>b.score).sort((a,b)=>a-b); const max=scores[scores.length-1], med=scores[Math.floor(scores.length/2)];
+  const focal=blocks.find(b=>b.score===max);
+  const vert=focal.r<2?'upper':(focal.r<4?'middle':'lower'), horiz=focal.c===0?'left':(focal.c===3?'right':'center');
+  const zoneRows={Top:[0,1],Middle:[2,3],Bottom:[4,5]}[state.zone]||[0,1,2,3,4,5];
+  const zb=blocks.filter(b=>zoneRows.includes(b.r)); const zoneBusy=zb.reduce((a,b)=>a+b.busy,0)/zb.length;
+  const top=[...bins.values()].sort((a,b)=>b.n-a.n);
+  let acc=0, cover80=0; for(const e of top){ acc+=e.n; cover80++; if(acc>=N*0.8) break; }
+  const hex=v=>('0'+Math.round(v).toString(16)).slice(-2);
+  const swatches=top.slice(0,6).map(e=>({hex:'#'+hex(e.r/e.n)+hex(e.g/e.n)+hex(e.b/e.n), pct:Math.round(e.n/N*100)}));
+  return {p5:p(.05), p95:p(.95), span:p(.95)-p(.05), mean:sum/N, darkFrac:darkN/N, lightFrac:lightN/N, edgeLum:bsum/bn, busyFrac, focalRatio:max/Math.max(med,1.5), focalLoc:vert+' '+horiz, zoneBusy, cover80, swatches, satMean:sat/N};
+}
+function signals(){
+  const a=analysis; if(!a) return {items:[], score:null};
+  const items=[]; let score=10;
+  const add=(k,title,text,doText,num)=>{ items.push({k,title,text,doText,num}); if(k==='fail') score-=2; else if(k==='warn') score-=1; };
+  /* contrast */
+  const spanTxt='5th–95th percentile luminance spread: '+Math.round(a.span)+' / 255';
+  if(a.span>=120) add('pass','Contrast','Strong. The darks and lights are far enough apart to survive shrinking.', null, spanTxt);
+  else if(a.span>=70) add('warn','Contrast','Middling. Small, this starts to read as one tone with a little variation.','Push the darkest thing darker or the brightest thing brighter — ideally the thing behind the title.', spanTxt);
+  else add('fail','Contrast','Flat. At thumbnail size this becomes a single smudge of tone.','One high-contrast element beats ten mid-tones. Pick what should pop and give it a background that disappears next to it.', spanTxt);
+  /* edges */
+  const edgeTxt='outer 5% average luminance: '+Math.round(a.edgeLum)+' / 255 · very light pixels: '+Math.round(a.lightFrac*100)+'%';
+  if(a.edgeLum>228) add('warn','Edges on a white page','The outer edge of the cover is nearly white, and the store page is white. Readers will not see where the book ends.','Add a thin border, a soft vignette, or push the background a few shades down so the cover has an edge.', edgeTxt);
+  else if(a.darkFrac>0.75) add('info','Edges on a white page','Very dark cover. It pops on a white page, but anything living in the shadows vanishes at thumbnail.','Make sure the title and the focal point are the bright things. Check the dark-page view too — there it can disappear.', edgeTxt);
+  else add('pass','Edges on a white page','The cover has a visible edge against a white store page.', null, edgeTxt);
+  /* clutter */
+  const busyTxt='pixels on a strong edge: '+Math.round(a.busyFrac*100)+'%';
+  if(a.busyFrac>=0.40) add('fail','Clutter','Busy. Detail everywhere turns to mush when it is 80 pixels wide.','Cut elements until one thing is left to look at. Detail is for the product page, not the shelf.', busyTxt);
+  else if(a.busyFrac>=0.26) add('warn','Clutter','Fairly detailed. Some of this texture will blur into noise at small sizes.','Simplify the background or lower its contrast so the focal point and title stay clean.', busyTxt);
+  else if(a.busyFrac<0.06) add('info','Clutter','Very plain. Clean is good — but the title has to carry the whole cover.','Make sure the typography is doing real work: size, weight, and contrast.', busyTxt);
+  else add('pass','Clutter','Clean. The shapes will survive shrinking.', null, busyTxt);
+  /* focal */
+  const focTxt='strongest region vs. typical region: '+(a.focalRatio>50?'50+':a.focalRatio.toFixed(2))+'×';
+  if(a.focalRatio>=1.9) add('pass','Focal point','One clear focal point, '+a.focalLoc+'. The eye has somewhere to land.', null, focTxt);
+  else if(a.focalRatio>=1.4) add('warn','Focal point','A soft focal point around the '+a.focalLoc+', with competition from elsewhere.','Dim or simplify whatever is fighting it. One hero, everything else supporting.', focTxt);
+  else add('fail','Focal point','No single focal point. Interest is spread evenly, so the eye has nowhere to land.','Decide what the cover is about — a face, an object, the title — and make it the only loud thing.', focTxt);
+  /* title zone */
+  const zTxt='edge density behind the title: '+Math.round(a.zoneBusy*100)+'%';
+  if(state.zone==='Across the whole cover') add('info','Behind the title','Title runs across the whole cover, so it has to fight every busy area at once.','Make sure the lettering sits on the calmest band, or give it a plate or glow it can live on.', zTxt);
+  else if(a.zoneBusy>=0.35) add('warn','Behind the title','Busy behind the '+state.zone.toLowerCase()+' third, where you said the title sits. Text over detail is the number-one homemade tell and the number-one legibility killer at small size.','Calm that band: blur or darken it, add a plate, or move the title to the quietest third.', zTxt);
+  else add('pass','Behind the title','Calm behind the '+state.zone.toLowerCase()+' third. The lettering has room to read.', null, zTxt);
+  /* palette */
+  const palTxt='colors needed to cover 80% of the image: '+a.cover80+' · saturation '+(a.satMean<0.18?'muted':(a.satMean>0.5?'saturated':'moderate'));
+  if(a.cover80<=6) add('pass','Palette','Tight palette. Reads clean and deliberate at any size.', null, palTxt);
+  else if(a.cover80<=20) add('pass','Palette','Controlled palette. Enough variety to feel rich, not enough to feel noisy. (Photographic covers naturally run higher here.)', null, palTxt);
+  else add('warn','Palette','Wide palette. Thumbnails reward two or three colors plus one accent; this has many pulling in different directions.','Unify with a color grade or tint so the cover reads as one object, and save the accent for the title or the hero.', palTxt);
+  /* specs */
+  const flags=specFlags(); const bad=flags.find(f=>f.k==='fail'), warnf=flags.find(f=>f.k==='warn'&&/ratio|Wider|Taller/i.test(f.t));
+  if(bad) add('warn','File specs',bad.t,'Export the full-size file before you upload anywhere.');
+  else if(warnf) add('warn','File specs',warnf.t,'Re-export at the store ratio so the thumbnail fills its slot.');
+  else add('pass','File specs','Size and ratio are store-ready.');
+  return {items, score:Math.max(0,Math.min(10,score))};
+}
+function renderSignals(){
+  const s=signals(); const ring=$('mRing'); ring.className='ring '+ringClass(s.score); ring.textContent=s.score==null?'–':s.score;
+  const fails=s.items.filter(i=>i.k==='fail').length, warns=s.items.filter(i=>i.k==='warn').length;
+  $('mSummary').textContent = s.score==null?'':(s.score>=8?'Nothing in the pixels is fighting the thumbnail.':(s.score>=6?'Fixable: '+(fails+warns)+' thing'+(fails+warns===1?'':'s')+' to tidy before launch.':'The image itself is working against you at small size. Start with the red cards.'));
+  const g=$('signals'); g.innerHTML='';
+  s.items.forEach(it=>{
+    const d=document.createElement('div'); d.className='sig '+it.k;
+    let html='<h4>'+esc(it.title)+'<span class="st">'+({pass:'Pass',warn:'Watch',fail:'Fix',info:'Note'})[it.k]+'</span></h4><p>'+esc(it.text)+'</p>';
+    if(it.doText) html+='<p class="do">→ '+esc(it.doText)+'</p>';
+    if(it.title==='Palette'&&analysis) html+='<div class="swatches">'+analysis.swatches.map(sw=>'<div class="swatch"><div class="box" style="background:'+sw.hex+'" title="'+sw.hex+'"></div><div class="pct">'+sw.pct+'%</div></div>').join('')+'</div>';
+    if(it.num) html+='<div class="num">'+esc(it.num)+'</div>';
+    d.innerHTML=html; g.appendChild(d);
+  });
+}
+
+/* ============ verdict & export ============ */
+function verdictData(){
+  const m=signals(), r=readerScore(); const f=state.fields;
+  let head, line;
+  if(r.score==null){ head='Half a verdict'; line='The pixels have spoken (measured '+m.score+'/10). Score the reader checklist above to get the other half — the half that actually decides the click.'; }
+  else if(m.score>=8&&r.score>=8){ head='Shelf-ready'; line='Measured '+m.score+'/10, reader '+r.score+'/10. Put it beside the twelve real competitors one last time, then ship it.'; }
+  else if(m.score>=6||r.score>=6){ head='Fixable'; line='Measured '+m.score+'/10, reader '+r.score+'/10. This is a revision, not a restart. The cards marked Fix and Watch, plus your lowest checklist lines, are the designer\'s to-do list.'; }
+  else { head='Back to the brief'; line='Measured '+m.score+'/10, reader '+r.score+'/10. Patching this will cost more than re-briefing it. Open the Cover Brief Builder, tighten the brief, and go again.'; }
+  const low=QUESTIONS.map((q,i)=>({q:q[0],v:state.check[i]})).filter(x=>x.v>=1&&x.v<=2).map(x=>x.q);
+  const fix=m.items.filter(i=>i.k==='fail'||i.k==='warn').map(i=>i.title+': '+i.text);
+  return {head,line,low,fix,m,r,title:(f.f_title||'').trim(),pen:(f.f_pen||'').trim(),lane:(f.f_lane||'').trim(),notes:(f.f_notes||'').trim()};
+}
+function renderVerdict(){
+  if(!state.cover) return; const v=verdictData();
+  let html='<h3>'+esc(v.head)+'</h3><div>'+esc(v.line)+'</div>';
+  if(v.fix.length) html+='<div style="margin-top:8px;"><b>From the pixels:</b><ul>'+v.fix.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>';
+  if(v.low.length) html+='<div style="margin-top:8px;"><b>You scored these 1–2:</b><ul>'+v.low.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>';
+  $('verdict').innerHTML=html;
+}
+function reportLines(){
+  const v=verdictData(); const c=state.cover; const out=[];
+  out.push('# COVER SHELF TEST — '+(v.title||'Untitled')+(v.pen?' by '+v.pen:''));
+  out.push('Date: '+new Date().toISOString().slice(0,10)+(v.lane?' · Shelf: '+v.lane:''));
+  out.push('');
+  out.push('## Verdict: '+v.head); out.push(v.line); out.push('');
+  out.push('## File specs');
+  out.push('- '+c.w+' × '+c.h+' px · '+ratioText(c.w,c.h)+' · '+(c.type||'image')+' · '+Math.round(c.bytes/1024)+' KB');
+  specFlags().forEach(f=>out.push('- ['+f.k.toUpperCase()+'] '+f.t));
+  out.push('');
+  out.push('## Measured from the pixels ('+v.m.score+'/10)');
+  v.m.items.forEach(i=>{ out.push('- ['+({pass:'PASS',warn:'WATCH',fail:'FIX',info:'NOTE'})[i.k]+'] '+i.title+' — '+i.text+(i.doText?' → '+i.doText:'')+(i.num?' ('+i.num+')':'')); });
+  if(analysis) out.push('- Dominant colors: '+analysis.swatches.map(s=>s.hex+' '+s.pct+'%').join(', '));
+  out.push('- Title sits: '+state.zone);
+  out.push('');
+  out.push('## Reader checklist ('+(v.r.score==null?'not scored':v.r.score+'/10')+')');
+  QUESTIONS.forEach((q,i)=>out.push('- '+q[0]+': '+(state.check[i]?state.check[i]+'/5':'—')));
+  out.push('');
+  out.push('## Shelf'); out.push('- '+state.comps.length+' real competitor cover'+(state.comps.length===1?'':'s')+' tested beside it'+(state.comps.length<MAX_CELLS-1?' (the rest were stand-ins)':''));
+  if(v.notes){ out.push(''); out.push('## My notes'); out.push(v.notes); }
+  return out.join('\n');
+}
+function slug(){ return ((state.fields.f_title||'cover')+'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'cover'; }
+function downloadReport(){ downloadText(reportLines(), slug()+'-cover-shelf-test.md', 'text/markdown'); toast('Report downloaded.'); }
+function downloadText(txt,name,type){ const blob=new Blob([txt],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function buildClaudePrompt(){
+  const v=verdictData(); const lane=v.lane||'⟨ Claude, infer the genre shelf from the cover ⟩';
+  return ['You\'re my cover art director, and you\'re also a reader who scrolls the '+lane+' shelf on Amazon every night. I\'m attaching my cover image'+(v.title?' for "'+v.title+'"':'')+(v.pen?' by '+v.pen:'')+'. Critique it the way a reader meets it: at thumbnail size, in a grid of twelve competing covers, in one second.',
+  '',
+  'Here is what my browser measured from the pixels (numbers, not taste):',
+  ...v.m.items.map(i=>'- '+i.title+' ['+i.k+']: '+i.text+(i.num?' ('+i.num+')':'')),
+  analysis?'- Dominant colors: '+analysis.swatches.map(s=>s.hex+' '+s.pct+'%').join(', '):'',
+  '- Title position: '+state.zone,
+  '',
+  'Here is how I scored it myself, 1–5 (blank = not scored):',
+  ...QUESTIONS.map((q,i)=>'- '+q[0]+': '+(state.check[i]||'—')),
+  v.notes?'\nMy own notes: '+v.notes:'',
+  '',
+  'Give me:',
+  '1. The one-second read — what genre, heat level, mood, and promise does this cover signal to a stranger? Is that what the book is?',
+  '2. The three things most likely to cost me the click at thumbnail size, in order.',
+  '3. The fixes, in priority order, as specific instructions I can hand to a designer or do myself in Canva.',
+  '4. A comp check: name three current bestselling covers on the '+lane+' shelf and tell me whether mine belongs beside them and still stands out.',
+  'Be direct. Do not be polite about a cover that will cost me sales.'].filter(l=>l!==undefined).join('\n');
+}
+function copyClaude(){ copyText(buildClaudePrompt(),'Prompt copied — paste it into Claude and attach the cover image.'); }
+function downloadShelf(){
+  const cells=shelfCells(); const cw=180, ch=270, pad=18, cols=4, rows=Math.ceil(cells.length/cols);
+  const c=document.createElement('canvas'); c.width=cols*cw+(cols+1)*pad; c.height=rows*(ch+44)+(rows+1)*pad; const x=c.getContext('2d');
+  x.fillStyle=state.dark?'#141414':'#ffffff'; x.fillRect(0,0,c.width,c.height);
+  let loaded=0; const imgs=cells.map(()=>null);
+  const draw=()=>{
+    cells.forEach((cell,i)=>{
+      const col=i%cols, row=Math.floor(i/cols); const px=pad+col*(cw+pad), py=pad+row*(ch+44+pad);
+      const img=imgs[i]; if(img){ const s=Math.min(cw/img.naturalWidth, ch/img.naturalHeight); const w=img.naturalWidth*s, h=img.naturalHeight*s;
+        try{ x.filter=(state.gray?'grayscale(1) ':'')+(state.blur?'blur('+(cw/55).toFixed(1)+'px)':'')||'none'; }catch(e){}
+        x.drawImage(img, px+(cw-w)/2, py+(ch-h), w, h); try{ x.filter='none'; }catch(e){} }
+      x.fillStyle=state.dark?'#3a3a3a':'#dddddd'; x.fillRect(px, py+ch+10, cw*0.85, 8); x.fillRect(px, py+ch+24, cw*0.5, 8);
+      if(cell.mine&&state.mine){ x.fillStyle='#c79a4b'; x.font='bold 12px sans-serif'; x.fillText('YOURS', px+4, py+14); }
+    });
+    const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download=slug()+'-shelf.png'; a.click(); toast('Shelf image saved.');
+  };
+  cells.forEach((cell,i)=>{ const im=new Image(); im.onload=()=>{ imgs[i]=im; if(++loaded===cells.length) draw(); }; im.onerror=()=>{ if(++loaded===cells.length) draw(); }; im.src=cell.src; });
+}
+function copyText(txt, okMsg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast(okMsg||'Copied.'),()=>fallbackCopy(txt,okMsg)); }
+  else fallbackCopy(txt,okMsg);
+}
+function fallbackCopy(txt,okMsg){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand('copy'); toast(okMsg||'Copied.'); }catch(e){ toast('Couldn\'t copy — select manually.'); }
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('Start over? This clears the cover, the competitors, and your scores.')) return;
+  state=blank(); save(); coverEl=null; analysis=null;
+  ['f_title','f_pen','f_lane','f_notes'].forEach(id=>$(id).value='');
+  $('coverDrop').style.display='block'; $('coverLoaded').style.display='none';
+  document.querySelectorAll('.gated').forEach(p=>p.classList.remove('show'));
+  buildZoneChips(); buildChecklist(); renderCheckScore(); syncToggles(); $('shelfSize').value=state.shelfSize;
+  window.scrollTo({top:0,behavior:'smooth'}); toast('Fresh test.');
+}
+init();
+</script>
+</body>
+</html>
