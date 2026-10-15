@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <meta name="description" content="Your Holiday Novella work desk: each worksheet beside its Claude prompt, filled in with your own answers. Saves on this device.">
+  <title>Holiday Novella Work Desk | The Invisible Pen</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="desk-data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#desk">Skip to the desk</a>
+<header>
+  <div class="header-inner">
+    <div class="brand">The Invisible Pen</div>
+    <h1>Holiday Novella Work Desk</h1>
+    <p>Your worksheet on the left. Your prompt on the right, already filled in with your answers.</p>
+    <div class="course-tag">Five classes with Jessica · October 8 – November 5, 2026</div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Desk pages"><div class="tabs-inner" id="tabs"></div></nav>
+
+<main id="desk" class="container" tabindex="-1">
+  <noscript><p class="warning">JavaScript is off, so the desk cannot open. The <a href="../student-workbook.html">student workbook</a> and the <a href="../holiday-novella-prompts.html">prompt pack</a> both work for reading and printing.</p></noscript>
+
+
+  <details class="card book-card" id="book" open>
+    <summary><span class="summary-title">Your book</span> <span id="book-summary" class="summary-line"></span></summary>
+    <p class="small">Fill these in once. They drop into every prompt on every page: <strong>[PEN NAME]</strong>, <strong>[WORKING TITLE]</strong>, <strong>[HEAT]</strong>, <strong>[POV]</strong>, <strong>[TARGET LENGTH]</strong>, <strong>[STOP WORD]</strong>, and the chapter you are on.</p>
+    <div class="form-grid">
+      <div class="answer"><label for="d-pen">Pen name</label><input id="d-pen" data-detail="PEN NAME" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Maren Hale"></div>
+      <div class="answer"><label for="d-title">Working title</label><input id="d-title" data-detail="WORKING TITLE" type="text" maxlength="120" autocomplete="off" placeholder="e.g. Snowed In at the Bookshop"></div>
+      <div class="answer"><label for="d-heat">Heat level</label><select id="d-heat" data-detail="HEAT"></select></div>
+      <div class="answer"><label for="d-pov">POV</label><select id="d-pov" data-detail="POV"></select></div>
+      <div class="answer"><label for="d-length">Target length (words)</label><input id="d-length" data-detail="TARGET LENGTH" type="text" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 25,000"></div>
+      <div class="answer"><label for="d-stop">Your stop word <span class="hint">Say it when something breaks</span></label><input id="d-stop" data-detail="STOP WORD" type="text" maxlength="40" autocomplete="off" placeholder="e.g. TIMBER"></div>
+      <div class="answer"><label for="k-start">Starting point</label><select id="k-start" data-desk="start"><option value="">Choose</option><option value="new idea">New idea</option><option value="partial draft">Partial draft</option><option value="complete draft to revise">Complete draft to revise</option></select></div>
+      <div class="answer"><label for="k-chapter">Chapter I'm working on <span class="hint">Fills [N]</span></label><input id="k-chapter" data-desk="chapter" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="e.g. 3"></div>
+    </div>
+    <div class="form-grid">
+      <div class="answer"><label for="k-banned">My banned names <span class="hint">Added to the house rules</span></label><input id="k-banned" data-desk="banned" type="text" maxlength="600" autocomplete="off" placeholder="Names you never want suggested, or leave blank"></div>
+      <div class="answer"><label for="k-limits">My content limits</label><input id="k-limits" data-desk="limits" type="text" maxlength="600" autocomplete="off" placeholder="e.g. closed door, no on-page violence"></div>
+    </div>
+    <div class="no-project">
+      <label class="check"><input type="checkbox" id="k-noproject" data-desk="noProject"><span><strong>I'm not using a Claude Project.</strong> Every Copy button adds the house rules and my book file to the top of the prompt, so a plain chat has the same context a Project would.</span></label>
+      <div class="answer" id="bookfile-wrap" hidden><label for="k-bookfile">My book file <span class="hint">Paste the Brief, Codex, and Outline or beat sheet Claude gives you, and keep it current</span></label><textarea id="k-bookfile" data-desk="bookFile" rows="8" maxlength="100000" spellcheck="false"></textarea></div>
+    </div>
+  </details>
+
+  <div id="page-host"></div>
+  <section class="card storage-card" aria-labelledby="storage-heading" id="desk-tools">
+    <h2 id="storage-heading">Saving and backups</h2>
+    <p><strong>One set of answers, two pages.</strong> The fields on this desk are the same fields as your <a href="../student-workbook.html">student workbook</a>, and your book details are shared with the <a href="../holiday-novella-prompts.html">prompt pack</a>. Type in either place. Everything stays <strong>in this browser on this device</strong>. Nothing is sent to Jessica, to Claude, or anywhere else until you copy a prompt and paste it yourself.</p>
+    <p class="small">Keep only one of these pages open while you type. If the workbook is open in another tab, it pauses saving to protect your answers. That is normal: close it, or reload it to pick up what you typed here.</p>
+    <div class="toolbar">
+      <button type="button" id="export">Download backup</button>
+      <button type="button" id="import" class="secondary">Import backup</button>
+      <input id="import-file" type="file" accept=".json,application/json" hidden>
+    </div>
+    <p class="small">The desk backup holds your worksheet answers, book details, trope stack, and desk notes. You can also import a backup you downloaded from the student workbook.</p>
+    <p id="save-status" class="status" role="status" aria-live="polite">Opening your desk…</p>
+    <p id="action-status" class="status" role="status" aria-live="polite"></p>
+    <div id="storage-warning" class="warning" hidden>
+      <p id="storage-message"></p>
+      <div class="toolbar"><button type="button" id="download-stored">Download the stored data</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
+
+<dialog id="import-dialog" aria-labelledby="import-title">
+  <h2 id="import-title">Replace what's on this desk?</h2>
+  <p id="import-summary"></p>
+  <p>Importing replaces the matching answers in this browser. It does not merge them. Download a backup first if you might need what's here now.</p>
+  <div class="toolbar"><button type="button" id="backup-first" class="secondary">Download a backup first</button></div>
+  <label class="check"><input type="checkbox" id="confirm-replace"><span>I understand this replaces what's saved here.</span></label>
+  <div class="toolbar"><button type="button" id="apply-import" disabled>Replace with this backup</button><button type="button" id="cancel-import" class="secondary">Cancel</button></div>
+</dialog>
+
+<footer>© 2026 Clark Publishing House LLC · The Invisible Pen · Your story. Your pace. Your release date.</footer>
+</body>
+</html>
