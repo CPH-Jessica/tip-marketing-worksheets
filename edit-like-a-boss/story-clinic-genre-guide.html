@@ -22,11 +22,15 @@ h1,h2,h3{font-family:'Playfair Display',Georgia,serif;letter-spacing:-0.02em}
 .step{display:flex;gap:16px;align-items:flex-start}
 .num{flex:none;width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:17px;font-family:'Playfair Display',Georgia,serif}
 .step h2{margin:4px 0 8px;font-size:1.25rem;color:var(--navy)}
+.step h3{margin:12px 0 4px;font-size:1rem;color:var(--navy)}
 .step p{margin:0 0 10px}
-.step ul{margin:0 0 10px;padding-left:20px}
+.step ul,.step ol{margin:0 0 10px;padding-left:20px}
 .step li{margin-bottom:6px}
 b.btnname{background:#EDF3FA;border:1px solid var(--line);border-radius:8px;padding:1px 8px;font-size:.92em;white-space:nowrap}
 .tip{background:#F7F4EC;border-left:4px solid var(--gold);border-radius:8px;padding:10px 14px;font-size:.92rem;margin:10px 0 0}
+.map{background:#F5F8FC;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:8px 0 12px;font-size:.92rem}
+.map .k{display:inline-block;min-width:150px;font-weight:700;color:var(--navy)}
+.map div{margin:3px 0}
 .video{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-bottom:16px;text-align:center;box-shadow:0 10px 15px -3px rgba(30,58,95,.08)}
 .video .vbtn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;padding:14px 26px;border-radius:999px;font-size:1.05rem;margin-top:8px}
 .video .vbtn:hover{background:var(--blue)}
@@ -36,7 +40,7 @@ b.btnname{background:#EDF3FA;border:1px solid var(--line);border-radius:8px;padd
 .faq p{margin:0 0 6px;font-size:.95rem}
 .foot{text-align:center;color:var(--muted);font-size:.82rem;padding:24px}
 a{color:var(--blue)}
-@media(max-width:520px){.step{flex-direction:column}.num{width:32px;height:32px}}
+@media(max-width:520px){.step{flex-direction:column}.num{width:32px;height:32px}.map .k{display:block;min-width:0}}
 </style>
 </head>
 <body>
@@ -50,111 +54,156 @@ a{color:var(--blue)}
 
   <div class="video">
     <h2 style="margin:0 0 4px">🎬 Want to see it in motion first?</h2>
-    <p style="margin:0;color:var(--muted)">The seven-minute walkthrough was filmed on the Romance edition — <b>same tabs, same buttons, same flow</b>. Your edition adds two extra passes (World &amp; Rules, Clue &amp; Fair-Play) and two extra lab reports (Dread, Mystery), all covered in the steps below.</p>
+    <p style="margin:0;color:var(--muted)">The seven-minute walkthrough was filmed on the Romance edition's earlier tabbed layout — <b>same engine, same flow</b>; the buttons have since moved into the Studio sidebar, and this page is the current map. Your edition swaps the Heat Scene sweep for <b>Action &amp; Set-Piece Edit</b>, adds two whole-book audits (World &amp; Rules, Clue &amp; Fair-Play) and two lab reports (Dread, Mystery), all covered below.</p>
     <a class="vbtn" href="https://www.youtube.com/playlist?list=PLIN76LSxTynw" target="_blank" rel="noopener">▶ Watch on YouTube</a>
     <p style="margin:10px 0 0;font-size:.85rem;color:var(--muted)">Open your clinic in another tab and follow along: <a href="story-clinic-sff-mystery.html">Story Clinic — Genre Fiction Edition</a></p>
   </div>
 
+  <div class="card"><div class="step"><div class="num">0</div><div>
+    <h2>Find your way around the Studio</h2>
+    <p>The clinic is one screen: a navy <b>sidebar</b> on the left, your <b>running manuscript</b> in the middle, and <b>Your editing decisions</b> on the right. On a phone, the <b class="btnname">☰ Menu</b> button opens the sidebar.</p>
+    <div class="map">
+      <div><span class="k">Manuscript</span> your chapters, numbered 01, 02, 03… (each shows how many of the nine sweeps are done, e.g. 3/9, then a ✓ once all nine are)</div>
+      <div><span class="k">Editing passes</span> one row that opens the workspace; the pass itself is chosen from a <b>dropdown on the pass card</b> — nine numbered Chapter sweeps, then five Whole-book audits (Plot Hole Checker · Timeline Consistency · Arc Pacing Audit · World &amp; Rules Consistency · Clue &amp; Fair-Play Audit)</div>
+      <div><span class="k">Story lab</span> ⚡ Auto-Scan · 📈 Story reports · ♥ Satisfaction tracker · 📋 Manuscript report</div>
+      <div><span class="k">Bottom of the sidebar</span> ⚙ Document &amp; voice settings · ✦ AI connections · ? this guide · 💬 Feedback</div>
+      <div><span class="k">Top bar</span> ⚙ AI setup · ⬆ Import into this book · ＋ New book · ⬇ Export</div>
+    </div>
+    <div class="tip">💡 <b>Where do the prompts go?</b> The clinic builds <b>prompts you copy</b>. Paste them into a chat inside the <b>Claude Project that holds your book files</b> for the sharpest results — or into ChatGPT, Gemini or Grok. Prefer one click? Connect your own OpenAI or Claude key (step 3) and run passes without leaving the page.</div>
+  </div></div></div>
+
   <div class="card"><div class="step"><div class="num">1</div><div>
-    <h2>Set up your case file</h2>
+    <h2>Import your manuscript</h2>
     <ul>
-      <li>Type your <b>book title</b> (it names your report).</li>
-      <li>Pick the <b>voice lane</b> closest to your book — epic fantasy, urban fantasy, science fiction, space opera, horror, psychological thriller, or cozy mystery. Every prompt the tool builds is calibrated to this lane.</li>
-      <li>Have your own voice skill from class? Pick <b>Custom</b>, click the little button in that box, paste that prompt into your Claude — it distills your voice skill into perfect voice notes. Paste the result back.</li>
-      <li>Set your <b>intensity level</b> honestly (1 cozy — violence off-page → 5 grimdark — nothing softened). The passes hold your book to it: a cozy never shows what a grimdark would.</li>
+      <li>On the home screen, click <b class="btnname">⬆ Import your manuscript</b>. Type your <b>Book title</b>, then either <b class="btnname">Choose a Word or text file</b> (.docx, .txt or .md — or drop it on the box) or paste into <b>Or paste your manuscript</b>.</li>
+      <li>Chapters are detected from headings like <b>Chapter 1</b>, <b>Chapter One</b>, <b># Chapter 1</b>, Prologue or Epilogue. The counter under the box tells you how many it found <i>before</i> you commit — if it says one chapter and you know there are thirty, fix the headings first.</li>
+      <li>Loading a single chapter with no heading? Type its name in <b>Section / chapter title</b>. Then hit <b class="btnname">Add to manuscript →</b>.</li>
+      <li>Working chapter by chapter? Use <b class="btnname">⬆ Import into this book</b> (top bar, or the ＋ row under your chapter list) — new chapters land at the end and everything you've already decided is kept.</li>
+      <li>Several books? <b class="btnname">＋ New book</b> starts another; the home screen lists them all under <b>Pick up where you left off</b>.</li>
     </ul>
-    <div class="tip">💡 <b>Where do the prompts go?</b> The clinic is just a webpage — it builds <b>prompts you copy</b>. Paste them into a chat inside the <b>Claude Project that holds your book files</b> for the sharpest results. A plain chat works too.</div>
+    <div class="tip">💡 Try <b class="btnname">Explore a sample</b> first — it's a cozy mystery (The House on Alder Street) deliberately riddled with problems, so you can watch every feature fire before trusting it with your baby.</div>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">2</div><div>
-    <h2>Load your manuscript — one button</h2>
+    <h2>Set your document &amp; voice settings</h2>
+    <p>Click <b class="btnname">⚙ Document &amp; voice settings</b> at the bottom of the sidebar. Everything here is folded into every prompt the clinic builds.</p>
     <ul>
-      <li>Paste your <b>whole book</b> or just <b>chapter one</b> into the big box and hit <b class="btnname">▶ Go</b>. Whole books split into chapters automatically.</li>
-      <li>Working chapter by chapter? After the first Go, the button becomes <b class="btnname">▶ Go — add next chapter</b>. Paste, press, repeat. (<b class="btnname">+ Add next chapter</b> sits right beside it if you prefer clicking exactly what you mean.)</li>
-      <li>Need a clean slate? <b class="btnname">↺ Start over</b> lives in the top bar — it wipes everything, so hit <b class="btnname">Save file</b> first if you want a backup.</li>
+      <li><b>Document title</b> and <b>Type / genre</b> (e.g. locked-room mystery, grimdark fantasy, near-future thriller).</li>
+      <li><b>Voice lane</b> — pick the one closest to your book: epic fantasy, urban fantasy, science fiction, space opera, horror, psychological thriller, cozy mystery, or <b>Custom / my own voice</b>.</li>
+      <li><b>Intensity level</b>, honestly: 1 cozy (violence off-page) → 5 grimdark (nothing softened). Every pass holds your book to it — a cozy never shows what a grimdark would.</li>
+      <li><b>Manuscript language</b> — English, French, German, Italian, Spanish or Brazilian Portuguese. Every prompt asks your AI to analyze and reply in that language (the instant Auto-Scan stays English-tuned). The same dropdown sits on the pass card, so you can switch without opening settings.</li>
+      <li><b>Create your voice profile</b> — click <b class="btnname">⧉ Copy voice extraction prompt</b>, paste it into the AI project that has your voice skill (or give it two or three approved samples), then paste what comes back into <b>Your reviewed voice profile, voice notes, or writing sample</b>. Fix anything that doesn't sound like you — this box outranks the lane description.</li>
+      <li><b>Author rules &amp; protected choices</b> — invented spellings, a term that must never be "corrected", the deliberately unreliable narrator. Rules beat generic preferences.</li>
+      <li><b>Document context, outline &amp; continuity notes</b> — world bible facts, the magic or tech rules, what has to stay true from earlier books. The World &amp; Rules audit leans on this.</li>
     </ul>
-    <div class="tip">💡 Try <b class="btnname">Load demo chapter</b> first — it's a cozy mystery deliberately riddled with problems, so you can watch every feature fire before trusting it with your baby.</div>
+    <p>Click <b class="btnname">Done</b>. Settings save with the book and auto-save as you type.</p>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">3</div><div>
-    <h2>Read your Auto-Scan</h2>
-    <p>The instant you load a chapter, the scan flags banned words, AI-isms, dramatic triplets, flash-forwards ("she would later realize…"), filter words, and weak verbs — offline and free. Nothing uploads, ever.</p>
+    <h2>Run a chapter sweep</h2>
+    <p>Pick a chapter under <b>Manuscript</b> (or click <b class="btnname">Editing passes</b> in the sidebar). The <b>pass card</b> at the top of the workspace has two dropdowns side by side:</p>
     <ul>
-      <li><b>Red (critical)</b> first, always — those are the "AI wrote this" tells.</li>
-      <li>Click <b class="btnname">Show highlighted text</b> to see every hit lit up inside your actual prose.</li>
+      <li>The <b>pass dropdown</b> — grouped into <b>Chapter sweeps</b> (1–9) and <b>Whole-book audits</b>. A pass you've already reviewed on this chapter shows <b>✓</b> in the list; one you reviewed before the chapter changed shows <b>↻</b>. The line above it reads <b>Pass N of 9 · 3 of 9 reviewed on this chapter</b>, and a one-line brief of the pass sits underneath.</li>
+      <li>The <b>Manuscript language</b> dropdown — English, French, German, Italian, Spanish or Brazilian Portuguese. Change it and every prompt asks your AI to analyze and reply in that language; a <b>replies in French</b> pill appears on the card so you can't forget it's set.</li>
     </ul>
+    <p>Choose your pass, then click <b class="btnname">✦ Start this pass →</b> to open the <b>Work through this pass</b> dialog.</p>
+    <h3>Two ways to run it</h3>
+    <ul>
+      <li><b>Copy / paste into my own AI</b> (the default): first choose the answer format under <b>What did your AI return?</b> — <i>the prompt changes with that choice, so pick it before you copy</i>. Then <b class="btnname">⧉ Copy prompt</b>, paste it into Claude/ChatGPT/Gemini/Grok, and bring the reply back.</li>
+      <li><b>Built-in AI</b>: open <b class="btnname">✦ AI connections</b> (sidebar) or <b class="btnname">⚙ AI setup</b> (top bar), paste your own OpenAI or Claude API key, click <b class="btnname">Test &amp; save changes</b>, pick a model. Back in the pass dialog, choose that provider in the Built-in AI dropdown → <b class="btnname">Prepare request</b> (shows a token estimate) → <b class="btnname">Run with AI</b>. The reply drops straight into the box and the review opens itself. Your provider bills you directly — set a spending limit with them first. Keys are saved only in your browser.</li>
+    </ul>
+    <h3>The three answer formats</h3>
+    <ul>
+      <li><b>Suggestions (JSON, including code blocks) — recommended.</b> Your AI returns a list of exact before → after edits with a reason for each. Short reply, one decision card per edit. This is the one to use almost always.</li>
+      <li><b>Revised chapter — the whole text, rewritten.</b> Your AI edits the chapter and hands the full text back (in parts if it's long — say "NEXT" until you have them all, combine, then paste). The clinic compares it to your chapter paragraph by paragraph and turns every difference into a decision card.</li>
+      <li><b>Notes / report — nothing to apply.</b> Review-only notes. Saved to the pass and folded into your Manuscript report; they never rewrite your text.</li>
+    </ul>
+    <p>Paste the reply under <b>2 · Paste the response</b> and click <b class="btnname">Review proposed changes →</b> (or <b class="btnname">Save notes to this pass →</b> for notes).</p>
+    <div class="tip">💡 The nine sweeps, in the order the class teaches them: 1 Structural De-AI Sweep · 2 Present-Moment Pass · 3 Quality Check · 4 Engagement / Hook Audit · 5 Developmental Edit · 6 <b>Action &amp; Set-Piece Edit</b> (choreography, physical consequences, clarity and intensity — the fight, the chase, the breach) · 7 Voice Audit · 8 Dialogue Polish · 9 Line Edit. Finished a pass in your head with nothing to change? <b class="btnname">I reviewed this pass — no changes</b> in the decisions panel ticks it off.</div>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">4</div><div>
-    <h2>Run a pass — or just say "fix it"</h2>
+    <h2>Review the changes — you have the final say</h2>
+    <p>The right-hand panel becomes <b>Your editing decisions</b> with a counter of how many are left. Each card shows <b>Original</b>, <b>Suggested</b>, and the editor's reason.</p>
     <ul>
-      <li>On the <b>Editing Passes</b> tab, pick your chapter under <b class="btnname">Apply to</b>. There are <b>14 passes</b>, numbered in the order the class teaches them.</li>
-      <li>Open any pass. The gold <b class="btnname">✏️ Copy EDIT prompt — fix it for me</b> makes your AI actually <b>edit the chapter</b> and hand back: the revised text, a change log, and a short "needs author" list for decisions only you can make.</li>
-      <li>Prefer to make every call yourself? Use <b class="btnname">Copy review prompt — notes only</b>.</li>
-      <li>The audit passes are review-only on purpose — <b>Plot Holes, Timeline, Arc Pacing, World &amp; Rules Consistency</b> (your magic system and tech obey their own laws, tracked in a World Bible log), and <b>Clue &amp; Fair-Play</b> (every clue the sleuth uses was on the page for the reader too — with a clue ledger and suspect grid). They flag; the story decisions are yours.</li>
+      <li><b class="btnname">Show passage in manuscript</b> highlights that exact spot in the reader so you can see it in context.</li>
+      <li><b class="btnname">✓ Accept</b> takes the suggestion. <b class="btnname">Keep original</b> leaves your words alone. Click a chosen button again to un-choose it.</li>
+      <li><b class="btnname">Edit it myself / discuss</b> opens <b>Make this edit your own</b>: type your version and <b class="btnname">Accept my wording</b>, or describe what you want ("keep the dread, lose the adverbs") and <b class="btnname">⧉ Copy discussion prompt</b> to get two or three alternatives from your AI.</li>
+      <li><b class="btnname">Accept all</b> / <b class="btnname">Keep all mine</b> decide the whole list in one click; <b class="btnname">Cancel</b> throws the review away untouched.</li>
+      <li><b class="btnname">Finish review</b> writes <i>only</i> the accepted changes into the running manuscript. Anything undecided stays as written. A toast confirms how many landed, with an <b class="btnname">Undo</b> button for a few seconds.</li>
     </ul>
+    <h3>What the marks mean</h3>
+    <ul>
+      <li>In the pass dropdown that pass now carries a <b>✓</b> — reviewed on this version of the chapter — and the card's count ticks up (4 of 9 reviewed on this chapter). The panel shows <b>Pass reviewed</b> with "kept 7 of 12 changes", plus <b class="btnname">👀 Tracked changes</b> (removals struck through, additions marked, computed on your computer).</li>
+      <li>Edit the chapter again and the mark becomes <b>↻ Chapter changed since</b> — the pass still counts, but <b class="btnname">Run again</b> is there whenever you want a fresh read. In the sidebar the chapter shows its running count (3/9) until all nine sweeps are ✓, then the chapter itself gets a ✓.</li>
+      <li>The next pass you run is <b>built from the new version automatically</b>. Dev edit → review → action pass → review. Your changes carry forward the whole way.</li>
+    </ul>
+    <div class="tip">💡 Reader tabs: <b>Current chapter</b> is the running text (click <b class="btnname">Edit text</b> to type changes by hand, then <b class="btnname">Save text</b>), <b>Full manuscript</b> shows the whole book with your accepted edits, <b>Original</b> is the untouched import — <b class="btnname">Restore this original</b> puts it back if you ever want a do-over.</div>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">5</div><div>
-    <h2>Paste the revision back — the victory lap</h2>
-    <p>Right under the same pass is a <b>📥 paste-back box</b>. Drop your AI's revised chapter in and hit <b class="btnname">Update chapter &amp; re-scan</b>:</p>
+    <h2>Run the whole-book audits</h2>
+    <p>The <b>Whole-book audits</b> group at the bottom of the pass dropdown holds five passes. Pick one and the card's label changes to <b>Whole-book audit</b>: they read <b>every chapter at once</b> (the reader flips to Full manuscript) and they are review-only on purpose — they flag; the story decisions are yours.</p>
     <ul>
-      <li>The chapter updates <b>in place</b> — watch your flag count drop (that's your proof the fix landed).</li>
-      <li>Then hit <b class="btnname">👀 View tracked changes</b> — every edit Word-style: removals struck through in red, additions in green, with a running "+adds / −cuts" count. Flip through at speed instead of reading a change log; it's computed on your computer, no AI involved.</li>
-      <li>The <b>next pass you copy is automatically built from the new version</b>. Dev edit → update → dialogue pass → update. Your changes carry forward the whole way, no tab-hopping.</li>
+      <li><b>Plot Hole Checker</b>, <b>Timeline Consistency</b> (elapsed time, travel, who knew what when) and <b>Arc Pacing Audit</b>.</li>
+      <li><b>World &amp; Rules Consistency</b> — your magic system, tech and world rules obey their own laws, tracked in a <b>World Bible log</b> (rule, where it's established, where it's used or broken).</li>
+      <li><b>Clue &amp; Fair-Play Audit</b> — every clue the sleuth uses was on the page for the reader too, with a <b>clue ledger</b> and a <b>suspect grid</b> (means, motive, opportunity, alibi).</li>
     </ul>
-    <div class="tip">💡 There's also a <b class="btnname">🔁 Paste revised text</b> button inside each chapter card on the first tab, for when you're over there.</div>
+    <ul>
+      <li>Click <b class="btnname">✦ Start this pass →</b> (or <b class="btnname">Open audit</b> in the panel). Copy the prompt or run it with your key exactly as in step 3 — there's no format to choose, an audit always comes back as a report.</li>
+      <li>Paste the report and click <b class="btnname">Save audit report →</b>. It appears in the <b>Audit notes</b> panel with <b class="btnname">Copy report</b> and <b class="btnname">Run again</b>, and it's folded into your Manuscript report.</li>
+      <li>Go back to the chapters the audit points at and fix them with the sweeps. If the manuscript changes after an audit, the panel says <b>manuscript changed since</b> and the audit's mark in the dropdown turns ↻ — rerun it when you're ready.</li>
+    </ul>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">6</div><div>
-    <h2>Check your lab results</h2>
-    <p>The <b>Story Reports</b> tab computes seven whole-book reports right in your browser:</p>
+    <h2>Check your Story lab</h2>
+    <p>Four lab views live under <b>Story lab</b> in the sidebar. All the instant reads are computed in your browser — nothing uploads.</p>
     <ul>
-      <li><b>📈 Plot</b> — your emotional arc. ~90% of bestsellers reach both tinted bands: one real high, one real low.</li>
-      <li><b>🎭 Character</b> — your cast (and world glossary), auto-detected: presence bars per chapter, confusable names, characters who vanish, dialogue share vs. the bestseller range.</li>
-      <li><b>⏱ Pacing</b> — where readers speed up and where they put the book down. Watch the middle third.</li>
-      <li><b>⚔️ Conflict</b> — chapters that have gone quiet (tension on every page is the rule).</li>
-      <li><b>🕰 Timeline</b> — your story's clock, read from phrases like "the next morning": floating chapters, time skips, impossible travel math.</li>
-      <li><b>🕯 Dread</b> — horror &amp; thriller writers, this one's yours: the quiet-quiet-BANG wave, escalation across the book, and numbing (too much dread flatlines the scare).</li>
-      <li><b>🔍 Mystery</b> — the investigation engine: is the inciting crime in by ~15%, do reveals keep landing (breadcrumb stalls flagged), and does the answer avalanche in all at once at the end?</li>
+      <li><b>⚡ Auto-Scan</b> — fires the moment chapters load and flags banned words, AI-isms, dramatic triplets, flash-forwards ("she would later realize…"), filter words and weak verbs. <b>Red (critical)</b> first, always — those are the "AI wrote this" tells; the sidebar badge counts them. <b class="btnname">Show highlighted text</b> lights up every hit inside your prose; <b class="btnname">Open this chapter →</b> jumps you to it with the first sweep ready.</li>
+      <li><b>📈 Story reports</b> — seven whole-book reports: <b>📈 Plot</b> (your emotional arc — ~90% of bestsellers reach both tinted bands), <b>🎭 Character</b> (cast and world glossary: presence bars, confusable names, who vanishes, dialogue share), <b>⏱ Pacing</b> (watch the middle third), <b>⚔️ Conflict</b> (chapters that have gone quiet), <b>🕰 Timeline</b> (floating chapters, time skips, impossible travel math), <b>🕯 Dread</b> (horror and thriller writers, this one's yours: the quiet-quiet-BANG wave, escalation across the book, and numbing) and <b>🔍 Mystery</b> (the investigation engine: is the inciting crime in by ~15%, do reveals keep landing, does the answer avalanche in all at once at the end?). Each has a <b>deep-dive prompt</b> for your AI and a paste-back box that feeds the Manuscript report.</li>
+      <li><b>♥ Satisfaction tracker</b> — the Charge Model from class, tuned for genre: tension released should convert into <b>reader investment</b>; a payoff is a reveal, a victory, a truth finally spoken. <b class="btnname">1 · Copy "rate my beats" prompt</b> → let your AI score the book → <b class="btnname">2 · Paste beat JSON</b> → <b class="btnname">Plot it</b>. The curve draws itself and flags any <b>leak</b> (tension dropped but investment didn't rise to catch it). <b class="btnname">Load sample arc</b> shows a finished example; <b class="btnname">+ Add beat by hand</b> if you'd rather rate it yourself.</li>
+      <li><b>📋 Manuscript report</b> — opens with the <b>Clinic Verdict</b>: graded dimensions tuned to your lane (horror and thrillers get a Dread grade; mysteries and thrillers get a Mystery Engine grade) and one readiness call, <i>Revision Needed → Almost There → Polish-Ready</i>. For the human-grade read, <b class="btnname">Copy "Overall Assessment" prompt</b> and paste back the <b>Editor's Letter</b> your AI writes — it becomes the opening of your report. Every note you saved from a pass or audit is collected here too.</li>
     </ul>
-    <p>Each report also has a <b>deep-dive prompt</b> for your AI and a paste-back box that feeds your final report.</p>
   </div></div></div>
 
   <div class="card"><div class="step"><div class="num">7</div><div>
-    <h2>Map your satisfaction curve</h2>
-    <p>The <b>Satisfaction</b> tab is the Charge Model from class, tuned for genre: tension released should convert into <b>reader investment</b> — a payoff is a reveal, a victory, a truth finally spoken. Copy the <b class="btnname">"rate my beats" prompt</b>, let your AI score the whole book, paste the JSON back — the curve draws itself and flags any <b>leak</b> (a payoff where tension dropped but investment didn't rise to catch it).</p>
-  </div></div></div>
-
-  <div class="card"><div class="step"><div class="num">8</div><div>
-    <h2>Get your verdict &amp; download the report</h2>
+    <h2>Export — and go back in time if you need to</h2>
+    <p><b class="btnname">⬇ Export</b> in the top bar opens <b>Take your work with you</b>:</p>
     <ul>
-      <li>The <b>Manuscript Report</b> tab opens with the <b>Clinic Verdict</b> — graded dimensions tuned to your lane (horror and thrillers get a Dread grade; mysteries and thrillers get a Mystery Engine grade), and one readiness call: <i>Revision Needed → Almost There → Polish-Ready</i>.</li>
-      <li>Want the human-grade read? Copy the <b class="btnname">Overall Assessment</b> prompt — your AI writes a full editor's letter: strengths, ranked concerns, and the one thing to fix first. Paste it back.</li>
-      <li>Hit <b class="btnname">⬇ Download Manuscript report</b> — the whole checkup saves to <b>your computer</b>: verdict, priorities, every fix as a before/after card, all your graphs. That file is your revision plan.</li>
+      <li><b>Word manuscript</b> (.docx) — your accepted text in standard manuscript format, ready for Vellum, Atticus or your editor. <b>Plain text manuscript</b> (.txt) if you'd rather.</li>
+      <li><b>Manuscript report</b> (.html) — verdict, scans, lab charts and every saved note as before/after cards. That file is your revision plan. (The same download sits at the bottom of the Manuscript report lab view, with a <b class="btnname">Copy master revision prompt</b> beside it.)</li>
+      <li><b>Complete project backup</b> (.json) — originals, decisions, notes and history. Reopen it on any computer with <b class="btnname">Open a backup (.json)</b>. Make one before you clear a browser or switch machines.</li>
+      <li><b>Editing history &amp; audits</b> (.txt) — the paper trail: which passes ran on which version, every revision, every audit report including your World Bible log and clue ledger.</li>
     </ul>
+    <p><b class="btnname">🕘 Revision history</b> (top right of the workspace) lists every accepted review and manual edit, newest first. <b class="btnname">↩ Restore before</b> puts a chapter back to how it was before that step — the current text is kept in history too, so nothing is ever lost. <b>Imported originals</b> are always one click away underneath.</p>
+    <div class="tip">💡 Need to remove a chapter or a whole book? <b class="btnname">Rename / delete chapter</b> above the reader, or <b class="btnname">Rename / delete manuscript</b> under the title — type DELETE in the box. Export a backup first if you might want it back.</div>
   </div></div></div>
 
   <div class="rhythm">
     <h2>The rhythm, once you know it</h2>
-    <p style="margin:0"><b>Paste chapter → Go → read the scan → EDIT prompt into Claude → paste revision back → next pass.</b> Repeat per chapter, glance at the lab reports as the book grows, download your Manuscript Report when the verdict looks good. Your book gets the full checkup — you're still the doctor. 🩺</p>
+    <p style="margin:0"><b>Import → settings once → pick a chapter → Start this pass → Copy prompt (or Run with AI) → paste the reply → Accept / Keep original → Finish review → next sweep.</b> Repeat per chapter, run the whole-book audits as the book firms up (Clue &amp; Fair-Play before you call a mystery done), glance at the Story lab as it grows, and export your Manuscript report when the verdict looks good. Your book gets the full checkup — you're still the doctor. 🩺</p>
   </div>
 
   <div class="card faq">
     <h2 style="margin:0 0 4px;color:var(--navy)">Quick answers</h2>
     <h3>Is my book uploaded anywhere?</h3>
-    <p>No. Everything happens in your browser and saves there automatically. The only time your words travel is when <i>you</i> paste a prompt into your own AI.</p>
+    <p>No. Everything happens in your browser and saves there automatically — there's no account and no server. Your words only travel when <i>you</i> paste a prompt into your own AI, or click <b>Run with AI</b> with a key you connected, in which case they go to that provider and nowhere else.</p>
     <h3>Do I have to paste results back into the tool?</h3>
-    <p>Only if you want them in your downloadable report. The paste-back that <i>matters</i> is the revised chapter (step 5) — that keeps every later pass working on your newest version.</p>
+    <p>For sweeps, yes — that's the whole point: the reply becomes decision cards, and <b>Finish review</b> is what updates your chapter so every later pass works on the newest version. Notes and audit reports are optional paste-backs; they only matter if you want them in your Manuscript report.</p>
+    <h3>Suggestions, Revised chapter or Notes — which do I pick?</h3>
+    <p><b>Suggestions</b> nearly always. Replies are short, every edit arrives with its reason, and nothing can get cut off. Choose <b>Revised chapter</b> when you want the AI to do a heavy rewrite in one go, and <b>Notes</b> when you only want its opinion. Pick the format <i>before</i> you copy the prompt — the prompt changes with it.</p>
     <h3>What order should I run the passes?</h3>
-    <p>Top to bottom works: they're numbered the way the class teaches them. Minimum viable checkup: Auto-Scan + Pass 1 (Quality Check) + Pass 4 (Line Edit) per chapter, then the Overall Assessment at the end. Writing mystery or thriller? Run Pass 14 (Clue &amp; Fair-Play) before you call the book done. Writing horror? Keep an eye on the 🕯 Dread report as chapters stack up.</p>
+    <p>Top to bottom works: the sweeps are numbered the way the class teaches them. Minimum viable checkup: Auto-Scan + Sweep 3 (Quality Check) + Sweep 9 (Line Edit) per chapter, the whole-book audits once the draft is complete, then the Overall Assessment at the end. Writing mystery or thriller? Run the <b>Clue &amp; Fair-Play Audit</b> before you call the book done. Writing fantasy or sci-fi? <b>World &amp; Rules Consistency</b> is your last gate. Writing horror? Keep an eye on the 🕯 Dread report as chapters stack up.</p>
     <h3>My AI said "response exceeded the output token maximum" (or just stopped mid-chapter)</h3>
-    <p>That means one reply couldn't hold the whole revision — usually a very long chapter, or a book that loaded as <i>one giant chapter</i> because the splitter couldn't find your chapter headings. <b>Don't resend the same prompt</b> — it fails the same way every time and eats your AI allowance. Instead: check the chapter list (a ⚠ long tag marks the oversized ones), make sure each chapter starts on its own line like "Chapter 1," and re-copy the EDIT prompt — it now tells your AI to deliver big revisions in parts (just say "next" until you have them all, combine, and paste back).</p>
+    <p>That means one reply couldn't hold the whole revision — usually a very long chapter, or a book that loaded as <i>one giant chapter</i> because the splitter couldn't find your chapter headings (the clinic warns you on import when a chapter comes in over 12,000 words). <b>Don't resend the same prompt</b> — it fails the same way every time and eats your AI allowance. Instead: switch the format to <b>Suggestions</b> (short replies, no cut-offs); or make sure each chapter starts on its own line like "Chapter 1," delete the giant chapter, and import again. If you stay on Revised chapter, the prompt already tells your AI to deliver big revisions in parts — just say "NEXT" until you have them all, combine, and paste. The review panel also warns you when a pasted chapter is noticeably shorter than the loaded one.</p>
+    <h3>I accepted something I shouldn't have</h3>
+    <p>Right after Finish review, click <b>Undo</b> on the toast. Later, <b>🕘 Revision history → ↩ Restore before</b>, or the <b>Original</b> tab → <b>Restore this original</b> to go all the way back to your import.</p>
     <h3>Something's confusing or broken?</h3>
-    <p>That's what the <b>💬 Feedback</b> button in the tool's top bar is for — your notes go straight to Jessica AND the Claude that builds this tool. Beta feedback built half the features on this page.</p>
+    <p>That's what <b>💬 Feedback</b> at the bottom of the sidebar is for — your notes go straight to Jessica AND the Claude that builds this tool. Beta feedback built half the features on this page.</p>
   </div>
 
-  <div class="foot">The Invisible Pen · Edit Like a Boss — this guide covers the navy Genre Fiction clinic; the rose-gold Romance clinic works the same way with 12 passes and 5 lab reports.</div>
+  <div class="foot">The Invisible Pen · Edit Like a Boss — this guide covers the navy Genre Fiction clinic; the rose-gold Romance clinic works the same way with a Heat Scene sweep, three whole-book audits and five lab reports.</div>
 </div>
 </body>
 </html>
