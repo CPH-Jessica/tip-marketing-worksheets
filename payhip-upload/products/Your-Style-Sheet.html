@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Style Sheet — Make AI Sound Like You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf5ec;
+    --paper-2:#f3ebdc;
+    --ink:#2b2521;
+    --ink-soft:#6b5f54;
+    --line:#e0d4c0;
+    --accent:#DA7756;
+    --accent-deep:#b85c3e;
+    --accent-wash:#f7e9e1;
+    --display:'Fraunces', Georgia, serif;
+    --body:'Newsreader', Georgia, serif;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(218,119,86,0.05), transparent 38%),
+      radial-gradient(circle at 85% 80%, rgba(218,119,86,0.04), transparent 40%);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:19px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:5.5rem 1.6rem 7rem;}
+
+  /* HEADER */
+  header{text-align:center;margin-bottom:3.5rem;}
+  .eyebrow{
+    font-family:var(--body);font-style:italic;color:var(--accent-deep);
+    font-size:1.05rem;letter-spacing:.02em;margin-bottom:.9rem;
+  }
+  h1{
+    font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,7vw,4.1rem);
+    line-height:1.02;letter-spacing:-.02em;
+  }
+  h1 em{font-style:italic;color:var(--accent);font-weight:500;}
+  .lede{
+    font-size:1.18rem;color:var(--ink-soft);max-width:50ch;margin:1.4rem auto 0;
+  }
+  .savenote{
+    display:inline-flex;align-items:center;gap:.5rem;margin-top:1.8rem;
+    background:var(--accent-wash);color:var(--accent-deep);
+    border-radius:100px;padding:.5rem 1.1rem;font-size:.95rem;font-style:italic;
+  }
+
+  /* ACTION BAR */
+  .actions{
+    position:sticky;top:0;z-index:20;
+    display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;
+    background:rgba(250,245,236,0.86);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:.85rem 1rem;margin:0 -1.6rem 3rem;
+  }
+  button{font-family:var(--body);cursor:pointer;border:none;}
+  .btn{
+    background:var(--accent);color:#fff;font-size:1rem;font-weight:500;
+    padding:.62rem 1.2rem;border-radius:100px;transition:.18s;
+    box-shadow:0 2px 0 var(--accent-deep);
+  }
+  .btn:hover{background:var(--accent-deep);transform:translateY(1px);box-shadow:0 1px 0 var(--accent-deep);}
+  .btn.ghost{background:transparent;color:var(--accent-deep);box-shadow:none;border:1px solid var(--accent);}
+  .btn.ghost:hover{background:var(--accent-wash);transform:none;}
+
+  /* SECTIONS */
+  section{
+    background:#fffdf8;border:1px solid var(--line);border-radius:var(--radius);
+    padding:2.2rem 2rem;margin-bottom:1.6rem;
+    box-shadow:0 1px 2px rgba(43,37,33,0.03);
+  }
+  .snum{
+    font-family:var(--display);font-weight:800;font-size:2.6rem;color:var(--accent);
+    line-height:1;float:left;margin:-.1rem .9rem .2rem 0;
+  }
+  .stitle{font-family:var(--display);font-weight:600;font-size:1.5rem;line-height:1.15;}
+  .shint{color:var(--ink-soft);font-size:1.02rem;margin:.6rem 0 1.3rem;clear:none;}
+  .start-here{
+    display:inline-block;background:var(--accent);color:#fff;font-size:.75rem;
+    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    padding:.3rem .7rem;border-radius:6px;margin-bottom:1rem;font-family:var(--body);
+  }
+  label.fld{display:block;margin:1.1rem 0 .35rem;font-weight:600;font-size:1.02rem;}
+  .micro{color:var(--ink-soft);font-style:italic;font-size:.95rem;font-weight:400;}
+  input[type=text], textarea, select{
+    width:100%;font-family:var(--body);font-size:1.05rem;color:var(--ink);
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:.8rem .9rem;line-height:1.5;transition:.15s;
+  }
+  textarea{resize:vertical;min-height:5.5rem;}
+  input:focus, textarea:focus, select:focus{
+    outline:none;border-color:var(--accent);background:#fff;
+    box-shadow:0 0 0 3px var(--accent-wash);
+  }
+  .opts{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.3rem;}
+  .opts label{
+    display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;
+    background:var(--paper);border:1px solid var(--line);border-radius:100px;
+    padding:.45rem .9rem;font-size:.98rem;transition:.15s;
+  }
+  .opts label:hover{border-color:var(--accent);}
+  .opts input{accent-color:var(--accent);width:1.05rem;height:1.05rem;}
+  .opts input:checked + span{color:var(--accent-deep);font-weight:600;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:560px){.two{grid-template-columns:1fr;}}
+
+  /* PROMPT BUILDER */
+  .builder{background:linear-gradient(180deg,#fffdf8,#f8f0e2);border-color:var(--accent);}
+  .builder .stitle{color:var(--accent-deep);}
+  #promptOut{
+    width:100%;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.9rem;
+    line-height:1.55;background:#2b2521;color:#f3ebdc;border:none;border-radius:12px;
+    padding:1.2rem;min-height:16rem;white-space:pre-wrap;
+  }
+  .builder-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;}
+
+  /* VERIFY */
+  .verify label{
+    display:flex;gap:.8rem;align-items:flex-start;padding:.85rem 0;
+    border-bottom:1px solid var(--line);cursor:pointer;font-size:1.05rem;
+  }
+  .verify label:last-child{border-bottom:none;}
+  .verify input{margin-top:.35rem;accent-color:var(--accent);width:1.2rem;height:1.2rem;flex:0 0 auto;}
+  .verify input:checked ~ span{color:var(--ink-soft);text-decoration:line-through;}
+  .pull{
+    background:var(--accent-wash);border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0;padding:1rem 1.2rem;margin-top:1.4rem;
+    font-style:italic;color:var(--ink);
+  }
+
+  footer{text-align:center;color:var(--ink-soft);font-style:italic;font-size:.95rem;margin-top:3rem;}
+
+  .toast{
+    position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(2rem);
+    background:var(--ink);color:var(--paper);padding:.8rem 1.4rem;border-radius:100px;
+    font-size:1rem;opacity:0;pointer-events:none;transition:.3s;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    .actions,.builder-actions,.savenote,.toast{display:none!important;}
+    body{background:#fff;font-size:12pt;}
+    section{break-inside:avoid;border-color:#ccc;box-shadow:none;}
+    #promptOut{background:#f4f4f4;color:#000;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">The Invisible Pen · Make AI Sound Like You</div>
+    <h1>Your <em>Style Sheet</em></h1>
+    <p class="lede">The one document that teaches AI your voice. Fill it in once, in your own words — then let it build your Claude prompt for you.</p>
+    <div class="savenote">✺ Your answers save automatically in this browser. Come back anytime.</div>
+  </header>
+
+  <div class="actions">
+    <button class="btn" onclick="copySheet()">Copy my Style Sheet</button>
+    <button class="btn ghost" onclick="window.print()">Print / Save PDF</button>
+    <button class="btn ghost" onclick="resetAll()">Start over</button>
+  </div>
+
+  <!-- SECTION 7 — ANCHORS (START HERE) -->
+  <section>
+    <span class="start-here">Start here</span>
+    <div><span class="snum">7</span><span class="stitle">Anchor paragraphs</span></div>
+    <p class="shint">Two paragraphs of your own writing that sound the MOST like you — not your best plot, your truest voice. The bit where a reader would say <em>"oh, that's her."</em> No published prose yet? Write four honest sentences about your morning. Your voice shows up anywhere.</p>
+    <label class="fld" for="anchor1">Anchor paragraph 1</label>
+    <textarea id="anchor1" placeholder="Paste your most-you paragraph here..."></textarea>
+    <label class="fld" for="anchor2">Anchor paragraph 2</label>
+    <textarea id="anchor2" placeholder="And one more..."></textarea>
+  </section>
+
+  <!-- 1 -->
+  <section>
+    <div><span class="snum">1</span><span class="stitle">My voice in one sentence</span></div>
+    <p class="shint">Read your anchors. If a reader described how your writing <em>feels</em> in one line, what would they say?</p>
+    <label class="fld" for="v1">My voice is… <span class="micro">e.g. "fast and funny with a bruise underneath"</span></label>
+    <input type="text" id="v1" placeholder="My voice is...">
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div><span class="snum">2</span><span class="stitle">Words I use / never use</span></div>
+    <p class="shint">Pull these straight off your own page.</p>
+    <label class="fld" for="wordsUse">Words &amp; phrases I reach for</label>
+    <textarea id="wordsUse" placeholder="My go-to verbs, my comfort words..."></textarea>
+    <label class="fld" for="wordsAvoid">Words &amp; phrases I'd never write <span class="micro">— the ones that make me wince</span></label>
+    <textarea id="wordsAvoid" placeholder="The AI loves 'wave of emotion,' 'sent shivers,' 'in that moment.' If those aren't you, list them here."></textarea>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div><span class="snum">3</span><span class="stitle">Rhythm rules</span></div>
+    <p class="shint">Look at your anchors and count. Short and clipped? Long and looping? A mix?</p>
+    <label class="fld">My default sentence length</label>
+    <div class="opts" data-group="rhythmLen">
+      <label><input type="radio" name="rhythmLen" value="short"><span>Short</span></label>
+      <label><input type="radio" name="rhythmLen" value="medium"><span>Medium</span></label>
+      <label><input type="radio" name="rhythmLen" value="long"><span>Long</span></label>
+      <label><input type="radio" name="rhythmLen" value="varied"><span>Varied</span></label>
+    </div>
+    <div class="two">
+      <div>
+        <label class="fld" for="shorterWhen">My sentences get shorter when…</label>
+        <input type="text" id="shorterWhen" placeholder="tension? fear? anger?">
+      </div>
+      <div>
+        <label class="fld" for="longerWhen">…and longer when</label>
+        <input type="text" id="longerWhen" placeholder="intimacy? memory? wonder?">
+      </div>
+    </div>
+    <label class="fld">Do I use fragments?</label>
+    <div class="opts" data-group="frags">
+      <label><input type="radio" name="frags" value="often"><span>Often</span></label>
+      <label><input type="radio" name="frags" value="for emphasis only"><span>For emphasis only</span></label>
+      <label><input type="radio" name="frags" value="never"><span>Never</span></label>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div><span class="snum">4</span><span class="stitle">What my narrator notices</span></div>
+    <p class="shint">The secret one. Two narrators in the same room see different things. What does <em>yours</em> lock onto?</p>
+    <label class="fld" for="notices">My narrator can't stop noticing… <span class="micro">hands? exits? what people aren't saying? the cost of things?</span></label>
+    <textarea id="notices" placeholder="The one thing my narrator notices that a generic narrator would miss..."></textarea>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div><span class="snum">5</span><span class="stitle">Humor &amp; heat register</span></div>
+    <label class="fld">Where my humor lives</label>
+    <div class="opts" data-group="humor">
+      <label><input type="checkbox" name="humor" value="dry"><span>Dry</span></label>
+      <label><input type="checkbox" name="humor" value="warm"><span>Warm</span></label>
+      <label><input type="checkbox" name="humor" value="filthy"><span>Filthy</span></label>
+      <label><input type="checkbox" name="humor" value="gallows"><span>Gallows</span></label>
+      <label><input type="checkbox" name="humor" value="self-deprecating"><span>Self-deprecating</span></label>
+      <label><input type="checkbox" name="humor" value="rare"><span>Rare / none</span></label>
+    </div>
+    <div class="two" style="margin-top:1rem;">
+      <div>
+        <label class="fld" for="heatLevel">Heat level (1–5)</label>
+        <select id="heatLevel">
+          <option value="">—</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+      <div>
+        <label class="fld">On the page I lean</label>
+        <div class="opts" data-group="heatLean">
+          <label><input type="radio" name="heatLean" value="closed door"><span>Closed door</span></label>
+          <label><input type="radio" name="heatLean" value="fade"><span>Fade</span></label>
+          <label><input type="radio" name="heatLean" value="on-page"><span>On-page</span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div><span class="snum">6</span><span class="stitle">My banned list</span></div>
+    <p class="shint">The clichés and tics that are NOT you. Forbid them by name — the machine can obey a named ban, it can't obey "don't be cheesy." <span class="micro">A real working author's sheet bans "no tangled sheets or slick folds." Specific. Named.</span></p>
+    <label class="fld" for="banned">Phrases I'm banning</label>
+    <textarea id="banned" placeholder="One per line, or comma-separated. Be specific."></textarea>
+  </section>
+
+  <!-- PROMPT BUILDER -->
+  <section class="builder" id="builder">
+    <div><span class="snum">▶</span><span class="stitle">Build your Claude prompt</span></div>
+    <p class="shint">Two quick things about the scene you want, then hit the button. Your whole sheet folds itself into a ready-to-paste prompt.</p>
+    <label class="fld" for="scene">What's the scene? <span class="micro">one line is plenty</span></label>
+    <input type="text" id="scene" placeholder="e.g. she comes home and he's waiting in the dark kitchen">
+    <label class="fld" for="move">Name the ONE move <span class="micro">— the single image this scene opens on</span></label>
+    <input type="text" id="move" placeholder="e.g. her keys, still warm from her fist">
+    <div class="builder-actions">
+      <button class="btn" onclick="buildPrompt()">Build my prompt</button>
+      <button class="btn ghost" onclick="copyPrompt()">Copy prompt</button>
+    </div>
+    <textarea id="promptOut" readonly style="margin-top:1rem;" placeholder="Fill in your sheet above, add a scene + a move, then press “Build my prompt.” Your personalized Claude prompt appears here."></textarea>
+    <p class="shint" style="margin-top:.9rem;">Open Claude, paste this in, and let it draft. Then run the verify pass below — because it <em>will</em> try to cheat you.</p>
+  </section>
+
+  <!-- VERIFY -->
+  <section class="verify">
+    <div><span class="snum">✓</span><span class="stitle">The verify checklist</span></div>
+    <p class="shint">Run this on every draft Claude hands you.</p>
+    <label><input type="checkbox"><span>Did it open on the <strong>move I named</strong> — or did it open on the weather?</span></label>
+    <label><input type="checkbox"><span>Did it obey my <strong>banned list</strong>, or sneak one in?</span></label>
+    <label><input type="checkbox"><span>Does it sound like <strong>me</strong>, or like the genre average?</span></label>
+    <label><input type="checkbox"><span>Did it do the <strong>hard</strong> note — or just the easy word-swaps and <em>claim</em> it did the rest?</span></label>
+    <label><input type="checkbox"><span>Did it <strong>copy my example</strong> back instead of generating fresh?</span></label>
+    <label><input type="checkbox"><span>If I asked "why did you do that?" — am I trusting the <strong>page</strong>, not its confident explanation?</span></label>
+    <div class="pull">Trust what's on the page, never the AI's account of what it did. When it explains a mistake, it's often making the explanation up. You're the director. The page is your only evidence.</div>
+  </section>
+
+  <footer>Built in the “Make AI Sound Like You” workshop · The Invisible Pen<br>Finish it this week, while your voice is warm.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const KEY = 'tip_style_sheet_v1';
+  const ids = ['anchor1','anchor2','v1','wordsUse','wordsAvoid','shorterWhen','longerWhen','notices','heatLevel','banned','scene','move'];
+  const radioGroups = ['rhythmLen','frags','heatLean'];
+  const checkGroups = ['humor'];
+
+  function safeGet(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
+  function safeSet(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){ /* preview env — skip */ } }
+
+  function collect(){
+    const d = {};
+    ids.forEach(id => { const el = document.getElementById(id); if(el) d[id] = el.value; });
+    radioGroups.forEach(g => { const c = document.querySelector('input[name="'+g+'"]:checked'); d[g] = c ? c.value : ''; });
+    checkGroups.forEach(g => { d[g] = Array.from(document.querySelectorAll('input[name="'+g+'"]:checked')).map(x=>x.value); });
+    return d;
+  }
+  function save(){ safeSet(collect()); }
+
+  function restore(){
+    const d = safeGet();
+    ids.forEach(id => { const el = document.getElementById(id); if(el && d[id]!=null) el.value = d[id]; });
+    radioGroups.forEach(g => { if(d[g]){ const el = document.querySelector('input[name="'+g+'"][value="'+d[g]+'"]'); if(el) el.checked = true; } });
+    checkGroups.forEach(g => { (d[g]||[]).forEach(v => { const el = document.querySelector('input[name="'+g+'"][value="'+v+'"]'); if(el) el.checked = true; }); });
+  }
+
+  document.addEventListener('input', save);
+  document.addEventListener('change', save);
+  restore();
+
+  // toast
+  let tt;
+  window._toast = function(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'), 1800);
+  };
+
+  function rhythmLine(d){
+    let bits = [];
+    if(d.rhythmLen) bits.push(d.rhythmLen + ' sentences by default');
+    if(d.shorterWhen) bits.push('shorter when ' + d.shorterWhen);
+    if(d.longerWhen) bits.push('longer when ' + d.longerWhen);
+    if(d.frags) bits.push('fragments: ' + d.frags);
+    return bits.join('; ');
+  }
+  function humorLine(d){
+    let bits = [];
+    if(d.humor && d.humor.length) bits.push('humor is ' + d.humor.join(', '));
+    if(d.heatLevel) bits.push('heat level ' + d.heatLevel + '/5');
+    if(d.heatLean) bits.push(d.heatLean);
+    return bits.join('; ');
+  }
+
+  window.buildPrompt = function(){
+    const d = collect();
+    let p = "I'm going to give you my Style Sheet and two paragraphs of my real writing. Read the PROSE first — absorb how my sentences actually sound, not just the rules.\n\n";
+    p += "MY ANCHOR PARAGRAPHS:\n";
+    p += (d.anchor1 ? d.anchor1.trim() : "[paste your first paragraph]") + "\n\n";
+    if(d.anchor2 && d.anchor2.trim()) p += d.anchor2.trim() + "\n\n";
+
+    p += "MY STYLE SHEET:\n";
+    if(d.v1) p += "• Voice in one sentence: " + d.v1 + "\n";
+    if(d.wordsUse) p += "• Words I reach for: " + d.wordsUse.replace(/\n/g,', ') + "\n";
+    if(d.wordsAvoid) p += "• Words I never write: " + d.wordsAvoid.replace(/\n/g,', ') + "\n";
+    const r = rhythmLine(d); if(r) p += "• Rhythm: " + r + "\n";
+    if(d.notices) p += "• What my narrator notices: " + d.notices.replace(/\n/g,' ') + "\n";
+    const h = humorLine(d); if(h) p += "• Humor & heat: " + h + "\n";
+    if(d.banned) p += "• BANNED — obey exactly, never use: " + d.banned.replace(/\n/g,'; ') + "\n";
+
+    p += "\nTHE SCENE: " + (d.scene ? d.scene : "[describe the scene in one line]") + "\n\n";
+    p += "THE ONE MOVE: open on " + (d.move ? d.move : "[name the single image this scene opens on]") + " — put the feeling in that image. Do NOT summarize the emotion.\n\n";
+    p += "Obey my banned list exactly. When you're done, tell me which banned items you avoided and which voice rules you followed — but remember I'll be checking the page, not your explanation.";
+
+    document.getElementById('promptOut').value = p;
+    window._toast('Prompt built ✦ now copy it');
+  };
+
+  window.copyPrompt = function(){
+    const el = document.getElementById('promptOut');
+    if(!el.value.trim()){ window.buildPrompt(); }
+    el.select();
+    copyText(el.value, 'Prompt copied — paste it into Claude');
+  };
+
+  window.copySheet = function(){
+    const d = collect();
+    let s = "MY STYLE SHEET\n\n";
+    s += "Voice in one sentence: " + (d.v1||'') + "\n\n";
+    s += "Words I reach for: " + (d.wordsUse||'') + "\n";
+    s += "Words I never write: " + (d.wordsAvoid||'') + "\n\n";
+    s += "Rhythm: " + rhythmLine(d) + "\n\n";
+    s += "What my narrator notices: " + (d.notices||'') + "\n\n";
+    s += "Humor & heat: " + humorLine(d) + "\n\n";
+    s += "Banned list: " + (d.banned||'') + "\n\n";
+    s += "ANCHOR 1:\n" + (d.anchor1||'') + "\n\n";
+    s += "ANCHOR 2:\n" + (d.anchor2||'') + "\n";
+    copyText(s, 'Style Sheet copied');
+  };
+
+  function copyText(text, msg){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>window._toast(msg)).catch(()=>fallbackCopy(text,msg));
+    } else { fallbackCopy(text,msg); }
+  }
+  function fallbackCopy(text,msg){
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); window._toast(msg); }catch(e){ window._toast('Press Ctrl/Cmd+C to copy'); }
+    document.body.removeChild(ta);
+  }
+
+  window.resetAll = function(){
+    if(!confirm('Clear everything and start over? This erases your saved answers in this browser.')) return;
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.reload();
+  };
+})();
+</script>
+</body>
+</html>
