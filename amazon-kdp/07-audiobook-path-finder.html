@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Lesson 7: Audiobook Path Finder — The Amazon Setup Class</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Georgia',serif;background:#faf8f5;color:#2d2a26;line-height:1.7;padding:2rem 1rem}
+.container{max-width:720px;margin:0 auto}
+.header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid #d4a574}
+.header .brand{font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:#d4a574;margin-bottom:.5rem}
+.header h1{font-size:1.8rem;margin-bottom:.25rem}
+.header .subtitle{font-size:1rem;color:#7a756e;font-style:italic}
+.section{background:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section h2{font-size:1.3rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #ece8e1}
+.section p{margin-bottom:1rem;color:#4a463f}
+.checklist-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid #f0ece6;cursor:pointer}
+.checklist-item:last-child{border-bottom:none}
+.checklist-item input[type=checkbox]{width:22px;height:22px;margin-top:2px;accent-color:#d4a574;cursor:pointer;flex-shrink:0}
+.checklist-item label{cursor:pointer;flex:1}
+.checklist-item label strong{display:block;font-size:1rem}
+.checklist-item label span{font-size:.9rem;color:#7a756e}
+.checklist-item.checked label strong{text-decoration:line-through;color:#b0a99f}
+.card{background:#faf8f5;border-left:3px solid #d4a574;padding:1rem 1.25rem;margin-bottom:.75rem;border-radius:0 8px 8px 0}
+.card h3{font-size:1rem;margin-bottom:.25rem}
+.card p{font-size:.9rem;color:#7a756e;margin-bottom:0}
+.progress-bar{background:#ece8e1;border-radius:20px;height:12px;margin-top:1rem;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#d4a574,#c4956a);height:100%;border-radius:20px;transition:width .5s ease;width:0}
+.progress-text{text-align:center;font-size:.85rem;color:#7a756e;margin-top:.5rem}
+.tip-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.tip-box strong{color:#b8860b}
+.field{margin-bottom:1rem}
+.field label{display:block;font-weight:bold;font-size:.95rem;margin-bottom:.3rem}
+.field .hint{font-size:.85rem;color:#7a756e;font-weight:normal}
+.field input[type=text],.field input[type=date],.field input[type=number],.field select,.field textarea{width:100%;padding:.6rem .75rem;border:1px solid #d9d2c7;border-radius:8px;font-family:inherit;font-size:1rem;background:#fffdfa;color:#2d2a26}
+.field textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:1rem;flex-wrap:wrap}.row .field{flex:1;min-width:150px}
+.radio{display:block;padding:.4rem 0;cursor:pointer;font-size:.95rem}
+.radio input{accent-color:#d4a574;margin-right:.5rem}
+.result{background:#f5f0ea;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.result table{width:100%;border-collapse:collapse}
+.result td{padding:.35rem 0;border-bottom:1px solid #e6dfd4;vertical-align:top}
+.result td:last-child{text-align:right;font-weight:bold}
+.ok{color:#2e7d32;font-weight:bold}.warn{color:#c62828;font-weight:bold}
+.video-cue{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:4px;background:#fff3e0;color:#e65100;font-weight:bold;margin-bottom:.5rem;font-family:Arial,sans-serif;letter-spacing:.5px}
+.btn{display:block;margin:0 auto;padding:12px 36px;background:#d4a574;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:1rem;font-size:.95rem}
+.nav a,.footer a{color:#b5651d;text-decoration:none}
+.footer{text-align:center;padding:2rem 0 1rem;color:#b0a99f;font-size:.85rem}
+@media print{body{padding:0;background:#fff}.section{box-shadow:none;border:1px solid #ddd}.btn,.nav{display:none}}
+</style>
+</head>
+<body data-ws="7">
+<div class="container">
+<div class="header">
+<img src="claude-cat-guide.png" alt="Claude the cat, your lesson guide" style="width:110px;height:auto;display:block;margin:0 auto .5rem">
+<div class="brand">The Invisible Pen</div>
+<h1>Lesson 7: Audiobook Path Finder</h1>
+<div class="subtitle">The Amazon Setup Class — Audiobooks on Amazon Now</div>
+</div>
+<div class="section" style="background:#f5f0ea"><p style="margin:0">Keep this open while you watch the Lesson 7 video. When Claude the cat appears on screen, pause and fill in the matching section. Your answers save automatically in this browser.</p></div>
+<div class="section"><h2>The ACX Deadline</h2><div class="result" id="dl"></div><p><br>The old ACX royalty model ends at the end of 2026. Any audiobook still on it has to be enrolled in the new model to stay on Audible. Read ACX's explanation of the new model before you enroll.</p></div><div class="section"><div class="video-cue">PAUSE AND DO: after the Virtual Voice slide</div><h2>Check Your Bookshelf</h2><div class="field"><label>Do you see &quot;Add Audible audiobook with virtual voice&quot; next to any ebook?</label><label class="radio"><input type="radio" name="vv" id="vv0" value="yes" data-save>Yes</label><label class="radio"><input type="radio" name="vv" id="vv1" value="no" data-save>No</label><label class="radio"><input type="radio" name="vv" id="vv2" value="idk" data-save>I haven&#x27;t looked yet</label></div><div class="tip-box"><strong>Tip:</strong> Virtual voice is a beta, by invitation, for the US store. If the button isn't there, you haven't been invited yet.</div></div><div class="section"><div class="video-cue">PAUSE AND DO: after the December 31 slide</div><h2>My ACX Audiobooks</h2><p>If you already have audiobooks on ACX, list each one and check its royalty model this week. Skip this if you have none.</p><div class="row"><div class="field"><label for="ax1">Audiobook 1</label><input type="text" id="ax1" data-save ></div><div class="field"><label for="am1">Royalty model</label><select id="am1" data-save><option value="">Not checked yet</option><option value="new">New model</option><option value="old">Old model: needs enrolling</option></select></div></div><div class="row"><div class="field"><label for="ax2">Audiobook 2</label><input type="text" id="ax2" data-save ></div><div class="field"><label for="am2">Royalty model</label><select id="am2" data-save><option value="">Not checked yet</option><option value="new">New model</option><option value="old">Old model: needs enrolling</option></select></div></div><div class="row"><div class="field"><label for="ax3">Audiobook 3</label><input type="text" id="ax3" data-save ></div><div class="field"><label for="am3">Royalty model</label><select id="am3" data-save><option value="">Not checked yet</option><option value="new">New model</option><option value="old">Old model: needs enrolling</option></select></div></div><div class="row"><div class="field"><label for="ax4">Audiobook 4</label><input type="text" id="ax4" data-save ></div><div class="field"><label for="am4">Royalty model</label><select id="am4" data-save><option value="">Not checked yet</option><option value="new">New model</option><option value="old">Old model: needs enrolling</option></select></div></div><div class="result" id="acx"></div></div><div class="section"><div class="video-cue">PAUSE AND DO: at the end of the video</div><h2>Which Door Is Yours?</h2><div class="field"><label>1. What&#x27;s your audio budget right now?</label><label class="radio"><input type="radio" name="budget" id="budget0" value="none" data-save>Nothing yet</label><label class="radio"><input type="radio" name="budget" id="budget1" value="some" data-save>I could pay a narrator</label><label class="radio"><input type="radio" name="budget" id="budget2" value="diy" data-save>I&#x27;d narrate it myself</label></div><div class="field"><label>2. Where do you want the audiobook sold?</label><label class="radio"><input type="radio" name="where" id="where0" value="aud" data-save>Audible and Amazon are enough</label><label class="radio"><input type="radio" name="where" id="where1" value="wide" data-save>Every store I can reach</label></div><div class="field"><label>3. Is the ebook in KDP Select?</label><label class="radio"><input type="radio" name="sel" id="sel0" value="yes" data-save>Yes</label><label class="radio"><input type="radio" name="sel" id="sel1" value="no" data-save>No</label></div><div class="result" id="path">Answer the three questions to see your path.</div></div><div class="section"><h2>The Two Doors, Side by Side</h2><div class="card"><h3>Virtual Voice (inside KDP)</h3><p>Computer narration. Free to create during the beta. By invitation, US store only. You set a price from $3.99 to $14.99 and earn a 40 percent royalty.</p></div><div class="card"><h3>ACX (human narration)</h3><p>Your own recording or a narrator you hire. Under the new model: 50 percent if exclusive to Audible, 30 percent if not.</p></div><div class="card"><h3>Audiobooks in Kindle+</h3><p>Virtual voice: in automatically when the ebook is in KDP Select. ACX: can be enrolled if it&#x27;s exclusive to Audible, made with Pay for Production, has Read &amp; Listen on, and the ebook is in KDP Select.</p></div></div><div class="section"><h2>You Finished the Class</h2><p>Go back through your seven worksheets and choose the one thing that moves your next book forward.</p><div class="field"><label for="next">My one next step</label><textarea id="next" data-save ></textarea></div></div>
+<div class="section" style="text-align:center"><button class="btn" onclick="window.print()">Print This Worksheet</button><p style="margin:1rem 0 0;font-size:.85rem;color:#7a756e">Amazon's rules as of November 2026. Amazon changes these, so confirm on <a href="https://kdp.amazon.com/help" target="_blank" rel="noopener">KDP Help</a> before you act.</p></div>
+<div class="section nav"><a href="06-print-options-picker.html">&larr; Lesson 6</a><span></span></div>
+<div class="footer"><p>The Amazon Setup Class — The Invisible Pen</p><p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p><p>&copy; Clark Publishing House LLC. Not for redistribution.</p></div>
+</div>
+<script>
+const KEY='tip-amazon-setup-'+document.body.dataset.ws;
+function store(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+function save(){const d={};document.querySelectorAll('[data-save]').forEach(el=>{d[el.id]=el.type==='checkbox'||el.type==='radio'?el.checked:el.value});try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+function load(){const d=store();document.querySelectorAll('[data-save]').forEach(el=>{if(el.id in d){if(el.type==='checkbox'||el.type==='radio')el.checked=d[el.id];else el.value=d[el.id]}})}
+function progress(){document.querySelectorAll('.checklist').forEach(list=>{const all=list.querySelectorAll('input[type=checkbox]'),done=list.querySelectorAll('input[type=checkbox]:checked');
+ all.forEach(cb=>cb.closest('.checklist-item').classList.toggle('checked',cb.checked));
+ const f=list.querySelector('.progress-fill'),t=list.querySelector('.progress-text');if(f){f.style.width=Math.round(done.length/all.length*100)+'%';t.textContent=done.length+' of '+all.length+' complete'}})}
+function fmt(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function parseDate(v){if(!v)return null;const p=v.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function today(){const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())}
+function daysBetween(a,b){return Math.round((b-a)/86400000)}
+function money(n){return '$'+n.toFixed(2)}
+document.addEventListener('DOMContentLoaded',()=>{load();progress();if(window.calc)calc();
+ document.body.addEventListener('input',()=>{save();progress();if(window.calc)calc()});
+ document.body.addEventListener('change',()=>{save();progress();if(window.calc)calc()});});
+
+function calc(){const d=daysBetween(today(),new Date(2026,11,31)),dl=document.getElementById('dl');
+ dl.innerHTML=d>=0?'<strong>'+d+' day'+(d===1?'':'s')+'</strong> until December 31, 2026.':'December 31, 2026 has passed. Check ACX for the current status of your titles.';
+ let old=0,listed=0;for(let i=1;i<=4;i++){if(document.getElementById('ax'+i).value.trim()){listed++;if(document.getElementById('am'+i).value!=='new')old++}}
+ const a=document.getElementById('acx');a.style.display=listed?'block':'none';a.innerHTML=old?'<span class="warn">'+old+' audiobook'+(old>1?'s':'')+' still to check or enroll.</span>':'<span class="ok">Every audiobook you listed is on the new model.</span>';
+ const g=n=>{const r=document.querySelector('input[name='+n+']:checked');return r?r.value:null},b=g('budget'),w=g('where'),s=g('sel'),v=g('vv'),p=document.getElementById('path');
+ if(!b||!w||!s){p.textContent='Answer the three questions to see your path.';return}
+ let m='';
+ if(w==='wide')m='<strong>ACX non-exclusive, plus another distributor.</strong> You earn the lower ACX rate (30 percent) and keep the right to sell everywhere. That audiobook won\'t qualify for Kindle+.';
+ else if(b==='none')m=(v==='yes'?'<strong>Virtual Voice.</strong> You\'ve been invited, so you can have an audiobook up this week for nothing.':'<strong>Virtual Voice, when you\'re invited.</strong> Keep checking your Bookshelf for the button. Until then, price out a narrator so you know the number.')+(s==='yes'?' Because your ebook is in KDP Select, the audiobook goes into Kindle+ automatically.':'');
+ else m='<strong>ACX, exclusive to Audible.</strong> '+(b==='diy'?'Narrating it yourself':'Paying a narrator up front (Pay for Production)')+' earns the 50 percent rate.'+(s==='yes'?' With Pay for Production, Read & Listen on, and your ebook in KDP Select, it can also be enrolled in Kindle+.':'');
+ p.innerHTML=m;}
+</script>
+</body>
+</html>

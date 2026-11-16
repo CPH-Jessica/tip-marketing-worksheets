@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Lesson 4: Promo Planner and Free Tools Audit — The Amazon Setup Class</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Georgia',serif;background:#faf8f5;color:#2d2a26;line-height:1.7;padding:2rem 1rem}
+.container{max-width:720px;margin:0 auto}
+.header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid #d4a574}
+.header .brand{font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:#d4a574;margin-bottom:.5rem}
+.header h1{font-size:1.8rem;margin-bottom:.25rem}
+.header .subtitle{font-size:1rem;color:#7a756e;font-style:italic}
+.section{background:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section h2{font-size:1.3rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #ece8e1}
+.section p{margin-bottom:1rem;color:#4a463f}
+.checklist-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid #f0ece6;cursor:pointer}
+.checklist-item:last-child{border-bottom:none}
+.checklist-item input[type=checkbox]{width:22px;height:22px;margin-top:2px;accent-color:#d4a574;cursor:pointer;flex-shrink:0}
+.checklist-item label{cursor:pointer;flex:1}
+.checklist-item label strong{display:block;font-size:1rem}
+.checklist-item label span{font-size:.9rem;color:#7a756e}
+.checklist-item.checked label strong{text-decoration:line-through;color:#b0a99f}
+.card{background:#faf8f5;border-left:3px solid #d4a574;padding:1rem 1.25rem;margin-bottom:.75rem;border-radius:0 8px 8px 0}
+.card h3{font-size:1rem;margin-bottom:.25rem}
+.card p{font-size:.9rem;color:#7a756e;margin-bottom:0}
+.progress-bar{background:#ece8e1;border-radius:20px;height:12px;margin-top:1rem;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#d4a574,#c4956a);height:100%;border-radius:20px;transition:width .5s ease;width:0}
+.progress-text{text-align:center;font-size:.85rem;color:#7a756e;margin-top:.5rem}
+.tip-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.tip-box strong{color:#b8860b}
+.field{margin-bottom:1rem}
+.field label{display:block;font-weight:bold;font-size:.95rem;margin-bottom:.3rem}
+.field .hint{font-size:.85rem;color:#7a756e;font-weight:normal}
+.field input[type=text],.field input[type=date],.field input[type=number],.field select,.field textarea{width:100%;padding:.6rem .75rem;border:1px solid #d9d2c7;border-radius:8px;font-family:inherit;font-size:1rem;background:#fffdfa;color:#2d2a26}
+.field textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:1rem;flex-wrap:wrap}.row .field{flex:1;min-width:150px}
+.radio{display:block;padding:.4rem 0;cursor:pointer;font-size:.95rem}
+.radio input{accent-color:#d4a574;margin-right:.5rem}
+.result{background:#f5f0ea;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.result table{width:100%;border-collapse:collapse}
+.result td{padding:.35rem 0;border-bottom:1px solid #e6dfd4;vertical-align:top}
+.result td:last-child{text-align:right;font-weight:bold}
+.ok{color:#2e7d32;font-weight:bold}.warn{color:#c62828;font-weight:bold}
+.video-cue{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:4px;background:#fff3e0;color:#e65100;font-weight:bold;margin-bottom:.5rem;font-family:Arial,sans-serif;letter-spacing:.5px}
+.btn{display:block;margin:0 auto;padding:12px 36px;background:#d4a574;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:1rem;font-size:.95rem}
+.nav a,.footer a{color:#b5651d;text-decoration:none}
+.footer{text-align:center;padding:2rem 0 1rem;color:#b0a99f;font-size:.85rem}
+@media print{body{padding:0;background:#fff}.section{box-shadow:none;border:1px solid #ddd}.btn,.nav{display:none}}
+</style>
+</head>
+<body data-ws="4">
+<div class="container">
+<div class="header">
+<img src="claude-cat-guide.png" alt="Claude the cat, your lesson guide" style="width:110px;height:auto;display:block;margin:0 auto .5rem">
+<div class="brand">The Invisible Pen</div>
+<h1>Lesson 4: Promo Planner and Free Tools Audit</h1>
+<div class="subtitle">The Amazon Setup Class — Free Days, Countdown Deals, and Amazon&#x27;s Free Marketing Tools</div>
+</div>
+<div class="section" style="background:#f5f0ea"><p style="margin:0">Keep this open while you watch the Lesson 4 video. When Claude the cat appears on screen, pause and fill in the matching section. Your answers save automatically in this browser.</p></div>
+<div class="section"><div class="video-cue">PAUSE AND DO: after &quot;The catch: pick one&quot; slide</div><h2>Pick Your Promotion</h2><p>This part is for a book in KDP Select. Each 90-day period you get free days or a Countdown Deal, not both.</p><div class="field"><label for="pbook">Which book?</label><input type="text" id="pbook" data-save ></div><div class="row"><div class="field"><label for="enroll">Date this 90-day period started <span class="hint">(KDP shows it on your Bookshelf)</span></label><input type="date" id="enroll" data-save ></div><div class="field"><label for="ptype">Promotion</label><select id="ptype" data-save><option value="free">Free Book Promotion</option><option value="kcd">Kindle Countdown Deal</option></select></div></div><div class="row"><div class="field"><label for="pstart">Promotion start date</label><input type="date" id="pstart" data-save ></div><div class="field"><label for="plen">How many days?</label><input type="number" id="plen" data-save min="1" max="7" placeholder="5"></div></div><div class="result" id="promo">Fill in the dates and the planner will check them against Amazon's rules.</div><div class="tip-box"><strong>Tip:</strong> A simple series pattern: free days on book one this period, a Countdown Deal on book two next period.</div></div><div class="section"><h2>The Two KDP Select Tools</h2><div class="card"><h3>Free Book Promotion</h3><p>Up to 5 days per 90-day period, all at once or spread out. Schedule at least one day ahead. Unused days don&#x27;t roll over. You earn no royalty on free downloads.</p></div><div class="card"><h3>Kindle Countdown Deal</h3><p>A discount with a timer, from one hour up to 7 days. US and UK stores only. Enrolled at least 30 days first. It has to end at least 14 days before your period ends. You keep your royalty rate at the lower price.</p></div></div><div class="section"><div class="video-cue">PAUSE AND DO: at the end of the video</div><h2>Free Tools Audit</h2><p>Check what you already have. Then pick ONE to do this week.</p><div class="checklist"><div class="progress-bar"><div class="progress-fill"></div></div><div class="progress-text"></div><div style="margin-top:1rem"><div class="checklist-item"><input type="checkbox" id="t0" data-save><label for="t0"><strong>Author Central page claimed</strong><span>With a photo and a bio written for readers. One for each pen name.</span></label></div><div class="checklist-item"><input type="checkbox" id="t1" data-save><label for="t1"><strong>Every book claimed on my author page</strong><span>So readers can find the rest of them.</span></label></div><div class="checklist-item"><input type="checkbox" id="t2" data-save><label for="t2"><strong>Series set up as a series in KDP</strong><span>So Amazon points readers to the next book.</span></label></div><div class="checklist-item"><input type="checkbox" id="t3" data-save><label for="t3"><strong>Pre-order link in my latest book&#x27;s back matter</strong><span>From Lesson 2.</span></label></div><div class="checklist-item"><input type="checkbox" id="t4" data-save><label for="t4"><strong>A+ Content on at least one book</strong><span>Lesson 5 walks you through it.</span></label></div><div class="checklist-item"><input type="checkbox" id="t5" data-save><label for="t5"><strong>Nominated up to two books for Kindle Deals</strong><span>Marketing tab. Needs the 70 percent royalty plan.</span></label></div><div class="checklist-item"><input type="checkbox" id="t6" data-save><label for="t6"><strong>Nominated one book for Prime Reading</strong><span>Marketing tab. Needs KDP Select.</span></label></div><div class="checklist-item"><input type="checkbox" id="t7" data-save><label for="t7"><strong>Free days or a Countdown Deal scheduled</strong><span>KDP Select books only.</span></label></div></div></div><div class="field"><label for="one">The ONE tool I&#x27;ll set up this week, and for which book</label><input type="text" id="one" data-save ></div></div>
+<div class="section" style="text-align:center"><button class="btn" onclick="window.print()">Print This Worksheet</button><p style="margin:1rem 0 0;font-size:.85rem;color:#7a756e">Amazon's rules as of November 2026. Amazon changes these, so confirm on <a href="https://kdp.amazon.com/help" target="_blank" rel="noopener">KDP Help</a> before you act.</p></div>
+<div class="section nav"><a href="03-kindle-plus-decision.html">&larr; Lesson 3</a><a href="05-a-plus-content-planner.html">Lesson 5 &rarr;</a></div>
+<div class="footer"><p>The Amazon Setup Class — The Invisible Pen</p><p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p><p>&copy; Clark Publishing House LLC. Not for redistribution.</p></div>
+</div>
+<script>
+const KEY='tip-amazon-setup-'+document.body.dataset.ws;
+function store(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+function save(){const d={};document.querySelectorAll('[data-save]').forEach(el=>{d[el.id]=el.type==='checkbox'||el.type==='radio'?el.checked:el.value});try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+function load(){const d=store();document.querySelectorAll('[data-save]').forEach(el=>{if(el.id in d){if(el.type==='checkbox'||el.type==='radio')el.checked=d[el.id];else el.value=d[el.id]}})}
+function progress(){document.querySelectorAll('.checklist').forEach(list=>{const all=list.querySelectorAll('input[type=checkbox]'),done=list.querySelectorAll('input[type=checkbox]:checked');
+ all.forEach(cb=>cb.closest('.checklist-item').classList.toggle('checked',cb.checked));
+ const f=list.querySelector('.progress-fill'),t=list.querySelector('.progress-text');if(f){f.style.width=Math.round(done.length/all.length*100)+'%';t.textContent=done.length+' of '+all.length+' complete'}})}
+function fmt(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function parseDate(v){if(!v)return null;const p=v.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function today(){const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())}
+function daysBetween(a,b){return Math.round((b-a)/86400000)}
+function money(n){return '$'+n.toFixed(2)}
+document.addEventListener('DOMContentLoaded',()=>{load();progress();if(window.calc)calc();
+ document.body.addEventListener('input',()=>{save();progress();if(window.calc)calc()});
+ document.body.addEventListener('change',()=>{save();progress();if(window.calc)calc()});});
+
+function calc(){const en=parseDate(document.getElementById('enroll').value),st=parseDate(document.getElementById('pstart').value),type=document.getElementById('ptype').value,el=document.getElementById('promo');
+ let len=parseInt(document.getElementById('plen').value);if(!en||!st||isNaN(len)){el.textContent='Fill in the dates and the planner will check them against Amazon\'s rules.';return}
+ const end=addDays(st,len-1),termEnd=addDays(en,89),day=daysBetween(en,st)+1,msgs=[];
+ if(day<1||daysBetween(st,termEnd)<0)msgs.push('The start date is outside this 90-day period (it runs '+fmt(en)+' to '+fmt(termEnd)+').');
+ if(daysBetween(today(),st)<1)msgs.push('Schedule at least one day ahead.');
+ if(type==='free'){if(len>5)msgs.push('Free days max out at 5 per period.');if(day===1)msgs.push('Free days can\'t start on the first day of your period.');if(daysBetween(end,termEnd)<0)msgs.push('It runs past the end of your period.')}
+ else{if(len>7)msgs.push('A Countdown Deal runs 7 days at most.');if(day<31)msgs.push('The book has to be enrolled 30 days first. Earliest start: '+fmt(addDays(en,30))+'.');
+  if(daysBetween(end,addDays(termEnd,-14))<0)msgs.push('It has to end at least 14 days before your period ends. Latest end: '+fmt(addDays(termEnd,-14))+'.')}
+ el.innerHTML=(msgs.length?'<span class="warn">Check these:</span><br>'+msgs.join('<br>'):'<span class="ok">These dates fit Amazon\'s rules.</span>')+'<br><br>Runs '+fmt(st)+' through '+fmt(end)+'. KDP makes the final call when you schedule it.';}
+</script>
+</body>
+</html>

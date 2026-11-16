@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Lesson 6: Print Plan and Cost Estimator — The Amazon Setup Class</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Georgia',serif;background:#faf8f5;color:#2d2a26;line-height:1.7;padding:2rem 1rem}
+.container{max-width:720px;margin:0 auto}
+.header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid #d4a574}
+.header .brand{font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:#d4a574;margin-bottom:.5rem}
+.header h1{font-size:1.8rem;margin-bottom:.25rem}
+.header .subtitle{font-size:1rem;color:#7a756e;font-style:italic}
+.section{background:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section h2{font-size:1.3rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #ece8e1}
+.section p{margin-bottom:1rem;color:#4a463f}
+.checklist-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid #f0ece6;cursor:pointer}
+.checklist-item:last-child{border-bottom:none}
+.checklist-item input[type=checkbox]{width:22px;height:22px;margin-top:2px;accent-color:#d4a574;cursor:pointer;flex-shrink:0}
+.checklist-item label{cursor:pointer;flex:1}
+.checklist-item label strong{display:block;font-size:1rem}
+.checklist-item label span{font-size:.9rem;color:#7a756e}
+.checklist-item.checked label strong{text-decoration:line-through;color:#b0a99f}
+.card{background:#faf8f5;border-left:3px solid #d4a574;padding:1rem 1.25rem;margin-bottom:.75rem;border-radius:0 8px 8px 0}
+.card h3{font-size:1rem;margin-bottom:.25rem}
+.card p{font-size:.9rem;color:#7a756e;margin-bottom:0}
+.progress-bar{background:#ece8e1;border-radius:20px;height:12px;margin-top:1rem;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#d4a574,#c4956a);height:100%;border-radius:20px;transition:width .5s ease;width:0}
+.progress-text{text-align:center;font-size:.85rem;color:#7a756e;margin-top:.5rem}
+.tip-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.tip-box strong{color:#b8860b}
+.field{margin-bottom:1rem}
+.field label{display:block;font-weight:bold;font-size:.95rem;margin-bottom:.3rem}
+.field .hint{font-size:.85rem;color:#7a756e;font-weight:normal}
+.field input[type=text],.field input[type=date],.field input[type=number],.field select,.field textarea{width:100%;padding:.6rem .75rem;border:1px solid #d9d2c7;border-radius:8px;font-family:inherit;font-size:1rem;background:#fffdfa;color:#2d2a26}
+.field textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:1rem;flex-wrap:wrap}.row .field{flex:1;min-width:150px}
+.radio{display:block;padding:.4rem 0;cursor:pointer;font-size:.95rem}
+.radio input{accent-color:#d4a574;margin-right:.5rem}
+.result{background:#f5f0ea;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:.95rem}
+.result table{width:100%;border-collapse:collapse}
+.result td{padding:.35rem 0;border-bottom:1px solid #e6dfd4;vertical-align:top}
+.result td:last-child{text-align:right;font-weight:bold}
+.ok{color:#2e7d32;font-weight:bold}.warn{color:#c62828;font-weight:bold}
+.video-cue{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:4px;background:#fff3e0;color:#e65100;font-weight:bold;margin-bottom:.5rem;font-family:Arial,sans-serif;letter-spacing:.5px}
+.btn{display:block;margin:0 auto;padding:12px 36px;background:#d4a574;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:1rem;font-size:.95rem}
+.nav a,.footer a{color:#b5651d;text-decoration:none}
+.footer{text-align:center;padding:2rem 0 1rem;color:#b0a99f;font-size:.85rem}
+@media print{body{padding:0;background:#fff}.section{box-shadow:none;border:1px solid #ddd}.btn,.nav{display:none}}
+</style>
+</head>
+<body data-ws="6">
+<div class="container">
+<div class="header">
+<img src="claude-cat-guide.png" alt="Claude the cat, your lesson guide" style="width:110px;height:auto;display:block;margin:0 auto .5rem">
+<div class="brand">The Invisible Pen</div>
+<h1>Lesson 6: Print Plan and Cost Estimator</h1>
+<div class="subtitle">The Amazon Setup Class — Print: Paperback, Hardcover, and Every Choice in Between</div>
+</div>
+<div class="section" style="background:#f5f0ea"><p style="margin:0">Keep this open while you watch the Lesson 6 video. When Claude the cat appears on screen, pause and fill in the matching section. Your answers save automatically in this browser.</p></div>
+<div class="section"><div class="video-cue">PAUSE AND DO: after the trim size slide</div><h2>Measure Three Books in Your Genre</h2><p>Pull three paperbacks off your shelf and measure them, width by height.</p><div class="row"><div class="field"><label for="bt1">Book 1 title</label><input type="text" id="bt1" data-save ></div><div class="field"><label for="bs1">Size <span class="hint">(for example 5.5 x 8.5)</span></label><input type="text" id="bs1" data-save ></div></div><div class="row"><div class="field"><label for="bt2">Book 2 title</label><input type="text" id="bt2" data-save ></div><div class="field"><label for="bs2">Size <span class="hint">(for example 5.5 x 8.5)</span></label><input type="text" id="bs2" data-save ></div></div><div class="row"><div class="field"><label for="bt3">Book 3 title</label><input type="text" id="bt3" data-save ></div><div class="field"><label for="bs3">Size <span class="hint">(for example 5.5 x 8.5)</span></label><input type="text" id="bs3" data-save ></div></div></div><div class="section"><div class="video-cue">PAUSE AND DO: at the end of the video</div><h2>Your Print Plan</h2><div class="field"><label for="trim">Trim size</label><select id="trim" data-save><option value="">Choose one</option><option value="5 x 8">5 x 8: compact</option><option value="5.25 x 8">5.25 x 8: compact</option><option value="5.5 x 8.5">5.5 x 8.5: common for fiction, also a hardcover size</option><option value="6 x 9">6 x 9: KDP&#x27;s default, also a hardcover size</option><option value="other">Another size</option></select></div><div class="field"><label for="paper">Paper</label><select id="paper" data-save><option value="">Choose one</option><option value="cream">Cream: classic for fiction</option><option value="white">White: crisp</option><option value="groundwood">Groundwood: lighter and cheaper to print (paperback only)</option></select></div><div class="field"><label for="finish">Cover finish</label><select id="finish" data-save><option value="">Choose one</option><option value="matte">Matte: typical for fiction</option><option value="glossy">Glossy: makes colors pop</option></select></div><div class="field"><label>Formats I'll offer</label><label class="radio"><input type="checkbox" id="fPb" data-save>Paperback</label><label class="radio"><input type="checkbox" id="fHc" data-save>Hardcover (case laminate, 75 to 550 pages)</label><label class="radio"><input type="checkbox" id="fLp" data-save>Large print paperback</label></div><div class="result" id="planNote"></div><div class="tip-box"><strong>Tip:</strong> Ink and paper type lock once the book is published. Decide before you click publish.</div></div><div class="section"><h2>Cost and Royalty Estimator</h2><p>An estimate for a black ink book in a regular trim size, sold on Amazon.com. KDP shows your exact numbers on the Pricing tab.</p><div class="row"><div class="field"><label for="fmt">Format</label><select id="fmt" data-save><option value="pb">Paperback</option><option value="hc">Hardcover</option></select></div><div class="field"><label for="pages">Page count</label><input type="number" id="pages" data-save min="24" max="828"></div><div class="field"><label for="list">List price</label><input type="number" id="list" data-save step="0.01" min="0"></div></div><div class="result" id="cost">Enter a page count and a price.</div></div><div class="section"><h2>Before You Publish</h2><div class="checklist"><div class="progress-bar"><div class="progress-fill"></div></div><div class="progress-text"></div><div style="margin-top:1rem"><div class="checklist-item"><input type="checkbox" id="b0" data-save><label for="b0"><strong>Interior formatted to my trim size</strong><span>Changing size later means reformatting the whole interior and the cover.</span></label></div><div class="checklist-item"><input type="checkbox" id="b1" data-save><label for="b1"><strong>Cover built for my page count</strong><span>Spine width depends on page count and paper.</span></label></div><div class="checklist-item"><input type="checkbox" id="b2" data-save><label for="b2"><strong>Hardcover uses the hardcover cover template</strong><span>It isn&#x27;t the paperback cover resized.</span></label></div><div class="checklist-item"><input type="checkbox" id="b3" data-save><label for="b3"><strong>Each format has its own ISBN</strong><span>KDP can give you a free one for each.</span></label></div><div class="checklist-item"><input type="checkbox" id="b4" data-save><label for="b4"><strong>Proof copy ordered</strong><span></span></label></div><div class="checklist-item"><input type="checkbox" id="b5" data-save><label for="b5"><strong>Proof copy in my hands and checked</strong><span>Margins, spine, cover color.</span></label></div></div></div></div>
+<div class="section" style="text-align:center"><button class="btn" onclick="window.print()">Print This Worksheet</button><p style="margin:1rem 0 0;font-size:.85rem;color:#7a756e">Amazon's rules as of November 2026. Amazon changes these, so confirm on <a href="https://kdp.amazon.com/help" target="_blank" rel="noopener">KDP Help</a> before you act.</p></div>
+<div class="section nav"><a href="05-a-plus-content-planner.html">&larr; Lesson 5</a><a href="07-audiobook-path-finder.html">Lesson 7 &rarr;</a></div>
+<div class="footer"><p>The Amazon Setup Class — The Invisible Pen</p><p><a href="https://theinvisiblepen.com">theinvisiblepen.com</a></p><p>&copy; Clark Publishing House LLC. Not for redistribution.</p></div>
+</div>
+<script>
+const KEY='tip-amazon-setup-'+document.body.dataset.ws;
+function store(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+function save(){const d={};document.querySelectorAll('[data-save]').forEach(el=>{d[el.id]=el.type==='checkbox'||el.type==='radio'?el.checked:el.value});try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+function load(){const d=store();document.querySelectorAll('[data-save]').forEach(el=>{if(el.id in d){if(el.type==='checkbox'||el.type==='radio')el.checked=d[el.id];else el.value=d[el.id]}})}
+function progress(){document.querySelectorAll('.checklist').forEach(list=>{const all=list.querySelectorAll('input[type=checkbox]'),done=list.querySelectorAll('input[type=checkbox]:checked');
+ all.forEach(cb=>cb.closest('.checklist-item').classList.toggle('checked',cb.checked));
+ const f=list.querySelector('.progress-fill'),t=list.querySelector('.progress-text');if(f){f.style.width=Math.round(done.length/all.length*100)+'%';t.textContent=done.length+' of '+all.length+' complete'}})}
+function fmt(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function parseDate(v){if(!v)return null;const p=v.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function today(){const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())}
+function daysBetween(a,b){return Math.round((b-a)/86400000)}
+function money(n){return '$'+n.toFixed(2)}
+document.addEventListener('DOMContentLoaded',()=>{load();progress();if(window.calc)calc();
+ document.body.addEventListener('input',()=>{save();progress();if(window.calc)calc()});
+ document.body.addEventListener('change',()=>{save();progress();if(window.calc)calc()});});
+
+function calc(){const trim=document.getElementById('trim').value,hc=document.getElementById('fHc').checked,paper=document.getElementById('paper').value,n=document.getElementById('planNote');const notes=[];
+ if(hc&&trim&&trim!=='5.5 x 8.5'&&trim!=='6 x 9')notes.push('<span class="warn">Heads up:</span> KDP hardcovers don\'t come in '+trim+'. To use one interior file for both, choose 5.5 x 8.5 or 6 x 9.');
+ if(hc&&paper==='groundwood')notes.push('<span class="warn">Heads up:</span> groundwood paper isn\'t available for hardcover.');
+ n.innerHTML=notes.join('<br>');n.style.display=notes.length?'block':'none';
+ const f=document.getElementById('fmt').value,p=parseInt(document.getElementById('pages').value),l=parseFloat(document.getElementById('list').value),c=document.getElementById('cost');
+ if(isNaN(p)||isNaN(l)){c.textContent='Enter a page count and a price.';return}
+ if(f==='hc'&&(p<75||p>550)){c.innerHTML='<span class="warn">KDP hardcovers have to be 75 to 550 pages.</span>';return}
+ if(f==='pb'&&p<110){c.innerHTML='Paperbacks under 110 pages use a flat printing cost. Check the Pricing tab in KDP for that number.';return}
+ const cost=f==='hc'?(p<=108?5.65:5.65+p*0.012):1.00+p*0.012,rate=l>=9.99?0.6:0.5,roy=l*rate-cost;
+ c.innerHTML='<table><tr><td>Estimated printing cost</td><td>'+money(cost)+'</td></tr><tr><td>Royalty rate at this price</td><td>'+(rate*100)+'%</td></tr><tr><td>Estimated royalty per Amazon sale</td><td>'+(roy>0?money(roy):'<span class="warn">Below zero. Raise the price.</span>')+'</td></tr></table>';}
+</script>
+</body>
+</html>
